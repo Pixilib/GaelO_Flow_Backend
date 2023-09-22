@@ -8,26 +8,26 @@ export class User {
   id: number;
 
   @Column()
-  firstName: string;
+  firstname: string;
 
   @Column()
-  lastName: string;
+  lastname: string;
 
-  @Column()
-  userName: string;
+  @Column({ unique: true })
+  username: string;
 
   @Column()
   password:string;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column({ default: false })
-  superAdmin: boolean
+  super_admin: boolean
 
   @OneToOne(type => Role) @JoinColumn()
   role: Role
 
   @Column({ default: true })
-  isActive: boolean;
+  is_active: boolean;
 }

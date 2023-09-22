@@ -19,6 +19,16 @@ export class UsersService {
     return this.usersRepository.findOneBy({ id });
   }
 
+  async update(id: number, user: User): Promise<void> {
+    await this.usersRepository.update(id, user);
+  }
+
+  async create(user: User): Promise<number> {
+    const newUser = await this.usersRepository.create(user);
+    await this.usersRepository.insert([newUser]);
+    return newUser.id;
+  }
+
   async remove(id: number): Promise<void> {
     await this.usersRepository.delete(id);
   }
@@ -27,13 +37,13 @@ export class UsersService {
     const roleAdmin = new Role()
     roleAdmin.name = 'Admin'
     const admin = this.usersRepository.create({
-      userName: 'admin',
-      firstName: 'Admin',
-      lastName: 'Admin',
+      username: 'admin',
+      firstname: 'Admin',
+      lastname: 'Admin',
       email: 'admin@localhost.com',
       password: 'passwordadmin',
-      superAdmin: true,
-      isActive: true,
+      super_admin: true,
+      is_active: true,
       role: roleAdmin,
     });
 
@@ -41,13 +51,13 @@ export class UsersService {
     roleUser.name = 'User'
 
     const user = this.usersRepository.create({
-      userName: 'user',
-      firstName: 'User',
-      lastName: 'User',
+      username: 'user',
+      firstname: 'User',
+      lastname: 'User',
       email: 'user@localhost.com',
       password: 'passworduser',
-      superAdmin: true,
-      isActive: true,
+      super_admin: true,
+      is_active: true,
       role: roleUser,
     });
 

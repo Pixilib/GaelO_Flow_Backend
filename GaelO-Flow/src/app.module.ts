@@ -15,6 +15,9 @@ import { OptionsService } from './options/options.service';
 import { LdapGroupRole } from './ldap_group_roles/ldapgrouprole.entity';
 import { LdapGroupRolesService } from './ldap_group_roles/ldapgrouproles.service';
 import { LdapGroupRolesController } from './ldap_group_roles/ldapgrouproles.controller';
+import { Label } from './labels/label.entity';
+import { LabelsController } from './labels/labels.controller';
+import { LabelsService } from './labels/labels.service';
 
 @Module({
   imports: [
@@ -25,18 +28,27 @@ import { LdapGroupRolesController } from './ldap_group_roles/ldapgrouproles.cont
       username: 'postgres',
       password: 'postgres',
       database: 'gaelo-flow',
-      entities: [User, Role, Option, LdapGroupRole],
+      entities: [User, Role, Option, LdapGroupRole, Label],
       synchronize: true,
     }),
-    TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole]),
+    TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole, Label]),
   ],
   controllers: [
     AppController,
     AuthentificationController,
     UsersController,
     RolesController,
-    LdapGroupRolesController
+    LdapGroupRolesController,
+    LabelsController,
   ],
-  providers: [AppService, SeedService, RolesService, UsersService, OptionsService, LdapGroupRolesService],
+  providers: [
+    AppService,
+    SeedService,
+    RolesService,
+    UsersService,
+    OptionsService,
+    LdapGroupRolesService,
+    LabelsService,
+  ],
 })
 export class AppModule {}
