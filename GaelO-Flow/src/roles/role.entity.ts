@@ -1,37 +1,37 @@
-import { Entity, Column, PrimaryColumn,  } from 'typeorm';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Role {
-    @PrimaryColumn()
-    name: string
+  @PrimaryColumn()
+  name: string;
 
-    @Column()
-    import: boolean
+  @Column()
+  import: boolean;
 
-    @Column()
-    anonymize: boolean
+  @Column()
+  anonymize: boolean;
 
-    @Column()
-    export: boolean
+  @Column()
+  export: boolean;
 
-    @Column()
-    query: boolean
+  @Column()
+  query: boolean;
 
-    @Column()
-    auto_query: boolean
+  @Column()
+  auto_query: boolean;
 
-    @Column()
-    delete: boolean
+  @Column()
+  delete: boolean;
 
-    @Column()
-    admin: boolean
+  @Column()
+  admin: boolean;
 
-    @Column()
-    modify: boolean
+  @Column()
+  modify: boolean;
 
-    @Column()
-    cd_burner: boolean
+  @Column()
+  cd_burner: boolean;
 
-    @Column()
-    auto_routing: boolean
+  @Column()
+  auto_routing: boolean;
 }
