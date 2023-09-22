@@ -5,23 +5,50 @@ export class Option {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  hour_start: number;
+  @Column({ nullable: true})
+  ldap_type: string;
+
+  @Column({ nullable: true})
+  ldap_protocol: string;
+
+  @Column({ nullable: true})
+  ldap_server: string;
+
+  @Column({ nullable: true})
+  ldap_port: number;
+
+  @Column({ nullable: true})
+  ldap_base_dn: string;
+
+  @Column({ nullable: true})
+  ladp_bind_dn: string;
+
+  @Column({ nullable: true})
+  ldap_bind_password: string;
+
+  @Column({ nullable: true})
+  ldap_group: string;
+
+  @Column({ nullable: true})
+  ldap_user: string;
 
   @Column()
-  minute_start: number;
+  auto_query_hour_start: number;
 
   @Column()
-  hour_stop: number;
+  auto_query_minute_start: number;
 
   @Column()
-  minute_stop: number;
+  auto_query_hour_stop: number;
+
+  @Column()
+  auto_query_minute_stop: number;
 
   @Column({ default: false })
-  ldap: boolean;
+  use_ldap: boolean;
 
   @Column({ default: 10 })
-  monitoring_rate: number;
+  orthanc_monitoring_rate: number;
 
   @Column({ default: false })
   burner_started: boolean;

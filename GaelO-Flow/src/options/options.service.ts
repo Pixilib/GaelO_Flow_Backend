@@ -10,25 +10,20 @@ export class OptionsService {
     private optionsRepository: Repository<Option>,
   ) {}
 
-  findAll(): Promise<Option[]> {
-    return this.optionsRepository.find();
-  }
-
-  findOne(id: number): Promise<Option | null> {
-    return this.optionsRepository.findOneBy({ id });
-  }
-
-  async remove(id: number): Promise<void> {
-    await this.optionsRepository.delete(id);
+  getOptions(): Promise<Option[]> {
+    return this.optionsRepository.find({
+      skip: 0,
+      take: 1,
+    });
   }
 
   public async seed() {
     const option = this.optionsRepository.create({
-      hour_start: 22,
-      minute_start: 0,
-      hour_stop: 24,
-      minute_stop: 0,
-      ldap: false,
+      auto_query_hour_start: 22,
+      auto_query_minute_start: 0,
+      auto_query_hour_stop: 24,
+      auto_query_minute_stop: 0,
+      use_ldap: false,
     });
 
     await this.optionsRepository.insert([option]);

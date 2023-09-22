@@ -5,8 +5,4 @@ import { OptionsService } from './options.service';
 export class OptionsController {
   constructor(private readonly OptionService: OptionsService) {}
 
-  @Get()
-  getHello(): string {
-    return 'test';
-  }
 }
