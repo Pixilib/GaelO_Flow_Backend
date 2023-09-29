@@ -17,6 +17,10 @@ export class RolesService {
   findOne(name: string): Promise<Role | null> {
     return this.rolesRepository.findOneBy({ name });
   }
+  
+  create(role: Role): Promise<Role> {
+    return this.rolesRepository.save(role);
+  }
 
   async remove(name: string): Promise<void> {
     await this.rolesRepository.delete(name);

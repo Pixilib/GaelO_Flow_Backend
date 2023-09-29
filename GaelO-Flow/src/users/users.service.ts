@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
@@ -24,41 +25,54 @@ export class UsersService {
   }
 
   async create(user: User): Promise<number> {
-    const newUser = await this.usersRepository.create(user);
-    await this.usersRepository.insert([newUser]);
-    return newUser.id;
+    console.log(user);
+    const newUser = await this.usersRepository.insert(user);
+    return newUser.identifiers[0].id;
   }
 
   async remove(id: number): Promise<void> {
     await this.usersRepository.delete(id);
   }
 
+  async findByUsernameOrEmail(username: string, email: string): Promise<User> {
+    return await this.usersRepository.findOne({ where: [{ username }, { email }] });
+  }
+
   public async seed() {
-    const roleAdmin = new Role()
-    roleAdmin.name = 'Admin'
+    const saltAdmin = await bcrypt.genSalt();
+    const hashAdmin = await bcrypt.hash('passwordadmin', saltAdmin);
+
+    const saltUser = await bcrypt.genSalt();
+    const hashUser = await bcrypt.hash('passworduser', saltUser);
+
+    const roleAdmin = new Role();
+    roleAdmin.name = 'Admin';
+
     const admin = this.usersRepository.create({
       username: 'admin',
       firstname: 'Admin',
       lastname: 'Admin',
       email: 'admin@localhost.com',
-      password: 'passwordadmin',
+      password: hashAdmin,
       super_admin: true,
       is_active: true,
-      role: roleAdmin,
+      role_name: 'Admin',
+      salt: saltAdmin,
     });
 
-    const roleUser = new Role()
-    roleUser.name = 'User'
+    const roleUser = new Role();
+    roleUser.name = 'User';
 
     const user = this.usersRepository.create({
       username: 'user',
       firstname: 'User',
       lastname: 'User',
       email: 'user@localhost.com',
-      password: 'passworduser',
+      password: hashUser,
       super_admin: true,
       is_active: true,
-      role: roleUser,
+      role_name: 'User',
+      salt: saltUser,
     });
 
     await this.usersRepository.insert([admin, user]);

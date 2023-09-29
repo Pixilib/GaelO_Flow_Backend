@@ -1,11 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn, OneToOne, JoinColumn} from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToOne,
+  JoinColumn,
+  ManyToOne,
+} from 'typeorm';
 
 import { Role } from '../roles/role.entity';
 
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column()
   firstname: string;
@@ -17,17 +24,24 @@ export class User {
   username: string;
 
   @Column()
-  password:string;
+  password: string;
 
   @Column({ unique: true })
   email: string;
 
   @Column({ default: false })
-  super_admin: boolean
+  super_admin: boolean;
 
-  @OneToOne(type => Role) @JoinColumn()
-  role: Role
+  @Column({ name: 'role_name', unique: false})
+  role_name: string;
+
+  @ManyToOne(() => Role, role => role.name)
+  @JoinColumn({ name: 'role_name' })
+  role?: Role;
 
   @Column({ default: true })
   is_active: boolean;
+
+  @Column()
+  salt: string;
 }

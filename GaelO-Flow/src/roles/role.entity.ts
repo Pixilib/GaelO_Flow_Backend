@@ -5,33 +5,33 @@ export class Role {
   @PrimaryColumn()
   name: string;
 
-  @Column()
+  @Column({default: false})
   import: boolean;
 
-  @Column()
+  @Column({default: false})
   anonymize: boolean;
 
-  @Column()
+  @Column({default: false})
   export: boolean;
 
-  @Column()
+  @Column({default: false})
   query: boolean;
 
-  @Column()
+  @Column({default: false})
   auto_query: boolean;
 
-  @Column()
+  @Column({default: false})
   delete: boolean;
 
-  @Column()
+  @Column({default: false})
   admin: boolean;
 
-  @Column()
+  @Column({default: false})
   modify: boolean;
 
-  @Column()
+  @Column({default: false})
   cd_burner: boolean;
 
-  @Column()
+  @Column({default: false})
   auto_routing: boolean;
 }
