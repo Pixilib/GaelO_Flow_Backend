@@ -25,7 +25,6 @@ export class UsersService {
   }
 
   async create(user: User): Promise<number> {
-    console.log(user);
     const newUser = await this.usersRepository.insert(user);
     return newUser.identifiers[0].id;
   }

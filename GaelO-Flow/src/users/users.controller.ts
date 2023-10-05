@@ -25,7 +25,11 @@ export class UsersController {
 
   @Get('/:id')
   async getUsersId(@Param('id') id: number): Promise<User> {
-    return await this.UserService.findOne(id);
+
+    const user = await this.UserService.findOne(id);
+    if (!user) throw new HttpException('User not found', 404);
+
+    return user;
   }
 
   @Put('/:id') //TODO
@@ -76,6 +80,20 @@ export class UsersController {
     const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     const regexPassword =
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/g;
+
+    // check if all the keys are present
+    if (
+      userDto.firstname == undefined ||
+      !userDto.lastname == undefined ||
+      !userDto.username == undefined ||
+      !userDto.email == undefined ||
+      !userDto.password == undefined ||
+      !userDto.super_admin == undefined ||
+      !userDto.role_name == undefined ||
+      !userDto.is_active == undefined
+    )
+      throw new HttpException('All the keys are required', 400);
+
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(userDto.password, salt);
 
@@ -87,6 +105,11 @@ export class UsersController {
     if (regexPassword.test(userDto.password) === false)
       throw new HttpException('Password is not valid', 400);
 
+    const existingUser = await this.UserService.findByUsernameOrEmail(
+      userDto.username,
+      userDto.email,
+    );
+
     user.firstname = userDto.firstname;
     user.lastname = userDto.lastname;
     user.username = userDto.username;
@@ -96,11 +119,6 @@ export class UsersController {
     user.is_active = userDto.is_active;
     user.role_name = userDto.role_name;
     user.salt = salt;
-
-    const existingUser = await this.UserService.findByUsernameOrEmail(
-      userDto.username,
-      userDto.email,
-    );
 
     if (existingUser) {
       throw new HttpException(
