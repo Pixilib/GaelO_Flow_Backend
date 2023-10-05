@@ -12,7 +12,6 @@ import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UserDto } from './users.dto';
 import * as bcrypt from 'bcrypt';
-import { Role } from '../roles/role.entity';
 
 @Controller('/users')
 export class UsersController {

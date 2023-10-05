@@ -10,11 +10,12 @@ export class OptionsService {
     private optionsRepository: Repository<Option>,
   ) {}
 
-  getOptions(): Promise<Option[]> {
-    return this.optionsRepository.find({
-      skip: 0,
-      take: 1,
-    });
+  getOptions(): Promise<Option> {
+    return this.optionsRepository.findOneBy({ id: 1 });
+  }
+
+  async update(option: Option): Promise<void> {
+    await this.optionsRepository.update(1, option);
   }
 
   public async seed() {
