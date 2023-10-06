@@ -72,17 +72,17 @@ export class RolesController {
 
     if (!role) throw new HttpException('Role not found', 404);
 
-    if (roleDto.name) role.name = roleDto.name;
-    if (roleDto.import) role.import = roleDto.import;
-    if (roleDto.anonymize) role.anonymize = roleDto.anonymize;
-    if (roleDto.export) role.export = roleDto.export;
-    if (roleDto.query) role.query = roleDto.query;
-    if (roleDto.auto_query) role.auto_query = roleDto.auto_query;
-    if (roleDto.delete) role.delete = roleDto.delete;
-    if (roleDto.admin) role.admin = roleDto.admin;
-    if (roleDto.modify) role.modify = roleDto.modify;
-    if (roleDto.cd_burner) role.cd_burner = roleDto.cd_burner;
-    if (roleDto.auto_routing) role.auto_routing = roleDto.auto_routing;
+    if (roleDto.name != undefined) role.name = roleDto.name;
+    if (roleDto.import != undefined) role.import = roleDto.import;
+    if (roleDto.anonymize != undefined) role.anonymize = roleDto.anonymize;
+    if (roleDto.export != undefined) role.export = roleDto.export;
+    if (roleDto.query != undefined) role.query = roleDto.query;
+    if (roleDto.auto_query != undefined) role.auto_query = roleDto.auto_query;
+    if (roleDto.delete != undefined) role.delete = roleDto.delete;
+    if (roleDto.admin != undefined) role.admin = roleDto.admin;
+    if (roleDto.modify != undefined) role.modify = roleDto.modify;
+    if (roleDto.cd_burner != undefined) role.cd_burner = roleDto.cd_burner;
+    if (roleDto.auto_routing != undefined) role.auto_routing = roleDto.auto_routing;
 
     await this.RoleService.update(name, role);
   }
