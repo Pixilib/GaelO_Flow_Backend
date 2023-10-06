@@ -26,6 +26,10 @@ export class RolesService {
     await this.rolesRepository.delete(name);
   }
 
+  async update(name: string, role: Role): Promise<void> {
+    await this.rolesRepository.update(name, role);
+  }
+
   public async seed() {
     const admin = this.rolesRepository.create({
       name: 'Admin',

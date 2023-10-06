@@ -31,7 +31,7 @@ export class UsersController {
     return user;
   }
 
-  @Put('/:id') //TODO
+  @Put('/:id')
   async update(
     @Param('id') id: number,
     @Body() userDto: UserDto,
@@ -109,6 +109,13 @@ export class UsersController {
       userDto.email,
     );
 
+    if (existingUser) {
+      throw new HttpException(
+        'User with this username or email already exists',
+        409,
+      );
+    }
+
     user.firstname = userDto.firstname;
     user.lastname = userDto.lastname;
     user.username = userDto.username;
@@ -119,13 +126,10 @@ export class UsersController {
     user.role_name = userDto.role_name;
     user.salt = salt;
 
-    if (existingUser) {
-      throw new HttpException(
-        'User with this username or email already exists',
-        409,
-      );
-    }
-
+    try {
     return await this.UserService.create(user);
+    } catch (error) {
+      throw new HttpException('Role not found', 400);
+    }
   }
 }
