@@ -10,16 +10,22 @@ export class LabelsService {
     private labelsRepository: Repository<Label>,
   ) {}
 
-  findAll(): Promise<Label[]> {
+  async findAll(): Promise<Label[]> {
     return this.labelsRepository.find();
   }
 
-  findOne(label_name: string): Promise<Label | null> {
-    return this.labelsRepository.findOneBy({ label_name });
+  async findOne(label_name: string): Promise<Label> {
+    return await this.labelsRepository.findOneBy({ label_name });
   }
 
   async remove(label_name: string): Promise<void> {
+    console.log(label_name);
+
     await this.labelsRepository.delete(label_name);
+  }
+
+  async create(label: Label): Promise<Label> {
+    return this.labelsRepository.save(label);
   }
 
 }
