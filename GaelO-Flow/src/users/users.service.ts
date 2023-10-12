@@ -12,13 +12,13 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async isRoleUsed(role_name: string): Promise<boolean> {
-    const roleCount = await this.usersRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.role', 'role')
-      .where('role.name = :role_name', { role_name: role_name })
-      .getCount();
-    return roleCount > 0;
+  async isRoleUsed(roleName: string): Promise<boolean> {
+    const roleCount = await this.usersRepository.findAndCount({
+      where: {
+        role_name: roleName,
+      },
+    });
+    return roleCount[1] > 0;
   }
 
   async findAll(): Promise<User[]> {
