@@ -12,9 +12,14 @@ import { RolesService } from './roles.service';
 import { Role } from './role.entity';
 import { RoleDto } from './roles.dto';
 
+import { UsersService } from '../users/users.service';
+
 @Controller('/roles')
 export class RolesController {
-  constructor(private readonly RoleService: RolesService) {}
+  constructor(
+    private readonly RoleService: RolesService,
+    private readonly userService: UsersService,
+  ) {}
 
   @Get()
   async findAll(): Promise<Role[]> {
@@ -59,6 +64,8 @@ export class RolesController {
     const role = await this.RoleService.findOne(name);
 
     if (!role) throw new HttpException('Role not found', 404);
+    if (await this.userService.isRoleUsed(role.name))
+      throw new HttpException('Role is used', 403);
 
     return this.RoleService.remove(name);
   }
@@ -71,6 +78,8 @@ export class RolesController {
     const role = await this.RoleService.findOne(name);
 
     if (!role) throw new HttpException('Role not found', 404);
+    if (await this.userService.isRoleUsed(role.name))
+      throw new HttpException('Role is used', 403);
 
     if (roleDto.name != undefined) role.name = roleDto.name;
     if (roleDto.import != undefined) role.import = roleDto.import;
@@ -82,7 +91,8 @@ export class RolesController {
     if (roleDto.admin != undefined) role.admin = roleDto.admin;
     if (roleDto.modify != undefined) role.modify = roleDto.modify;
     if (roleDto.cd_burner != undefined) role.cd_burner = roleDto.cd_burner;
-    if (roleDto.auto_routing != undefined) role.auto_routing = roleDto.auto_routing;
+    if (roleDto.auto_routing != undefined)
+      role.auto_routing = roleDto.auto_routing;
 
     await this.RoleService.update(name, role);
   }

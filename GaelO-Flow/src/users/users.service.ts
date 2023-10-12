@@ -12,12 +12,21 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+  async isRoleUsed(role_name: string): Promise<boolean> {
+    const roleCount = await this.usersRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.role', 'role')
+      .where('role.name = :role_name', { role_name: role_name })
+      .getCount();
+    return roleCount > 0;
   }
 
-  findOne(id: number): Promise<User | null> {
-    return this.usersRepository.findOneBy({ id });
+  async findAll(): Promise<User[]> {
+    return await this.usersRepository.find();
+  }
+
+  async findOne(id: number): Promise<User | null> {
+    return await this.usersRepository.findOneBy({ id });
   }
 
   async update(id: number, user: User): Promise<void> {
@@ -34,7 +43,9 @@ export class UsersService {
   }
 
   async findByUsernameOrEmail(username: string, email: string): Promise<User> {
-    return await this.usersRepository.findOne({ where: [{ username }, { email }] });
+    return await this.usersRepository.findOne({
+      where: [{ username }, { email }],
+    });
   }
 
   public async seed() {
