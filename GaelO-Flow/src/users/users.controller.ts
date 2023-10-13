@@ -7,11 +7,13 @@ import {
   Put,
   Delete,
   HttpException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UserDto } from './users.dto';
 import * as bcrypt from 'bcrypt';
+import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
 @Controller('/users')
 export class UsersController {
@@ -23,15 +25,14 @@ export class UsersController {
   }
 
   @Get('/:id')
+  @UseInterceptors(NotFoundInterceptor)
   async getUsersId(@Param('id') id: number): Promise<User> {
-
-    const user = await this.UserService.findOne(id);
-    if (!user) throw new HttpException('User not found', 404);
-
-    return user;
+      const user = await this.UserService.findOne(id);
+      return user;
   }
 
   @Put('/:id')
+  @UseInterceptors(NotFoundInterceptor)
   async update(
     @Param('id') id: number,
     @Body() userDto: UserDto,
@@ -40,8 +41,6 @@ export class UsersController {
     const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     const regexPassword =
       /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/g;
-
-    if (!user) throw new HttpException('User not found', 404);
 
     if (userDto.firstname) user.firstname = userDto.firstname;
     if (userDto.lastname) user.lastname = userDto.lastname;
@@ -67,9 +66,9 @@ export class UsersController {
   }
 
   @Delete('/:id')
+  @UseInterceptors(NotFoundInterceptor)
   async delete(@Param('id') id: number): Promise<void> {
     const user = await this.UserService.findOne(id);
-    if (!user) throw new HttpException('User not found', 404);
     return await this.UserService.remove(id);
   }
 
@@ -82,14 +81,14 @@ export class UsersController {
 
     // check if all the keys are present
     if (
-      userDto.firstname == undefined ||
-      !userDto.lastname == undefined ||
-      !userDto.username == undefined ||
-      !userDto.email == undefined ||
-      !userDto.password == undefined ||
+      userDto.firstname    == undefined ||
+      !userDto.lastname    == undefined ||
+      !userDto.username    == undefined ||
+      !userDto.email       == undefined ||
+      !userDto.password    == undefined ||
       !userDto.super_admin == undefined ||
-      !userDto.role_name == undefined ||
-      !userDto.is_active == undefined
+      !userDto.role_name   == undefined ||
+      !userDto.is_active   == undefined
     )
       throw new HttpException('All the keys are required', 400);
 
@@ -127,7 +126,7 @@ export class UsersController {
     user.salt = salt;
 
     try {
-    return await this.UserService.create(user);
+      return await this.UserService.create(user);
     } catch (error) {
       throw new HttpException('Role not found', 400);
     }

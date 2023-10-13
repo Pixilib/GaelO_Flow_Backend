@@ -7,12 +7,15 @@ import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
 import { RolesService } from '../roles/roles.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { InsertResult, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 describe('UsersService', () => {
   let usersService: UsersService;
   let rolesService: RolesService;
   let userRepository: Repository<User>;
+  let firstUser: User;
+  let secondUser: User;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -31,210 +34,133 @@ describe('UsersService', () => {
     usersService = module.get<UsersService>(UsersService);
     rolesService = module.get<RolesService>(RolesService);
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
+
+    let salt: string;
+    let hash: string;
+    const userRole = new Role();
+    userRole.name = 'User';
+
+    const adminRole = new Role();
+    adminRole.name = 'Admin';
+
+    salt = await bcrypt.genSalt();
+    hash = await bcrypt.hash('first', salt);
+    firstUser = {
+      username: 'first_username',
+      firstname: 'first_firstname',
+      lastname: 'first_lastname',
+      email: 'first@example.com',
+      password: hash,
+      super_admin: false,
+      is_active: true,
+      role_name: userRole.name,
+      salt: salt,
+    };
+
+    salt = await bcrypt.genSalt();
+    hash = await bcrypt.hash('second', salt);
+    secondUser = {
+      username: 'second_username',
+      firstname: 'second_firstname',
+      lastname: 'second_lastname',
+      email: 'second@example.com',
+      password: hash,
+      super_admin: false,
+      is_active: true,
+      role_name: userRole.name,
+      salt: salt,
+    };
+
+    await rolesService.create(userRole);
+    await rolesService.create(adminRole);
+    await usersService.create(firstUser);
+    await usersService.create(secondUser);
   });
 
   describe('isRoleUsed', () => {
     it('should return true if role is used', async () => {
-      // Arrange
-      const roleName = 'Admin';
-      const findAndCountMock = jest
-        .spyOn(userRepository, 'findAndCount')
-        .mockResolvedValue([[{} as User], 1]);
-
-      // Act
+      const roleName = 'User';
       const result = await usersService.isRoleUsed(roleName);
-
-      // Assert
-      expect(findAndCountMock).toHaveBeenCalledWith({
-        where: { role_name: roleName },
-      });
       expect(result).toBe(true);
     });
 
     it('should return false if role is not used', async () => {
-      // Arrange
-      const roleName = 'NonExistentRole';
-      const findAndCountMock = jest
-        .spyOn(userRepository, 'findAndCount')
-        .mockResolvedValue([[], 0]);
-
-      // Act
+      const roleName = 'Admin';
       const result = await usersService.isRoleUsed(roleName);
-
-      // Assert
-      expect(findAndCountMock).toHaveBeenCalledWith({
-        where: { role_name: roleName },
-      });
       expect(result).toBe(false);
     });
   });
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      // Arrange
-      const findAllMock = jest
-        .spyOn(userRepository, 'find')
-        .mockResolvedValue([]);
-
-      // Act
       const result = await usersService.findAll();
-
-      // Assert
-      expect(findAllMock).toHaveBeenCalled();
-      expect(result).toEqual([]);
+      expect(result).toEqual([firstUser, secondUser]);
     });
   });
 
   describe('findOne', () => {
-    it('should return a user', async () => {
-      // Arrange
-      const findOneMock = jest
-        .spyOn(userRepository, 'findOneBy')
-        .mockResolvedValue({} as User);
-
-      // Act
+    it('should return the first user', async () => {
       const result = await usersService.findOne(1);
-
-      // Assert
-      expect(findOneMock).toHaveBeenCalledWith({ id: 1 });
-      expect(result).toEqual({});
-    });
-
-    it('should return null if user not found', async () => {
-      // Arrange
-      const findOneMock = jest
-        .spyOn(userRepository, 'findOneBy')
-        .mockResolvedValue(null);
-
-      // Act
-      const result = await usersService.findOne(1);
-
-      // Assert
-      expect(findOneMock).toHaveBeenCalledWith({ id: 1 });
-      expect(result).toBeNull();
+      expect(result).toEqual(firstUser);
     });
   });
 
   describe('update', () => {
     it('should update a user', async () => {
-      // Arrange
-      const updateMock = jest
-        .spyOn(userRepository, 'update')
-        .mockResolvedValue(undefined);
-
-      // const role = new Role();
-      // role.name = 'User';
-
-      // await rolesService.create(role);
-      // await usersService.create({
-      //   username: 'testuser',
-      //   firstname: 'testfirstname',
-      //   lastname: 'testlastname',
-      //   email: 'testuser@example.com',
-      //   password: 'testpassword',
-      //   super_admin: false,
-      //   is_active: true,
-      //   role_name: role.name,
-      //   salt: 'testsalt',
-      // });
-
-      // Act
-      const result = await usersService.update(1, {} as User);
-
-      // Assert
-      expect(updateMock).toHaveBeenCalledWith(1, {} as User);
-      expect(userRepository.update).toHaveBeenCalled();
-      expect(result).toEqual(undefined);
+      let user = { ...firstUser };
+      user.firstname = 'updateTest';
+      const updateResult = await usersService.update(1, user);
+      const findOneResult = await usersService.findOne(1);
+      expect(updateResult).toEqual(undefined);
+      expect(findOneResult).toEqual(user);
     });
   });
 
   describe('create', () => {
     it('should create a user', async () => {
-      // Arrange
-      const insertMock = jest
-        .spyOn(userRepository, 'insert')
-        .mockResolvedValue({
-          identifiers: [{ id: 1 }],
-          generatedMaps: [],
-          raw: [],
-        } as InsertResult);
-
-      const user = {
-        username: 'testuser',
-        firstname: 'testfirstname',
-        lastname: 'testlastname',
-        email: 'testuser@example.com',
-        password: '<PASSWORD>',
+      const createUser = {
+        username: 'create_testuser',
+        firstname: 'create_testfirstname',
+        lastname: 'create_testlastname',
+        email: 'create_testuser@example.com',
+        password: 'create_<PASSWORD>',
         super_admin: false,
         is_active: true,
         role_name: 'User',
-        salt: 'testsalt',
+        salt: 'create_<SALT>',
       };
-
-      // Act
-      const result = await usersService.create(user);
-
-      // Assert
-      expect(insertMock).toHaveBeenCalledWith(user);
-      expect(userRepository.insert).toHaveBeenCalled();
-      expect(result).toEqual(1);
+      const createResult = await usersService.create(createUser);
+      const findOneResult = await usersService.findOne(createResult);
+      expect(typeof createResult).toBe('number');
+      expect(createResult).toBeGreaterThan(0);
+      expect(findOneResult).toEqual(createUser);
     });
   });
 
   describe('remove', () => {
     it('should remove a user', async () => {
-      // Arrange
-      const deleteMock = jest
-        .spyOn(userRepository, 'delete')
-        .mockResolvedValue(undefined);
-
-      // Act
-      const result = await usersService.remove(1);
-
-      // Assert
-      expect(deleteMock).toHaveBeenCalledWith(1);
-      expect(userRepository.delete).toHaveBeenCalled();
-      expect(result).toEqual(undefined);
+      const spyOnUserRepositoryDelete = jest.spyOn(userRepository, 'delete');
+      const removeResult = await usersService.remove(1);
+      expect(removeResult).toEqual(undefined);
+      expect(spyOnUserRepositoryDelete).toHaveBeenCalled();
     });
   });
 
   describe('findByUsernameOrEmail', () => {
     it('should return a user', async () => {
-      // Arrange
-      const findOneMock = jest
-        .spyOn(userRepository, 'findOne')
-        .mockResolvedValue({} as User);
-
-      // Act
       const result = await usersService.findByUsernameOrEmail(
-        'testusername',
-        'testemail',
+        'first_username',
+        'first@example.com',
       );
-
-      // Assert
-      expect(findOneMock).toHaveBeenCalledWith({
-        where: [{ username: 'testusername' }, { email: 'testemail' }],
-      });
-      expect(result).toEqual({});
+      expect(result).toEqual(firstUser);
     });
 
     it('should return null if user not found', async () => {
-      // Arrange
-      const findOneMock = jest
-        .spyOn(userRepository, 'findOne')
-        .mockResolvedValue(null);
-
-      // Act
       const result = await usersService.findByUsernameOrEmail(
-        'testusername',
-        'testemail',
+        'no_username',
+        'no@example.com',
       );
-
-      // Assert
-      expect(findOneMock).toHaveBeenCalledWith({
-        where: [{ username: 'testusername' }, { email: 'testemail' }],
-      });
-      expect(result).toEqual(null);
+      expect(result).toBeNull();
     });
   });
 });
