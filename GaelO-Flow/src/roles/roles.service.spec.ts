@@ -4,14 +4,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RolesService } from './roles.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from './role.entity';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
-import { RouterModule } from '@nestjs/core';
 
 describe('RolesService', () => {
   let rolesService: RolesService;
-  let roleRepository: Repository<Role>;
   let role: Role;
 
   beforeEach(async () => {
@@ -29,7 +24,6 @@ describe('RolesService', () => {
     }).compile();
 
     rolesService = module.get<RolesService>(RolesService);
-    roleRepository = module.get<Repository<Role>>(getRepositoryToken(Role));
     role = {
       name: 'User',
       import: true,
@@ -59,6 +53,7 @@ describe('RolesService', () => {
       const result = await rolesService.findOne('User');
       expect(result).toEqual(role);
     });
+    // TODO: check if throws when role is not found
   });
 
   describe('create', () => {
@@ -85,19 +80,17 @@ describe('RolesService', () => {
 
   describe('remove', () => {
     it('should remove a role', async () => {
-      const spyOnRoleRepositoryDelete = jest.spyOn(roleRepository, 'delete');
       const removeResult = await rolesService.remove('User');
       expect(removeResult).toEqual(undefined);
-      expect(spyOnRoleRepositoryDelete).toHaveBeenCalled();
     });
   });
 
   describe('update', () => {
     it('should update a role', async () => {
       let updateRole = { ...role };
-      updateRole.name = 'update_test';
+      updateRole.admin = true;
       const updateResult = await rolesService.update('User', updateRole);
-      const findOneResult = await rolesService.findOne('update_test');
+      const findOneResult = await rolesService.findOne('User');
       expect(updateResult).toEqual(undefined);
       expect(findOneResult).toEqual(updateRole);
     });

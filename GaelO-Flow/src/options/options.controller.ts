@@ -16,7 +16,7 @@ export class OptionsController {
     return options;
   }
 
-  @Put()
+  @Put() // TODO: change to patch, https://docs.nestjs.com/techniques/validation#parsing-and-validating-arrays
   async update(@Body() options: OptionDto): Promise<void> {
     const option = await this.OptionService.getOptions();
 

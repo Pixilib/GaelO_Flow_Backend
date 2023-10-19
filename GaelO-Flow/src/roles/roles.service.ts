@@ -15,7 +15,7 @@ export class RolesService {
   }
 
   async findOne(name: string): Promise<Role | null> {
-    return await this.rolesRepository.findOneBy({ name });
+    return await this.rolesRepository.findOneByOrFail({ name });
   }
   
   async create(role: Role): Promise<void> {

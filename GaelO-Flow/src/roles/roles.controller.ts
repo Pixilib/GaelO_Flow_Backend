@@ -7,12 +7,17 @@ import {
   HttpException,
   Delete,
   Put,
+  UseInterceptors,
+  ForbiddenException,
+  ConflictException,
+  BadRequestException
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { Role } from './role.entity';
 import { RoleDto } from './roles.dto';
 
 import { UsersService } from '../users/users.service';
+import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
 @Controller('/roles')
 export class RolesController {
@@ -27,10 +32,9 @@ export class RolesController {
   }
 
   @Get('/:name')
+  @UseInterceptors(NotFoundInterceptor)
   async findOne(@Param('name') name: string): Promise<Role> {
     const role = await this.RoleService.findOne(name);
-
-    if (!role) throw new HttpException('Role not found', 404);
     return role;
   }
 
@@ -39,10 +43,10 @@ export class RolesController {
     const role = new Role();
 
     if (roleDto.name == undefined)
-      throw new HttpException("Missing Primary Key 'name'", 400);
+      throw new BadRequestException("Missing Primary Key 'name'");
 
     if ((await this.RoleService.findOne(roleDto.name)) != null)
-      throw new HttpException('Role with this name already exists', 409);
+      throw new ConflictException('Role with this name already exists');
 
     role.name = roleDto.name;
     role.import = roleDto.import;
@@ -60,28 +64,25 @@ export class RolesController {
   }
 
   @Delete('/:name')
+  @UseInterceptors(NotFoundInterceptor)
   async delete(@Param('name') name: string): Promise<void> {
     const role = await this.RoleService.findOne(name);
 
-    if (!role) throw new HttpException('Role not found', 404);
     if (await this.userService.isRoleUsed(role.name))
-      throw new HttpException('Role is used', 403);
+      throw new ForbiddenException('Role is used');
 
     return this.RoleService.remove(name);
   }
 
   @Put('/:name')
+  @UseInterceptors(NotFoundInterceptor)
   async update(
     @Param('name') name: string,
     @Body() roleDto: RoleDto,
   ): Promise<void> {
     const role = await this.RoleService.findOne(name);
 
-    if (!role) throw new HttpException('Role not found', 404);
-    if (await this.userService.isRoleUsed(role.name))
-      throw new HttpException('Role is used', 403);
-
-    if (roleDto.name != undefined) role.name = roleDto.name;
+    // TODO: remove all checks, json needs to be fully populated
     if (roleDto.import != undefined) role.import = roleDto.import;
     if (roleDto.anonymize != undefined) role.anonymize = roleDto.anonymize;
     if (roleDto.export != undefined) role.export = roleDto.export;
