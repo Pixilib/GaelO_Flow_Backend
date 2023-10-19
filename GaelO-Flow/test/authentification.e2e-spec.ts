@@ -30,4 +30,8 @@ describe('Authentification (e2e)', () => {
       .expect(201)
       .expect(JSON.stringify({ chat: true }));
   });
+
+  afterEach(async () => {
+    await app.close();
+  });
 });
