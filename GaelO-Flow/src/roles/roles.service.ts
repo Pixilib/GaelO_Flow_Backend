@@ -10,16 +10,16 @@ export class RolesService {
     private rolesRepository: Repository<Role>,
   ) {}
 
-  findAll(): Promise<Role[]> {
-    return this.rolesRepository.find();
+  async findAll(): Promise<Role[]> {
+    return await this.rolesRepository.find();
   }
 
-  findOne(name: string): Promise<Role | null> {
-    return this.rolesRepository.findOneBy({ name });
+  async findOne(name: string): Promise<Role | null> {
+    return await this.rolesRepository.findOneBy({ name });
   }
   
-  create(role: Role): Promise<Role> {
-    return this.rolesRepository.save(role);
+  async create(role: Role): Promise<void> {
+    await this.rolesRepository.save(role);
   }
 
   async remove(name: string): Promise<void> {

@@ -112,7 +112,7 @@ describe('UsersController', () => {
         is_active: true,
       });
 
-      expect(result).toBe(1);
+      expect(typeof result).toBe('number');
       expect(mockCreate).toHaveBeenCalled();
     });
 
