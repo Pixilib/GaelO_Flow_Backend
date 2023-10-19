@@ -98,6 +98,25 @@ describe('UsersController', () => {
 
   describe('createUser', () => {
     it('check if createUser calls service create', async () => {
+      const mockCreate = jest
+        .spyOn(usersService, 'create')
+        .mockResolvedValue(1);
+      const result = await usersController.createUser({
+        firstname: 'firstname',
+        lastname: 'lastname',
+        username: 'username',
+        password: 'Password123!',
+        email: 'email@email.com',
+        super_admin: true,
+        role_name: 'role_name',
+        is_active: true,
+      });
+
+      expect(result).toBe(1);
+      expect(mockCreate).toHaveBeenCalled();
+    });
+
+    it('check if createUser throws with bad email', async () => {
       const mockCreate = jest.spyOn(usersService, 'create');
       try {
         await usersController.createUser({
@@ -117,18 +136,24 @@ describe('UsersController', () => {
       }
     });
 
-    // it('check if createUser with bad email throws', async () => {
-    //   const mockCreate = jest.spyOn(usersService, 'create');
-    //   const result = await usersController.createUser({
-    //     firstname: 'firstname',
-    //     lastname: 'lastname',
-    //     username: 'username',
-    //     password: 'Password123!',
-    //     email: 'email',
-    //     super_admin: true,
-    //     role_name: 'role_name',
-    //     is_active: true,
-    //   });
-    // });
+    it('check if createUser throws with bad password', async () => {
+      const mockCreate = jest.spyOn(usersService, 'create');
+      try {
+        await usersController.createUser({
+          firstname: 'firstname',
+          lastname: 'lastname',
+          username: 'username',
+          password: 'very_secured',
+          email: 'email@email.com',
+          super_admin: true,
+          role_name: 'role_name',
+          is_active: true,
+        });
+
+        expect(true).toBe(false);
+      } catch (error) {
+        expect(error).toBeInstanceOf(Error);
+      }
+    });
   });
 });
