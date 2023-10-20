@@ -10,8 +10,8 @@ export class OptionsService {
     private optionsRepository: Repository<Option>,
   ) {}
 
-  getOptions(): Promise<Option> {
-    return this.optionsRepository.findOneBy({ id: 1 });
+  async getOptions(): Promise<Option> {
+    return await this.optionsRepository.findOneByOrFail({ id: 1 });
   }
 
   async update(option: Option): Promise<void> {
@@ -27,6 +27,8 @@ export class OptionsService {
       use_ldap: false,
     });
 
-    await this.optionsRepository.insert([option]);
+    console.log(option);
+
+    await this.optionsRepository.insert(option);
   }
 }

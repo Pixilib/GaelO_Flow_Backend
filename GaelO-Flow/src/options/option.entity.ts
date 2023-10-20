@@ -5,31 +5,31 @@ export class Option {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, default: null})
   ldap_type: string;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, default: null})
   ldap_protocol: string;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, default: null})
   ldap_server: string;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, default: null})
   ldap_port: number;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, default: null})
   ldap_base_dn: string;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, default: null })
   ladp_bind_dn: string;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, default: null})
   ldap_bind_password: string;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, default: null})
   ldap_group: string;
 
-  @Column({ nullable: true})
+  @Column({ nullable: true, default: null})
   ldap_user: string;
 
   @Column()

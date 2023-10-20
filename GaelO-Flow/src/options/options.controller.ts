@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, HttpException } from '@nestjs/common';
+import { Body, Controller, Get, Put, NotFoundException } from '@nestjs/common';
 import { OptionsService } from './options.service';
 import { Option } from './option.entity';
 import { OptionDto } from './options.dto';
@@ -20,7 +20,7 @@ export class OptionsController {
   async update(@Body() options: OptionDto): Promise<void> {
     const option = await this.OptionService.getOptions();
 
-    if (!option) throw new HttpException('Option not found', 404);
+    if (!option) throw new NotFoundException('Option not found');
 
     if (options.ldap_type) option.ldap_type = options.ldap_type;
     if (options.ldap_protocol) option.ldap_protocol = options.ldap_protocol;
