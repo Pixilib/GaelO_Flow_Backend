@@ -14,8 +14,14 @@ export class LabelsService {
     return this.labelsRepository.find();
   }
 
-  async findOne(label_name: string): Promise<Label> {
-    return await this.labelsRepository.findOneBy({ label_name }); // TODO: change this to findOneByOrFail
+  async findOneByOrFail(label_name: string): Promise<Label> {
+    return await this.labelsRepository.findOneByOrFail({ label_name });
+  }
+
+  //TODO A TESTER
+  async isLabelExist(label_name: string): Promise<boolean> {
+    const answser = await this.labelsRepository.findOneBy({ label_name });
+    return answser !== null;
   }
 
   async remove(label_name: string): Promise<void> {
@@ -25,5 +31,4 @@ export class LabelsService {
   async create(label: Label): Promise<void> {
     await this.labelsRepository.save(label);
   }
-
 }

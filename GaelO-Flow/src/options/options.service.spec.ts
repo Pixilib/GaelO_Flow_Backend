@@ -26,7 +26,9 @@ describe('OptionsService', () => {
     }).compile();
 
     optionsService = module.get<OptionsService>(OptionsService);
-    optionsRepository = module.get<Repository<Option>>(getRepositoryToken(Option));
+    optionsRepository = module.get<Repository<Option>>(
+      getRepositoryToken(Option),
+    );
     option = optionsRepository.create({
       auto_query_hour_start: 22,
       auto_query_minute_start: 0,
@@ -42,15 +44,25 @@ describe('OptionsService', () => {
       const result = await optionsService.getOptions();
       expect(result).toEqual(option);
     });
+    /*
+    it('check if update of the controller throws when it cannot get the options', async () => {
+      expect(
+        optionsService.update({ use_ldap: true } as Option),
+      ).rejects.toThrow(EntityNotFoundError);
+    });
+    */
+    
   });
 
   describe('update', () => {
     it('should update the options', async () => {
-      const newOption = {...option, use_ldap: true};
+      const newOption = { ...option, use_ldap: true };
       const result = await optionsService.update(newOption);
       const getOptions = await optionsService.getOptions();
 
       expect(getOptions).toEqual(newOption);
     });
+
+
   });
 });

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Option } from './option.entity';
+import { UpdateOptionDto } from './options.dto';
 
 @Injectable()
 export class OptionsService {
@@ -14,7 +15,7 @@ export class OptionsService {
     return await this.optionsRepository.findOneByOrFail({ id: 1 });
   }
 
-  async update(option: Option): Promise<void> {
+  async update(option: UpdateOptionDto): Promise<void> {
     await this.optionsRepository.update(1, option);
   }
 

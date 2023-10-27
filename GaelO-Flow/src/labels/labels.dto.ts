@@ -1,3 +1,3 @@
 export class LabelDto {
-    label_name: string;
+  label_name: string;
 }

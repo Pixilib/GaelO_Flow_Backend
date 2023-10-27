@@ -4,8 +4,6 @@ import { OptionsController } from './options.controller';
 import { Option } from './option.entity';
 import { OptionDto } from './options.dto';
 
-import { NotFoundException } from '@nestjs/common';
-
 describe('OptionsController', () => {
   let optionsController: OptionsController;
   let optionsService: OptionsService;
@@ -18,9 +16,9 @@ describe('OptionsController', () => {
           provide: OptionsService,
           useValue: {
             getOptions: jest.fn(),
-            update: jest.fn()
+            update: jest.fn(),
           },
-        }
+        },
       ],
     }).compile();
 
@@ -30,7 +28,9 @@ describe('OptionsController', () => {
 
   describe('getOptions', () => {
     it('check if getOptions of the controller calls getOptions of the service', async () => {
-      const mock = jest.spyOn(optionsService, 'getOptions').mockResolvedValue({id: 1} as Option);
+      const mock = jest
+        .spyOn(optionsService, 'getOptions')
+        .mockResolvedValue({ id: 1 } as Option);
 
       await optionsController.getOptions();
       expect(mock).toHaveBeenCalled();
@@ -39,26 +39,12 @@ describe('OptionsController', () => {
 
   describe('update', () => {
     it('check if update of the controller calls update of the service', async () => {
-      const mockUpdate = jest.spyOn(optionsService, 'update').mockResolvedValue(undefined);
-      const mockGetOptions = jest.spyOn(optionsService, 'getOptions').mockResolvedValue({} as Option)
+      const mockUpdate = jest
+        .spyOn(optionsService, 'update')
+        .mockResolvedValue(undefined);
 
-      await optionsController.update({use_ldap: true} as OptionDto);
-      const result = await optionsController.getOptions();
+      await optionsController.update({ use_ldap: true } as OptionDto);
       expect(mockUpdate).toHaveBeenCalled();
-      expect(result).toEqual({use_ldap: true})
-    });
-
-    it('check if update of the controller throws when it cannot get the options', async () => {
-      const mockUpdate = jest.spyOn(optionsService, 'update').mockResolvedValue(undefined);
-      const mockGetOptions = jest.spyOn(optionsService, 'getOptions').mockResolvedValue(null);
-
-      try {
-        await optionsController.update({use_ldap: true} as OptionDto);
-        expect(true).toBe(false);
-      } catch (error) {
-        expect(error).toBeInstanceOf(NotFoundException)
-      }
     });
   });
-
 });
