@@ -4,7 +4,6 @@ import {
   Get,
   Post,
   Param,
-  HttpException,
   Delete,
   Put,
   UseInterceptors,
@@ -25,7 +24,8 @@ export class RolesController {
     private readonly RoleService: RolesService,
     private readonly userService: UsersService,
   ) {}
-
+  
+  
   @Get()
   async findAll(): Promise<Role[]> {
     return this.RoleService.findAll();

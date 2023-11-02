@@ -95,8 +95,6 @@ export class UsersController {
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(userDto.password, salt);
 
-    // const isMatch = await bcrypt.compare(userDto.password, hash);
-
     if (regexEmail.test(userDto.email) === false)
       throw new HttpException('Email is not valid', 400);
 

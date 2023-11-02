@@ -29,6 +29,30 @@ export class UsersService {
     return await this.usersRepository.findOneByOrFail({ id });
   }
 
+  async findOneByEmail(
+    email: string,
+    withRole: boolean,
+  ): Promise<User> | undefined {
+    return await this.usersRepository.findOne({
+      where: { email: email },
+      relations: {
+        role: withRole,
+      },
+    });
+  }
+
+  async findOneByUsername(
+    username: string,
+    withRole: boolean,
+  ): Promise<User> | undefined {
+    return await this.usersRepository.findOne({
+      where: { username: username },
+      relations: {
+        role: withRole,
+      },
+    });
+  }
+
   async update(id: number, user: User): Promise<void> {
     await this.usersRepository.update(id, user);
   }
