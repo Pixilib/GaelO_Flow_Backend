@@ -47,12 +47,12 @@ describe('RolesController', () => {
         anonymize: true,
         export: true,
         query: true,
-        auto_query: true,
+        autoQuery: true,
         delete: true,
         admin: false,
         modify: true,
-        cd_burner: true,
-        auto_routing: true,
+        cdBurner: true,
+        autoRouting: true,
       },
     ];
     rolesController = module.get<RolesController>(RolesController);
@@ -119,12 +119,12 @@ describe('RolesController', () => {
         anonymize: true,
         export: true,
         query: true,
-        auto_query: true,
+        autoQuery: true,
         delete: true,
         admin: true,
         modify: true,
-        cd_burner: true,
-        auto_routing: true,
+        cdBurner: true,
+        autoRouting: true,
       });
 
       expect(result).toBeUndefined();

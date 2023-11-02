@@ -1,30 +1,86 @@
+import { PartialType } from '@nestjs/mapped-types';
+import { IsString, IsBoolean, IsNumber } from 'class-validator';
 export class OptionDto {
-	ldap_type: string;
-	ldap_protocol: string;
-	ldap_server: string;
-	ldap_port: number;
-	ldap_base_dn: string;
-	ladp_bind_dn: string;
-	ldap_bind_password: string;
-	ldap_group: string;
-	ldap_user: string;
-	auto_query_hour_start: number;
-	auto_query_minute_start: number;
-	auto_query_hour_stop: number;
-	auto_query_minute_stop: number;
-	use_ldap: boolean;
-	orthanc_monitoring_rate: number;
-	burner_started: boolean;
-	burner_label_path: string;
-	burner_monitoring_level: string;
-	burner_manifacturer: string;
-	burner_monitored_path: string;
-	burner_delete_study_after_sent: boolean;
-	burner_support_type: string;
-	burner_viewer_path: string;
-	burner_transfer_syntax: string;
-	burner_date_format: string;
-	burner_transcoding: string;
-	autorouter_started: boolean;
-  }
+  @IsString()
+  ldapType: string;
+
+  @IsString()
+  ldapProtocol: string;
+
+  @IsString()
+  ldapServer: string;
+
+  @IsNumber()
+  ldapPort: number;
+
+  @IsString()
+  ldapBaseDn: string;
+
+  @IsString()
+  ladpBindDn: string;
+
+  @IsString()
+  ldapBindPassword: string;
+
+  @IsString()
+  ldapGroup: string;
+
+  @IsString()
+  ldapUser: string;
+
+  @IsNumber()
+  autoQueryHourStart: number;
+
+  @IsNumber()
+  autoQueryMinuteStart: number;
+
+  @IsNumber()
+  autoQueryHourStop: number;
   
+  @IsNumber()
+  autoQueryMinuteStop: number;
+
+  @IsBoolean()
+  useLdap: boolean;
+
+  @IsNumber()
+  orthancMonitoringRate: number;
+
+  @IsBoolean()
+  burnerStarted: boolean;
+
+  @IsString()
+  burnerLabelPath: string;
+
+  @IsString()
+  burnerMonitoringLevel: string;
+
+  @IsString()
+  burnerManifacturer: string;
+
+  @IsString()
+  burnerMonitoredPath: string;
+
+  @IsBoolean()
+  burnerDeleteStudyAfterSent: boolean;
+
+  @IsString()
+  burnerSupportType: string;
+
+  @IsString()
+  burnerViewerPath: string;
+
+  @IsString()
+  burnerTransferSyntax: string;
+
+  @IsString()
+  burnerDateFormat: string;
+
+  @IsString()
+  burnerTranscoding: string;
+
+  @IsBoolean()
+  autorouterStarted: boolean;
+}
+
+export class UpdateOptionDto extends PartialType(OptionDto) {}

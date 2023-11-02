@@ -2,7 +2,6 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  OneToOne,
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
@@ -14,34 +13,54 @@ export class User {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column()
+  @Column({
+    name: 'firstname',
+  })
   firstname: string;
 
-  @Column()
+  @Column({
+    name: 'lastname',
+  })
   lastname: string;
 
-  @Column({ unique: true })
+  @Column({
+    unique: true,
+    name: 'username',
+  })
   username: string;
 
-  @Column()
+  @Column({
+    name: 'password',
+  })
   password: string;
 
-  @Column({ unique: true })
+  @Column({
+    unique: true,
+    name: 'email',
+  })
   email: string;
 
-  @Column({ default: false })
-  super_admin: boolean;
+  @Column({
+    default: false,
+    name: 'super_admin',
+  })
+  superAdmin: boolean;
 
-  @Column({ name: 'role_name', unique: false})
-  role_name: string;
+  @Column({ name: 'role_name', unique: false })
+  roleName: string;
 
-  @ManyToOne(() => Role, role => role.name)
+  @ManyToOne(() => Role, (role) => role.name)
   @JoinColumn({ name: 'role_name' })
   role?: Role;
 
-  @Column({ default: true })
-  is_active: boolean;
+  @Column({
+    default: true,
+    name: 'is_active',
+  })
+  isActive: boolean;
 
-  @Column()
+  @Column({
+    name: 'salt',
+  })
   salt: string;
 }

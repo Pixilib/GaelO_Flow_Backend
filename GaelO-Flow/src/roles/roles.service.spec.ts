@@ -30,12 +30,12 @@ describe('RolesService', () => {
       anonymize: true,
       export: true,
       query: true,
-      auto_query: true,
+      autoQuery: true,
       delete: true,
       admin: false,
       modify: true,
-      cd_burner: true,
-      auto_routing: true,
+      cdBurner: true,
+      autoRouting: true,
     };
 
     await rolesService.create(role);
@@ -64,12 +64,12 @@ describe('RolesService', () => {
         anonymize: true,
         export: true,
         query: true,
-        auto_query: true,
+        autoQuery: true,
         delete: true,
         admin: true,
         modify: true,
-        cd_burner: true,
-        auto_routing: true,
+        cdBurner: true,
+        autoRouting: true,
       };
       const createResult = await rolesService.create(createRole);
       const findOneResult = await rolesService.findOne('Admin');

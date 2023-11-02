@@ -35,10 +35,10 @@ describe('UsersController', () => {
         username: 'username',
         password: 'password',
         email: 'email',
-        super_admin: true,
-        role_name: 'role_name',
+        superAdmin: true,
+        roleName: 'roleName',
         role: new Role(),
-        is_active: true,
+        isActive: true,
         salt: 'salt',
       },
     ];
@@ -107,9 +107,9 @@ describe('UsersController', () => {
         username: 'username',
         password: 'Password123!',
         email: 'email@email.com',
-        super_admin: true,
-        role_name: 'role_name',
-        is_active: true,
+        superAdmin: true,
+        roleName: 'roleName',
+        isActive: true,
       });
 
       expect(typeof result).toBe('number');
@@ -125,9 +125,9 @@ describe('UsersController', () => {
           username: 'username',
           password: 'Password123!',
           email: 'email',
-          super_admin: true,
-          role_name: 'role_name',
-          is_active: true,
+          superAdmin: true,
+          roleName: 'roleName',
+          isActive: true,
         });
 
         expect(true).toBe(false);
@@ -145,9 +145,9 @@ describe('UsersController', () => {
           username: 'username',
           password: 'very_secured',
           email: 'email@email.com',
-          super_admin: true,
-          role_name: 'role_name',
-          is_active: true,
+          superAdmin: true,
+          roleName: 'roleName',
+          isActive: true,
         });
 
         expect(true).toBe(false);

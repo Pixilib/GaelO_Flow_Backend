@@ -3,14 +3,14 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, Index } f
 import { Role } from '../roles/role.entity';
 
 @Entity()
-@Index(["ldap_group", "role_name"], { unique: true })
+@Index(["ldapGroup", "roleName"], { unique: true })
 export class LdapGroupRole {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @Column()
-  ldap_group: string;
+  @Column( {name: 'ldap_group'})
+  ldapGroup: string;
 
-  @OneToOne(type => Role) @JoinColumn()
-  role_name: Role
+  @OneToOne(type => Role) @JoinColumn({ name: 'role_name'})
+  roleName: Role
 }

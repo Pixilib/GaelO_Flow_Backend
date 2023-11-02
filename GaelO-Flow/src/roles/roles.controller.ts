@@ -4,7 +4,6 @@ import {
   Get,
   Post,
   Param,
-  HttpException,
   Delete,
   Put,
   UseInterceptors,
@@ -25,7 +24,8 @@ export class RolesController {
     private readonly RoleService: RolesService,
     private readonly userService: UsersService,
   ) {}
-
+  
+  
   @Get()
   async findAll(): Promise<Role[]> {
     return this.RoleService.findAll();
@@ -53,12 +53,12 @@ export class RolesController {
     role.anonymize = roleDto.anonymize;
     role.export = roleDto.export;
     role.query = roleDto.query;
-    role.auto_query = roleDto.auto_query;
+    role.autoQuery = roleDto.autoQuery;
     role.delete = roleDto.delete;
     role.admin = roleDto.admin;
     role.modify = roleDto.modify;
-    role.cd_burner = roleDto.cd_burner;
-    role.auto_routing = roleDto.auto_routing;
+    role.cdBurner = roleDto.cdBurner;
+    role.autoRouting = roleDto.autoRouting;
 
     await this.RoleService.create(role);
   }
@@ -87,13 +87,13 @@ export class RolesController {
     if (roleDto.anonymize != undefined) role.anonymize = roleDto.anonymize;
     if (roleDto.export != undefined) role.export = roleDto.export;
     if (roleDto.query != undefined) role.query = roleDto.query;
-    if (roleDto.auto_query != undefined) role.auto_query = roleDto.auto_query;
+    if (roleDto.autoQuery != undefined) role.autoQuery = roleDto.autoQuery;
     if (roleDto.delete != undefined) role.delete = roleDto.delete;
     if (roleDto.admin != undefined) role.admin = roleDto.admin;
     if (roleDto.modify != undefined) role.modify = roleDto.modify;
-    if (roleDto.cd_burner != undefined) role.cd_burner = roleDto.cd_burner;
-    if (roleDto.auto_routing != undefined)
-      role.auto_routing = roleDto.auto_routing;
+    if (roleDto.cdBurner != undefined) role.cdBurner = roleDto.cdBurner;
+    if (roleDto.autoRouting != undefined)
+      role.autoRouting = roleDto.autoRouting;
 
     await this.RoleService.update(name, role);
   }

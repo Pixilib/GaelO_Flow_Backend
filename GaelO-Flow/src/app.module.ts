@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthentificationController } from './controllers/authentification';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { User } from './users/user.entity';
@@ -25,6 +24,7 @@ import { LabelsController } from './labels/labels.controller';
 import { LabelsService } from './labels/labels.service';
 
 import { SeedService } from './seeder.service';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -39,10 +39,10 @@ import { SeedService } from './seeder.service';
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole, Label]),
+    AuthModule,
   ],
   controllers: [
     AppController,
-    AuthentificationController,
     UsersController,
     RolesController,
     OptionsController,
