@@ -4,10 +4,10 @@ export class RoleDto {
   anonymize: boolean;
   export: boolean;
   query: boolean;
-  auto_query: boolean;
+  autoQuery: boolean;
   delete: boolean;
   admin: boolean;
   modify: boolean;
-  cd_burner: boolean;
-  auto_routing: boolean;
+  cdBurner: boolean;
+  autoRouting: boolean;
 }

@@ -51,9 +51,9 @@ describe('UsersService', () => {
       lastname: 'first_lastname',
       email: 'first@example.com',
       password: hash,
-      super_admin: false,
-      is_active: true,
-      role_name: userRole.name,
+      superAdmin: false,
+      isActive: true,
+      roleName: userRole.name,
       salt: salt,
     };
 
@@ -65,9 +65,9 @@ describe('UsersService', () => {
       lastname: 'second_lastname',
       email: 'second@example.com',
       password: hash,
-      super_admin: false,
-      is_active: true,
-      role_name: userRole.name,
+      superAdmin: false,
+      isActive: true,
+      roleName: userRole.name,
       salt: salt,
     };
 
@@ -124,9 +124,9 @@ describe('UsersService', () => {
         lastname: 'create_testlastname',
         email: 'create_testuser@example.com',
         password: 'create_<PASSWORD>',
-        super_admin: false,
-        is_active: true,
-        role_name: 'User',
+        superAdmin: false,
+        isActive: true,
+        roleName: 'User',
         salt: 'create_<SALT>',
       };
       const createResult = await usersService.create(createUser);

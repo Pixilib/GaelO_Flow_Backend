@@ -21,11 +21,11 @@ export class OptionsService {
 
   public async seed() {
     const option = this.optionsRepository.create({
-      auto_query_hour_start: 22,
-      auto_query_minute_start: 0,
-      auto_query_hour_stop: 24,
-      auto_query_minute_stop: 0,
-      use_ldap: false,
+      autoQueryHourStart: 22,
+      autoQueryMinuteStart: 0,
+      autoQueryHourStop: 24,
+      autoQueryMinuteStop: 0,
+      useLdap: false,
     });
 
     console.log(option);

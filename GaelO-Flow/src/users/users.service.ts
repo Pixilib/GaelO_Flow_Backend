@@ -15,7 +15,7 @@ export class UsersService {
   async isRoleUsed(roleName: string): Promise<boolean> {
     const roleCount = await this.usersRepository.findAndCount({
       where: {
-        role_name: roleName,
+        roleName: roleName,
       },
     });
     return roleCount[1] > 0;
@@ -88,9 +88,9 @@ export class UsersService {
       lastname: 'Admin',
       email: 'admin@localhost.com',
       password: hashAdmin,
-      super_admin: true,
-      is_active: true,
-      role_name: 'Admin',
+      superAdmin: true,
+      isActive: true,
+      roleName: 'Admin',
       salt: saltAdmin,
     });
 
@@ -103,9 +103,9 @@ export class UsersService {
       lastname: 'User',
       email: 'user@localhost.com',
       password: hashUser,
-      super_admin: true,
-      is_active: true,
-      role_name: 'User',
+      superAdmin: true,
+      isActive: true,
+      roleName: 'User',
       salt: saltUser,
     });
 

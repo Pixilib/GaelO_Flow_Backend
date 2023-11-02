@@ -58,9 +58,9 @@ export class UsersController {
         throw new HttpException('Email is not valid', 400);
       user.email = userDto.email;
     }
-    if (userDto.super_admin) user.super_admin = userDto.super_admin;
-    if (userDto.role_name) user.role_name = userDto.role_name;
-    if (userDto.is_active) user.is_active = userDto.is_active;
+    if (userDto.superAdmin) user.superAdmin = userDto.superAdmin;
+    if (userDto.roleName) user.roleName = userDto.roleName;
+    if (userDto.isActive) user.isActive = userDto.isActive;
 
     await this.UserService.update(id, user);
   }
@@ -86,9 +86,9 @@ export class UsersController {
       !userDto.username    == undefined ||
       !userDto.email       == undefined ||
       !userDto.password    == undefined ||
-      !userDto.super_admin == undefined ||
-      !userDto.role_name   == undefined ||
-      !userDto.is_active   == undefined
+      !userDto.superAdmin == undefined ||
+      !userDto.roleName   == undefined ||
+      !userDto.isActive   == undefined
     )
       throw new HttpException('All the keys are required', 400);
 
@@ -118,9 +118,9 @@ export class UsersController {
     user.username = userDto.username;
     user.password = hash;
     user.email = userDto.email;
-    user.super_admin = userDto.super_admin;
-    user.is_active = userDto.is_active;
-    user.role_name = userDto.role_name;
+    user.superAdmin = userDto.superAdmin;
+    user.isActive = userDto.isActive;
+    user.roleName = userDto.roleName;
     user.salt = salt;
 
     try {

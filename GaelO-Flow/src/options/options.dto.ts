@@ -2,85 +2,85 @@ import { PartialType } from '@nestjs/mapped-types';
 import { IsString, IsBoolean, IsNumber } from 'class-validator';
 export class OptionDto {
   @IsString()
-  ldap_type: string;
+  ldapType: string;
 
   @IsString()
-  ldap_protocol: string;
+  ldapProtocol: string;
 
   @IsString()
-  ldap_server: string;
+  ldapServer: string;
 
   @IsNumber()
-  ldap_port: number;
+  ldapPort: number;
 
   @IsString()
-  ldap_base_dn: string;
+  ldapBaseDn: string;
 
   @IsString()
-  ladp_bind_dn: string;
+  ladpBindDn: string;
 
   @IsString()
-  ldap_bind_password: string;
+  ldapBindPassword: string;
 
   @IsString()
-  ldap_group: string;
+  ldapGroup: string;
 
   @IsString()
-  ldap_user: string;
+  ldapUser: string;
 
   @IsNumber()
-  auto_query_hour_start: number;
+  autoQueryHourStart: number;
 
   @IsNumber()
-  auto_query_minute_start: number;
+  autoQueryMinuteStart: number;
 
   @IsNumber()
-  auto_query_hour_stop: number;
+  autoQueryHourStop: number;
   
   @IsNumber()
-  auto_query_minute_stop: number;
+  autoQueryMinuteStop: number;
 
   @IsBoolean()
-  use_ldap: boolean;
+  useLdap: boolean;
 
   @IsNumber()
-  orthanc_monitoring_rate: number;
+  orthancMonitoringRate: number;
 
   @IsBoolean()
-  burner_started: boolean;
+  burnerStarted: boolean;
 
   @IsString()
-  burner_label_path: string;
+  burnerLabelPath: string;
 
   @IsString()
-  burner_monitoring_level: string;
+  burnerMonitoringLevel: string;
 
   @IsString()
-  burner_manifacturer: string;
+  burnerManifacturer: string;
 
   @IsString()
-  burner_monitored_path: string;
+  burnerMonitoredPath: string;
 
   @IsBoolean()
-  burner_delete_study_after_sent: boolean;
+  burnerDeleteStudyAfterSent: boolean;
 
   @IsString()
-  burner_support_type: string;
+  burnerSupportType: string;
 
   @IsString()
-  burner_viewer_path: string;
+  burnerViewerPath: string;
 
   @IsString()
-  burner_transfer_syntax: string;
+  burnerTransferSyntax: string;
 
   @IsString()
-  burner_date_format: string;
+  burnerDateFormat: string;
 
   @IsString()
-  burner_transcoding: string;
+  burnerTranscoding: string;
 
   @IsBoolean()
-  autorouter_started: boolean;
+  autorouterStarted: boolean;
 }
 
 export class UpdateOptionDto extends PartialType(OptionDto) {}

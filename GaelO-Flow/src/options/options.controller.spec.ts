@@ -43,7 +43,7 @@ describe('OptionsController', () => {
         .spyOn(optionsService, 'update')
         .mockResolvedValue(undefined);
 
-      await optionsController.update({ use_ldap: true } as OptionDto);
+      await optionsController.update({ useLdap: true } as OptionDto);
       expect(mockUpdate).toHaveBeenCalled();
     });
   });

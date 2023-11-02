@@ -2,87 +2,87 @@ import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Option {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @Column({ nullable: true, default: null})
-  ldap_type: string;
+  @Column({ nullable: true, default: null, name: 'ldap_type'})
+  ldapType: string;
 
-  @Column({ nullable: true, default: null})
-  ldap_protocol: string;
+  @Column({ nullable: true, default: null, name: 'ldap_protocol'})
+  ldapProtocol: string;
 
-  @Column({ nullable: true, default: null})
-  ldap_server: string;
+  @Column({ nullable: true, default: null, name: 'ldap_server'})
+  ldapServer: string;
 
-  @Column({ nullable: true, default: null})
-  ldap_port: number;
+  @Column({ nullable: true, default: null, name: 'ldap_port'})
+  ldapPort: number;
 
-  @Column({ nullable: true, default: null})
-  ldap_base_dn: string;
+  @Column({ nullable: true, default: null, name: 'ldap_base_dn'})
+  ldapBaseDn: string;
 
-  @Column({ nullable: true, default: null })
-  ladp_bind_dn: string;
+  @Column({ nullable: true, default: null , name: 'ldap_bind_on'})
+  ladpBindDn: string;
 
-  @Column({ nullable: true, default: null})
-  ldap_bind_password: string;
+  @Column({ nullable: true, default: null, name: 'ldap_bind_password'})
+  ldapBindPassword: string;
 
-  @Column({ nullable: true, default: null})
-  ldap_group: string;
+  @Column({ nullable: true, default: null, name: 'ldap_group'})
+  ldapGroup: string;
 
-  @Column({ nullable: true, default: null})
-  ldap_user: string;
+  @Column({ nullable: true, default: null, name: 'ldap_user'})
+  ldapUser: string;
 
-  @Column()
-  auto_query_hour_start: number;
+  @Column({ name: 'auto_query_hour_start' })
+  autoQueryHourStart: number;
 
-  @Column()
-  auto_query_minute_start: number;
+  @Column({ name: 'auto_query_minute_start' })
+  autoQueryMinuteStart: number;
 
-  @Column()
-  auto_query_hour_stop: number;
+  @Column({ name: 'auto_query_hour_stop' })
+  autoQueryHourStop: number;
 
-  @Column()
-  auto_query_minute_stop: number;
+  @Column({ name: 'auto_query_minute_stop' })
+  autoQueryMinuteStop: number;
 
-  @Column({ default: false })
-  use_ldap: boolean;
+  @Column({ default: false, name: 'use_ldap' })
+  useLdap: boolean;
 
-  @Column({ default: 10 })
-  orthanc_monitoring_rate: number;
+  @Column({ default: 10, name: 'orthanc_monitoring_rate' })
+  orthancMonitoringRate: number;
 
-  @Column({ default: false })
-  burner_started: boolean;
+  @Column({ default: false, name: 'burner_started' })
+  burnerStarted: boolean;
 
-  @Column({ default: '' })
-  burner_label_path: string;
+  @Column({ default: '', name: 'burner_label_path' })
+  burnerLabelPath: string;
 
-  @Column({ default: 'Study' })
-  burner_monitoring_level: string;
+  @Column({ default: 'Study', name: 'burner_monitoring_level' })
+  burnerMonitoringLevel: string;
 
-  @Column({ default: 'Epson' })
-  burner_manifacturer: string;
+  @Column({ default: 'Epson', name: 'burner_manifacturer' })
+  burnerManifacturer: string;
 
-  @Column({ default: '' })
-  burner_monitored_path: string;
+  @Column({ default: '', name: 'burner_monitored_path' })
+  burnerMonitoredPath: string;
 
-  @Column({ default: false })
-  burner_delete_study_after_sent: boolean;
+  @Column({ default: false, name: 'burner_delete_study_after_sent' })
+  burnerDeleteStudyAfterSent: boolean;
 
-  @Column({ default: 'Auto' })
-  burner_support_type: string;
+  @Column({ default: 'Auto', name: 'burner_support_type' })
+  burnerSupportType: string;
 
-  @Column({ default: '' })
-  burner_viewer_path: string;
+  @Column({ default: '', name: 'burner_viewer_path' })
+  burnerViewerPath: string;
 
-  @Column({ default: 'None' })
-  burner_transfer_syntax: string;
+  @Column({ default: 'None', name: 'burner_transfer_syntax' })
+  burnerTransferSyntax: string;
 
-  @Column({ default: 'uk' })
-  burner_date_format: string;
+  @Column({ default: 'uk', name: 'burner_date_format' })
+  burnerDateFormat: string;
 
-  @Column({ default: 'None' })
-  burner_transcoding: string;
+  @Column({ default: 'None', name: 'burner_transcoding' })
+  burnerTranscoding: string;
 
-  @Column({ default: false })
-  autorouter_started: boolean;
+  @Column({ default: false, name: 'autorouter_started' })
+  autorouterStarted: boolean;
 }

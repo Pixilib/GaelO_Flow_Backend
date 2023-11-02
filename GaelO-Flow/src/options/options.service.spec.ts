@@ -30,11 +30,11 @@ describe('OptionsService', () => {
       getRepositoryToken(Option),
     );
     option = optionsRepository.create({
-      auto_query_hour_start: 22,
-      auto_query_minute_start: 0,
-      auto_query_hour_stop: 24,
-      auto_query_minute_stop: 0,
-      use_ldap: false,
+      autoQueryHourStart: 22,
+      autoQueryMinuteStart: 0,
+      autoQueryHourStop: 24,
+      autoQueryMinuteStop: 0,
+      useLdap: false,
     });
     await optionsRepository.insert(option);
   });
@@ -47,7 +47,7 @@ describe('OptionsService', () => {
     /*
     it('check if update of the controller throws when it cannot get the options', async () => {
       expect(
-        optionsService.update({ use_ldap: true } as Option),
+        optionsService.update({ useLdap: true } as Option),
       ).rejects.toThrow(EntityNotFoundError);
     });
     */
@@ -56,7 +56,7 @@ describe('OptionsService', () => {
 
   describe('update', () => {
     it('should update the options', async () => {
-      const newOption = { ...option, use_ldap: true };
+      const newOption = { ...option, useLdap: true };
       const result = await optionsService.update(newOption);
       const getOptions = await optionsService.getOptions();
 
