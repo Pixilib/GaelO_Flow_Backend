@@ -16,20 +16,20 @@ import { UserDto } from './users.dto';
 import * as bcrypt from 'bcrypt';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 import { RolesGuard } from 'src/roles/roles.guard';
-import { Roles } from 'src/roles/roles.decorator';
+import { PermissionAdmin } from 'src/roles/roles.decorator';
 
 @Controller('/users')
 @UseGuards(RolesGuard)
 export class UsersController {
   constructor(private readonly UserService: UsersService) {}
-  
-  @Roles(['Admin'])
+
+  @PermissionAdmin()
   @Get()
   async getUsers(): Promise<User[]> {
     return await this.UserService.findAll();
   }
 
-  @Roles(['Admin'])
+  @PermissionAdmin()
   @Get('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async getUsersId(@Param('id') id: number): Promise<User> {
@@ -37,7 +37,7 @@ export class UsersController {
     return user;
   }
 
-  @Roles(['Admin'])
+  @PermissionAdmin()
   @Put('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async update(
@@ -72,7 +72,7 @@ export class UsersController {
     await this.UserService.update(id, user);
   }
 
-  @Roles(['Admin'])
+  @PermissionAdmin()
   @Delete('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async delete(@Param('id') id: number): Promise<void> {
