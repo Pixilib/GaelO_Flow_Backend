@@ -27,7 +27,7 @@ describe('LabelsService', () => {
 
     labelsService = module.get<LabelsService>(LabelsService);
     labelsRepository = module.get<Repository<Label>>(getRepositoryToken(Label));
-    labels = [{ label_name: 'first' }, { label_name: 'second' }];
+    labels = [{ labelName: 'first' }, { labelName: 'second' }];
     await labelsRepository.insert(labels);
   });
 
@@ -43,7 +43,7 @@ describe('LabelsService', () => {
 
     it('should get one label', async () => {
       const result = await labelsService.findOneByOrFail('first');
-      expect(result).toEqual({ label_name: 'first' });
+      expect(result).toEqual({ labelName: 'first' });
     });
   
     it("should throw if labels doesn't exists", async () => {
@@ -56,20 +56,20 @@ describe('LabelsService', () => {
     it('should remove one label', async () => {
       await labelsService.remove('first');
       const result = await labelsService.findAll();
-      expect(result).toEqual([{ label_name: 'second' }]);
+      expect(result).toEqual([{ labelName: 'second' }]);
     });
 
   });
 
   describe('create label', () => {
     it('should create a new label', async () => {
-      const newLabel: Label = { label_name: 'third' };
+      const newLabel: Label = { labelName: 'third' };
       await labelsService.create(newLabel);
       const result = await labelsService.findAll();
       expect(result).toEqual([
-        { label_name: 'first' },
-        { label_name: 'second' },
-        { label_name: 'third' },
+        { labelName: 'first' },
+        { labelName: 'second' },
+        { labelName: 'third' },
       ]);
     });
   });

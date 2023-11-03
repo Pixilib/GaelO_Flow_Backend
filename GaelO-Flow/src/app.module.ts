@@ -26,8 +26,15 @@ import { LabelsService } from './labels/labels.service';
 import { SeedService } from './seeder.service';
 import { AuthModule } from './auth/auth.module';
 
+import { ConfigModule } from '@nestjs/config';
+import { OrthancController } from './orthanc/orthanc.controller';
+import OrthancClient from './orthanc/OrthancClient';
+
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: 'localhost',
@@ -39,7 +46,7 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole, Label]),
-    AuthModule,
+    AuthModule
   ],
   controllers: [
     AppController,
@@ -48,6 +55,7 @@ import { AuthModule } from './auth/auth.module';
     OptionsController,
     LdapGroupRolesController,
     LabelsController,
+    OrthancController
   ],
   providers: [
     AppService,
@@ -57,6 +65,7 @@ import { AuthModule } from './auth/auth.module';
     OptionsService,
     LdapGroupRolesService,
     LabelsService,
+    OrthancClient
   ],
 })
 export class AppModule {}

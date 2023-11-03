@@ -27,9 +27,6 @@ export class OptionsService {
       autoQueryMinuteStop: 0,
       useLdap: false,
     });
-
-    console.log(option);
-
     await this.optionsRepository.insert(option);
   }
 }
