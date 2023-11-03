@@ -2,6 +2,6 @@ import { Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class Label {
-  @PrimaryColumn()
-  label_name: string;
+  @PrimaryColumn({ name: 'label_name'})
+  labelName: string;
 }

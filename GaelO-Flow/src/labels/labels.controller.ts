@@ -22,16 +22,16 @@ export class LabelsController {
     return this.LabelsService.findAll();
   }
 
-  @Delete('/:label_name')
+  @Delete('/:labelName')
   @UseInterceptors(NotFoundInterceptor)
-  async remove(@Param('label_name') label_name: string): Promise<void> {
-    await this.LabelsService.findOneByOrFail(label_name); // TODO: replace with findOneByOrFail
-    return this.LabelsService.remove(label_name);
+  async remove(@Param('labelName') labelName: string): Promise<void> {
+    await this.LabelsService.findOneByOrFail(labelName); // TODO: replace with findOneByOrFail
+    return this.LabelsService.remove(labelName);
   }
 
   @Post()
   async create(@Body() labelDto: LabelDto): Promise<void> {
-    if (await this.LabelsService.findOneByOrFail(labelDto.label_name))
+    if (await this.LabelsService.findOneByOrFail(labelDto.labelName))
       throw new ConflictException('Label with this name already exists');
 
     return this.LabelsService.create(labelDto);

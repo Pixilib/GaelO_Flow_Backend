@@ -46,7 +46,7 @@ describe('LabelsController', () => {
         .mockResolvedValue(undefined);
       const mockFindOne = jest
         .spyOn(labelsService, 'findOneByOrFail')
-        .mockResolvedValue({ label_name: 'first' } as Label);
+        .mockResolvedValue({ labelName: 'first' } as Label);
 
       await labelsController.remove('first');
       expect(mockRemove).toHaveBeenCalled();
@@ -72,7 +72,7 @@ describe('LabelsController', () => {
         .spyOn(labelsService, 'create')
         .mockResolvedValue(undefined);
 
-      await labelsController.create({ label_name: 'first' } as LabelDto);
+      await labelsController.create({ labelName: 'first' } as LabelDto);
 
       expect(mockCreate).toHaveBeenCalled();
     });
