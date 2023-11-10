@@ -6,6 +6,10 @@ export class HttpClient {
   protected port: number;
   protected username: string;
   protected password: string;
+  protected forwardedAddress: string;
+  protected forwardedProtocol: string;
+
+  constructor() {}
 
   getOptions = (
     url: string,
@@ -25,15 +29,23 @@ export class HttpClient {
       headers: {
         Forwarded:
           'by=localhost;for=localhost;host=' +
-          process.env.DOMAIN_ADDRESS +
+          this.forwardedAddress +
           '/api;proto=' +
-          process.env.DOMAIN_PROTOCOL,
+          this.forwardedProtocol,
         ...headers,
       },
       data: data ?? undefined,
       responseType: getAsStream ? 'stream' : undefined,
     };
   };
+
+  setForwardedAdress(address: string): void {
+    this.forwardedAddress = address;
+  }
+
+  setForwardedProtocol(protocol: string): void {
+    this.forwardedProtocol = protocol;
+  }
 
   setAddress(address: string) {
     this.address = address;
@@ -51,15 +63,26 @@ export class HttpClient {
     this.port = port;
   }
 
-  request = (url: string, method: string, body: object, headers :object|undefined = undefined) => {
+  request = (
+    url: string,
+    method: string,
+    body: object,
+    headers: object | undefined = undefined,
+  ) => {
     const option = this.getOptions(url, method, body, headers, false);
     return axios.request(option).catch(function (error) {
       throw error;
     });
   };
 
-  streamAnswerToRes = (url: string, method: string, body: object, headers, res: Response) => {
-    const option = this.getOptions(url,method, body, headers, true);
+  streamAnswerToRes = (
+    url: string,
+    method: string,
+    body: object,
+    headers,
+    res: Response,
+  ) => {
+    const option = this.getOptions(url, method, body, headers, true);
     return axios
       .request(option)
       .then((response) => {
@@ -67,7 +90,7 @@ export class HttpClient {
         response.data.pipe(res);
       })
       .catch(function (error) {
-        console.log(error)
+        console.log(error);
         if (error.response) {
           if (error.response.status === 401) {
             res.status(500).send('Bad redentials');
@@ -87,7 +110,7 @@ export class HttpClient {
     streamWriter,
     finishCallBack,
   ) {
-    const config = this.getOptions(url,method, body, {}, true);
+    const config = this.getOptions(url, method, body, {}, true);
     return axios
       .request(config)
       .then((response) => {

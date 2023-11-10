@@ -1,19 +1,26 @@
-import { Test, TestingModule } from '@nestjs/testing'
-import OrthancClient from './OrthancClient'
-import { ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+import OrthancClient from './OrthancClient';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 describe('OrthancClient', () => {
-    let orthancClient: OrthancClient;
-    let config: ConfigService;
+  let orthancClient: OrthancClient;
 
-    beforeEach(async () => {
-        config = new ConfigService();
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+        }),
+      ],
+      providers: [OrthancClient, ConfigService],
+    }).compile();
+    orthancClient = module.get<OrthancClient>(OrthancClient);
+  });
 
-        orthancClient = new OrthancClient(config);
-
-        console.log(await orthancClient.getSystem())
+  describe('get system', () => {
+    it('check is get systems works', async () => {
+      const answer = await orthancClient.getSystem();
+      expect(typeof answer.DicomAet).toBe("string")
     });
-
-    describe('get system', () => {
-    })
-})
+  });
+});

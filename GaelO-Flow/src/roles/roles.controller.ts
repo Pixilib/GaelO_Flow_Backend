@@ -19,24 +19,22 @@ import { RoleDto } from './roles.dto';
 import { UsersService } from '../users/users.service';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
-import { RolesGuard } from '../roles/roles.guard';
-import { PermissionAdmin } from '../roles/roles.decorator';
+import { AdminGuard } from './roles.guard';
 
 @Controller('/roles')
-@UseGuards(RolesGuard)
 export class RolesController {
   constructor(
     private readonly RoleService: RolesService,
     private readonly userService: UsersService,
   ) {}
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Get()
   async findAll(): Promise<Role[]> {
     return this.RoleService.findAll();
   }
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Get('/:name')
   @UseInterceptors(NotFoundInterceptor)
   async findOne(@Param('name') name: string): Promise<Role> {
@@ -44,7 +42,7 @@ export class RolesController {
     return role;
   }
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Post()
   async CreateRole(@Body() roleDto: RoleDto): Promise<void> {
     const role = new Role();
@@ -70,7 +68,7 @@ export class RolesController {
     await this.RoleService.create(role);
   }
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Delete('/:name')
   @UseInterceptors(NotFoundInterceptor)
   async delete(@Param('name') name: string): Promise<void> {
@@ -82,7 +80,7 @@ export class RolesController {
     return this.RoleService.remove(name);
   }
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Put('/:name')
   @UseInterceptors(NotFoundInterceptor)
   async update(

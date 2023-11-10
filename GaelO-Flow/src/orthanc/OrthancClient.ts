@@ -9,24 +9,28 @@ import QueryStudyAnswer from './QueryAnswer/QueryStudyAnswer';
 
 @Injectable()
 export default class OrthancClient extends HttpClient {
-  constructor(private readonly ConfigService: ConfigService) {
+  constructor(private configService: ConfigService) {
     super();
     this.loadCredentials();
   }
 
   loadCredentials = () => {
-    const orthancAddress = this.ConfigService.get('ORTHANC_ADDRESS');
-    const orthancPort = this.ConfigService.get('ORTHANC_PORT');
-    const orthancUsername = this.ConfigService.get('ORTHANC_USERNAME');
-    const orthancPassword = this.ConfigService.get('ORTHANC_PASSWORD');
+    const orthancAddress = this.configService.get('ORTHANC_ADDRESS');
+    const orthancPort = this.configService.get('ORTHANC_PORT');
+    const orthancUsername = this.configService.get('ORTHANC_USERNAME');
+    const orthancPassword = this.configService.get('ORTHANC_PASSWORD');
     this.setAddress(orthancAddress);
     this.setPort(orthancPort);
     this.setUsername(orthancUsername);
     this.setPassword(orthancPassword);
+    let url = new URL(this.configService.get('APP_URL'))
+    this.setForwardedAdress(url.host);
+    this.setForwardedProtocol(url.protocol)
   };
 
-  getSystem = () => {
-    return this.request('/system', 'get', undefined);
+  getSystem = async() => {
+    const answer = await this.request('/system', 'get', undefined)
+    return answer.data;
   };
 
   private getArchiveDicomPath = (filename) => {
