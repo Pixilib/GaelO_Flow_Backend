@@ -15,8 +15,8 @@ import { User } from './user.entity';
 import { UserDto } from './users.dto';
 import * as bcrypt from 'bcrypt';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
-import { RolesGuard } from 'src/roles/roles.guard';
-import { PermissionAdmin } from 'src/roles/roles.decorator';
+import { RolesGuard } from '../roles/roles.guard';
+import { PermissionAdmin } from '../roles/roles.decorator';
 
 @Controller('/users')
 @UseGuards(RolesGuard)

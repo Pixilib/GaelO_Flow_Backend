@@ -51,14 +51,14 @@ export class HttpClient {
     this.port = port;
   }
 
-  request = (url, method, body, headers) => {
+  request = (url: string, method: string, body: object, headers :object|undefined = undefined) => {
     const option = this.getOptions(url, method, body, headers, false);
     return axios.request(option).catch(function (error) {
       throw error;
     });
   };
 
-  streamAnswerToRes = (url, method, body, headers, res: Response) => {
+  streamAnswerToRes = (url: string, method: string, body: object, headers, res: Response) => {
     const option = this.getOptions(url,method, body, headers, true);
     return axios
       .request(option)
@@ -81,9 +81,9 @@ export class HttpClient {
   };
 
   streamToWriteAnswerWithCallBack(
-    url,
-    method,
-    body,
+    url: string,
+    method: string,
+    body: object,
     streamWriter,
     finishCallBack,
   ) {

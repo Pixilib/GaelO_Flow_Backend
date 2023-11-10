@@ -19,8 +19,8 @@ import { RoleDto } from './roles.dto';
 import { UsersService } from '../users/users.service';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
-import { RolesGuard } from 'src/roles/roles.guard';
-import { PermissionAdmin } from 'src/roles/roles.decorator';
+import { RolesGuard } from '../roles/roles.guard';
+import { PermissionAdmin } from '../roles/roles.decorator';
 
 @Controller('/roles')
 @UseGuards(RolesGuard)

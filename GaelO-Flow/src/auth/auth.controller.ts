@@ -16,6 +16,8 @@ export class AuthController {
   @Post('login')
   async signIn(@Body() signInDto: Record<string, any>) {
     const user = await this.usersService.findOneByUsername(signInDto.username, true);
+    if (!user)
+      throw new UnauthorizedException();
     const isMatch = await bcrypt.compare(signInDto.password, user.password);
     if (!isMatch)
       throw new UnauthorizedException();

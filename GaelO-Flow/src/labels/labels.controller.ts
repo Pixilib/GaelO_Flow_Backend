@@ -14,8 +14,8 @@ import { Label } from './label.entity';
 import { LabelDto } from './labels.dto';
 import { NotFoundInterceptor } from './../interceptors/NotFoundInterceptor';
 
-import { RolesGuard } from 'src/roles/roles.guard';
-import { PermissionAdmin } from 'src/roles/roles.decorator';
+import { RolesGuard } from '../roles/roles.guard';
+import { PermissionAdmin } from '../roles/roles.decorator';
 
 @Controller('/labels')
 @UseGuards(RolesGuard)
