@@ -15,21 +15,19 @@ import { User } from './user.entity';
 import { UserDto } from './users.dto';
 import * as bcrypt from 'bcrypt';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
-import { RolesGuard } from 'src/roles/roles.guard';
-import { PermissionAdmin } from 'src/roles/roles.decorator';
+import { AdminGuard } from 'src/roles/roles.guard';
 
 @Controller('/users')
-@UseGuards(RolesGuard)
 export class UsersController {
   constructor(private readonly UserService: UsersService) {}
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Get()
   async getUsers(): Promise<User[]> {
     return await this.UserService.findAll();
   }
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Get('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async getUsersId(@Param('id') id: number): Promise<User> {
@@ -37,7 +35,7 @@ export class UsersController {
     return user;
   }
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Put('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async update(
@@ -72,7 +70,7 @@ export class UsersController {
     await this.UserService.update(id, user);
   }
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Delete('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async delete(@Param('id') id: number): Promise<void> {
@@ -80,6 +78,7 @@ export class UsersController {
     return await this.UserService.remove(id);
   }
 
+  @UseGuards(AdminGuard)
   @Post()
   async createUser(@Body() userDto: UserDto): Promise<number> {
     const user = new User();

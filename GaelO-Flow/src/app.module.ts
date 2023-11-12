@@ -27,7 +27,7 @@ import { SeedService } from './seeder.service';
 import { AuthModule } from './auth/auth.module';
 
 import { ConfigModule } from '@nestjs/config';
-import { OrthancController } from './orthanc/orthanc.controller';
+import { OrthancController } from './orthanc/Orthanc.controller';
 import OrthancClient from './orthanc/OrthancClient';
 
 @Module({
@@ -65,7 +65,7 @@ import OrthancClient from './orthanc/OrthancClient';
     OptionsService,
     LdapGroupRolesService,
     LabelsService,
-    OrthancClient
+    OrthancClient,
   ],
 })
 export class AppModule {}

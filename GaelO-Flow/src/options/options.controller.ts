@@ -11,15 +11,13 @@ import { Option } from './option.entity';
 import { UpdateOptionDto } from './options.dto';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
-import { RolesGuard } from 'src/roles/roles.guard';
-import { PermissionAdmin } from 'src/roles/roles.decorator';
+import { AdminGuard } from 'src/roles/roles.guard';
 
 @Controller('/options')
-@UseGuards(RolesGuard)
 export class OptionsController {
   constructor(private readonly OptionService: OptionsService) {}
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Get()
   async getOptions(): Promise<Option> {
     let options = await this.OptionService.getOptions();
@@ -27,7 +25,7 @@ export class OptionsController {
     return options;
   }
 
-  @PermissionAdmin()
+  @UseGuards(AdminGuard)
   @Patch()
   @UseInterceptors(NotFoundInterceptor)
   async update(@Body() options: UpdateOptionDto): Promise<void> {

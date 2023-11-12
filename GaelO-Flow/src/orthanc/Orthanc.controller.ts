@@ -1,4 +1,4 @@
-import { Controller, Get, Response, Request, All } from '@nestjs/common';
+import { Controller, Get, Response, Request } from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
 
@@ -19,7 +19,7 @@ export class OrthancController {
     );
   }
 
-  @All('/system')
+  @Get('/system')
   reverseProxy(
     @Request() request: RequestType,
     @Response() response: ResponseType,
