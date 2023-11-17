@@ -15,7 +15,7 @@ import { User } from './user.entity';
 import { UserDto } from './users.dto';
 import * as bcrypt from 'bcrypt';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
-import { AdminGuard } from 'src/roles/roles.guard';
+import { AdminGuard } from '../roles/roles.guard';
 
 @Controller('/users')
 export class UsersController {

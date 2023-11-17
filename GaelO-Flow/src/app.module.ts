@@ -30,13 +30,19 @@ import { ConfigModule } from '@nestjs/config';
 import { OrthancController } from './orthanc/Orthanc.controller';
 import OrthancClient from './orthanc/OrthancClient';
 
+import { QueuesModule } from './queues/queues.module';
+import { QueuesController } from './queues/queues.controller';
+import { QueuesService } from './queues/queues.service';
+
+import { BullModule } from '@nestjs/bullmq';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: 'postgres', // TODO: from env variable
       host: 'localhost',
       port: 5432,
       username: 'postgres',
@@ -46,7 +52,17 @@ import OrthancClient from './orthanc/OrthancClient';
       synchronize: true,
     }),
     TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole, Label]),
-    AuthModule
+    AuthModule,
+    QueuesModule, // ?
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
+    BullModule.registerQueue({
+      name: 'delete',
+    }),
   ],
   controllers: [
     AppController,
@@ -55,7 +71,8 @@ import OrthancClient from './orthanc/OrthancClient';
     OptionsController,
     LdapGroupRolesController,
     LabelsController,
-    OrthancController
+    OrthancController,
+    QueuesController,
   ],
   providers: [
     AppService,
@@ -66,6 +83,7 @@ import OrthancClient from './orthanc/OrthancClient';
     LdapGroupRolesService,
     LabelsService,
     OrthancClient,
+    QueuesService,
   ],
 })
 export class AppModule {}
