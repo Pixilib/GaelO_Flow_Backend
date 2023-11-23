@@ -30,7 +30,7 @@ export class LabelsController {
   @Delete('/:labelName')
   @UseInterceptors(NotFoundInterceptor)
   async remove(@Param('labelName') labelName: string): Promise<void> {
-    await this.LabelsService.findOneByOrFail(labelName); // TODO: replace with findOneByOrFail
+    await this.LabelsService.findOneByOrFail(labelName);
     return this.LabelsService.remove(labelName);
   }
 

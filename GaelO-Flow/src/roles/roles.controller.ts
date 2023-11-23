@@ -89,18 +89,26 @@ export class RolesController {
   ): Promise<void> {
     const role = await this.RoleService.findOne(name);
 
-    // TODO: remove all checks, json needs to be fully populated
-    if (roleDto.import != undefined) role.import = roleDto.import;
-    if (roleDto.anonymize != undefined) role.anonymize = roleDto.anonymize;
-    if (roleDto.export != undefined) role.export = roleDto.export;
-    if (roleDto.query != undefined) role.query = roleDto.query;
-    if (roleDto.autoQuery != undefined) role.autoQuery = roleDto.autoQuery;
-    if (roleDto.delete != undefined) role.delete = roleDto.delete;
-    if (roleDto.admin != undefined) role.admin = roleDto.admin;
-    if (roleDto.modify != undefined) role.modify = roleDto.modify;
-    if (roleDto.cdBurner != undefined) role.cdBurner = roleDto.cdBurner;
-    if (roleDto.autoRouting != undefined)
-      role.autoRouting = roleDto.autoRouting;
+    const requiredKeys = [
+      'import',
+      'anonymize',
+      'export',
+      'query',
+      'autoQuery',
+      'delete',
+      'admin',
+      'modify',
+      'cdBurner',
+      'autoRouting',
+    ];
+
+    requiredKeys.forEach((key) => {
+      if (roleDto[key] === undefined) {
+        throw new BadRequestException(`Missing key '${key}' in roleDto`);
+      } else {
+        role[key] = roleDto[key];
+      }
+    });
 
     await this.RoleService.update(name, role);
   }

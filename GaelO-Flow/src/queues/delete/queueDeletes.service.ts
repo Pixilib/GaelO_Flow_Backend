@@ -3,7 +3,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Worker, Job, Queue } from 'bullmq';
 
 @Injectable()
-export class QueuesService {
+export class QueuesDeleteService {
   constructor(@InjectQueue('delete') private deleteQueue: Queue) {}
 
   async addDeleteJob(data: Object): Promise<void> {
@@ -17,7 +17,6 @@ export class QueuesService {
         removeOnFail: {
           age: 24 * 3600,
         },
-        attempts: 5,
       },
     );
   }
@@ -26,10 +25,10 @@ export class QueuesService {
 
     jobs.forEach((job) => {
       if (
+        data == undefined ||
         ((job.data.uuid == data['uuid'] || data['uuid'] == undefined) &&
           (job.data.userId == data['userId'] || data['userId'] == undefined) &&
-          (job.data.jobId == data['jobId'] || data['jobId'] == undefined)) ||
-        data == undefined
+          (job.data.jobId == data['jobId'] || data['jobId'] == undefined))
       ) {
         this.deleteQueue.remove(job.id, { removeChildren: true });
       }
@@ -40,32 +39,25 @@ export class QueuesService {
     uuid: string | undefined = undefined,
   ): Promise<Job<any, any, string>[]> {
     const jobs: Job<any, any, string>[] = await this.deleteQueue.getJobs();
-    let jobArray: Job[] = [];
 
-    jobs.forEach((job) => {
-      if (job.data.uuid == uuid || uuid == undefined) {
-        jobArray.push(job);
-      }
+    const filteredJob = jobs.filter((job) => {
+      return (job.data.uuid == uuid || uuid == undefined)
     });
-    return jobArray;
+
+    return filteredJob;
   }
 
   async checkIfUserIdHasJobs(userId: number): Promise<boolean> {
     const jobs: Job<any, any, string>[] = await this.deleteQueue.getJobs();
-    let result: boolean = false;
-
-    jobs.forEach((job) => {
-      if (job.data.userId == userId) {
-        result = true;
-      }
-    });
+    let result: boolean = jobs.find((job) => job.data.userId == userId)
+      ? true
+      : false;
 
     return result;
   }
 
   async getJobProgress(jobId: string): Promise<Object | null> {
     const job = await this.deleteQueue.getJob(jobId.toString());
-
     if (job) {
       return {
         progress: job.progress,
@@ -75,6 +67,19 @@ export class QueuesService {
     } else {
       return null;
     }
+  }
+
+  async getUuidOfUser(userId: number): Promise<string | null> {
+    const jobs: Job<any, any, string>[] | null =
+      await this.deleteQueue.getJobs();
+    const uuid: string | null = jobs.find((job) => job.data.userId == userId)
+      ?.data.uuid;
+
+    return uuid ? uuid : null;
+  }
+
+  async closeQueueConnection(): Promise<void> {
+    await this.deleteQueue.close();
   }
 
   public async seed() {

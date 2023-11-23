@@ -6,6 +6,8 @@ import { RoleDto } from './roles.dto';
 
 import { UsersService } from '../users/users.service';
 import { UsersController } from '../users/users.controller';
+import { NotFoundException } from '@nestjs/common';
+import { EntityNotFoundError } from 'typeorm';
 
 describe('RolesController', () => {
   let rolesController: RolesController;
@@ -82,17 +84,27 @@ describe('RolesController', () => {
   });
 
   describe('update', () => {
-    it('check if update calls service update', async () => {
-      const mockFindOne = jest
+    it('should successfully update a role with valid input', async () => {
+      const roleName = 'ExistingRole';
+      const roleDto: any = {
+        ...roleList[0],
+        import: true,
+        anonymize: false,
+      };
+
+      jest
         .spyOn(rolesService, 'findOne')
-        .mockResolvedValue(roleList[0]);
-      const mockUpdate = jest.spyOn(rolesService, 'update');
-      const result = await rolesController.update('User', {
-        name: 'newRolename',
-      } as RoleDto);
-      expect(result).toBeUndefined();
-      expect(mockFindOne).toHaveBeenCalled();
-      expect(mockUpdate).toHaveBeenCalled();
+        .mockResolvedValue(roleDto);
+      jest.spyOn(rolesService, 'update').mockResolvedValue(undefined);
+
+      await expect(
+        rolesService.update(roleName, roleDto),
+      ).resolves.toBeUndefined();
+
+      expect(rolesService.update).toHaveBeenCalledWith(
+        roleName,
+        roleDto,
+      );
     });
   });
 
@@ -111,8 +123,7 @@ describe('RolesController', () => {
 
   describe('createRole', () => {
     it('check if createRole calls service create', async () => {
-      const mockCreate = jest
-        .spyOn(rolesService, 'create')
+      const mockCreate = jest.spyOn(rolesService, 'create');
       const result = await rolesController.CreateRole({
         name: 'Admin',
         import: true,
