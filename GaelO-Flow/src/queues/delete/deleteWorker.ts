@@ -8,6 +8,10 @@ async function setupDeleteWorker(configService: ConfigService) {
       console.log(`Processing job ${job.id}`);
 
       for (let i = 0; i < 30; i++) {
+        if (job.data.aborted) {
+          console.log(`Job ${job.id} aborted`);
+          break;
+        }
         job.updateProgress(i);
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
@@ -30,7 +34,9 @@ async function setupDeleteWorker(configService: ConfigService) {
 
   deleteWorker.on('progress', (job, progress) => {
     if (typeof progress === 'number') {
-      console.log(`Job ${job.id} is ${Math.round((progress * 100) / 30)}% done`);
+      console.log(
+        `Job ${job.id} is ${Math.round((progress * 100) / 30)}% done`,
+      );
     }
   });
 }

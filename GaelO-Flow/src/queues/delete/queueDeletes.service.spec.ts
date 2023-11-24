@@ -56,7 +56,7 @@ describe('QueuesDeleteService', () => {
     });
   
     it('should correctly add a job to the queue', async () => {
-      const testData = { uuid: '123', orthancSeriesId: '456', userId: 1 };
+      const testData = { uuid: '123', orthancSeriesId: '456', userId: 1, state: 'wait' };
       await service.addDeleteJob(testData);
   
       const jobs = await service.getJobs();
@@ -150,38 +150,38 @@ describe('QueuesDeleteService', () => {
     });
   });
 
-  describe('getJobProgress', () => {
-    let jobId;
+  // describe('getJobProgress', () => {
+  //   let jobId;
   
-    beforeEach(async () => {
-      // Insert jobs
-      await service.addDeleteJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
-      const jobs = await service.getJobs('uuid1');
-      jobId = jobs[0].id;
-    });
+  //   beforeEach(async () => {
+  //     // Insert jobs
+  //     await service.addDeleteJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
+  //     const jobs = await service.getJobs('uuid1');
+  //     jobId = jobs[0].id;
+  //   });
   
-    afterEach(async () => {
-      // Clean up the queue after each test
-      const jobs = await service.getJobs();
-      await Promise.all(jobs.map(job => job.remove()));
-    });
+  //   afterEach(async () => {
+  //     // Clean up the queue after each test
+  //     const jobs = await service.getJobs();
+  //     await Promise.all(jobs.map(job => job.remove()));
+  //   });
   
-    it('should retrieve the progress of a job by its ID', async () => {
-      const jobProgress: Object = await service.getJobProgress(jobId);
+  //   it('should retrieve the progress of a job by its ID', async () => {
+  //     const jobProgress: Object = await service.getJobProgress(jobId);
   
-      expect(jobProgress).not.toBeNull();
-      expect(jobProgress).toHaveProperty('progress');
-      expect(jobProgress).toHaveProperty('state');
-      expect(jobProgress['id']).toBe(jobId);
-    });
+  //     expect(jobProgress).not.toBeNull();
+  //     expect(jobProgress).toHaveProperty('progress');
+  //     expect(jobProgress).toHaveProperty('state');
+  //     expect(jobProgress['id']).toBe(jobId);
+  //   });
   
-    it('should return null for a non-existent job ID', async () => {
-      const nonExistentJobId = 'nonexistent';
-      const jobProgress = await service.getJobProgress(nonExistentJobId);
+  //   it('should return null for a non-existent job ID', async () => {
+  //     const nonExistentJobId = 'nonexistent';
+  //     const jobProgress = await service.getJobProgress(nonExistentJobId);
   
-      expect(jobProgress).toBeNull();
-    });
-  });
+  //     expect(jobProgress).toBeNull();
+  //   });
+  // });
 
   describe('getUuidOfUser', () => {
     beforeEach(async () => {

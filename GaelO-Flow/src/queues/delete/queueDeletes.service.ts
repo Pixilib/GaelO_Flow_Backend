@@ -38,10 +38,33 @@ export class QueuesDeleteService {
   async getJobs(
     uuid: string | undefined = undefined,
   ): Promise<Job<any, any, string>[]> {
-    const jobs: Job<any, any, string>[] = await this.deleteQueue.getJobs();
+    const states = [
+      'completed',
+      'failed',
+      'delayed',
+      'active',
+      'wait',
+      'waiting-children',
+      'prioritized',
+      'paused',
+      'repeat',
+    ];
+    let jobs = [];
 
+    for (const state of states) {
+      const stateJobs = await this.deleteQueue.getJobs(state as any);
+      stateJobs.forEach(job => {
+        job.data.state = state;
+        jobs.push(job);
+      });
+    }
+  
+    jobs = await Promise.all(jobs.map(async (job) => {
+      return job;
+    }));
+  
     const filteredJob = jobs.filter((job) => {
-      return (job.data.uuid == uuid || uuid == undefined)
+      return job.data.uuid == uuid || uuid == undefined;
     });
 
     return filteredJob;
@@ -49,25 +72,23 @@ export class QueuesDeleteService {
 
   async checkIfUserIdHasJobs(userId: number): Promise<boolean> {
     const jobs: Job<any, any, string>[] = await this.deleteQueue.getJobs();
-    let result: boolean = jobs.find((job) => job.data.userId == userId)
-      ? true
-      : false;
-
-    return result;
+    let result: Job | null = jobs.find((job) => job.data.userId == userId)
+    
+    return result ? true : false;
   }
 
-  async getJobProgress(jobId: string): Promise<Object | null> {
-    const job = await this.deleteQueue.getJob(jobId.toString());
-    if (job) {
-      return {
-        progress: job.progress,
-        state: await job.getState(),
-        id: job.id,
-      };
-    } else {
-      return null;
-    }
-  }
+  // async getJobProgress(jobId: string): Promise<Object | null> {
+  //   const job = await this.deleteQueue.getJob(jobId.toString());
+  //   if (job) {
+  //     return {
+  //       progress: job.progress,
+  //       state: await job.getState(),
+  //       id: job.id,
+  //     };
+  //   } else {
+  //     return null;
+  //   }
+  // }
 
   async getUuidOfUser(userId: number): Promise<string | null> {
     const jobs: Job<any, any, string>[] | null =
