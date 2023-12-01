@@ -15,8 +15,8 @@ describe('QueuesDeleteController', () => {
         {
           provide: QueuesDeleteService,
           useValue: {
-            addDeleteJob: jest.fn(),
-            removeDeleteJob: jest.fn(),
+            addJob: jest.fn(),
+            removeJob: jest.fn(),
             getJobs: jest.fn(),
             checkIfUserIdHasJobs: jest.fn(),
             getUuidOfUser: jest.fn(),
@@ -38,7 +38,7 @@ describe('QueuesDeleteController', () => {
         orthancSeriesIds: ['123', '456'],
       };
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
-      jest.spyOn(service, 'addDeleteJob').mockResolvedValue();
+      jest.spyOn(service, 'addJob').mockResolvedValue();
 
       // ACT
       const result = await controller.addDeleteJob(dto, mockRequest);
@@ -47,13 +47,13 @@ describe('QueuesDeleteController', () => {
       expect(result).toHaveProperty('uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledTimes(1);
-      expect(service.addDeleteJob).toHaveBeenCalledWith({
+      expect(service.addJob).toHaveBeenCalledWith({
         uuid: expect.any(String),
         userId: 1,
         orthancSeriesId: '123',
         aborted: false,
       });
-      expect(service.addDeleteJob).toHaveBeenCalledTimes(
+      expect(service.addJob).toHaveBeenCalledTimes(
         dto.orthancSeriesIds.length,
       );
     });
@@ -72,7 +72,7 @@ describe('QueuesDeleteController', () => {
       );
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledTimes(1);
-      expect(service.addDeleteJob).not.toHaveBeenCalled();
+      expect(service.addJob).not.toHaveBeenCalled();
     });
 
     it('should call addDeleteJob for each orthancSeriesId', async () => {
@@ -82,7 +82,7 @@ describe('QueuesDeleteController', () => {
         orthancSeriesIds: ['123', '456', '789'],
       };
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
-      jest.spyOn(service, 'addDeleteJob').mockResolvedValue();
+      jest.spyOn(service, 'addJob').mockResolvedValue();
 
       // ACT
       const result = await controller.addDeleteJob(dto, mockRequest);
@@ -90,11 +90,11 @@ describe('QueuesDeleteController', () => {
       // ASSERT
       expect(result).toHaveProperty('uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
-      expect(service.addDeleteJob).toHaveBeenCalledTimes(
+      expect(service.addJob).toHaveBeenCalledTimes(
         dto.orthancSeriesIds.length,
       );
       dto.orthancSeriesIds.forEach((id) => {
-        expect(service.addDeleteJob).toHaveBeenCalledWith({
+        expect(service.addJob).toHaveBeenCalledWith({
           uuid: expect.any(String),
           userId: 1,
           orthancSeriesId: id,
@@ -108,14 +108,14 @@ describe('QueuesDeleteController', () => {
     it('should call removeDeleteJob service method with the correct uuid', async () => {
       // MOCK
       const uuid = 'test-uuid';
-      jest.spyOn(service, 'removeDeleteJob').mockResolvedValue();
+      jest.spyOn(service, 'removeJob').mockResolvedValue();
 
       // ACT
       await controller.removeDeleteJob(uuid);
 
       // ASSERT
-      expect(service.removeDeleteJob).toHaveBeenCalledWith({ uuid });
-      expect(service.removeDeleteJob).toHaveBeenCalledTimes(1);
+      expect(service.removeJob).toHaveBeenCalledWith({ uuid });
+      expect(service.removeJob).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -147,6 +147,7 @@ describe('QueuesDeleteController', () => {
       expect(service.getJobs).toHaveBeenCalledTimes(1);
       expect(result).toEqual({
         series1: {
+          aborted: false,
           progress: 0,
           state: 'waiting',
           id: 'job1',

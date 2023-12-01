@@ -32,7 +32,7 @@ export class QueuesDeleteController {
         })
         console.log(job.data.aborted);
       });
-      this.QueuesDeleteService.removeDeleteJob();
+      this.QueuesDeleteService.removeJob();
       jobs = await this.QueuesDeleteService.getJobs();
     }
   }
@@ -80,7 +80,7 @@ export class QueuesDeleteController {
     const orthancSeriesIds = queuesDeleteDto.orthancSeriesIds;
     const uuid = randomUUID();
     orthancSeriesIds.forEach((orthancSeriesId) => {
-      this.QueuesDeleteService.addDeleteJob({
+      this.QueuesDeleteService.addJob({
         uuid: uuid,
         userId: user.userId,
         orthancSeriesId: orthancSeriesId,
@@ -93,7 +93,7 @@ export class QueuesDeleteController {
   @UseGuards(DeleteGuard)
   @Delete(':uuid')
   async removeDeleteJob(@Param('uuid') uuid: string): Promise<void> {
-    this.QueuesDeleteService.removeDeleteJob({ uuid: uuid });
+    this.QueuesDeleteService.removeJob({ uuid: uuid });
   }
 
   @UseGuards(DeleteGuard)

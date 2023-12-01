@@ -57,7 +57,7 @@ describe('QueuesDeleteService', () => {
   
     it('should correctly add a job to the queue', async () => {
       const testData = { uuid: '123', orthancSeriesId: '456', userId: 1, state: 'wait' };
-      await service.addDeleteJob(testData);
+      await service.addJob(testData);
   
       const jobs = await service.getJobs();
       const addedJob = jobs.find(job => job.data.uuid === '123' && job.data.orthancSeriesId === '456' && job.data.userId === 1);
@@ -70,9 +70,9 @@ describe('QueuesDeleteService', () => {
   describe('removeDeleteJob', () => {
     beforeEach(async () => {
       // Insert jobs with known properties
-      await service.addDeleteJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
-      await service.addDeleteJob({ uuid: 'uuid1', orthancSeriesId: '456', userId: 1 });
-      await service.addDeleteJob({ uuid: 'uuid2', orthancSeriesId: '789', userId: 2 });
+      await service.addJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
+      await service.addJob({ uuid: 'uuid1', orthancSeriesId: '456', userId: 1 });
+      await service.addJob({ uuid: 'uuid2', orthancSeriesId: '789', userId: 2 });
     });
   
     afterEach(async () => {
@@ -82,7 +82,7 @@ describe('QueuesDeleteService', () => {
     });
   
     it('should remove jobs with a specific uuid', async () => {
-      await service.removeDeleteJob({ uuid: 'uuid1' });
+      await service.removeJob({ uuid: 'uuid1' });
   
       const remainingJobs = await service.getJobs();
       expect(remainingJobs.length).toBe(1);
@@ -90,7 +90,7 @@ describe('QueuesDeleteService', () => {
     });
   
     it('should remove all jobs when no data is provided', async () => {
-      await service.removeDeleteJob();
+      await service.removeJob();
   
       const remainingJobs = await service.getJobs();
       expect(remainingJobs.length).toBe(0);
@@ -100,9 +100,9 @@ describe('QueuesDeleteService', () => {
   describe('getJobs', () => {
     beforeEach(async () => {
       // Insert jobs
-      await service.addDeleteJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
-      await service.addDeleteJob({ uuid: 'uuid1', orthancSeriesId: '456', userId: 1 });
-      await service.addDeleteJob({ uuid: 'uuid2', orthancSeriesId: '789', userId: 2 });
+      await service.addJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
+      await service.addJob({ uuid: 'uuid1', orthancSeriesId: '456', userId: 1 });
+      await service.addJob({ uuid: 'uuid2', orthancSeriesId: '789', userId: 2 });
     });
   
     afterEach(async () => {
@@ -128,9 +128,9 @@ describe('QueuesDeleteService', () => {
   describe('checkIfUserIdHasJobs', () => {
     beforeEach(async () => {
       // Insert jobs
-      await service.addDeleteJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
-      await service.addDeleteJob({ uuid: 'uuid1', orthancSeriesId: '456', userId: 1 });
-      await service.addDeleteJob({ uuid: 'uuid2', orthancSeriesId: '789', userId: 2 });
+      await service.addJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
+      await service.addJob({ uuid: 'uuid1', orthancSeriesId: '456', userId: 1 });
+      await service.addJob({ uuid: 'uuid2', orthancSeriesId: '789', userId: 2 });
     });
   
     afterEach(async () => {
@@ -186,9 +186,9 @@ describe('QueuesDeleteService', () => {
   describe('getUuidOfUser', () => {
     beforeEach(async () => {
       // Insert jobs
-      await service.addDeleteJob({ uuid: 'uuid1', userId: 1, data: 'data1' });
-      await service.addDeleteJob({ uuid: 'uuid2', userId: 2, data: 'data2' });
-      await service.addDeleteJob({ uuid: 'uuid3', userId: 1, data: 'data3' }); 
+      await service.addJob({ uuid: 'uuid1', userId: 1, data: 'data1' });
+      await service.addJob({ uuid: 'uuid2', userId: 2, data: 'data2' });
+      await service.addJob({ uuid: 'uuid3', userId: 1, data: 'data3' }); 
     });
   
     afterEach(async () => {
