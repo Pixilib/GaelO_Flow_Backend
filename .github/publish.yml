@@ -55,7 +55,7 @@ jobs:
                               always-auth=true' > ${{ github.workspace }}/.npmrc
           cat .npmrc
           
-      - run: yarn install
+      - run: yarn install --frozen-lockfile
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
