@@ -1,0 +1,61 @@
+version: "2"
+#if needed to map the orthancPACS to a different hard disk device (after mounting it in path)
+# volumes: ["/home/petctviewer/orthanc:/var/lib/orthanc/db:Z"]
+
+services:
+    
+    gaelo-flow:
+      image: ghcr.io/pixilib/gaelo-flow-backend
+      depends_on: [redis, postgres]
+      environment:
+        APP_URL : "http://localhost"
+        ORTHANC_ADDRESS : "http://orthanc"
+        ORTHANC_PORT : 8042
+        ORTHANC_USERNAME: "orthanc"
+        ORTHANC_PASSWORD: "orthanc"
+        POSTGRES_DB : "gaeloflowdb"
+        POSTGRES_HOST_AUTH_METHOD: "trust"
+
+    redis:
+        image: redis:alpine
+        #ports: ["6379:6379"]
+
+    postgres:
+        container_name: postgres
+        image: postgres:13.1
+        #ports: ["5432:5432"]
+        environment:
+            POSTGRES_DB : "gaeloflowdb"
+            POSTGRES_HOST_AUTH_METHOD: "trust"
+        volumes:
+            - postgres:/var/lib/postgresql/data
+        restart: unless-stopped
+
+    orthanc:
+        image: osimis/orthanc:23.9.0
+        container_name: orthanc
+        restart: unless-stopped
+        #ports: ["8042:8042"]
+        volumes: ["orthanc:/var/lib/orthanc/db:Z"]
+        environment:
+            NEURO_PLUGIN_ENABLED: "true"
+            ORTHANC__NAME: "gaelo-flow-orthanc"
+            ORTHANC__DICOM_SERVER_ENABLED: "true"
+            ORTHANC__DICOM_MODALITIES_IN_DATABASE: "true"
+            ORTHANC__ORTHANC_PEERS_IN_DATABASE: "true"
+            DICOM_WEB_PLUGIN_ENABLED: "true"
+            OSIMIS_WEB_VIEWER1_PLUGIN_ENABLED: "true"
+            PYTHON_PLUGIN_ENABLED: "true"
+            TRANSFERS_PLUGIN_ENABLED: "true"
+            WORKLISTS_PLUGIN_ENABLED: "true"
+            ORTHANC__DICOM_WEB__ENABLE: "true"
+            ORTHANC__DICOM_WEB__ROOT: "/dicom-web/"
+            ORTHANC__DICOM_WEB__ENABLEWADO: "true"
+            ORTHANC__DICOM_WEB__WADOROOT: "/wado"
+            ORTHANC__DICOM_WEB__SSL: "true"
+            ORTHANC__DICOM_WEB__STUDIES_METADATA: "MainDicomTags"
+            ORTHANC__DICOM_WEB__SERIES_METADATA: "Full"
+
+volumes:
+        orthanc:
+        postgres:

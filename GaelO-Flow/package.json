@@ -1,10 +1,10 @@
 {
-  "name": "gael-o",
+  "name": "gaelo-flow",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "Pixilib SAS",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "AGPLv3",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
