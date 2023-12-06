@@ -5,7 +5,7 @@ FROM node:20-alpine
 WORKDIR /usr/src/app
 
 # Bundle app source
-COPY ./GaelO-Flow/dist .
+COPY ./GaelO-Flow/ .
 
 RUN ls
 
