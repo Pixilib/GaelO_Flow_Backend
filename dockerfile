@@ -19,12 +19,8 @@ ENV API_PORT="3000"
 
 # Create app directory
 WORKDIR /usr/src/app
-RUN mkdir node_modules
 # Bundle app source
-COPY ./GaelO-Flow/dist .
-COPY ./GaelO-Flow/.env .
-
-COPY ./GaelO-Flow/node_modules ./node_modules
+COPY ./GaelO-Flow .
 
 # Start the server using the production build
-CMD [ "node", "main.js" ]
+CMD ["npm", "run", "start:prod"]
