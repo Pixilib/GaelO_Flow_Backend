@@ -7,5 +7,7 @@ WORKDIR /usr/src/app
 # Bundle app source
 COPY ./GaelO-Flow/dist .
 
+RUN ls
+
 # Start the server using the production build
 CMD [ "node", "main.js" ]
