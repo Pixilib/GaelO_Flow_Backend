@@ -8,7 +8,5 @@ RUN mkdir node_modules
 COPY ./GaelO-Flow/dist .
 COPY ./GaelO-Flow/node_modules ./node_modules
 
-RUN ls
-
 # Start the server using the production build
 CMD [ "node", "main.js" ]
