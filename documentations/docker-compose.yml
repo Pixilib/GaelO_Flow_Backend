@@ -15,17 +15,17 @@ services:
         ORTHANC_PORT : 8042
         ORTHANC_USERNAME: "orthanc"
         ORTHANC_PASSWORD: "orthanc"
-        POSTGRES_DB : "gaeloflowdb"
         POSTGRES_HOST_AUTH_METHOD: "trust"
         TYPEORM_TYPE : "postgres"
         TYPEORM_HOST : "flow-db"
         TYPEORM_PORT : 5432
         TYPEORM_USERNAME : "postgres"
         TYPEORM_PASSWORD : "postgres"
-        TYPEORM_DATABASE : "gaeloflowdb"
+        TYPEORM_DATABASE : "gaelo-flow"
         REDIS_ADDRESS : "redis"
         REDIS_PORT : 6379
         API_PORT : 3000
+        JWT_SECRET : "verySecretKey"
 
     redis:
         image: redis:alpine
@@ -36,7 +36,7 @@ services:
         image: postgres:13.1
         ports: ["5432:5432"]
         environment:
-            POSTGRES_DB : "gaeloflowdb"
+            POSTGRES_DB : "gaelo-flow"
             POSTGRES_HOST_AUTH_METHOD: "trust"
         volumes:
             - postgres:/var/lib/postgresql/data
