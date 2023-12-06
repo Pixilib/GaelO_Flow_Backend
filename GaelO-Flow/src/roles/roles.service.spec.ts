@@ -53,7 +53,11 @@ describe('RolesService', () => {
       const result = await rolesService.findOne('User');
       expect(result).toEqual(role);
     });
-    // TODO: check if throws when role is not found
+    it("should throw an error when the role is not found", async () => {
+      // Assuming the method throws an error when the role is not found
+      const nonExistentRole = 'NonExistentRole';
+      await expect(rolesService.findOne(nonExistentRole)).rejects.toThrow();
+    });
   });
 
   describe('create', () => {
@@ -95,5 +99,4 @@ describe('RolesService', () => {
       expect(findOneResult).toEqual(updateRole);
     });
   });
-
 });

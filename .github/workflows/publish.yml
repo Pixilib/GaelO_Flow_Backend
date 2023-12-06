@@ -56,6 +56,7 @@ jobs:
           cat .npmrc
           
       - run: yarn install --frozen-lockfile
+        working-directory: ./GaelO-Flow
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -64,8 +65,7 @@ jobs:
         run: yarn version --new-version ${{ github.ref_name }}
 
       - run : yarn build
-        env:
-          SENTRY_AUTH_TOKEN_ENV: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        working-directory: ./GaelO-Flow
 
       - name: Build and push
         uses: docker/build-push-action@v3

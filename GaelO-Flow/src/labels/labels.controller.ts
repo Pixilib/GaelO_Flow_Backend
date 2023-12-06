@@ -13,7 +13,7 @@ import { LabelsService } from './labels.service';
 import { Label } from './label.entity';
 import { LabelDto } from './labels.dto';
 import { NotFoundInterceptor } from './../interceptors/NotFoundInterceptor';
-import { AdminGuard } from 'src/roles/roles.guard';
+import { AdminGuard } from '../roles/roles.guard';
 
 
 @Controller('/labels')
@@ -30,7 +30,7 @@ export class LabelsController {
   @Delete('/:labelName')
   @UseInterceptors(NotFoundInterceptor)
   async remove(@Param('labelName') labelName: string): Promise<void> {
-    await this.LabelsService.findOneByOrFail(labelName); // TODO: replace with findOneByOrFail
+    await this.LabelsService.findOneByOrFail(labelName);
     return this.LabelsService.remove(labelName);
   }
 

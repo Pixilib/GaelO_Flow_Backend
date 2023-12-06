@@ -11,7 +11,7 @@ import { Option } from './option.entity';
 import { UpdateOptionDto } from './options.dto';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
-import { AdminGuard } from 'src/roles/roles.guard';
+import { AdminGuard } from '../roles/roles.guard';
 
 @Controller('/options')
 export class OptionsController {

@@ -30,23 +30,46 @@ import { ConfigModule } from '@nestjs/config';
 import { OrthancController } from './orthanc/Orthanc.controller';
 import OrthancClient from './orthanc/OrthancClient';
 
+import { QueuesDeleteController } from './queues/delete/queueDeletes.controller';
+import { QueuesDeleteService } from './queues/delete/queueDeletes.service';
+
+import { BullModule } from '@nestjs/bullmq';
+import { ConfigService } from '@nestjs/config';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'gaelo-flow',
-      entities: [User, Role, Option, LdapGroupRole, Label],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: configService.get<string>('TYPEORM_TYPE', 'postgres') as 'postgres', // Default to 'postgres'
+        host: configService.get<string>('TYPEORM_HOST', 'localhost'),
+        port: +configService.get<number>('TYPEORM_PORT', 5432),
+        username: configService.get<string>('TYPEORM_USERNAME', 'postgres'),
+        password: configService.get<string>('TYPEORM_PASSWORD', 'postgres'),
+        database: configService.get<string>('TYPEORM_DATABASE', 'gaelo-flow'),
+        entities: [User, Role, Option, LdapGroupRole, Label],
+        synchronize: true,
+      }),
     }),
     TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole, Label]),
-    AuthModule
+    AuthModule,
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('REDIS_ADDRESS', 'localhost'),
+          port: +configService.get<number>('REDIS_PORT', 6379),
+        },
+      }),
+    }),
+    BullModule.registerQueue({
+      name: 'delete',
+    }),
   ],
   controllers: [
     AppController,
@@ -55,7 +78,8 @@ import OrthancClient from './orthanc/OrthancClient';
     OptionsController,
     LdapGroupRolesController,
     LabelsController,
-    OrthancController
+    OrthancController,
+    QueuesDeleteController,
   ],
   providers: [
     AppService,
@@ -66,6 +90,7 @@ import OrthancClient from './orthanc/OrthancClient';
     LdapGroupRolesService,
     LabelsService,
     OrthancClient,
+    QueuesDeleteService,
   ],
 })
 export class AppModule {}
