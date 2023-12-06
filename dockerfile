@@ -1,5 +1,5 @@
 # Base image
-FROM node:20-alpine
+FROM node:20-bullseye
 
 ENV JWT_SECRET ="verySecretKey"
 ENV ORTHANC_ADDRESS="http://localhost"
