@@ -39,15 +39,15 @@ services:
             POSTGRES_DB : "gaelo-flow"
             POSTGRES_HOST_AUTH_METHOD: "trust"
         volumes:
-            - postgres:/var/lib/postgresql/data
+            - postgres-flow:/var/lib/postgresql/data
         restart: unless-stopped
 
-    orthanc:
+    orthanc-flow:
         image: osimis/orthanc:23.9.0
-        container_name: orthanc
+        container_name: orthanc-flow
         restart: unless-stopped
         #ports: ["8042:8042"]
-        volumes: ["orthanc:/var/lib/orthanc/db:Z"]
+        volumes: ["orthanc-flow:/var/lib/orthanc/db:Z"]
         environment:
             NEURO_PLUGIN_ENABLED: "true"
             ORTHANC__NAME: "gaelo-flow-orthanc"
@@ -68,5 +68,5 @@ services:
             ORTHANC__DICOM_WEB__SERIES_METADATA: "Full"
 
 volumes:
-        orthanc:
-        postgres:
+        orthanc-flow:
+        postgres-flow:
