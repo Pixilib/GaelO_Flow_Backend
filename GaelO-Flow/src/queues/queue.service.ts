@@ -11,6 +11,7 @@ export abstract class AbstractQueueService {
     }
   
   async addJob(data: Object): Promise<void> {
+    // console.log('Adding job', data['uuid']);
     await this.queue.add(data['uuid'], data, {
       removeOnComplete: {
         age: 3600,
@@ -78,19 +79,6 @@ export abstract class AbstractQueueService {
 
     return result ? true : false;
   }
-
-  // async getJobProgress(jobId: string): Promise<Object | null> {
-  //   const job = await this.deleteQueue.getJob(jobId.toString());
-  //   if (job) {
-  //     return {
-  //       progress: job.progress,
-  //       state: await job.getState(),
-  //       id: job.id,
-  //     };
-  //   } else {
-  //     return null;
-  //   }
-  // }
 
   async getUuidOfUser(userId: number): Promise<string | null> {
     const jobs: Job<any, any, string>[] | null = await this.queue.getJobs();

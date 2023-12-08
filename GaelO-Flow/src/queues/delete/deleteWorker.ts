@@ -5,10 +5,9 @@ async function setupDeleteWorker(orthancClient: OrthancClient) {
   const deleteWorker = new Worker(
     'delete',
     async (job: Job) => {
-      console.log(`Processing job ${job.id}; Delete ${job.data.orthancSeriesId}`);
-      job.progress = 0;
+      job.updateProgress(0);
       await orthancClient.deleteFromOrthanc('series', job.data.orthancSeriesId);
-      job.progress = 100;
+      job.updateProgress(100);
     },
   );
 

@@ -3,9 +3,10 @@ import { AppModule } from './app.module';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
+import OrthancClient from './orthanc/OrthancClient';
 import setupDeleteWorker from './queues/delete/deleteWorker';
 import setupAnonWorker from './queues/anon/anonWorker';
-import OrthancClient from './orthanc/OrthancClient';
+import setupQueryWorker from './queues/query/queryWorker';
 
 async function main() {
   const app = await NestFactory.create(AppModule);
@@ -26,6 +27,7 @@ async function main() {
   const port = configService.get<number>('API_PORT', 3000);
   await setupDeleteWorker(orthancClient);
   await setupAnonWorker(orthancClient);
+  await setupQueryWorker(orthancClient);
   await app.listen(port);
 
   const address = (await app.getUrl()).replace('[::1]', 'localhost');

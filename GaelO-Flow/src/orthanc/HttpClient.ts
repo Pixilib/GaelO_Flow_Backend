@@ -90,7 +90,7 @@ export class HttpClient {
         response.data.pipe(res);
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
         if (error.response) {
           if (error.response.status === 401) {
             res.status(500).send('Bad redentials');

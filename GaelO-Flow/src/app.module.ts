@@ -1,42 +1,53 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+
+// MAIN ROUTE
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TypeOrmModule } from '@nestjs/typeorm';
 
+// USER ROUTE
 import { User } from './users/user.entity';
 import { UsersService } from './users/users.service';
 import { UsersController } from './users/users.controller';
 
+// ROLE ROUTE
 import { Role } from './roles/role.entity';
 import { RolesService } from './roles/roles.service';
 import { RolesController } from './roles/roles.controller';
 
+// OPTION ROUTE
 import { Option } from './options/option.entity';
 import { OptionsService } from './options/options.service';
 import { OptionsController } from './options/options.controller';
 
+// LDAP GROUP ROUTE
 import { LdapGroupRole } from './ldap_group_roles/ldapgrouprole.entity';
 import { LdapGroupRolesService } from './ldap_group_roles/ldapgrouproles.service';
 import { LdapGroupRolesController } from './ldap_group_roles/ldapgrouproles.controller';
 
+// LABEL ROUTE
 import { Label } from './labels/label.entity';
 import { LabelsController } from './labels/labels.controller';
 import { LabelsService } from './labels/labels.service';
 
-import { SeedService } from './seeder.service';
+// AUTH ROUTE
 import { AuthModule } from './auth/auth.module';
 
-import { ConfigModule } from '@nestjs/config';
+import { SeedService } from './seeder.service';
+// QUEUES
 import { OrthancController } from './orthanc/Orthanc.controller';
 import OrthancClient from './orthanc/OrthancClient';
+import { BullModule } from '@nestjs/bullmq';
 
 import { QueuesDeleteController } from './queues/delete/queueDeletes.controller';
 import { QueuesDeleteService } from './queues/delete/queueDeletes.service';
 
-import { BullModule } from '@nestjs/bullmq';
-import { ConfigService } from '@nestjs/config';
 import { QueuesAnonController } from './queues/anon/queueAnons.controller';
 import { QueuesAnonService } from './queues/anon/queueAnons.service';
+
+import { QueuesQueryController } from './queues/query/queueQuery.controller';
+import { QueuesQueryService } from './queues/query/queueQuery.service';
 
 @Module({
   imports: [
@@ -69,12 +80,17 @@ import { QueuesAnonService } from './queues/anon/queueAnons.service';
         },
       }),
     }),
-    BullModule.registerQueue({
-      name: 'delete',
-    },
-    {
-      name: 'anon'
-    }),
+    BullModule.registerQueue(
+      {
+        name: 'delete'
+      },
+      {
+        name: 'anon'
+      },
+      {
+        name: 'query'
+      }
+    ),
   ],
   controllers: [
     AppController,
@@ -85,7 +101,8 @@ import { QueuesAnonService } from './queues/anon/queueAnons.service';
     LabelsController,
     OrthancController,
     QueuesDeleteController,
-    QueuesAnonController
+    QueuesAnonController,
+    QueuesQueryController
   ],
   providers: [
     AppService,
@@ -97,7 +114,8 @@ import { QueuesAnonService } from './queues/anon/queueAnons.service';
     LabelsService,
     OrthancClient,
     QueuesDeleteService,
-    QueuesAnonService
+    QueuesAnonService,
+    QueuesQueryService
   ],
 })
 export class AppModule { }
