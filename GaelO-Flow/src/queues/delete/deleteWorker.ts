@@ -1,30 +1,14 @@
-import { ConfigService } from '@nestjs/config';
 import { Worker, Job } from 'bullmq';
+import OrthancClient from '../../orthanc/OrthancClient';
 
-async function setupDeleteWorker(configService: ConfigService) {
+async function setupDeleteWorker(orthancClient: OrthancClient) {
   const deleteWorker = new Worker(
     'delete',
     async (job: Job) => {
-      console.log(`Processing job ${job.id}`);
-
-      for (let i = 0; i < 30; i++) {
-        if (job.data.aborted) {
-          console.log(`Job ${job.id} aborted`);
-          break;
-        }
-        job.updateProgress(i);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-      }
-
-      console.log(await job.getState());
-      console.log(`Job ${job.id} completed`);
-    },
-    {
-      concurrency: 1,
-      connection: {
-        host: configService.get<string>('REDIS_ADDRESS', 'localhost'),
-        port: +configService.get<number>('REDIS_PORT', 6379),
-      },
+      console.log(`Processing job ${job.id}; Delete ${job.data.orthancSeriesId}`);
+      job.progress = 0;
+      await orthancClient.deleteFromOrthanc('series', job.data.orthancSeriesId);
+      job.progress = 100;
     },
   );
 
@@ -33,11 +17,6 @@ async function setupDeleteWorker(configService: ConfigService) {
   });
 
   deleteWorker.on('progress', (job, progress) => {
-    if (typeof progress === 'number') {
-      console.log(
-        `Job ${job.id} is ${Math.round((progress * 100) / 30)}% done`,
-      );
-    }
   });
 }
 

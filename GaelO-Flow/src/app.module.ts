@@ -35,6 +35,8 @@ import { QueuesDeleteService } from './queues/delete/queueDeletes.service';
 
 import { BullModule } from '@nestjs/bullmq';
 import { ConfigService } from '@nestjs/config';
+import { QueuesAnonController } from './queues/anon/queueAnons.controller';
+import { QueuesAnonService } from './queues/anon/queueAnons.service';
 
 @Module({
   imports: [
@@ -69,6 +71,9 @@ import { ConfigService } from '@nestjs/config';
     }),
     BullModule.registerQueue({
       name: 'delete',
+    },
+    {
+      name: 'anon'
     }),
   ],
   controllers: [
@@ -80,6 +85,7 @@ import { ConfigService } from '@nestjs/config';
     LabelsController,
     OrthancController,
     QueuesDeleteController,
+    QueuesAnonController
   ],
   providers: [
     AppService,
@@ -91,6 +97,7 @@ import { ConfigService } from '@nestjs/config';
     LabelsService,
     OrthancClient,
     QueuesDeleteService,
+    QueuesAnonService
   ],
 })
-export class AppModule {}
+export class AppModule { }

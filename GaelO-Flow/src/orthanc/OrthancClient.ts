@@ -172,7 +172,6 @@ export default class OrthancClient extends HttpClient {
     newPatientID: string,
     newPatientName: string,
     newStudyDescription: string,
-    synchronous: string,
   ): object => {
     const tagObjectArray = [];
     let date: TagPolicies;
@@ -254,9 +253,8 @@ export default class OrthancClient extends HttpClient {
     tagObjectArray.push(new TagAnon('0011,1012', TagPolicies.KEEP)); // Other
 
     const anonParameters = {
-      KeepPrivateTags: false,
+      RemovePrivateTags: true,
       Force: true,
-      Synchronous: synchronous,
       DicomVersion: '2021b',
       Keep: [],
       Replace: {},
@@ -283,7 +281,6 @@ export default class OrthancClient extends HttpClient {
     newPatientID: string,
     newPatientName: string,
     newStudyDescription: string,
-    synchronous: string,
   ) => {
     let payload = this.buildAnonPayload(
       profile,
@@ -291,8 +288,9 @@ export default class OrthancClient extends HttpClient {
       newPatientID,
       newPatientName,
       newStudyDescription,
-      synchronous,
-    );
+      );
+    console.log(
+      '/' + level + '/' + orthancID + '/anonymize', payload);
     const answer = this.request(
       '/' + level + '/' + orthancID + '/anonymize',
       'post',
@@ -401,7 +399,7 @@ export default class OrthancClient extends HttpClient {
     const answer = await this.request(
       '/modalities/' + aet + '/query',
       'post',
-      payload,
+      payload
     ).catch((err: any) => {
       throw err;
     });

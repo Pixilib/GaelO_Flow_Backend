@@ -11,7 +11,7 @@ export abstract class AbstractQueueService {
     }
   
   async addJob(data: Object): Promise<void> {
-    await this.queue.add(data['uuid'] + '_' + data['orthancSeriesId'], data, {
+    await this.queue.add(data['uuid'], data, {
       removeOnComplete: {
         age: 3600,
       },
@@ -104,11 +104,7 @@ export abstract class AbstractQueueService {
     await this.queue.close();
   }
 
-  public async seed() {
-    const jobs: Job<any, any, string>[] = await this.queue.getJobs();
-
-    jobs.forEach((job) => {
-      this.queue.remove(job.id, { removeChildren: true });
-    });
+  async flush(): Promise<void> {
+    await this.queue.obliterate({ force: true });
   }
 }

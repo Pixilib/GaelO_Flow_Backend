@@ -15,7 +15,7 @@ export class HttpClient {
     url: string,
     method: string,
     headers: object,
-    data: object = undefined,
+    data: object | string,
     getAsStream: boolean,
   ): object => {
     return {
@@ -66,10 +66,10 @@ export class HttpClient {
   request = (
     url: string,
     method: string,
-    body: object,
+    body: object | string,
     headers: object | undefined = undefined,
   ) => {
-    const option = this.getOptions(url, method, body, headers, false);
+    const option = this.getOptions(url, method, headers, body, false);
     return axios.request(option).catch(function (error) {
       throw error;
     });
@@ -79,8 +79,8 @@ export class HttpClient {
     url: string,
     method: string,
     body: object,
-    headers,
     res: Response,
+    headers: object | undefined = undefined,
   ) => {
     const option = this.getOptions(url, method, body, headers, true);
     return axios

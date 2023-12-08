@@ -14,8 +14,7 @@ export class OrthancController {
       url,
       method,
       body,
-      undefined,
-      response,
+      response
     );
   }
 
