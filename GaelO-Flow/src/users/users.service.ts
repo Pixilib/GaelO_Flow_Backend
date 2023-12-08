@@ -79,9 +79,6 @@ export class UsersService {
     const saltUser = await bcrypt.genSalt();
     const hashUser = await bcrypt.hash('passworduser', saltUser);
 
-    const roleAdmin = new Role();
-    roleAdmin.name = 'Admin';
-
     const admin = this.usersRepository.create({
       username: 'admin',
       firstname: 'Admin',
@@ -93,9 +90,6 @@ export class UsersService {
       roleName: 'Admin',
       salt: saltAdmin,
     });
-
-    const roleUser = new Role();
-    roleUser.name = 'User';
 
     const user = this.usersRepository.create({
       username: 'user',

@@ -51,7 +51,6 @@ describe('QueuesDeleteController', () => {
         uuid: expect.any(String),
         userId: 1,
         orthancSeriesId: '123',
-        aborted: false,
       });
       expect(service.addJob).toHaveBeenCalledTimes(
         dto.orthancSeriesIds.length,
@@ -98,7 +97,6 @@ describe('QueuesDeleteController', () => {
           uuid: expect.any(String),
           userId: 1,
           orthancSeriesId: id,
-          aborted: false,
         });
       });
     });
@@ -132,7 +130,6 @@ describe('QueuesDeleteController', () => {
             orthancSeriesId: 'series1',
             state: 'waiting',
             userId: 1,
-            aborted: false,
           },
           progress: 0,
         },
@@ -147,7 +144,6 @@ describe('QueuesDeleteController', () => {
       expect(service.getJobs).toHaveBeenCalledTimes(1);
       expect(result).toEqual({
         series1: {
-          aborted: false,
           progress: 0,
           state: 'waiting',
           id: 'job1',

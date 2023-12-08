@@ -28,7 +28,7 @@ export default class OrthancClient extends HttpClient {
     this.setForwardedProtocol(url.protocol)
   };
 
-  getSystem = async() => {
+  getSystem = async () => {
     const answer = await this.request('/system', 'get', undefined)
     return answer.data;
   };
@@ -112,8 +112,8 @@ export default class OrthancClient extends HttpClient {
     return this.request('/tools/find', 'post', payload);
   };
 
-  findInOrthancByUid = (studyUID: string) => {
-    return this.findInOrthanc('Study', '', '', '', '', '', '', studyUID); // return void ?
+  findInOrthancByStudyInstanceUID = (studyUID: string) => {
+    return this.findInOrthanc('Study', '', '', '', '', '', '', studyUID);
   };
 
   findInOrthancBySeriesInstanceUID = (seriesInstanceUID: string) => {
@@ -172,7 +172,6 @@ export default class OrthancClient extends HttpClient {
     newPatientID: string,
     newPatientName: string,
     newStudyDescription: string,
-    synchronous: string,
   ): object => {
     const tagObjectArray = [];
     let date: TagPolicies;
@@ -254,9 +253,8 @@ export default class OrthancClient extends HttpClient {
     tagObjectArray.push(new TagAnon('0011,1012', TagPolicies.KEEP)); // Other
 
     const anonParameters = {
-      KeepPrivateTags: false,
+      RemovePrivateTags: true,
       Force: true,
-      Synchronous: synchronous,
       DicomVersion: '2021b',
       Keep: [],
       Replace: {},
@@ -283,7 +281,6 @@ export default class OrthancClient extends HttpClient {
     newPatientID: string,
     newPatientName: string,
     newStudyDescription: string,
-    synchronous: string,
   ) => {
     let payload = this.buildAnonPayload(
       profile,
@@ -291,8 +288,9 @@ export default class OrthancClient extends HttpClient {
       newPatientID,
       newPatientName,
       newStudyDescription,
-      synchronous,
     );
+    console.log(
+      '/' + level + '/' + orthancID + '/anonymize', payload);
     const answer = this.request(
       '/' + level + '/' + orthancID + '/anonymize',
       'post',
@@ -321,13 +319,13 @@ export default class OrthancClient extends HttpClient {
   };
 
   monitorJob = (
-    jobPath: string,
+    jobId: string,
     updateCallback: (response: AxiosResponse) => void,
     updateInterval: number,
   ) => {
     return new Promise((resolve, reject) => {
       let interval = setInterval(() => {
-        this.request(jobPath, 'get', undefined, undefined)
+        this.request('/jobs/' + jobId, 'get', undefined, undefined)
           .then((response) => {
             updateCallback(response);
             if (response.statusText === 'Success') {
@@ -345,7 +343,7 @@ export default class OrthancClient extends HttpClient {
     });
   };
 
-  makeRetrieve = (queryID, answerNumber, aet, synchronous = false) => {
+  makeRetrieve = (queryID: string, answerNumber: number, aet: string, synchronous: boolean) => {
     const postData = {
       Synchronous: synchronous,
       TargetAet: aet,
@@ -401,7 +399,7 @@ export default class OrthancClient extends HttpClient {
     const answer = await this.request(
       '/modalities/' + aet + '/query',
       'post',
-      payload,
+      payload
     ).catch((err: any) => {
       throw err;
     });
@@ -452,7 +450,7 @@ export default class OrthancClient extends HttpClient {
 
     for (let i = 0; i < studyAnswers.data.length; i++) {
       const element = studyAnswers[i];
-      const queryLevel = element['0008,0052'].Value;
+      // const queryLevel = element['0008,0052'].Value;
 
       let accessionNb = null;
       if (element.hasOwnProperty('0008,0050')) {

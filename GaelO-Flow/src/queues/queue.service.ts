@@ -11,7 +11,8 @@ export abstract class AbstractQueueService {
     }
   
   async addJob(data: Object): Promise<void> {
-    await this.queue.add(data['uuid'] + '_' + data['orthancSeriesId'], data, {
+    // console.log('Adding job', data['uuid']);
+    await this.queue.add(data['uuid'], data, {
       removeOnComplete: {
         age: 3600,
       },
@@ -79,19 +80,6 @@ export abstract class AbstractQueueService {
     return result ? true : false;
   }
 
-  // async getJobProgress(jobId: string): Promise<Object | null> {
-  //   const job = await this.deleteQueue.getJob(jobId.toString());
-  //   if (job) {
-  //     return {
-  //       progress: job.progress,
-  //       state: await job.getState(),
-  //       id: job.id,
-  //     };
-  //   } else {
-  //     return null;
-  //   }
-  // }
-
   async getUuidOfUser(userId: number): Promise<string | null> {
     const jobs: Job<any, any, string>[] | null = await this.queue.getJobs();
     const uuid: string | null = jobs.find((job) => job.data.userId == userId)
@@ -104,11 +92,7 @@ export abstract class AbstractQueueService {
     await this.queue.close();
   }
 
-  public async seed() {
-    const jobs: Job<any, any, string>[] = await this.queue.getJobs();
-
-    jobs.forEach((job) => {
-      this.queue.remove(job.id, { removeChildren: true });
-    });
+  async flush(): Promise<void> {
+    await this.queue.obliterate({ force: true });
   }
 }

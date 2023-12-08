@@ -9,28 +9,28 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { QueuesDeleteService } from './queueDeletes.service';
-import { AdminGuard, DeleteGuard } from '../../roles/roles.guard';
+import { QueuesAnonService } from './queueAnons.service';
+import { AdminGuard, AnonymizeGuard } from '../../roles/roles.guard';
 import { Job } from 'bullmq';
-import { QueuesDeleteDto } from './queueDeletes.dto';
+import { QueuesAnonsDto } from './queueAnons.dto';
 import { randomUUID } from 'crypto';
 
-@Controller('/queues/delete')
-export class QueuesDeleteController {
-  constructor(private readonly QueuesDeleteService: QueuesDeleteService) {}
+@Controller('/queues/anon')
+export class QueuesAnonController {
+  constructor(private readonly QueuesAnonService: QueuesAnonService) {}
 
   @UseGuards(AdminGuard)
   @Delete()
   async flushQueue(): Promise<void> {
     console.log('Flushing queue');
-    await this.QueuesDeleteService.flush();
+    await this.QueuesAnonService.flush();
   }
 
   @UseGuards(AdminGuard)
   @Get('all')
   async getAllJobs(): Promise<Object> {
     const jobs: Job<any, any, string>[] | null =
-      await this.QueuesDeleteService.getJobs();
+      await this.QueuesAnonService.getJobs();
 
     const resultsProgressPromises = jobs.map(async (job) => {
         const orthancSeriesId = job.data.orthancSeriesId;
@@ -54,40 +54,40 @@ export class QueuesDeleteController {
     return results;
   }
 
-  @UseGuards(DeleteGuard)
+  @UseGuards(AnonymizeGuard)
   @Post()
-  async addDeleteJob(
-    @Body() queuesDeleteDto: QueuesDeleteDto,
+  async addAnonJob(
+    @Body() queuesAnonsDto: QueuesAnonsDto,
     @Req() request: Request,
   ): Promise<Object> {
     const user = request['user'];
 
-    if (await this.QueuesDeleteService.checkIfUserIdHasJobs(user.userId))
+    if (await this.QueuesAnonService.checkIfUserIdHasJobs(user.userId))
       throw new ForbiddenException('User already has jobs');
 
-    const orthancSeriesIds = queuesDeleteDto.orthancSeriesIds;
+    const anonymizes = queuesAnonsDto.anonymizes;
     const uuid = randomUUID();
-    orthancSeriesIds.forEach((orthancSeriesId) => {
-      this.QueuesDeleteService.addJob({
+    anonymizes.forEach((anonymize) => {
+      this.QueuesAnonService.addJob({
         uuid: uuid,
         userId: user.userId,
-        orthancSeriesId: orthancSeriesId,
+        anonymize: anonymize,
       });
     });
     return { uuid };
   }
 
-  @UseGuards(DeleteGuard)
+  @UseGuards(AnonymizeGuard)
   @Delete(':uuid')
-  async removeDeleteJob(@Param('uuid') uuid: string): Promise<void> {
-    this.QueuesDeleteService.removeJob({ uuid: uuid });
+  async removeAnonJob(@Param('uuid') uuid: string): Promise<void> {
+    this.QueuesAnonService.removeJob({ uuid: uuid });
   }
 
-  @UseGuards(DeleteGuard)
+  @UseGuards(AnonymizeGuard)
   @Get(':uuid')
   async getJobsForUuid(@Param('uuid') uuid: string): Promise<Object> {
     const jobs: Job<any, any, string>[] | null =
-      await this.QueuesDeleteService.getJobs(uuid);
+      await this.QueuesAnonService.getJobs(uuid);
 
     const resultsProgressPromises = jobs.map(async (job) => {
       if (job.data.uuid == uuid) {
@@ -114,10 +114,10 @@ export class QueuesDeleteController {
     return results;
   }
 
-  @UseGuards(DeleteGuard)
+  @UseGuards(AnonymizeGuard)
   @Get()
   async getUuidOfUser(@Req() request: Request): Promise<Object> {
-    const uuid = await this.QueuesDeleteService.getUuidOfUser(
+    const uuid = await this.QueuesAnonService.getUuidOfUser(
       request['user'].userId,
     );
     return { uuid: uuid };
