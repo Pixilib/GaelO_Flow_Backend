@@ -76,7 +76,7 @@ import { QueuesQueryService } from './queues/query/queueQuery.service';
       useFactory: async (configService: ConfigService) => ({
         connection: {
           host: configService.get<string>('REDIS_ADDRESS', 'localhost'),
-          port: +configService.get<number>('REDIS_PORT', 6379),
+          port: configService.get<number>('REDIS_PORT', 6379),
         },
       }),
     }),
