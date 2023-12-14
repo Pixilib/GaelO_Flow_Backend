@@ -22,7 +22,6 @@ export class QueuesDeleteController {
   @UseGuards(AdminGuard)
   @Delete()
   async flushQueue(): Promise<void> {
-    console.log('Flushing queue');
     await this.QueuesDeleteService.flush();
   }
 
@@ -33,13 +32,13 @@ export class QueuesDeleteController {
       await this.QueuesDeleteService.getJobs();
 
     const resultsProgressPromises = jobs.map(async (job) => {
-        const orthancSeriesId = job.data.orthancSeriesId;
-        const progress = {
-          progress: job.progress,
-          state: job.data.state,
-          id: job.id,
-        };
-        return { [orthancSeriesId]: progress };
+      const id = job.id;
+      const progress = {
+        progress: job.progress,
+        state: job.data.state,
+        id: job.id,
+      };
+      return { [id]: progress };
     });
 
     let resultsProgress = await Promise.all(resultsProgressPromises);
@@ -91,13 +90,13 @@ export class QueuesDeleteController {
 
     const resultsProgressPromises = jobs.map(async (job) => {
       if (job.data.uuid == uuid) {
-        const orthancSeriesId = job.data.orthancSeriesId;
+        const id = job.id;
         const progress = {
           progress: job.progress,
           state: job.data.state,
           id: job.id,
         };
-        return { [orthancSeriesId]: progress };
+        return { [id]: progress };
       }
       return null;
     });

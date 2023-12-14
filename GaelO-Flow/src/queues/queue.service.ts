@@ -11,7 +11,6 @@ export abstract class AbstractQueueService {
     }
   
   async addJob(data: Object): Promise<void> {
-    // console.log('Adding job', data['uuid']);
     await this.queue.add(data['uuid'], data, {
       removeOnComplete: {
         age: 3600,

@@ -22,7 +22,6 @@ export class QueuesAnonController {
   @UseGuards(AdminGuard)
   @Delete()
   async flushQueue(): Promise<void> {
-    console.log('Flushing queue');
     await this.QueuesAnonService.flush();
   }
 
@@ -33,13 +32,13 @@ export class QueuesAnonController {
       await this.QueuesAnonService.getJobs();
 
     const resultsProgressPromises = jobs.map(async (job) => {
-        const orthancSeriesId = job.data.orthancSeriesId;
-        const progress = {
-          progress: job.progress,
-          state: job.data.state,
-          id: job.id,
-        };
-        return { [orthancSeriesId]: progress };
+      const id = job.id;
+      const progress = {
+        progress: job.progress,
+        state: job.data.state,
+        id: job.id,
+      };
+      return { [id]: progress };
     });
 
     let resultsProgress = await Promise.all(resultsProgressPromises);

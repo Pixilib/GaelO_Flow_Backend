@@ -38,7 +38,6 @@ import { SeedService } from './seeder.service';
 // QUEUES
 import { OrthancController } from './orthanc/Orthanc.controller';
 import OrthancClient from './orthanc/OrthancClient';
-import { BullModule } from '@nestjs/bullmq';
 
 import { QueuesDeleteController } from './queues/delete/queueDeletes.controller';
 import { QueuesDeleteService } from './queues/delete/queueDeletes.service';
@@ -58,7 +57,10 @@ import { QueuesQueryService } from './queues/query/queueQuery.service';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: configService.get<string>('TYPEORM_TYPE', 'postgres') as 'postgres', // Default to 'postgres'
+        type: configService.get<string>(
+          'TYPEORM_TYPE',
+          'postgres',
+        ) as 'postgres', // Default to 'postgres'
         host: configService.get<string>('TYPEORM_HOST', 'localhost'),
         port: +configService.get<number>('TYPEORM_PORT', 5432),
         username: configService.get<string>('TYPEORM_USERNAME', 'postgres'),
@@ -69,28 +71,7 @@ import { QueuesQueryService } from './queues/query/queueQuery.service';
       }),
     }),
     TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole, Label]),
-    AuthModule,
-    BullModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => ({
-        connection: {
-          host: configService.get<string>('REDIS_ADDRESS', 'localhost'),
-          port: +configService.get<number>('REDIS_PORT', 6379),
-        },
-      }),
-    }),
-    BullModule.registerQueue(
-      {
-        name: 'delete'
-      },
-      {
-        name: 'anon'
-      },
-      {
-        name: 'query'
-      }
-    ),
+    AuthModule
   ],
   controllers: [
     AppController,
@@ -102,7 +83,7 @@ import { QueuesQueryService } from './queues/query/queueQuery.service';
     OrthancController,
     QueuesDeleteController,
     QueuesAnonController,
-    QueuesQueryController
+    QueuesQueryController,
   ],
   providers: [
     AppService,
@@ -115,7 +96,7 @@ import { QueuesQueryService } from './queues/query/queueQuery.service';
     OrthancClient,
     QueuesDeleteService,
     QueuesAnonService,
-    QueuesQueryService
+    QueuesQueryService,
   ],
 })
-export class AppModule { }
+export class AppModule {}

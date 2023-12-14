@@ -1,10 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { QueuesDeleteService } from './queueDeletes.service';
-import { Job, Queue } from 'bullmq';
-import { BullModule } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { BullModule, InjectQueue } from '@nestjs/bullmq';
+import { AbstractQueueService } from './queue.service';
+import { ConnectionClosedEvent, ServerClosedEvent } from 'typeorm';
 
-describe('QueuesDeleteService', () => {
-  let service: QueuesDeleteService;
+class QueuesTestService extends AbstractQueueService {
+  constructor(@InjectQueue('test') testQueue: Queue) {
+    super(testQueue);
+  }
+}
+
+describe('QueuesService', () => {
+  let service: QueuesTestService;
   let mockQueue: jest.Mocked<Queue>;
 
   beforeEach(async () => {
@@ -17,7 +24,6 @@ describe('QueuesDeleteService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        BullModule,
         BullModule.forRoot({
           connection: {
             host: 'localhost', // REDIS_ADDRESS
@@ -25,11 +31,11 @@ describe('QueuesDeleteService', () => {
           },
         }),
         BullModule.registerQueue({
-          name: 'delete',
+          name: 'test',
         }),
       ],
       providers: [
-        QueuesDeleteService,
+        QueuesTestService,
         {
           provide: 'BULLMQ_QUEUE_DELETE',
           useValue: mockQueue,
@@ -37,7 +43,7 @@ describe('QueuesDeleteService', () => {
       ],
     }).compile();
 
-    service = module.get<QueuesDeleteService>(QueuesDeleteService);
+    service = module.get<QueuesTestService>(QueuesTestService);
   });
 
   afterEach(async () => {
@@ -48,7 +54,7 @@ describe('QueuesDeleteService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('addDeleteJob', () => {
+  describe('addJob', () => {
     afterEach(async () => {
       // Clean up the queue after each test
       const jobs = await service.getJobs();
@@ -67,7 +73,7 @@ describe('QueuesDeleteService', () => {
     });
   });
 
-  describe('removeDeleteJob', () => {
+  describe('removeJob', () => {
     beforeEach(async () => {
       // Insert jobs with known properties
       await service.addJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
@@ -150,39 +156,6 @@ describe('QueuesDeleteService', () => {
     });
   });
 
-  // describe('getJobProgress', () => {
-  //   let jobId;
-  
-  //   beforeEach(async () => {
-  //     // Insert jobs
-  //     await service.addDeleteJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
-  //     const jobs = await service.getJobs('uuid1');
-  //     jobId = jobs[0].id;
-  //   });
-  
-  //   afterEach(async () => {
-  //     // Clean up the queue after each test
-  //     const jobs = await service.getJobs();
-  //     await Promise.all(jobs.map(job => job.remove()));
-  //   });
-  
-  //   it('should retrieve the progress of a job by its ID', async () => {
-  //     const jobProgress: Object = await service.getJobProgress(jobId);
-  
-  //     expect(jobProgress).not.toBeNull();
-  //     expect(jobProgress).toHaveProperty('progress');
-  //     expect(jobProgress).toHaveProperty('state');
-  //     expect(jobProgress['id']).toBe(jobId);
-  //   });
-  
-  //   it('should return null for a non-existent job ID', async () => {
-  //     const nonExistentJobId = 'nonexistent';
-  //     const jobProgress = await service.getJobProgress(nonExistentJobId);
-  
-  //     expect(jobProgress).toBeNull();
-  //   });
-  // });
-
   describe('getUuidOfUser', () => {
     beforeEach(async () => {
       // Insert jobs
@@ -205,6 +178,41 @@ describe('QueuesDeleteService', () => {
     it('should return null if there are no jobs for the given userId', async () => {
       const uuid = await service.getUuidOfUser(3);
       expect(uuid).toBeNull();
+    });
+  });
+
+  describe('closeQueueConnection', () => {
+    it('should close the queue connection', async () => {
+      await service.closeQueueConnection();
+
+      try {
+        await service.getJobs();
+        expect(true).toBe(false);
+      } catch (error) {
+        expect(error.message).toBe('Connection is closed.');
+      }
+
+    });
+  });
+
+  describe('flush', () => {
+    beforeEach(async () => {
+      // Insert jobs
+      await service.addJob({ uuid: 'uuid1', orthancSeriesId: '123', userId: 1 });
+      await service.addJob({ uuid: 'uuid1', orthancSeriesId: '456', userId: 1 });
+      await service.addJob({ uuid: 'uuid2', orthancSeriesId: '789', userId: 2 });
+    });
+  
+    afterEach(async () => {
+      // Clean up the queue after each test
+      const jobs = await service.getJobs();
+      await Promise.all(jobs.map(job => job.remove()));
+    });
+  
+    it('should flush the queue', async () => {
+      await service.flush();
+      const jobs = await service.getJobs();
+      expect(jobs.length).toBe(0);
     });
   });
 });
