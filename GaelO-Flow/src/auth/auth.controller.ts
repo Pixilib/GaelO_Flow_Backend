@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { Public } from '../interceptors/Public';
 
 @Public()
-@Controller('auth')
+@Controller('')
 export class AuthController {
   constructor(
     private authService: AuthService,

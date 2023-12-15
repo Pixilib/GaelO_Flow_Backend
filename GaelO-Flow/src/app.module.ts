@@ -48,6 +48,8 @@ import { QueuesAnonService } from './queues/anon/queueAnons.service';
 
 import { QueuesQueryController } from './queues/query/queueQuery.controller';
 import { QueuesQueryService } from './queues/query/queueQuery.service';
+import { TestremiController } from './testremi/testremi.controller';
+import { TestremiService } from './testremi/testremi.service';
 
 @Module({
   imports: [
@@ -102,7 +104,8 @@ import { QueuesQueryService } from './queues/query/queueQuery.service';
     OrthancController,
     QueuesDeleteController,
     QueuesAnonController,
-    QueuesQueryController
+    QueuesQueryController,
+    TestremiController
   ],
   providers: [
     AppService,
@@ -115,7 +118,8 @@ import { QueuesQueryService } from './queues/query/queueQuery.service';
     OrthancClient,
     QueuesDeleteService,
     QueuesAnonService,
-    QueuesQueryService
+    QueuesQueryService,
+    TestremiService
   ],
 })
 export class AppModule { }
