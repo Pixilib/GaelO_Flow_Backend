@@ -48,6 +48,7 @@ import { QueuesAnonService } from './queues/anon/queueAnons.service';
 import { QueuesQueryController } from './queues/query/queueQuery.controller';
 import { QueuesQueryService } from './queues/query/queueQuery.service';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({
