@@ -30,6 +30,79 @@ describe('QueuesDeleteController', () => {
     controller = module.get<QueuesDeleteController>(QueuesDeleteController);
   });
 
+  describe('getJobs', () => {
+    it('should return all jobs for all users (admin)', async () => {
+      // MOCK
+      const uuid = 'test-uuid';
+      const uuid2 = 'test-uuid2';
+      const mockJobs: any = [
+        {
+          id: 'job1',
+          name: 'job1',
+          data: {
+            uuid: uuid,
+            orthancSeriesId: 'series1',
+            state: 'waiting',
+            userId: 1,
+          },
+          progress: 0,
+        },
+        {
+          id: 'job2',
+          name: 'job2',
+          data: {
+            uuid: uuid,
+            orthancSeriesId: 'series2',
+            state: 'waiting',
+            userId: 1,
+          },
+          progress: 0,
+        },
+        {
+          id: 'job3',
+          name: 'job3',
+          data: {
+            uuid: uuid2,
+            orthancSeriesId: 'series1',
+            state: 'waiting',
+            userId: 1,
+          },
+          progress: 0,
+        },
+      ];
+      const mockReq = {
+        user: {
+          userId: 1,
+          role: {
+            admin: true,
+          },
+        },
+      };
+
+      jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
+      jest.spyOn(service, 'getJobs').mockResolvedValue(mockJobs);
+
+      // ACT
+      const result = await controller.getJobs(1, uuid, mockReq as any);
+
+      // ASSERT
+      expect(service.getJobs).toHaveBeenCalledWith();
+      expect(service.getJobs).toHaveBeenCalledTimes(1);
+      expect(result).toEqual({
+        ['job1']: {
+          progress: 0,
+          state: 'waiting',
+          id: 'job1',
+        },
+        ['job2']: {
+          progress: 0,
+          state: 'waiting',
+          id: 'job2',
+        },
+      });
+    });
+  });
+
   describe('addDeleteJob', () => {
     it('should return a UUID when a delete job is added', async () => {
       // MOCK
@@ -52,9 +125,7 @@ describe('QueuesDeleteController', () => {
         userId: 1,
         orthancSeriesId: '123',
       });
-      expect(service.addJob).toHaveBeenCalledTimes(
-        dto.orthancSeriesIds.length,
-      );
+      expect(service.addJob).toHaveBeenCalledTimes(dto.orthancSeriesIds.length);
     });
 
     it('should throw ForbiddenException if user already has jobs', async () => {
@@ -89,9 +160,7 @@ describe('QueuesDeleteController', () => {
       // ASSERT
       expect(result).toHaveProperty('uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
-      expect(service.addJob).toHaveBeenCalledTimes(
-        dto.orthancSeriesIds.length,
-      );
+      expect(service.addJob).toHaveBeenCalledTimes(dto.orthancSeriesIds.length);
       dto.orthancSeriesIds.forEach((id) => {
         expect(service.addJob).toHaveBeenCalledWith({
           uuid: expect.any(String),
@@ -114,85 +183,6 @@ describe('QueuesDeleteController', () => {
       // ASSERT
       expect(service.removeJob).toHaveBeenCalledWith({ uuid });
       expect(service.removeJob).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('getJobsForUuid', () => {
-    it('should return job progress details for a given UUID', async () => {
-      // MOCK
-      const uuid = 'test-uuid';
-      const mockJobs: any = [
-        {
-          id: 'job1',
-          name: 'job1',
-          data: {
-            uuid: uuid,
-            orthancSeriesId: 'series1',
-            state: 'waiting',
-            userId: 1,
-          },
-          progress: 0,
-        },
-      ];
-      jest.spyOn(service, 'getJobs').mockResolvedValue(mockJobs);
-
-      // ACT
-      const result = await controller.getJobsForUuid(uuid);
-
-      // ASSERT
-      expect(service.getJobs).toHaveBeenCalledWith(uuid);
-      expect(service.getJobs).toHaveBeenCalledTimes(1);
-      expect(result).toEqual({
-        series1: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job1',
-        },
-      });
-    });
-
-    it('should return an empty array if no jobs are found for the UUID', async () => {
-      // MOCK
-      const uuid = 'test-uuid';
-      jest.spyOn(service, 'getJobs').mockResolvedValue([]);
-
-      // ACT
-      const result = await controller.getJobsForUuid(uuid);
-
-      // ASSERT
-      expect(service.getJobs).toHaveBeenCalledWith(uuid);
-      expect(result).toEqual({});
-    });
-  });
-
-  describe('getUuidOfUser', () => {
-    it('should return UUID for the given user', async () => {
-      // MOCK
-      const mockUserId = 'user123';
-      const mockUuid = 'uuid123';
-      const mockRequest: any = { user: { userId: mockUserId } };
-      jest.spyOn(service, 'getUuidOfUser').mockResolvedValue(mockUuid);
-
-      // ACT
-      const result = await controller.getUuidOfUser(mockRequest);
-
-      // ASSERT
-      expect(service.getUuidOfUser).toHaveBeenCalledWith(mockUserId);
-      expect(result).toEqual({ uuid: mockUuid });
-    });
-
-    it('should handle the case where no UUID is found for the user', async () => {
-      // MOCK
-      const mockUserId = 'user123';
-      const mockRequest: any = { user: { userId: mockUserId } };
-      jest.spyOn(service, 'getUuidOfUser').mockResolvedValue(null);
-
-      // ACT
-      const result = await controller.getUuidOfUser(mockRequest);
-
-      // ASSERT
-      expect(service.getUuidOfUser).toHaveBeenCalledWith(mockUserId);
-      expect(result).toEqual({ uuid: null });
     });
   });
 });

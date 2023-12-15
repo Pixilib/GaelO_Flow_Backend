@@ -21,5 +21,4 @@ export class LdapGroupRolesService {
   async remove(id: number): Promise<void> {
     await this.ldapgrouprolesRepository.delete(id);
   }
-
 }

@@ -20,7 +20,7 @@ describe('OrthancClient', () => {
   describe('get system', () => {
     it('check is get systems works', async () => {
       const answer = await orthancClient.getSystem();
-      expect(typeof answer.DicomAet).toBe("string")
+      expect(typeof answer.DicomAet).toBe('string');
     });
   });
 });

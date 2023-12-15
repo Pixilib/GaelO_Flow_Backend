@@ -42,41 +42,43 @@ export default abstract class QueryAnswer {
 
   setAnswerId = (answerId: string | null): void => {
     this.AnswerId = answerId;
-  }
-  
+  };
+
   setAnswerNumber = (answerNumber: number): void => {
     this.AnswerNumber = answerNumber;
-  }
+  };
 
   setLevel = (level: QueryAnswerType): void => {
     this.Level = level;
-  }
-  
+  };
+
   setOriginAET = (originAET: string): void => {
     this.OriginAET = originAET;
-  }
-  
+  };
+
   setPatientName = (patientName: string): void => {
     this.PatientName = patientName;
-  }
-  
+  };
+
   setPatientID = (patientID: string): void => {
     this.PatientID = patientID;
-  }
-  
+  };
+
   setAccessionNumber = (accessionNumber: string | null): void => {
     this.AccessionNumber = accessionNumber;
-  }
-  
+  };
+
   setStudyDescription = (studyDescription: string | null): void => {
     this.StudyDescription = studyDescription;
-  }
-  
+  };
+
   setStudyDate = (studyDate: string | null): void => {
     this.StudyDate = studyDate;
-  }
-  
-  setRequestedProcedureDescription = (requestedProcedureDescription: string | null): void => {
+  };
+
+  setRequestedProcedureDescription = (
+    requestedProcedureDescription: string | null,
+  ): void => {
     this.RequestedProcedureDescription = requestedProcedureDescription;
-  }
+  };
 }

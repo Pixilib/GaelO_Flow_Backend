@@ -9,6 +9,7 @@ import {
   HttpException,
   UseInterceptors,
   UseGuards,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
@@ -22,7 +23,7 @@ export class UsersController {
   constructor(private readonly UserService: UsersService) {}
 
   @UseGuards(AdminGuard)
-  @Get()
+  @Get('all')
   async getUsers(): Promise<User[]> {
     return await this.UserService.findAll();
   }
@@ -72,10 +73,13 @@ export class UsersController {
 
   @UseGuards(AdminGuard)
   @Delete('/:id')
-  @UseInterceptors(NotFoundInterceptor)
   async delete(@Param('id') id: number): Promise<void> {
-    const user = await this.UserService.findOne(id);
-    return await this.UserService.remove(id);
+    const existingUser = await this.UserService.isExistingUser(id);
+    if (existingUser) {
+      return await this.UserService.remove(id);
+    } else {
+      throw new NotFoundException('All the keys are required');
+    }
   }
 
   @UseGuards(AdminGuard)
@@ -88,7 +92,7 @@ export class UsersController {
 
     // check if all the keys are present
     if (
-      userDto.firstname == undefined ||
+      !userDto.firstname == undefined ||
       !userDto.lastname == undefined ||
       !userDto.username == undefined ||
       !userDto.email == undefined ||

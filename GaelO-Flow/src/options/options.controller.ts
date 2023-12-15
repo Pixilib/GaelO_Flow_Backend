@@ -20,7 +20,7 @@ export class OptionsController {
   @UseGuards(AdminGuard)
   @Get()
   async getOptions(): Promise<Option> {
-    let options = await this.OptionService.getOptions();
+    const options = await this.OptionService.getOptions();
     delete options.id;
     return options;
   }

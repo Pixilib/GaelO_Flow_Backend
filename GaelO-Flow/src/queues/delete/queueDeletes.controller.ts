@@ -6,12 +6,12 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { QueuesDeleteService } from './queueDeletes.service';
 import { AdminGuard, DeleteGuard } from '../../roles/roles.guard';
-import { Job } from 'bullmq';
 import { QueuesDeleteDto } from './queueDeletes.dto';
 import { randomUUID } from 'crypto';
 
@@ -22,36 +22,45 @@ export class QueuesDeleteController {
   @UseGuards(AdminGuard)
   @Delete()
   async flushQueue(): Promise<void> {
-    console.log('Flushing queue');
     await this.QueuesDeleteService.flush();
   }
 
-  @UseGuards(AdminGuard)
-  @Get('all')
-  async getAllJobs(): Promise<Object> {
-    const jobs: Job<any, any, string>[] | null =
-      await this.QueuesDeleteService.getJobs();
+  @UseGuards(DeleteGuard || AdminGuard)
+  @Get('?')
+  async getJobs(
+    @Query('userId') userId: number,
+    @Query('uuid') uuid: string,
+    @Req() request: Request,
+  ): Promise<object> {
+    const user = request['user'];
 
-    const resultsProgressPromises = jobs.map(async (job) => {
-        const orthancSeriesId = job.data.orthancSeriesId;
-        const progress = {
-          progress: job.progress,
-          state: job.data.state,
-          id: job.id,
-        };
-        return { [orthancSeriesId]: progress };
-    });
-
-    let resultsProgress = await Promise.all(resultsProgressPromises);
-
-    let results = {};
-    resultsProgress.forEach((result) => {
-      if (result != null) {
-        Object.assign(results, result);
+    if (!userId && !uuid) {
+      if (user.role.admin) {
+        return await this.QueuesDeleteService.getJobs();
+      } else {
+        throw new ForbiddenException("You don't have access to this resource");
       }
-    });
+    }
 
-    return results;
+    if (userId && !uuid) {
+      if (user.role.admin || user.userId == userId) {
+        const uuid = await this.QueuesDeleteService.getUuidOfUser(userId);
+        return { uuid: uuid };
+      } else {
+        throw new ForbiddenException("You don't have access to this resource");
+      }
+    }
+
+    if (uuid) {
+      if (
+        user.role.admin ||
+        (await this.QueuesDeleteService.getUuidOfUser(user.userId)) == uuid
+      ) {
+        return await this.QueuesDeleteService.getJobsForUuid(uuid);
+      } else {
+        throw new ForbiddenException("You don't have access to this resource");
+      }
+    }
   }
 
   @UseGuards(DeleteGuard)
@@ -81,45 +90,5 @@ export class QueuesDeleteController {
   @Delete(':uuid')
   async removeDeleteJob(@Param('uuid') uuid: string): Promise<void> {
     this.QueuesDeleteService.removeJob({ uuid: uuid });
-  }
-
-  @UseGuards(DeleteGuard)
-  @Get(':uuid')
-  async getJobsForUuid(@Param('uuid') uuid: string): Promise<Object> {
-    const jobs: Job<any, any, string>[] | null =
-      await this.QueuesDeleteService.getJobs(uuid);
-
-    const resultsProgressPromises = jobs.map(async (job) => {
-      if (job.data.uuid == uuid) {
-        const orthancSeriesId = job.data.orthancSeriesId;
-        const progress = {
-          progress: job.progress,
-          state: job.data.state,
-          id: job.id,
-        };
-        return { [orthancSeriesId]: progress };
-      }
-      return null;
-    });
-
-    let resultsProgress = await Promise.all(resultsProgressPromises);
-
-    let results = {};
-    resultsProgress.forEach((result) => {
-      if (result != null) {
-        Object.assign(results, result);
-      }
-    });
-
-    return results;
-  }
-
-  @UseGuards(DeleteGuard)
-  @Get()
-  async getUuidOfUser(@Req() request: Request): Promise<Object> {
-    const uuid = await this.QueuesDeleteService.getUuidOfUser(
-      request['user'].userId,
-    );
-    return { uuid: uuid };
   }
 }

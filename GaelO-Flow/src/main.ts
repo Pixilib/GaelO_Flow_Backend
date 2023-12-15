@@ -23,11 +23,12 @@ async function main() {
   );
 
   const configService = app.get(ConfigService);
-  const orthancClient = app.get(OrthancClient)
+  const orthancClient = app.get(OrthancClient);
   const port = configService.get<number>('API_PORT', 3000);
-  await setupDeleteWorker(orthancClient);
-  await setupAnonWorker(orthancClient);
-  await setupQueryWorker(orthancClient);
+
+  setupDeleteWorker(orthancClient, configService);
+  setupAnonWorker(orthancClient, configService);
+  setupQueryWorker(orthancClient, configService);
   await app.listen(port);
 
   const address = (await app.getUrl()).replace('[::1]', 'localhost');

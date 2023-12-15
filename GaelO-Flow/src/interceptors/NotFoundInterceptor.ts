@@ -1,8 +1,4 @@
 import {
-  ExceptionFilter,
-  Catch,
-  ArgumentsHost,
-  HttpException,
   NotFoundException,
   Injectable,
   NestInterceptor,
@@ -19,8 +15,7 @@ export class NotFoundInterceptor implements NestInterceptor {
       catchError((error) => {
         if (error instanceof EntityNotFoundError) {
           throw new NotFoundException(error.message);
-        } 
-        else {
+        } else {
           throw error;
         }
       }),

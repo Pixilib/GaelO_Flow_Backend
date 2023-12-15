@@ -2,13 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RolesService } from './roles.service';
 import { RolesController } from './roles.controller';
 import { Role } from './role.entity';
-import { RoleDto } from './roles.dto';
 
 import { UsersService } from '../users/users.service';
 import { UsersController } from '../users/users.controller';
-import { NotFoundException } from '@nestjs/common';
-import { EntityNotFoundError } from 'typeorm';
-
 describe('RolesController', () => {
   let rolesController: RolesController;
   let rolesService: RolesService;
@@ -92,19 +88,14 @@ describe('RolesController', () => {
         anonymize: false,
       };
 
-      jest
-        .spyOn(rolesService, 'findOne')
-        .mockResolvedValue(roleDto);
+      jest.spyOn(rolesService, 'findOne').mockResolvedValue(roleDto);
       jest.spyOn(rolesService, 'update').mockResolvedValue(undefined);
 
       await expect(
         rolesService.update(roleName, roleDto),
       ).resolves.toBeUndefined();
 
-      expect(rolesService.update).toHaveBeenCalledWith(
-        roleName,
-        roleDto,
-      );
+      expect(rolesService.update).toHaveBeenCalledWith(roleName, roleDto);
     });
   });
 

@@ -36,7 +36,7 @@ export class OptionDto {
 
   @IsNumber()
   autoQueryHourStop: number;
-  
+
   @IsNumber()
   autoQueryMinuteStop: number;
 

@@ -10,12 +10,7 @@ export class OrthancController {
     const url = request.url;
     const method = request.method;
     const body = request.body;
-    this.orthancClient.streamAnswerToRes(
-      url,
-      method,
-      body,
-      response
-    );
+    this.orthancClient.streamAnswerToRes(url, method, body, response);
   }
 
   @Get('/system')
