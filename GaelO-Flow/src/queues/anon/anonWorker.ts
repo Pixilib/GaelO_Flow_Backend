@@ -31,7 +31,7 @@ function setupAnonWorker(
   const redisHost = configService.get('REDIS_ADDRESS', 'localhost');
   const redisPort = configService.get('REDIS_PORT', 6379);
   const connectionString = 'redis://'+redisHost+':'+redisPort
-  const redis = new Redis(connectionString);
+  const redis = new Redis(connectionString, {maxRetriesPerRequest: null});
 
   const anonWorker = new Worker(
     'anon',
@@ -47,7 +47,7 @@ function setupAnonWorker(
         job.data.anonymize.newStudyDescription,
       );
       job.updateProgress(50);
-      const studyDetails = await orthancClient.getOrthancDetails(
+      const studyDetails = await orthancClient.getOrthancDetails( // TODO: store study details .data in job -> key "results"
         'studies',
         anonAnswer.data.ID,
       );

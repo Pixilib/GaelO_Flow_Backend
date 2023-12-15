@@ -75,8 +75,8 @@ describe('QueuesQueryController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-        }, 
-      })
+        },
+      });
     });
   });
 

@@ -11,8 +11,7 @@ async function setupDeleteWorker(
   const redisHost = configService.get('REDIS_ADDRESS', 'localhost');
   const redisPort = configService.get('REDIS_PORT', 6379);
   const connectionString = 'redis://' + redisHost + ':' + redisPort;
-  const redis = new Redis(connectionString);
-  // console.log(await redis.info())
+  const redis = new Redis(connectionString, {maxRetriesPerRequest: null});
   const deleteWorker = new Worker(
     'delete',
     async (job: Job) => {

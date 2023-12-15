@@ -25,8 +25,8 @@ async function processStudy(orthancClient: OrthancClient, job: Job) {
   const orthancResults = await orthancClient.findInOrthancByStudyInstanceUID(
     request.data['0020,000d'],
   );
-  //Une fois fini stocker l'ID de la ressource orthanc recupérer dans les resultats du job
-  orthancResults[0].ID;
+  //TODO Une fois fini, stocker la ressource orthanc recupérer dans les resultats du job
+  orthancResults[0];
   job.updateProgress(100);
 }
 
@@ -43,7 +43,7 @@ function setupQueryWorker(
   const redisHost = configService.get('REDIS_ADDRESS', 'localhost');
   const redisPort = configService.get('REDIS_PORT', 6379);
   const connectionString = 'redis://' + redisHost + ':' + redisPort;
-  const redis = new Redis(connectionString);
+  const redis = new Redis(connectionString, {maxRetriesPerRequest: null});
   const queryWorker = new Worker(
     'query',
     async (job: Job) => {

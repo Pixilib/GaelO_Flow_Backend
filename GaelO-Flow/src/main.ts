@@ -27,12 +27,6 @@ async function main() {
   const orthancClient = app.get(OrthancClient);
   const port = configService.get<number>('API_PORT', 3000);
 
-  const redisHost = configService.get('REDIS_ADDRESS', 'localhost');
-  const redisPort = configService.get('REDIS_PORT', 6379);
-  const connectionString = 'redis://'+redisHost+':'+redisPort
-  console.log(connectionString)
-  const redis = new Redis(connectionString);
-
   setupDeleteWorker(orthancClient, configService);
   setupAnonWorker(orthancClient, configService);
   setupQueryWorker(orthancClient, configService);
