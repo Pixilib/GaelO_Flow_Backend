@@ -12,10 +12,8 @@ import {
 } from '@nestjs/common';
 import { QueuesDeleteService } from './queueDeletes.service';
 import { AdminGuard, DeleteGuard } from '../../roles/roles.guard';
-import { Job } from 'bullmq';
 import { QueuesDeleteDto } from './queueDeletes.dto';
 import { randomUUID } from 'crypto';
-import { promises } from 'dns';
 
 @Controller('/queues/delete')
 export class QueuesDeleteController {
@@ -33,7 +31,7 @@ export class QueuesDeleteController {
     @Query('userId') userId: number,
     @Query('uuid') uuid: string,
     @Req() request: Request,
-  ): Promise<Object> {
+  ): Promise<object> {
     const user = request['user'];
 
     if (!userId && !uuid) {
@@ -54,7 +52,10 @@ export class QueuesDeleteController {
     }
 
     if (uuid) {
-      if (user.role.admin || await this.QueuesDeleteService.getUuidOfUser(user.userId) == uuid) {
+      if (
+        user.role.admin ||
+        (await this.QueuesDeleteService.getUuidOfUser(user.userId)) == uuid
+      ) {
         return await this.QueuesDeleteService.getJobsForUuid(uuid);
       } else {
         throw new ForbiddenException("You don't have access to this resource");

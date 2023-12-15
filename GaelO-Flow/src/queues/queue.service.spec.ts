@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Queue } from 'bullmq';
 import { BullModule, InjectQueue } from '@nestjs/bullmq';
 import { AbstractQueueService } from './queue.service';
-import { ConnectionClosedEvent, ServerClosedEvent } from 'typeorm';
 
 class QueuesTestService extends AbstractQueueService {
   constructor(@InjectQueue('test') testQueue: Queue) {

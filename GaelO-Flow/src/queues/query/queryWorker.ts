@@ -43,7 +43,7 @@ function setupQueryWorker(
   const redisHost = configService.get('REDIS_ADDRESS', 'localhost');
   const redisPort = configService.get('REDIS_PORT', 6379);
   const connectionString = 'redis://' + redisHost + ':' + redisPort;
-  const redis = new Redis(connectionString, {maxRetriesPerRequest: null});
+  const redis = new Redis(connectionString, { maxRetriesPerRequest: null });
   const queryWorker = new Worker(
     'query',
     async (job: Job) => {
@@ -56,8 +56,6 @@ function setupQueryWorker(
   queryWorker.on('failed', (job, err) => {
     console.error(`Job ${job.id} failed with error ${err.message}`);
   });
-
-  queryWorker.on('progress', (job, progress) => {});
 }
 
 export default setupQueryWorker;

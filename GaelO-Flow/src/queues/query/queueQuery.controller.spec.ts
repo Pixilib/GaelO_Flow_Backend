@@ -1,8 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { QueuesQueryController } from './queueQuery.controller';
 import { QueuesQueryService } from './queueQuery.service';
-import { QueuesQueryDto } from './queueQuery.dto';
-import { ForbiddenException } from '@nestjs/common';
 
 describe('QueuesQueryController', () => {
   let controller: QueuesQueryController;

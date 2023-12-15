@@ -9,12 +9,11 @@ import {
   UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
-import { LabelsService } from './labels.service';
 import { Label } from './label.entity';
 import { LabelDto } from './labels.dto';
 import { NotFoundInterceptor } from './../interceptors/NotFoundInterceptor';
 import { AdminGuard } from '../roles/roles.guard';
-
+import { LabelsService } from './labels.service';
 
 @Controller('/labels')
 export class LabelsController {

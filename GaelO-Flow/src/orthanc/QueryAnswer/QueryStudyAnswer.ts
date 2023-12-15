@@ -12,14 +12,11 @@ export default class QueryStudyAnswer extends QueryAnswer {
     originAET: string,
     patientName: string,
     patientID: string,
-
     studyInstanceUID: string,
-
     accessionNumber: string | null = null,
     studyDescription: string | null = null,
     studyDate: string | null = null,
     requestedProcedureDescription: string | null = null,
-
     modalitiesInStudy: string | null = null,
     numberOfStudyRelatedSeries: number | null = null,
     numberOfStudyRelatedInstances: number | null = null,
@@ -44,17 +41,21 @@ export default class QueryStudyAnswer extends QueryAnswer {
 
   setModalitiesInStudy = (modalitiesInStudy: string | null): void => {
     this.ModalitiesInStudy = modalitiesInStudy;
-  }
+  };
 
   setStudyInstanceUID = (studyInstanceUID: string): void => {
     this.StudyInstanceUID = studyInstanceUID;
-  }  
-  
-  setNumberOfStudyRelatedSeries = (numberOfStudyRelatedSeries: number | null): void => {
+  };
+
+  setNumberOfStudyRelatedSeries = (
+    numberOfStudyRelatedSeries: number | null,
+  ): void => {
     this.NumberOfStudyRelatedSeries = numberOfStudyRelatedSeries;
-  }
-  
-  setNumberOfStudyRelatedInstances = (numberOfStudyRelatedInstances: number | null): void => {
+  };
+
+  setNumberOfStudyRelatedInstances = (
+    numberOfStudyRelatedInstances: number | null,
+  ): void => {
     this.NumberOfStudyRelatedInstances = numberOfStudyRelatedInstances;
-  }
+  };
 }

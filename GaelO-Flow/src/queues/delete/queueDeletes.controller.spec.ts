@@ -3,7 +3,6 @@ import { QueuesDeleteController } from './queueDeletes.controller';
 import { QueuesDeleteService } from './queueDeletes.service';
 import { QueuesDeleteDto } from './queueDeletes.dto';
 import { ForbiddenException } from '@nestjs/common';
-import { Job } from 'bullmq';
 
 describe('QueuesDeleteController', () => {
   let controller: QueuesDeleteController;
@@ -75,11 +74,10 @@ describe('QueuesDeleteController', () => {
         user: {
           userId: 1,
           role: {
-            admin: true
-          }
-        }
-      }
-
+            admin: true,
+          },
+        },
+      };
 
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
       jest.spyOn(service, 'getJobs').mockResolvedValue(mockJobs);
@@ -100,8 +98,8 @@ describe('QueuesDeleteController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-        }, 
-      })
+        },
+      });
     });
   });
 
@@ -127,9 +125,7 @@ describe('QueuesDeleteController', () => {
         userId: 1,
         orthancSeriesId: '123',
       });
-      expect(service.addJob).toHaveBeenCalledTimes(
-        dto.orthancSeriesIds.length,
-      );
+      expect(service.addJob).toHaveBeenCalledTimes(dto.orthancSeriesIds.length);
     });
 
     it('should throw ForbiddenException if user already has jobs', async () => {
@@ -164,9 +160,7 @@ describe('QueuesDeleteController', () => {
       // ASSERT
       expect(result).toHaveProperty('uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
-      expect(service.addJob).toHaveBeenCalledTimes(
-        dto.orthancSeriesIds.length,
-      );
+      expect(service.addJob).toHaveBeenCalledTimes(dto.orthancSeriesIds.length);
       dto.orthancSeriesIds.forEach((id) => {
         expect(service.addJob).toHaveBeenCalledWith({
           uuid: expect.any(String),

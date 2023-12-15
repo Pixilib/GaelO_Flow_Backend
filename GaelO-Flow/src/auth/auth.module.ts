@@ -15,10 +15,10 @@ import { ConfigService } from '@nestjs/config';
     UsersModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) :any => ({
+      useFactory: (config: ConfigService): any => ({
         secret: config.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '6h' }
-      })
+        signOptions: { expiresIn: '6h' },
+      }),
     }),
     TypeOrmModule.forFeature([User]),
   ],

@@ -1,5 +1,3 @@
-// roles.service.spec.ts
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { RolesService } from './roles.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -53,7 +51,7 @@ describe('RolesService', () => {
       const result = await rolesService.findOne('User');
       expect(result).toEqual(role);
     });
-    it("should throw an error when the role is not found", async () => {
+    it('should throw an error when the role is not found', async () => {
       // Assuming the method throws an error when the role is not found
       const nonExistentRole = 'NonExistentRole';
       await expect(rolesService.findOne(nonExistentRole)).rejects.toThrow();
@@ -91,7 +89,7 @@ describe('RolesService', () => {
 
   describe('update', () => {
     it('should update a role', async () => {
-      let updateRole = { ...role };
+      const updateRole = { ...role };
       updateRole.admin = true;
       const updateResult = await rolesService.update('User', updateRole);
       const findOneResult = await rolesService.findOne('User');

@@ -23,13 +23,13 @@ export default class OrthancClient extends HttpClient {
     this.setPort(orthancPort);
     this.setUsername(orthancUsername);
     this.setPassword(orthancPassword);
-    let url = new URL(this.configService.get('APP_URL'))
+    const url = new URL(this.configService.get('APP_URL'));
     this.setForwardedAdress(url.host);
-    this.setForwardedProtocol(url.protocol)
+    this.setForwardedProtocol(url.protocol);
   };
 
   getSystem = async () => {
-    const answer = await this.request('/system', 'get', undefined)
+    const answer = await this.request('/system', 'get', undefined);
     return answer.data;
   };
 
@@ -282,15 +282,14 @@ export default class OrthancClient extends HttpClient {
     newPatientName: string,
     newStudyDescription: string,
   ) => {
-    let payload = this.buildAnonPayload(
+    const payload = this.buildAnonPayload(
       profile,
       newAccessionNumber,
       newPatientID,
       newPatientName,
       newStudyDescription,
     );
-    console.log(
-      '/' + level + '/' + orthancID + '/anonymize', payload);
+    console.log('/' + level + '/' + orthancID + '/anonymize', payload);
     const answer = this.request(
       '/' + level + '/' + orthancID + '/anonymize',
       'post',
@@ -300,12 +299,12 @@ export default class OrthancClient extends HttpClient {
   };
 
   getChangesSince = (since: string) => {
-    let outPutStream = '/changes?since=' + since;
+    const outPutStream = '/changes?since=' + since;
     return this.request(outPutStream, 'get', undefined, undefined);
   };
 
   getLastChanges = () => {
-    let outPutStream = '/changes?last';
+    const outPutStream = '/changes?last';
     return this.request(outPutStream, 'get', undefined, undefined);
   };
 
@@ -324,7 +323,7 @@ export default class OrthancClient extends HttpClient {
     updateInterval: number,
   ) => {
     return new Promise((resolve, reject) => {
-      let interval = setInterval(() => {
+      const interval = setInterval(() => {
         this.request('/jobs/' + jobId, 'get', undefined, undefined)
           .then((response) => {
             updateCallback(response);
@@ -343,7 +342,12 @@ export default class OrthancClient extends HttpClient {
     });
   };
 
-  makeRetrieve = (queryID: string, answerNumber: number, aet: string, synchronous: boolean) => {
+  makeRetrieve = (
+    queryID: string,
+    answerNumber: number,
+    aet: string,
+    synchronous: boolean,
+  ) => {
     const postData = {
       Synchronous: synchronous,
       TargetAet: aet,
@@ -399,7 +403,7 @@ export default class OrthancClient extends HttpClient {
     const answer = await this.request(
       '/modalities/' + aet + '/query',
       'post',
-      payload
+      payload,
     ).catch((err: any) => {
       throw err;
     });
@@ -539,7 +543,7 @@ export default class OrthancClient extends HttpClient {
 
     for (let i = 0; i < studyAnswers.data.length; i++) {
       const element = studyAnswers.data[i];
-      const queryLevel = element['0008,0052'].Value;
+      //const queryLevel = element['0008,0052'].Value;
 
       let accessionNb = null;
       if (element.hasOwnProperty('0008,0050')) {

@@ -1,35 +1,35 @@
-import { Entity, Column, PrimaryColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Option {
   @PrimaryGeneratedColumn({ name: 'id' })
   id: number;
 
-  @Column({ nullable: true, default: null, name: 'ldap_type'})
+  @Column({ nullable: true, default: null, name: 'ldap_type' })
   ldapType: string;
 
-  @Column({ nullable: true, default: null, name: 'ldap_protocol'})
+  @Column({ nullable: true, default: null, name: 'ldap_protocol' })
   ldapProtocol: string;
 
-  @Column({ nullable: true, default: null, name: 'ldap_server'})
+  @Column({ nullable: true, default: null, name: 'ldap_server' })
   ldapServer: string;
 
-  @Column({ nullable: true, default: null, name: 'ldap_port'})
+  @Column({ nullable: true, default: null, name: 'ldap_port' })
   ldapPort: number;
 
-  @Column({ nullable: true, default: null, name: 'ldap_base_dn'})
+  @Column({ nullable: true, default: null, name: 'ldap_base_dn' })
   ldapBaseDn: string;
 
-  @Column({ nullable: true, default: null , name: 'ldap_bind_on'})
+  @Column({ nullable: true, default: null, name: 'ldap_bind_on' })
   ladpBindDn: string;
 
-  @Column({ nullable: true, default: null, name: 'ldap_bind_password'})
+  @Column({ nullable: true, default: null, name: 'ldap_bind_password' })
   ldapBindPassword: string;
 
-  @Column({ nullable: true, default: null, name: 'ldap_group'})
+  @Column({ nullable: true, default: null, name: 'ldap_group' })
   ldapGroup: string;
 
-  @Column({ nullable: true, default: null, name: 'ldap_user'})
+  @Column({ nullable: true, default: null, name: 'ldap_user' })
   ldapUser: string;
 
   @Column({ name: 'auto_query_hour_start' })

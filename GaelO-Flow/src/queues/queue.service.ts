@@ -95,11 +95,13 @@ export abstract class AbstractQueueService {
     await this.queue.obliterate({ force: true });
   }
 
-  async getJobsForUuid(uuid: string): Promise<Object> {
+  async getJobsForUuid(uuid: string): Promise<object> {
     const jobs: Job<any, any, string>[] | null = await this.getJobs(uuid);
 
-    const resultsProgressPromises = jobs.map(async (job) => {
-      if (job.data.uuid == uuid) {
+    const results = {};
+    jobs
+      .filter((job) => job.data.uuid == uuid)
+      .forEach((job) => {
         const id = job.id;
         const progress = {
           progress: job.progress,
@@ -107,19 +109,8 @@ export abstract class AbstractQueueService {
           id: job.id,
           results: job.data.results,
         };
-        return { [id]: progress };
-      }
-      return null;
-    });
-
-    let resultsProgress = await Promise.all(resultsProgressPromises);
-
-    let results = {};
-    resultsProgress.forEach((result) => {
-      if (result != null) {
-        Object.assign(results, result);
-      }
-    });
+        results[id] = progress;
+      });
 
     return results;
   }

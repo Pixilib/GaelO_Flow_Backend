@@ -29,6 +29,11 @@ export class UsersService {
     return await this.usersRepository.findOneByOrFail({ id });
   }
 
+  async isExistingUser(id: number): Promise<boolean> {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    return user ? true : false;
+  }
+
   async findOneByEmail(
     email: string,
     withRole: boolean,

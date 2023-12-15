@@ -2,10 +2,9 @@ import { Worker, Job } from 'bullmq';
 import OrthancClient from '../../orthanc/OrthancClient';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
-const JOBS_PROGRESS_INTERVAL = 200;
 
 function isSecondaryCapture(sopClassUid: string) {
-  let secondaryCapturySopClass = [
+  const secondaryCapturySopClass = [
     '1.2.840.10008.5.1.4.1.1.7',
     '1.2.840.10008.5.1.4.1.1.7.1',
     '1.2.840.10008.5.1.4.1.1.7.2',
@@ -30,14 +29,14 @@ function setupAnonWorker(
 ) {
   const redisHost = configService.get('REDIS_ADDRESS', 'localhost');
   const redisPort = configService.get('REDIS_PORT', 6379);
-  const connectionString = 'redis://'+redisHost+':'+redisPort
-  const redis = new Redis(connectionString, {maxRetriesPerRequest: null});
+  const connectionString = 'redis://' + redisHost + ':' + redisPort;
+  const redis = new Redis(connectionString, { maxRetriesPerRequest: null });
 
   const anonWorker = new Worker(
     'anon',
     async (job: Job) => {
       job.updateProgress(0);
-      let anonAnswer = await orthancClient.anonymize(
+      const anonAnswer = await orthancClient.anonymize(
         'studies',
         job.data.anonymize.orthancStudyID,
         job.data.anonymize.profile,
@@ -47,18 +46,20 @@ function setupAnonWorker(
         job.data.anonymize.newStudyDescription,
       );
       job.updateProgress(50);
-      const studyDetails = await orthancClient.getOrthancDetails( // TODO: store study details .data in job -> key "results"
+      const studyDetails = await orthancClient.getOrthancDetails(
+        // TODO: store study details .data in job -> key "results"
         'studies',
         anonAnswer.data.ID,
       );
-      for (let seriesOrthancID of studyDetails.data.Series) {
-        let seriesDetails = await orthancClient.getOrthancDetails(
+      for (const seriesOrthancID of studyDetails.data.Series) {
+        const seriesDetails = await orthancClient.getOrthancDetails(
           'series',
           seriesOrthancID,
         );
-        let firstInstanceID = seriesDetails.data.Instances[0];
+        const firstInstanceID = seriesDetails.data.Instances[0];
         try {
-          let sopClassUID = await orthancClient.getSopClassUID(firstInstanceID);
+          const sopClassUID =
+            await orthancClient.getSopClassUID(firstInstanceID);
           if (isSecondaryCapture(sopClassUID.data)) {
             await orthancClient.deleteFromOrthanc('series', seriesOrthancID);
           }
@@ -68,14 +69,12 @@ function setupAnonWorker(
       }
       job.updateProgress(100);
     },
-    { connection: redis }
+    { connection: redis },
   );
 
   anonWorker.on('failed', (job, err) => {
     console.error(`Job ${job.id} failed with error ${err.message}`);
   });
-
-  anonWorker.on('progress', (job, progress) => {});
 }
 
 export default setupAnonWorker;
