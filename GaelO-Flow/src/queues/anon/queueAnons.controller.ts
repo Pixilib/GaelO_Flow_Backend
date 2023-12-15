@@ -22,33 +22,25 @@ export class QueuesAnonController {
   @UseGuards(AdminGuard)
   @Delete()
   async flushQueue(): Promise<void> {
-    console.log('Flushing queue');
     await this.QueuesAnonService.flush();
   }
 
   @UseGuards(AdminGuard)
   @Get('all')
-  async getAllJobs(): Promise<Object> {
+  async getAllJobs(): Promise<object> {
     const jobs: Job<any, any, string>[] | null =
       await this.QueuesAnonService.getJobs();
 
-    const resultsProgressPromises = jobs.map(async (job) => {
-        const orthancSeriesId = job.data.orthancSeriesId;
-        const progress = {
-          progress: job.progress,
-          state: job.data.state,
-          id: job.id,
-        };
-        return { [orthancSeriesId]: progress };
-    });
-
-    let resultsProgress = await Promise.all(resultsProgressPromises);
-
-    let results = {};
-    resultsProgress.forEach((result) => {
-      if (result != null) {
-        Object.assign(results, result);
-      }
+    //TODO refactor à verfier
+    const results = {};
+    jobs.forEach((job) => {
+      const id = job.id;
+      const progress = {
+        progress: job.progress,
+        state: job.data.state,
+        id: job.id,
+      };
+      results[id] = progress;
     });
 
     return results;
@@ -59,7 +51,7 @@ export class QueuesAnonController {
   async addAnonJob(
     @Body() queuesAnonsDto: QueuesAnonsDto,
     @Req() request: Request,
-  ): Promise<Object> {
+  ): Promise<object> {
     const user = request['user'];
 
     if (await this.QueuesAnonService.checkIfUserIdHasJobs(user.userId))
@@ -85,26 +77,26 @@ export class QueuesAnonController {
 
   @UseGuards(AnonymizeGuard)
   @Get(':uuid')
-  async getJobsForUuid(@Param('uuid') uuid: string): Promise<Object> {
+  async getJobsForUuid(@Param('uuid') uuid: string): Promise<object> {
     const jobs: Job<any, any, string>[] | null =
       await this.QueuesAnonService.getJobs(uuid);
 
-    const resultsProgressPromises = jobs.map(async (job) => {
+    const resultsProgressPromises = jobs.map((job) => {
       if (job.data.uuid == uuid) {
-        const orthancSeriesId = job.data.orthancSeriesId;
+        const id = job.id;
         const progress = {
           progress: job.progress,
           state: job.data.state,
           id: job.id,
         };
-        return { [orthancSeriesId]: progress };
+        return { [id]: progress };
       }
       return null;
     });
 
-    let resultsProgress = await Promise.all(resultsProgressPromises);
+    const resultsProgress = await Promise.all(resultsProgressPromises);
 
-    let results = {};
+    const results = {};
     resultsProgress.forEach((result) => {
       if (result != null) {
         Object.assign(results, result);
@@ -116,7 +108,7 @@ export class QueuesAnonController {
 
   @UseGuards(AnonymizeGuard)
   @Get()
-  async getUuidOfUser(@Req() request: Request): Promise<Object> {
+  async getUuidOfUser(@Req() request: Request): Promise<object> {
     const uuid = await this.QueuesAnonService.getUuidOfUser(
       request['user'].userId,
     );

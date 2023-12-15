@@ -1,5 +1,3 @@
-// options.service.spec.ts
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { OptionsService } from './options.service';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -51,18 +49,15 @@ describe('OptionsService', () => {
       ).rejects.toThrow(EntityNotFoundError);
     });
     */
-    
   });
 
   describe('update', () => {
     it('should update the options', async () => {
       const newOption = { ...option, useLdap: true };
-      const result = await optionsService.update(newOption);
+      await optionsService.update(newOption);
       const getOptions = await optionsService.getOptions();
 
       expect(getOptions).toEqual(newOption);
     });
-
-
   });
 });

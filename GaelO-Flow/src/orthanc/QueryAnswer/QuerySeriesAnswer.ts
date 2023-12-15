@@ -17,7 +17,7 @@ export default class QuerySeriesAnswer extends QueryAnswer {
 
     studyUID: string,
     seriesUID: string,
-    
+
     accessionNumber: string | null = null,
     studyDescription: string | null = null,
     studyDate: string | null = null,
@@ -50,25 +50,27 @@ export default class QuerySeriesAnswer extends QueryAnswer {
 
   setStudyInstanceUID = (studyInstanceUID: string): void => {
     this.StudyInstanceUID = studyInstanceUID;
-  }
-  
+  };
+
   setSeriesInstanceUID = (seriesInstanceUID: string): void => {
     this.SeriesInstanceUID = seriesInstanceUID;
-  }
-  
+  };
+
   setModality = (modality: string | null): void => {
     this.Modality = modality;
-  }
-  
+  };
+
   setSeriesDescription = (seriesDescription: string | null): void => {
     this.SeriesDescription = seriesDescription;
-  }
-  
+  };
+
   setSeriesNumber = (seriesNumber: number | null): void => {
     this.SeriesNumber = seriesNumber;
-  }
-  
-  setNumberOfSeriesRelatedInstances = (numberOfSeriesRelatedInstances: number | null): void => {
+  };
+
+  setNumberOfSeriesRelatedInstances = (
+    numberOfSeriesRelatedInstances: number | null,
+  ): void => {
     this.NumberOfSeriesRelatedInstances = numberOfSeriesRelatedInstances;
-  }
+  };
 }

@@ -4,14 +4,13 @@ import { Worker, Job, Queue } from 'bullmq';
 
 @Injectable()
 export abstract class AbstractQueueService {
-    protected queue: Queue;
+  protected queue: Queue;
 
-    constructor(queue: Queue) {
-      this.queue = queue;
-    }
-  
+  constructor(queue: Queue) {
+    this.queue = queue;
+  }
+
   async addJob(data: Object): Promise<void> {
-    // console.log('Adding job', data['uuid']);
     await this.queue.add(data['uuid'], data, {
       removeOnComplete: {
         age: 3600,
@@ -94,5 +93,25 @@ export abstract class AbstractQueueService {
 
   async flush(): Promise<void> {
     await this.queue.obliterate({ force: true });
+  }
+
+  async getJobsForUuid(uuid: string): Promise<object> {
+    const jobs: Job<any, any, string>[] | null = await this.getJobs(uuid);
+
+    const results = {};
+    jobs
+      .filter((job) => job.data.uuid == uuid)
+      .forEach((job) => {
+        const id = job.id;
+        const progress = {
+          progress: job.progress,
+          state: job.data.state,
+          id: job.id,
+          results: job.data.results,
+        };
+        results[id] = progress;
+      });
+
+    return results;
   }
 }

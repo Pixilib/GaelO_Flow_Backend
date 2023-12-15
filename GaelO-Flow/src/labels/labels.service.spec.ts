@@ -1,5 +1,3 @@
-// labels.service.spec.ts
-
 import { Test, TestingModule } from '@nestjs/testing';
 import { LabelsService } from './labels.service';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
@@ -36,29 +34,27 @@ describe('LabelsService', () => {
       const result = await labelsService.findAll();
       expect(result).toEqual(labels);
     });
-
   });
 
   describe('find one label', () => {
-
     it('should get one label', async () => {
       const result = await labelsService.findOneByOrFail('first');
       expect(result).toEqual({ labelName: 'first' });
     });
-  
+
     it("should throw if labels doesn't exists", async () => {
-      expect(labelsService.findOneByOrFail('third')).rejects.toThrow(EntityNotFoundError);
+      expect(labelsService.findOneByOrFail('third')).rejects.toThrow(
+        EntityNotFoundError,
+      );
     });
   });
 
   describe('remove label', () => {
-
     it('should remove one label', async () => {
       await labelsService.remove('first');
       const result = await labelsService.findAll();
       expect(result).toEqual([{ labelName: 'second' }]);
     });
-
   });
 
   describe('create label', () => {
@@ -78,7 +74,7 @@ describe('LabelsService', () => {
     it('should return true because label exists', async () => {
       const result = await labelsService.isLabelExist('first');
       expect(result).toEqual(true);
-    })
+    });
 
     it('should return false because label does not exist', async () => {
       const result = await labelsService.isLabelExist('non existant');

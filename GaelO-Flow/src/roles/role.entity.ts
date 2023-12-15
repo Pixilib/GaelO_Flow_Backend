@@ -5,33 +5,33 @@ export class Role {
   @PrimaryColumn({ name: 'name' })
   name: string;
 
-  @Column({default: false, name: 'import'})
+  @Column({ default: false, name: 'import' })
   import: boolean;
 
-  @Column({default: false, name: 'anonymize'})
+  @Column({ default: false, name: 'anonymize' })
   anonymize: boolean;
 
-  @Column({default: false, name: 'export' })
+  @Column({ default: false, name: 'export' })
   export: boolean;
 
-  @Column({default: false, name: 'query'})
+  @Column({ default: false, name: 'query' })
   query: boolean;
 
-  @Column({default: false, name: 'auto_query'})
+  @Column({ default: false, name: 'auto_query' })
   autoQuery: boolean;
 
-  @Column({default: false, name: 'delete'})
+  @Column({ default: false, name: 'delete' })
   delete: boolean;
 
-  @Column({default: false, name: 'admin'})
+  @Column({ default: false, name: 'admin' })
   admin: boolean;
 
-  @Column({default: false, name: 'modify'})
+  @Column({ default: false, name: 'modify' })
   modify: boolean;
 
-  @Column({default: false, name: 'cd_burner'})
+  @Column({ default: false, name: 'cd_burner' })
   cdBurner: boolean;
 
-  @Column({default: false, name: 'auto_routing'})
+  @Column({ default: false, name: 'auto_routing' })
   autoRouting: boolean;
 }

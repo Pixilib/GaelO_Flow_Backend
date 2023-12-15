@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LabelsService } from './labels.service';
 import { LabelsController } from './labels.controller';
-import { Label } from './label.entity';
 import { LabelDto } from './labels.dto';
 
 describe('LabelsController', () => {
@@ -44,9 +43,6 @@ describe('LabelsController', () => {
       const mockRemove = jest
         .spyOn(labelsService, 'remove')
         .mockResolvedValue(undefined);
-      const mockFindOne = jest
-        .spyOn(labelsService, 'findOneByOrFail')
-        .mockResolvedValue({ labelName: 'first' } as Label);
 
       await labelsController.remove('first');
       expect(mockRemove).toHaveBeenCalled();

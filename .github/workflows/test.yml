@@ -1,0 +1,41 @@
+name: 'unit test'
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:  
+  test:
+    name: 'Run unit test'
+    runs-on: ubuntu-latest
+    services:
+      redis:
+        # Docker Hub image
+        image: redis
+        # Set health checks to wait until redis has started
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+            # Opens tcp port 6379 on the host and service container
+            - 6379:6379
+    steps:
+      - name: 'Build checkout'
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+    
+      - name: 'Install and Build'
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
+          
+      - run: yarn install --frozen-lockfile
+        working-directory: ./GaelO-Flow
+
+      - run : yarn test
+        working-directory: ./GaelO-Flow
