@@ -47,8 +47,7 @@ import { QueuesAnonService } from './queues/anon/queueAnons.service';
 
 import { QueuesQueryController } from './queues/query/queueQuery.controller';
 import { QueuesQueryService } from './queues/query/queueQuery.service';
-import { TestremiController } from './testremi/testremi.controller';
-import { TestremiService } from './testremi/testremi.service';
+
 
 @Module({
   imports: [
