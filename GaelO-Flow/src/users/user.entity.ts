@@ -30,6 +30,7 @@ export class User {
   username: string;
 
   @Column({
+    nullable: true,
     name: 'password',
   })
   password: string;
@@ -46,8 +47,14 @@ export class User {
   })
   superAdmin: boolean;
 
-  @Column({ name: 'role_name', unique: false })
+  @Column({ 
+   name: 'role_name',
+   unique: false,
+   nullable: true,
+  })
   roleName: string;
+
+  //TODO: add lostPassword field timestamp
 
   @ManyToOne(() => Role, (role) => role.name)
   @JoinColumn({ name: 'role_name' })
@@ -61,6 +68,7 @@ export class User {
 
   @Column({
     name: 'salt',
+    nullable: true,
   })
   salt: string;
 }
