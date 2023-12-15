@@ -6,7 +6,13 @@ import Redis from 'ioredis';
 async function processStudy(orthancClient: OrthancClient, job: Job) {
   job.updateProgress(0);
   const queryDetails = await orthancClient.queryStudiesInAet(job.data);
-  // TODO: check that array length is 1
+
+  if (queryDetails.length != 1) {
+    throw new Error(
+      `Query returned ${queryDetails.length} results, expected 1`,
+    );
+  }
+
   const studyDetails = queryDetails[0];
 
   job.updateProgress(10);

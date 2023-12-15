@@ -90,13 +90,13 @@ export class QueuesAnonController {
 
     const resultsProgressPromises = jobs.map(async (job) => {
       if (job.data.uuid == uuid) {
-        const orthancSeriesId = job.data.orthancSeriesId;
+        const id = job.id;
         const progress = {
           progress: job.progress,
           state: job.data.state,
           id: job.id,
         };
-        return { [orthancSeriesId]: progress };
+        return { [id]: progress };
       }
       return null;
     });

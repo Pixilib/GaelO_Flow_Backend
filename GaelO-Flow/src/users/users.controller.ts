@@ -22,7 +22,7 @@ export class UsersController {
   constructor(private readonly UserService: UsersService) {}
 
   @UseGuards(AdminGuard)
-  @Get()
+  @Get('all')
   async getUsers(): Promise<User[]> {
     return await this.UserService.findAll();
   }
@@ -88,7 +88,7 @@ export class UsersController {
 
     // check if all the keys are present
     if (
-      userDto.firstname == undefined ||
+      !userDto.firstname == undefined ||
       !userDto.lastname == undefined ||
       !userDto.username == undefined ||
       !userDto.email == undefined ||

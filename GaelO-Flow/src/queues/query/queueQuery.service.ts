@@ -8,7 +8,6 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class QueuesQueryService extends AbstractQueueService {
   constructor(private configService: ConfigService) {
-    // console.log('config', configService.get<string>('REDIS_ADDRESS', 'localhost'), configService.get<number>('REDIS_PORT', 6379));
     const queryQueue = new Queue('query', {
       connection: {
         host: configService.get<string>('REDIS_ADDRESS', 'localhost'), // REDIS_ADDRESS
