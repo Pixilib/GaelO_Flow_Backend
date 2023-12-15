@@ -9,6 +9,9 @@ jobs:
   test:
     name: 'Run unit test'
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image : redis
     steps:
       - name: 'Build checkout'
         uses: actions/checkout@v3
