@@ -1,9 +1,10 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/user.entity';
 import { RegisterDto } from './register-dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 
 @Injectable()
 export class AuthService {
@@ -25,8 +26,18 @@ export class AuthService {
     };
   }
 
+  async createConfirmationToken(user: User):Promise<string> {
+  const payload = 
+  { 
+    id:user.id, 
+    email: user.email 
+  };
+  return this.jwtService.sign(payload, {
+    expiresIn: '24h', // Expiration en 24 heures
+  })
+}
 
-  async register(registerDto: RegisterDto): Promise<Object> {
+  async register(registerDto: RegisterDto): Promise<{ status: number; message: string}> {
     const { username, email } = registerDto;
 
     // Check if user already exists
@@ -39,13 +50,14 @@ export class AuthService {
     }
 
     const newUser = this.usersRepository.create(registerDto);
-    const savedUser = await this.usersRepository.save(newUser);
+    await this.usersRepository.save(newUser);
 
-    //return just id
-    return {id: savedUser.id};
+    //return HttpResponse code 201
+    return {
+      status: HttpStatus.CREATED,
+      message: 'An email has been sent, confirm your account to login',
+  };
+
   }
   //TODO: add a job for send a mail to the user with a link to confirm his account
-
 }
-
-
