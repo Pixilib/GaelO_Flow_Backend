@@ -4,6 +4,7 @@ import { User } from '../users/user.entity';
 import { RegisterDto } from './register-dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { MailService } from '../mail/mail.service';
 
 
 @Injectable()
@@ -12,6 +13,7 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private mailService: MailService,
     ) {}
 
   async signIn(user: User) {
@@ -51,7 +53,14 @@ export class AuthService {
 
     const newUser = this.usersRepository.create(registerDto);
     await this.usersRepository.save(newUser);
+    console.log({newUser});
+    //generate a token for confirmation of user:
+    const confirmationToken = await this.createConfirmationToken(newUser);
 
+    //TODO: send a mail to the user with a link to confirm his account
+    console.log({confirmationToken});
+    const sendEmail = await this.mailService.sendConfirmationEmail(newUser.email,confirmationToken)
+    console.log({sendEmail});
     //return HttpResponse code 201
     return {
       status: HttpStatus.CREATED,
