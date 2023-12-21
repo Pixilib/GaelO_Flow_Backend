@@ -6,6 +6,7 @@ import { IsEmail, IsNotEmpty } from "class-validator";
 //add a decorator to the class to make it a dto
 export class RegisterDto {
     @IsEmail()
+    @IsNotEmpty()
     email: string;
 
     @IsNotEmpty()
