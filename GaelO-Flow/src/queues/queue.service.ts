@@ -20,6 +20,7 @@ export abstract class AbstractQueueService {
       },
     });
   }
+
   async removeJob(data: Object | undefined = undefined): Promise<void> {
     const jobs: Job<any, any, string>[] = await this.queue.getJobs();
 
@@ -95,12 +96,12 @@ export abstract class AbstractQueueService {
     await this.queue.obliterate({ force: true });
   }
 
-  async getJobsForUuid(uuid: string): Promise<object> {
+  async getJobsForUuid(uuid: string = undefined): Promise<object> {
     const jobs: Job<any, any, string>[] | null = await this.getJobs(uuid);
 
     const results = {};
     jobs
-      .filter((job) => job.data.uuid == uuid)
+      .filter((job) => job.data.uuid == uuid || uuid == undefined)
       .forEach((job) => {
         const id = job.id;
         const progress = {

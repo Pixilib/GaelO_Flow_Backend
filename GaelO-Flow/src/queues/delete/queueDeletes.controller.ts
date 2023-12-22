@@ -26,7 +26,7 @@ export class QueuesDeleteController {
   }
 
   @UseGuards(DeleteGuard || AdminGuard)
-  @Get('?')
+  @Get()
   async getJobs(
     @Query('userId') userId: number,
     @Query('uuid') uuid: string,
@@ -36,7 +36,7 @@ export class QueuesDeleteController {
 
     if (!userId && !uuid) {
       if (user.role.admin) {
-        return await this.QueuesDeleteService.getJobs();
+        return await this.QueuesDeleteService.getJobsForUuid() // get all jobs;
       } else {
         throw new ForbiddenException("You don't have access to this resource");
       }
@@ -81,6 +81,7 @@ export class QueuesDeleteController {
         uuid: uuid,
         userId: user.userId,
         orthancSeriesId: orthancSeriesId,
+        results: null,
       });
     });
     return { uuid };

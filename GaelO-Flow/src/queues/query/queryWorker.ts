@@ -5,16 +5,20 @@ import Redis from 'ioredis';
 
 async function processStudy(orthancClient: OrthancClient, job: Job) {
   job.updateProgress(0);
-  const queryDetails = await orthancClient.queryStudiesInAet(job.data);
+  const queryDetails = await orthancClient.queryStudiesInAet(
+    job.data.study.patientName,
+    job.data.study.patientID,
+    job.data.study.studyDate,
+    job.data.study.modalities,
+    job.data.study.studyDescription,
+    job.data.study.accessionNb,
+    job.data.study.studyInstanceUID,
+    job.data.study.aet);
 
   if (queryDetails.length != 1) {
-    throw new Error(
-      `Query returned ${queryDetails.length} results, expected 1`,
-    );
+    job.failedReason = `Query returned ${queryDetails.length} results, expected 1`;
   }
-
   const studyDetails = queryDetails[0];
-
   job.updateProgress(10);
   const request = await orthancClient.makeRetrieve(
     studyDetails.AnswerId,
@@ -23,17 +27,41 @@ async function processStudy(orthancClient: OrthancClient, job: Job) {
     true,
   );
   const orthancResults = await orthancClient.findInOrthancByStudyInstanceUID(
-    request.data['0020,000d'],
+    request.data.Query[0]['0020,000d'],
   );
-  //TODO Une fois fini, stocker la ressource orthanc recupérer dans les resultats du job
-  orthancResults[0];
+  const orthancResult = orthancResults.data[0];
+  job.updateData({ ...job.data, results: orthancResult });
   job.updateProgress(100);
 }
 
-function processSeries(orthancClient: OrthancClient, job: Job) {
+async function processSeries(orthancClient: OrthancClient, job: Job) {
   job.updateProgress(0);
-  const seriesDetails = orthancClient.querySeriesInAet(job.data);
+  const seriesDetails = await orthancClient.querySeriesInAet(
+    job.data.series.studyUID,
+    job.data.series.modalities,
+    job.data.series.protocolName,
+    job.data.series.seriesDescription,
+    job.data.series.seriesNumber,
+    job.data.series.seriesInstanceUID,
+    job.data.series.aet);
+
+  if (seriesDetails.length != 1) {
+      job.failedReason = `Query returned ${seriesDetails.length} results, expected 1`;
+  }
+  const serieDetails = seriesDetails[0];
   job.updateProgress(10);
+  const request = await orthancClient.makeRetrieve(
+    serieDetails.AnswerId,
+    serieDetails.AnswerNumber,
+    serieDetails.OriginAET,
+    true,
+  );
+  const orthancResults = await orthancClient.findInOrthancBySeriesInstanceUID(
+    request.data.Query[0]['0020,000e'],
+  );
+  const orthancResult = orthancResults.data[0];
+  job.updateData({ ...job.data, results: orthancResult });
+  job.updateProgress(100);
 }
 
 function setupQueryWorker(

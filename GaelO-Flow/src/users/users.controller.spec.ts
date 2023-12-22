@@ -23,6 +23,7 @@ describe('UsersController', () => {
             create: jest.fn(),
             remove: jest.fn(),
             findByUsernameOrEmail: jest.fn(),
+            isExistingUser: jest.fn(),
           },
         },
       ],
@@ -85,13 +86,13 @@ describe('UsersController', () => {
 
   describe('delete', () => {
     it('check if delete calls service remove', async () => {
-      const mockFindOne = jest
-        .spyOn(usersService, 'findOne')
-        .mockResolvedValue(userList[0]);
+      const mockIsExistingUser = jest
+        .spyOn(usersService, 'isExistingUser')
+        .mockResolvedValue(true);
       const mockRemove = jest.spyOn(usersService, 'remove');
       const result = await usersController.delete(1);
       expect(result).toBeUndefined();
-      expect(mockFindOne).toHaveBeenCalled();
+      expect(mockIsExistingUser).toHaveBeenCalled();
       expect(mockRemove).toHaveBeenCalled();
     });
   });

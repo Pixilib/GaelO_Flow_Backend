@@ -5,7 +5,8 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
-  ConflictException
+  ConflictException,
+  HttpException
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';

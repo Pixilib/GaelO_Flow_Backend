@@ -7,6 +7,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -22,7 +23,7 @@ import { randomUUID } from 'crypto';
 
 @Controller('/queues/query')
 export class QueuesQueryController {
-  constructor(private readonly QueuesQueryService: QueuesQueryService) {}
+  constructor(private readonly QueuesQueryService: QueuesQueryService) { }
 
   @UseGuards(AdminGuard)
   @Delete()
@@ -30,32 +31,42 @@ export class QueuesQueryController {
     await this.QueuesQueryService.flush();
   }
 
-  @UseGuards(AdminGuard)
+  @UseGuards(QueryGuard || AdminGuard)
   @Get()
-  async getAllJobs(): Promise<Object> {
-    const jobs: Job<any, any, string>[] | null =
-      await this.QueuesQueryService.getJobs();
+  async getJobs(
+    @Query('userId') userId: number,
+    @Query('uuid') uuid: string,
+    @Req() request: Request,
+  ): Promise<object> {
+    const user = request['user'];
 
-    const resultsProgressPromises = jobs.map(async (job) => {
-      const id = job.id;
-      const progress = {
-        progress: job.progress,
-        state: job.data.state,
-        id: job.id,
-      };
-      return { [id]: progress };
-    });
-
-    let resultsProgress = await Promise.all(resultsProgressPromises);
-
-    let results = {};
-    resultsProgress.forEach((result) => {
-      if (result != null) {
-        Object.assign(results, result);
+    if (!userId && !uuid) {
+      if (user.role.admin) {
+        return await this.QueuesQueryService.getJobsForUuid(); // get all jobs;
+      } else {
+        throw new ForbiddenException("You don't have access to this resource");
       }
-    });
+    }
 
-    return results;
+    if (userId && !uuid) {
+      if (user.role.admin || user.userId == userId) {
+        const uuid = await this.QueuesQueryService.getUuidOfUser(userId);
+        return { uuid: uuid };
+      } else {
+        throw new ForbiddenException("You don't have access to this resource");
+      }
+    }
+
+    if (uuid) {
+      if (
+        user.role.admin ||
+        (await this.QueuesQueryService.getUuidOfUser(user.userId)) == uuid
+      ) {
+        return await this.QueuesQueryService.getJobsForUuid(uuid);
+      } else {
+        throw new ForbiddenException("You don't have access to this resource");
+      }
+    }
   }
 
   @UseGuards(QueryGuard)
@@ -81,6 +92,7 @@ export class QueuesQueryController {
         uuid: uuid,
         userId: user.userId,
         study: study,
+        results: null,
       });
     });
     queuesQuerySeries.forEach((series) => {
@@ -88,6 +100,7 @@ export class QueuesQueryController {
         uuid: uuid,
         userId: user.userId,
         series: series,
+        results: null,
       });
     });
     return { uuid };
@@ -97,45 +110,5 @@ export class QueuesQueryController {
   @Delete(':uuid')
   async removeQueryJob(@Param('uuid') uuid: string): Promise<void> {
     this.QueuesQueryService.removeJob({ uuid: uuid });
-  }
-
-  @UseGuards(QueryGuard)
-  @Get(':uuid')
-  async getJobsForUuid(@Param('uuid') uuid: string): Promise<Object> {
-    const jobs: Job<any, any, string>[] | null =
-      await this.QueuesQueryService.getJobs(uuid);
-
-    const resultsProgressPromises = jobs.map(async (job) => {
-      if (job.data.uuid == uuid) {
-        const id = job.id;
-        const progress = {
-          progress: job.progress,
-          state: job.data.state,
-          id: job.id,
-        };
-        return { [id]: progress };
-      }
-      return null;
-    });
-
-    let resultsProgress = await Promise.all(resultsProgressPromises);
-
-    let results = {};
-    resultsProgress.forEach((result) => {
-      if (result != null) {
-        Object.assign(results, result);
-      }
-    });
-
-    return results;
-  }
-
-  @UseGuards(QueryGuard)
-  @Get()
-  async getUuidOfUser(@Req() request: Request): Promise<Object> {
-    const uuid = await this.QueuesQueryService.getUuidOfUser(
-      request['user'].userId,
-    );
-    return { uuid: uuid };
   }
 }

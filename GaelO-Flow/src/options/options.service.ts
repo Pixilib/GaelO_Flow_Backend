@@ -23,7 +23,7 @@ export class OptionsService {
     const option = this.optionsRepository.create({
       autoQueryHourStart: 22,
       autoQueryMinuteStart: 0,
-      autoQueryHourStop: 24,
+      autoQueryHourStop: 6,
       autoQueryMinuteStop: 0,
       useLdap: false,
     });

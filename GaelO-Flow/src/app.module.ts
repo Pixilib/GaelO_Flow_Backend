@@ -47,10 +47,14 @@ import { QueuesAnonService } from './queues/anon/queueAnons.service';
 
 import { QueuesQueryController } from './queues/query/queueQuery.controller';
 import { QueuesQueryService } from './queues/query/queueQuery.service';
+import { TasksService } from './tasks/tasks.service';
+import { TasksModule } from './tasks/tasks.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -72,7 +76,8 @@ import { QueuesQueryService } from './queues/query/queueQuery.service';
       }),
     }),
     TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole, Label]),
-    AuthModule
+    AuthModule,
+    TasksModule,
   ],
   controllers: [
     AppController,
@@ -80,7 +85,7 @@ import { QueuesQueryService } from './queues/query/queueQuery.service';
     RolesController,
     OptionsController,
     LdapGroupRolesController,
-    LabelsController,
+    LabelsController, 
     OrthancController,
     QueuesDeleteController,
     QueuesAnonController,

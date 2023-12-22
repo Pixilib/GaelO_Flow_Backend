@@ -7,6 +7,7 @@ import OrthancClient from './orthanc/OrthancClient';
 import setupDeleteWorker from './queues/delete/deleteWorker';
 import setupAnonWorker from './queues/anon/anonWorker';
 import setupQueryWorker from './queues/query/queryWorker';
+import { TasksService } from './tasks/tasks.service';
 
 async function main() {
   const app = await NestFactory.create(AppModule);
