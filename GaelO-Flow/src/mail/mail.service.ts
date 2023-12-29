@@ -18,7 +18,7 @@ export class MailService {
     // }
 
     async sendConfirmationEmail(email: string, token: string): Promise<void> {
-        const confirmationUrl = `http://localhost:3000/confirm?token=${token}`;
+        const confirmationUrl = `http://localhost:5173/confirm?token=${token}`;
         await this.mailerService.sendMail({
             from:'"GaelO-Flow" <noreply@gaeloflow.com>',
             to: email,

@@ -1,7 +1,8 @@
+import * as bcrypt from 'bcrypt';
 import { ConflictException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/user.entity';
-import { RegisterDto } from './register-dto';
+import { RegisterDto } from './register.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
@@ -15,7 +16,16 @@ export class AuthService {
     private usersRepository: Repository<User>,
     private mailService: MailService,
     ) {}
+  
+  async verifyToken(token: string): Promise<number> {
+    try {
+      const decoded = await this.jwtService.verifyAsync(token);
+      return decoded.id;
 
+    }catch (error) {
+      return null;
+    }
+  }
   async signIn(user: User) {
     const payload = {
       sub: user.id,
@@ -68,5 +78,15 @@ export class AuthService {
   };
 
   }
-  //TODO: add a job for send a mail to the user with a link to confirm his account
+
+  async changePassword(userId: number, newPassword: string): Promise<void> {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    await this.usersRepository.update(userId, {
+      password: hashedPassword,
+      salt,
+    });
+  }
+
+
 }

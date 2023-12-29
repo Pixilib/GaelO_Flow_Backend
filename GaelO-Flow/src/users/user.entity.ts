@@ -61,7 +61,7 @@ export class User {
   role?: Role;
 
   @Column({
-    default: true,
+    default: false,
     name: 'is_active',
   })
   isActive: boolean;
