@@ -3,7 +3,7 @@ import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { Option } from '../options/option.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QueuesQueryService } from '../queues/query/queueQuery.service'; // Import QueueQueryService
+import { QueuesQueryService } from '../queues/query/queueQuery.service';
 import { isTimeBetween } from 'src/utils/dateIntervals';
 
 @Injectable()
@@ -11,18 +11,14 @@ export class TasksService {
     constructor(
         @InjectRepository(Option)
         private optionRepository: Repository<Option>,
-        private queueQueryService: QueuesQueryService, // Inject QueueQueryService
+        private queueQueryService: QueuesQueryService,
     ) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
     async queryQueueCron() {
         const options: Option = (await this.optionRepository.find())[0];
-
-
         const currentHour = new Date().getHours();
         const currentMinute = new Date().getMinutes();
-        const currentTime = currentHour * 60 + currentMinute;
-
         const isBetween = isTimeBetween(options.autoQueryHourStart,
             options.autoQueryMinuteStart,
             options.autoQueryHourStop,
@@ -30,13 +26,12 @@ export class TasksService {
             currentHour,
             currentMinute
         );
-
         const queueState = await this.queueQueryService.isPaused();
-        
+
         if (queueState && isBetween) {
             await this.queueQueryService.resume();
         } else if (!queueState && !isBetween) {
             await this.queueQueryService.pause();
-        }      
+        }
     }
 }

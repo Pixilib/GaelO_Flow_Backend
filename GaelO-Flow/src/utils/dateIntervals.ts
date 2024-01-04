@@ -10,9 +10,8 @@ export function isTimeBetween(
     startTime.setHours(startHour, startMinute, 0);
 
     const endTime = new Date();
-    if (endHour < startHour || (endHour === startHour && endMinute < startMinute)) {
+    if (endHour < startHour || (endHour === startHour && endMinute < startMinute))
         endTime.setDate(endTime.getDate() + 1);
-    }
     endTime.setHours(endHour, endMinute, 0);
 
     const currentTime = new Date();
@@ -24,8 +23,3 @@ export function isTimeBetween(
 
     return startTime <= currentTime && currentTime <= endTime;
 }
-
-
-
-
-
