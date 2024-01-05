@@ -34,7 +34,6 @@ import { LabelsService } from './labels/labels.service';
 // AUTH ROUTE
 import { AuthModule } from './auth/auth.module';
 
-import { SeedService } from './seeder.service';
 // QUEUES
 import { OrthancController } from './orthanc/Orthanc.controller';
 import OrthancClient from './orthanc/OrthancClient';
@@ -47,9 +46,11 @@ import { QueuesAnonService } from './queues/anon/queueAnons.service';
 
 import { QueuesQueryController } from './queues/query/queueQuery.controller';
 import { QueuesQueryService } from './queues/query/queueQuery.service';
-import { TasksService } from './tasks/tasks.service';
+
 import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
+
+import { SeedService } from './seeder.service';
 
 @Module({
   imports: [
