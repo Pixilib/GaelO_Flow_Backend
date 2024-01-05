@@ -1,7 +1,9 @@
 import { Controller, Get, Response, Request } from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('orthanc')
 @Controller()
 export class OrthancController {
   constructor(private orthancClient: OrthancClient) {}

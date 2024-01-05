@@ -13,14 +13,20 @@ import { UsersService } from '../users/users.service';
 import { RegisterDto } from './register-dto';
 import * as bcrypt from 'bcrypt';
 import { Public } from '../interceptors/Public';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from './login-dto';
 
+@ApiTags('auth')
 @Controller('')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
   ) {}
-
+  
+  @ApiResponse({ status: 200, description: 'Login success' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiBody({ type: LoginDto })
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -35,6 +41,8 @@ export class AuthController {
     return this.authService.signIn(user);
   }
 
+  @ApiResponse({ status: 201, description: 'Register success' })
+  @ApiResponse({ status: 409, description: 'Conflict' })
   @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {

@@ -14,17 +14,29 @@ import { QueuesDeleteService } from './queueDeletes.service';
 import { AdminGuard, DeleteGuard } from '../../roles/roles.guard';
 import { QueuesDeleteDto } from './queueDeletes.dto';
 import { randomUUID } from 'crypto';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiResponseProperty, ApiTags } from '@nestjs/swagger';
+import { Job } from 'bullmq';
 
+@ApiTags('queues/delete')
 @Controller('/queues/delete')
 export class QueuesDeleteController {
   constructor(private readonly QueuesDeleteService: QueuesDeleteService) {}
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'queue flushed' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Delete()
   async flushQueue(): Promise<void> {
     await this.QueuesDeleteService.flush();
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Get all jobs', type: Object })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiQuery({ name: 'userId', required: false })
+  @ApiQuery({ name: 'uuid', required: false })
   @UseGuards(DeleteGuard, AdminGuard)
   @Get()
   async getJobs(
@@ -63,6 +75,10 @@ export class QueuesDeleteController {
     }
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Add job', type: Object })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - User already has jobs' })
   @UseGuards(DeleteGuard)
   @Post()
   async addDeleteJob(
@@ -87,6 +103,9 @@ export class QueuesDeleteController {
     return { uuid };
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Remove job' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(DeleteGuard)
   @Delete(':uuid')
   async removeDeleteJob(@Param('uuid') uuid: string): Promise<void> {

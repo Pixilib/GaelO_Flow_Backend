@@ -20,17 +20,28 @@ import {
   QueuesQuerySeriesDto,
 } from './queueQuery.dto';
 import { randomUUID } from 'crypto';
+import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('queues/query')
 @Controller('/queues/query')
 export class QueuesQueryController {
   constructor(private readonly QueuesQueryService: QueuesQueryService) {}
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'queue flushed' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Delete()
   async flushQueue(): Promise<void> {
     await this.QueuesQueryService.flush();
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Get all jobs', type: Object })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiQuery({ name: 'userId', required: false })
+  @ApiQuery({ name: 'uuid', required: false })
   @UseGuards(QueryGuard, AdminGuard)
   @Get()
   async getJobs(
@@ -69,6 +80,10 @@ export class QueuesQueryController {
     }
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Add job', type: Object })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - User already has jobs' })
   @UseGuards(QueryGuard)
   @Post()
   async addQueryJob(
@@ -106,6 +121,9 @@ export class QueuesQueryController {
     return { uuid };
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Remove job' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(QueryGuard)
   @Delete(':uuid')
   async removeQueryJob(@Param('uuid') uuid: string): Promise<void> {

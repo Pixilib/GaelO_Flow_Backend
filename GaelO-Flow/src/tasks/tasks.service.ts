@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Option } from '../options/option.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueuesQueryService } from '../queues/query/queueQuery.service';
-import { isTimeBetween } from 'src/utils/dateIntervals';
+import { isTimeBetween } from '../utils/dateIntervals';
 
 @Injectable()
 export class TasksService {

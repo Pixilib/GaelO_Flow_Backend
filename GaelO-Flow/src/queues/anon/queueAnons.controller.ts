@@ -15,17 +15,28 @@ import { AdminGuard, AnonymizeGuard } from '../../roles/roles.guard';
 import { Job } from 'bullmq';
 import { QueuesAnonsDto } from './queueAnons.dto';
 import { randomUUID } from 'crypto';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('queues/anon')
 @Controller('/queues/anon')
 export class QueuesAnonController {
   constructor(private readonly QueuesAnonService: QueuesAnonService) {}
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'queue flushed' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Delete()
   async flushQueue(): Promise<void> {
     await this.QueuesAnonService.flush();
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Get all jobs', type: Object })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiQuery({ name: 'userId', required: false })
+  @ApiQuery({ name: 'uuid', required: false })
   @UseGuards(AnonymizeGuard, AdminGuard)
   @Get()
   async getJobs(
@@ -64,6 +75,10 @@ export class QueuesAnonController {
     }
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Add job', type: Object })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - User already has jobs' })
   @UseGuards(AnonymizeGuard)
   @Post()
   async addAnonJob(
@@ -88,6 +103,9 @@ export class QueuesAnonController {
     return { uuid };
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Remove job' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AnonymizeGuard)
   @Delete(':uuid')
   async removeAnonJob(@Param('uuid') uuid: string): Promise<void> {

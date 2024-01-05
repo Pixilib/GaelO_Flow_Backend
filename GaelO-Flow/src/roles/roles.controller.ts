@@ -20,7 +20,9 @@ import { UsersService } from '../users/users.service';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
 import { AdminGuard } from './roles.guard';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('roles')
 @Controller('/roles')
 export class RolesController {
   constructor(
@@ -28,12 +30,18 @@ export class RolesController {
     private readonly userService: UsersService,
   ) {}
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Get all roles', type: [Role] })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get()
   async findAll(): Promise<Role[]> {
     return this.RoleService.findAll();
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Get role by name', type: Role })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get('/:name')
   @UseInterceptors(NotFoundInterceptor)
@@ -42,6 +50,9 @@ export class RolesController {
     return role;
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 201, description: 'Create role' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Post()
   async CreateRole(@Body() roleDto: RoleDto): Promise<void> {
@@ -68,6 +79,9 @@ export class RolesController {
     await this.RoleService.create(role);
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Delete role' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Delete('/:name')
   @UseInterceptors(NotFoundInterceptor)
@@ -80,6 +94,9 @@ export class RolesController {
     return this.RoleService.remove(name);
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Update role' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Put('/:name')
   @UseInterceptors(NotFoundInterceptor)
