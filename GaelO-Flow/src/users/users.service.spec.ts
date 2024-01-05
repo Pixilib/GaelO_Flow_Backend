@@ -105,6 +105,18 @@ describe('UsersService', () => {
     });
   });
 
+  describe('isExistingUser', () => {
+    it('should return true if user exists', async () => {
+      const result = await usersService.isExistingUser(1);
+      expect(result).toBe(true);
+    });
+
+    it('should return false if user does not exist', async () => {
+      const result = await usersService.isExistingUser(3);
+      expect(result).toBe(false);
+    });
+  });
+
   describe('update', () => {
     it('should update a user', async () => {
       let user = { ...firstUser };

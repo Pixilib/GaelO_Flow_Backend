@@ -47,10 +47,11 @@ function setupAnonWorker(
       );
       job.updateProgress(50);
       const studyDetails = await orthancClient.getOrthancDetails(
-        // TODO: store study details .data in job -> key "results"
         'studies',
         anonAnswer.data.ID,
       );
+      // TODO: store study details .data in job -> key "results"
+      job.updateData({ ...job.data, results: studyDetails.data });
       for (const seriesOrthancID of studyDetails.data.Series) {
         const seriesDetails = await orthancClient.getOrthancDetails(
           'series',

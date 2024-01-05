@@ -30,7 +30,9 @@ export class UsersService {
   }
 
   async isExistingUser(id: number): Promise<boolean> {
-    const user = await this.usersRepository.findOne({ where: { id } });
+    const user = await this.usersRepository.findOne({
+      where: { id: id },
+    });
     return user ? true : false;
   }
 

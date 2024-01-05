@@ -27,6 +27,17 @@ describe('OptionsController', () => {
   });
 
   describe('getOptions', () => {
+    it('check if getOptions has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        OptionsController.prototype.getOptions,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if getOptions of the controller calls getOptions of the service', async () => {
       const mock = jest
         .spyOn(optionsService, 'getOptions')
@@ -38,6 +49,17 @@ describe('OptionsController', () => {
   });
 
   describe('update', () => {
+    it('check if update has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        OptionsController.prototype.update,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if update of the controller calls update of the service', async () => {
       const mockUpdate = jest
         .spyOn(optionsService, 'update')

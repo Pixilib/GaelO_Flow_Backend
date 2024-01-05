@@ -58,6 +58,17 @@ describe('RolesController', () => {
   });
 
   describe('findAll', () => {
+    it('check if findAll has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        RolesController.prototype.findAll,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if getRoles calls service findAll', async () => {
       const mock = jest
         .spyOn(rolesService, 'findAll')
@@ -69,6 +80,17 @@ describe('RolesController', () => {
   });
 
   describe('findOne', () => {
+    it('check if findOne has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        RolesController.prototype.findOne,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if findOne calls service findOne', async () => {
       const mock = jest
         .spyOn(rolesService, 'findOne')
@@ -80,6 +102,17 @@ describe('RolesController', () => {
   });
 
   describe('update', () => {
+    it('check if update has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        RolesController.prototype.update,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('should successfully update a role with valid input', async () => {
       const roleName = 'ExistingRole';
       const roleDto: any = {
@@ -100,6 +133,17 @@ describe('RolesController', () => {
   });
 
   describe('delete', () => {
+    it('check if delete has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        RolesController.prototype.delete,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if delete calls service remove', async () => {
       const mockFindOne = jest
         .spyOn(rolesService, 'findOne')
@@ -113,6 +157,17 @@ describe('RolesController', () => {
   });
 
   describe('createRole', () => {
+    it('check if createRole has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        RolesController.prototype.CreateRole,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if createRole calls service create', async () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
       const result = await rolesController.CreateRole({

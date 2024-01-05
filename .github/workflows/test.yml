@@ -22,6 +22,10 @@ jobs:
         ports:
             # Opens tcp port 6379 on the host and service container
             - 6379:6379
+      orthanc:
+        image: osimis/orthanc:23.4.0
+        ports: 
+          - 8042:8042
     steps:
       - name: 'Build checkout'
         uses: actions/checkout@v3

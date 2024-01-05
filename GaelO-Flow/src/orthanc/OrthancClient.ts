@@ -453,7 +453,7 @@ export default class OrthancClient extends HttpClient {
     const answersObjects: QueryStudyAnswer[] = [];
 
     for (let i = 0; i < studyAnswers.data.length; i++) {
-      const element = studyAnswers[i];
+      const element = studyAnswers.data[i];
       // const queryLevel = element['0008,0052'].Value;
 
       let accessionNb = null;

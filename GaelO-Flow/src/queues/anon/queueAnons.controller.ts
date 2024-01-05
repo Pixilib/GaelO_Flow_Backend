@@ -6,6 +6,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,38 +15,70 @@ import { AdminGuard, AnonymizeGuard } from '../../roles/roles.guard';
 import { Job } from 'bullmq';
 import { QueuesAnonsDto } from './queueAnons.dto';
 import { randomUUID } from 'crypto';
+import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('queues/anon')
 @Controller('/queues/anon')
 export class QueuesAnonController {
   constructor(private readonly QueuesAnonService: QueuesAnonService) {}
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'queue flushed' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Delete()
   async flushQueue(): Promise<void> {
     await this.QueuesAnonService.flush();
   }
 
-  @UseGuards(AdminGuard)
-  @Get('all')
-  async getAllJobs(): Promise<object> {
-    const jobs: Job<any, any, string>[] | null =
-      await this.QueuesAnonService.getJobs();
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Get all jobs', type: Object })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiQuery({ name: 'userId', required: false })
+  @ApiQuery({ name: 'uuid', required: false })
+  @UseGuards(AnonymizeGuard, AdminGuard)
+  @Get()
+  async getJobs(
+    @Query('userId') userId: number,
+    @Query('uuid') uuid: string,
+    @Req() request: Request,
+  ): Promise<object> {
+    const user = request['user'];
 
-    //TODO refactor à verfier
-    const results = {};
-    jobs.forEach((job) => {
-      const id = job.id;
-      const progress = {
-        progress: job.progress,
-        state: job.data.state,
-        id: job.id,
-      };
-      results[id] = progress;
-    });
+    if (!userId && !uuid) {
+      if (user.role.admin) {
+        return await this.QueuesAnonService.getJobsForUuid(); // get all jobs;
+      } else {
+        throw new ForbiddenException("You don't have access to this resource");
+      }
+    }
 
-    return results;
+    if (userId && !uuid) {
+      if (user.role.admin || user.userId == userId) {
+        const uuid = await this.QueuesAnonService.getUuidOfUser(userId);
+        return { uuid: uuid };
+      } else {
+        throw new ForbiddenException("You don't have access to this resource");
+      }
+    }
+
+    if (uuid) {
+      if (
+        user.role.admin ||
+        (await this.QueuesAnonService.getUuidOfUser(user.userId)) == uuid
+      ) {
+        return await this.QueuesAnonService.getJobsForUuid(uuid);
+      } else {
+        throw new ForbiddenException("You don't have access to this resource");
+      }
+    }
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Add job', type: Object })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden - User already has jobs' })
   @UseGuards(AnonymizeGuard)
   @Post()
   async addAnonJob(
@@ -64,54 +97,18 @@ export class QueuesAnonController {
         uuid: uuid,
         userId: user.userId,
         anonymize: anonymize,
+        results: null,
       });
     });
     return { uuid };
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Remove job' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AnonymizeGuard)
   @Delete(':uuid')
   async removeAnonJob(@Param('uuid') uuid: string): Promise<void> {
     this.QueuesAnonService.removeJob({ uuid: uuid });
-  }
-
-  @UseGuards(AnonymizeGuard)
-  @Get(':uuid')
-  async getJobsForUuid(@Param('uuid') uuid: string): Promise<object> {
-    const jobs: Job<any, any, string>[] | null =
-      await this.QueuesAnonService.getJobs(uuid);
-
-    const resultsProgressPromises = jobs.map((job) => {
-      if (job.data.uuid == uuid) {
-        const id = job.id;
-        const progress = {
-          progress: job.progress,
-          state: job.data.state,
-          id: job.id,
-        };
-        return { [id]: progress };
-      }
-      return null;
-    });
-
-    const resultsProgress = await Promise.all(resultsProgressPromises);
-
-    const results = {};
-    resultsProgress.forEach((result) => {
-      if (result != null) {
-        Object.assign(results, result);
-      }
-    });
-
-    return results;
-  }
-
-  @UseGuards(AnonymizeGuard)
-  @Get()
-  async getUuidOfUser(@Req() request: Request): Promise<object> {
-    const uuid = await this.QueuesAnonService.getUuidOfUser(
-      request['user'].userId,
-    );
-    return { uuid: uuid };
   }
 }

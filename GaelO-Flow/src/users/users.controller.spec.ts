@@ -23,6 +23,7 @@ describe('UsersController', () => {
             create: jest.fn(),
             remove: jest.fn(),
             findByUsernameOrEmail: jest.fn(),
+            isExistingUser: jest.fn(),
           },
         },
       ],
@@ -47,6 +48,17 @@ describe('UsersController', () => {
   });
 
   describe('getUsers', () => {
+    it('check if getUsers has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        UsersController.prototype.getUsers,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if getUsers calls service findAll', async () => {
       const mock = jest
         .spyOn(usersService, 'findAll')
@@ -58,6 +70,17 @@ describe('UsersController', () => {
   });
 
   describe('getUsersId', () => {
+    it('check if getUsersId has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        UsersController.prototype.getUsersId,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if getUsersId calls service findOne', async () => {
       const mock = jest
         .spyOn(usersService, 'findOne')
@@ -69,6 +92,17 @@ describe('UsersController', () => {
   });
 
   describe('update', () => {
+    it('check if update has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        UsersController.prototype.update,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if update calls service update', async () => {
       const mockFindOne = jest
         .spyOn(usersService, 'findOne')
@@ -84,19 +118,41 @@ describe('UsersController', () => {
   });
 
   describe('delete', () => {
+    it('check if delete has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        UsersController.prototype.delete,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if delete calls service remove', async () => {
-      const mockFindOne = jest
-        .spyOn(usersService, 'findOne')
-        .mockResolvedValue(userList[0]);
+      const mockIsExistingUser = jest
+        .spyOn(usersService, 'isExistingUser')
+        .mockResolvedValue(true);
       const mockRemove = jest.spyOn(usersService, 'remove');
       const result = await usersController.delete(1);
       expect(result).toBeUndefined();
-      expect(mockFindOne).toHaveBeenCalled();
+      expect(mockIsExistingUser).toHaveBeenCalled();
       expect(mockRemove).toHaveBeenCalled();
     });
   });
 
   describe('createUser', () => {
+    it('check if createUser has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        UsersController.prototype.createUser,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('check if createUser calls service create', async () => {
       const mockCreate = jest
         .spyOn(usersService, 'create')

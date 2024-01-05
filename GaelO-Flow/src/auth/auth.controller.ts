@@ -5,22 +5,29 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
-  ConflictException
+  ConflictException,
+  HttpException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { RegisterDto } from './register-dto';
 import * as bcrypt from 'bcrypt';
 import { Public } from '../interceptors/Public';
+import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from './login-dto';
 
-@Public()
+@ApiTags('auth')
 @Controller('')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
   ) {}
-
+  
+  @ApiResponse({ status: 200, description: 'Login success' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiBody({ type: LoginDto })
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async signIn(@Body() signInDto: Record<string, any>) {
@@ -33,7 +40,10 @@ export class AuthController {
     if (!isMatch) throw new UnauthorizedException();
     return this.authService.signIn(user);
   }
-  
+
+  @ApiResponse({ status: 201, description: 'Register success' })
+  @ApiResponse({ status: 409, description: 'Conflict' })
+  @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     try {

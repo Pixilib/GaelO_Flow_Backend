@@ -12,11 +12,16 @@ import { UpdateOptionDto } from './options.dto';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
 import { AdminGuard } from '../roles/roles.guard';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('options')
 @Controller('/options')
 export class OptionsController {
   constructor(private readonly OptionService: OptionsService) {}
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Get all options', type: Option })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get()
   async getOptions(): Promise<Option> {
@@ -25,6 +30,9 @@ export class OptionsController {
     return options;
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Update options', type: UpdateOptionDto })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Patch()
   @UseInterceptors(NotFoundInterceptor)

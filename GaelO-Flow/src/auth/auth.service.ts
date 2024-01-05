@@ -11,7 +11,7 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    ) {}
+  ) {}
 
   async signIn(user: User) {
     const payload = {
@@ -25,7 +25,6 @@ export class AuthService {
     };
   }
 
-
   async register(registerDto: RegisterDto): Promise<Object> {
     const { username, email } = registerDto;
 
@@ -35,17 +34,16 @@ export class AuthService {
     });
 
     if (userExists) {
-      throw new ConflictException('A user already exist with this username or email');
+      throw new ConflictException(
+        'A user already exist with this username or email',
+      );
     }
 
     const newUser = this.usersRepository.create(registerDto);
     const savedUser = await this.usersRepository.save(newUser);
 
     //return just id
-    return {id: savedUser.id};
+    return { id: savedUser.id };
   }
   //TODO: add a job for send a mail to the user with a link to confirm his account
-
 }
-
-

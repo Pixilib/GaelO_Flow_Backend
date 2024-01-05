@@ -14,17 +14,25 @@ import { LabelDto } from './labels.dto';
 import { NotFoundInterceptor } from './../interceptors/NotFoundInterceptor';
 import { AdminGuard } from '../roles/roles.guard';
 import { LabelsService } from './labels.service';
+import { ApiBearerAuth, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('labels')
 @Controller('/labels')
 export class LabelsController {
   constructor(private readonly LabelsService: LabelsService) {}
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Get all labels', type: [Label] })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get()
   async findAll(): Promise<Label[]> {
     return this.LabelsService.findAll();
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'remove label' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Delete('/:labelName')
   @UseInterceptors(NotFoundInterceptor)
@@ -33,6 +41,9 @@ export class LabelsController {
     return this.LabelsService.remove(labelName);
   }
 
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 201, description: 'Create label' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Post()
   async create(@Body() labelDto: LabelDto): Promise<void> {
