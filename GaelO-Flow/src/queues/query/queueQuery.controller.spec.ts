@@ -22,6 +22,7 @@ describe('QueuesQueryController', () => {
             getUuidOfUser: jest.fn(),
             closeQueueConnection: jest.fn(),
             getJobsForUuid: jest.fn(),
+            flush: jest.fn(),
           },
         },
       ],
@@ -31,8 +32,44 @@ describe('QueuesQueryController', () => {
     controller = module.get<QueuesQueryController>(QueuesQueryController);
   });
 
+  describe('flushQueue', () => {
+    it('check if flushQueue has AdminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        QueuesQueryController.prototype.flushQueue,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
+    it('should call flush service method', async () => {
+      // MOCK
+      jest.spyOn(service, 'flush').mockResolvedValue();
+
+      // ACT
+      await controller.flushQueue();
+
+      // ASSERT
+      expect(service.flush).toHaveBeenCalledWith();
+      expect(service.flush).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('getJobs', () => {
-    // get all the jobs
+    it('check if getJobs has AdminGuard and QueryGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        QueuesQueryController.prototype.getJobs,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(2);
+      expect(guardNames).toContain('AdminGuard');
+      expect(guardNames).toContain('QueryGuard');
+    });
+
     it('should return all jobs for all users (admin)', async () => {
       // MOCK
       const mockJobs: any = {
@@ -270,6 +307,17 @@ describe('QueuesQueryController', () => {
   });
 
   describe('addQueryJob', () => {
+    it('check if addQueryJob has QueryGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        QueuesQueryController.prototype.addQueryJob,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('QueryGuard');
+    });
+
     it('should return a UUID when a delete job is added', async () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
@@ -445,6 +493,17 @@ describe('QueuesQueryController', () => {
   });
 
   describe('removeQueryJob', () => {
+    it('check if removeQueryJob has QueryGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        QueuesQueryController.prototype.removeQueryJob,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('QueryGuard');
+    });
+
     it('should call removeJob service method with the correct uuid', async () => {
       // MOCK
       const uuid = 'test-uuid';

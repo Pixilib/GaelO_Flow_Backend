@@ -25,7 +25,7 @@ export class QueuesDeleteController {
     await this.QueuesDeleteService.flush();
   }
 
-  @UseGuards(DeleteGuard || AdminGuard)
+  @UseGuards(DeleteGuard, AdminGuard)
   @Get()
   async getJobs(
     @Query('userId') userId: number,

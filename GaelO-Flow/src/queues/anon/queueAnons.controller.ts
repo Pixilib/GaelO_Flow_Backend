@@ -26,7 +26,7 @@ export class QueuesAnonController {
     await this.QueuesAnonService.flush();
   }
 
-  @UseGuards(AnonymizeGuard || AdminGuard)
+  @UseGuards(AnonymizeGuard, AdminGuard)
   @Get()
   async getJobs(
     @Query('userId') userId: number,

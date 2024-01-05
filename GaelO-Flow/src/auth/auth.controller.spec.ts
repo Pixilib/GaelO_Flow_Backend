@@ -41,6 +41,15 @@ describe('AuthController', () => {
   });
 
   describe('signIn', () => {
+    it('check if signIn is public', async () => {
+      const isPublic = Reflect.getMetadata(
+        'isPublic',
+        AuthController.prototype.signIn,
+      );
+
+      expect(isPublic).toBe(true);
+    });
+
     it('should return an access token', async () => {
       jest.spyOn(authService, 'signIn').mockReturnValue(
         Promise.resolve({
@@ -66,13 +75,11 @@ describe('AuthController', () => {
     });
 
     it('should throw an UnauthorizedException if user does not exist', async () => {
-      jest.spyOn(usersService, 'findOneByUsername').mockReturnValue(
-        Promise.resolve(undefined),
-      );
+      jest
+        .spyOn(usersService, 'findOneByUsername')
+        .mockReturnValue(Promise.resolve(undefined));
 
-      await expect(authController.signIn({})).rejects.toThrow(
-        'Unauthorized',
-      );
+      await expect(authController.signIn({})).rejects.toThrow('Unauthorized');
     });
 
     it('should throw an UnauthorizedException if password is incorrect', async () => {
@@ -87,9 +94,7 @@ describe('AuthController', () => {
       );
       jest.spyOn(bcrypt, 'compare').mockResolvedValue(false as never);
 
-      await expect(authController.signIn({})).rejects.toThrow(
-        'Unauthorized',
-      );
+      await expect(authController.signIn({})).rejects.toThrow('Unauthorized');
     });
   });
 

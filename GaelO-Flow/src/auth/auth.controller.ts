@@ -14,7 +14,6 @@ import { RegisterDto } from './register-dto';
 import * as bcrypt from 'bcrypt';
 import { Public } from '../interceptors/Public';
 
-@Public()
 @Controller('')
 export class AuthController {
   constructor(
@@ -22,6 +21,7 @@ export class AuthController {
     private usersService: UsersService,
   ) {}
 
+  @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
   async signIn(@Body() signInDto: Record<string, any>) {
@@ -35,6 +35,7 @@ export class AuthController {
     return this.authService.signIn(user);
   }
 
+  @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     try {

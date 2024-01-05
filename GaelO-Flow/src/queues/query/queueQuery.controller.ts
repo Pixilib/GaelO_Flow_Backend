@@ -31,7 +31,7 @@ export class QueuesQueryController {
     await this.QueuesQueryService.flush();
   }
 
-  @UseGuards(QueryGuard || AdminGuard)
+  @UseGuards(QueryGuard, AdminGuard)
   @Get()
   async getJobs(
     @Query('userId') userId: number,

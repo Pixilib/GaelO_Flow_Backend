@@ -30,6 +30,17 @@ describe('LabelsController', () => {
   });
 
   describe('findAll', () => {
+    it('check if findAll has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        LabelsController.prototype.findAll,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('checks if findAll of the controller calls findAll of the service', async () => {
       const mock = jest.spyOn(labelsService, 'findAll').mockResolvedValue([]);
 
@@ -39,6 +50,17 @@ describe('LabelsController', () => {
   });
 
   describe('remove', () => {
+    it('check if remove has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        LabelsController.prototype.remove,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('checks if remove of the controller calls remove of the service', async () => {
       const mockRemove = jest
         .spyOn(labelsService, 'remove')
@@ -63,6 +85,17 @@ describe('LabelsController', () => {
   });
 
   describe('create', () => {
+    it('check if create has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        LabelsController.prototype.create,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
     it('checks if create of the controller calls create of the service', async () => {
       const mockCreate = jest
         .spyOn(labelsService, 'create')
