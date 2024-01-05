@@ -10,4 +10,4 @@ export class RoleDto {
   modify: boolean;
   cdBurner: boolean;
   autoRouting: boolean;
-}
+} // TODO: decorators

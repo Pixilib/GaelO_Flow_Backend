@@ -6,7 +6,7 @@ import {
   HttpStatus,
   UnauthorizedException,
   ConflictException,
-  HttpException
+  HttpException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -34,7 +34,7 @@ export class AuthController {
     if (!isMatch) throw new UnauthorizedException();
     return this.authService.signIn(user);
   }
-  
+
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     try {

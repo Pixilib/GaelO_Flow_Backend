@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UseGuards,
   NotFoundException,
+  BadRequestException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
@@ -78,7 +79,7 @@ export class UsersController {
     if (existingUser) {
       return await this.UserService.remove(id);
     } else {
-      throw new NotFoundException('All the keys are required');
+      throw new BadRequestException('All the keys are required');
     }
   }
 
@@ -101,16 +102,16 @@ export class UsersController {
       !userDto.roleName == undefined ||
       !userDto.isActive == undefined
     )
-      throw new HttpException('All the keys are required', 400);
+      throw new BadRequestException('All the keys are required');
 
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(userDto.password, salt);
 
     if (regexEmail.test(userDto.email) === false)
-      throw new HttpException('Email is not valid', 400);
+      throw new BadRequestException('Email is not valid');
 
     if (regexPassword.test(userDto.password) === false)
-      throw new HttpException('Password is not valid', 400);
+      throw new BadRequestException('Password is not valid');
 
     const existingUser = await this.UserService.findByUsernameOrEmail(
       userDto.username,

@@ -40,19 +40,19 @@ describe('QueuesQueryController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job1',
-          results: null
+          results: null,
         },
         ['job2']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
         ['job3']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
       };
       const mockReq = {
@@ -67,7 +67,11 @@ describe('QueuesQueryController', () => {
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
 
       // ACT
-      const result = await controller.getJobs(undefined, undefined, mockReq as any);
+      const result = await controller.getJobs(
+        undefined,
+        undefined,
+        mockReq as any,
+      );
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith();
@@ -86,7 +90,9 @@ describe('QueuesQueryController', () => {
       };
 
       // ACT & ASSERT
-      await expect(controller.getJobs(undefined, undefined, mockReq as any)).rejects.toThrow(ForbiddenException);
+      await expect(
+        controller.getJobs(undefined, undefined, mockReq as any),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     // get uuid of user
@@ -109,7 +115,7 @@ describe('QueuesQueryController', () => {
 
       // ASSERT
       expect(service.getUuidOfUser).toHaveBeenCalledWith(2);
-      expect(result).toEqual({uuid: mockUuid});
+      expect(result).toEqual({ uuid: mockUuid });
     });
 
     it('should throw ForbiddenException if user is not admin when trying to get uuid of another user', async () => {
@@ -124,7 +130,9 @@ describe('QueuesQueryController', () => {
       };
 
       // ACT & ASSERT
-      await expect(controller.getJobs(2, undefined, mockReq as any)).rejects.toThrow(ForbiddenException);
+      await expect(
+        controller.getJobs(2, undefined, mockReq as any),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should return the uuid of the user (user)', async () => {
@@ -146,7 +154,7 @@ describe('QueuesQueryController', () => {
 
       // ASSERT
       expect(service.getUuidOfUser).toHaveBeenCalledWith(1);
-      expect(result).toEqual({uuid: mockUuid});
+      expect(result).toEqual({ uuid: mockUuid });
     });
 
     // get jobs for uuid
@@ -157,19 +165,19 @@ describe('QueuesQueryController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job1',
-          results: null
+          results: null,
         },
         ['job2']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
         ['job3']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
       };
       const mockReq = {
@@ -185,7 +193,11 @@ describe('QueuesQueryController', () => {
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
 
       // ACT
-      const result = await controller.getJobs(undefined, 'test-uuid', mockReq as any);
+      const result = await controller.getJobs(
+        undefined,
+        'test-uuid',
+        mockReq as any,
+      );
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith('test-uuid');
@@ -205,7 +217,9 @@ describe('QueuesQueryController', () => {
       jest.spyOn(service, 'getUuidOfUser').mockResolvedValue('test-uuid-2');
 
       // ACT & ASSERT
-      await expect(controller.getJobs(undefined, 'test-uuid', mockReq as any)).rejects.toThrow(ForbiddenException);
+      await expect(
+        controller.getJobs(undefined, 'test-uuid', mockReq as any),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should return all jobs for a specific uuid (user)', async () => {
@@ -215,19 +229,19 @@ describe('QueuesQueryController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job1',
-          results: null
+          results: null,
         },
         ['job2']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
         ['job3']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
       };
       const mockReq = {
@@ -243,14 +257,17 @@ describe('QueuesQueryController', () => {
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
 
       // ACT
-      const result = await controller.getJobs(undefined, 'test-uuid', mockReq as any);
+      const result = await controller.getJobs(
+        undefined,
+        'test-uuid',
+        mockReq as any,
+      );
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith('test-uuid');
       expect(result).toEqual(mockJobs);
     });
   });
-
 
   describe('addQueryJob', () => {
     it('should return a UUID when a delete job is added', async () => {
@@ -259,28 +276,28 @@ describe('QueuesQueryController', () => {
       const dto: QueuesQueryDto = {
         series: [
           {
-            studyUID: "",
-            modality: "",
-            protocolName: "",
-            seriesDescription: "",
-            seriesNumber: "",
-            seriesInstanceUID: "",
-            aet: ""
-          }
+            studyUID: '',
+            modality: '',
+            protocolName: '',
+            seriesDescription: '',
+            seriesNumber: '',
+            seriesInstanceUID: '',
+            aet: '',
+          },
         ],
         studies: [
           {
-            patientName: "",
-            patientID: "",
-            studyDate: "",
-            modality: "",
-            studyDescription: "",
-            accessionNb: "",
-            studyInstanceUID: "",
-            aet: ""
-          }
+            patientName: '',
+            patientID: '',
+            studyDate: '',
+            modality: '',
+            studyDescription: '',
+            accessionNb: '',
+            studyInstanceUID: '',
+            aet: '',
+          },
         ],
-      }
+      };
 
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
       jest.spyOn(service, 'addJob').mockResolvedValue();
@@ -292,19 +309,22 @@ describe('QueuesQueryController', () => {
       expect(result).toHaveProperty('uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledTimes(1);
-      expect(service.addJob).toHaveBeenCalledWith({
-        userId: 1,
-        uuid: expect.any(String),
-        results: null,
-        series: dto.series[0],
-      } ||
-      {
-        userId: 1,
-        uuid: expect.any(String),
-        results: null,
-        study: dto.studies[0],
-      });
-      expect(service.addJob).toHaveBeenCalledTimes(dto.series.length + dto.studies.length);
+      expect(service.addJob).toHaveBeenCalledWith(
+        {
+          userId: 1,
+          uuid: expect.any(String),
+          results: null,
+          series: dto.series[0],
+        } || {
+          userId: 1,
+          uuid: expect.any(String),
+          results: null,
+          study: dto.studies[0],
+        },
+      );
+      expect(service.addJob).toHaveBeenCalledTimes(
+        dto.series.length + dto.studies.length,
+      );
     });
 
     it('should throw ForbiddenException if user already has jobs', async () => {
@@ -313,28 +333,28 @@ describe('QueuesQueryController', () => {
       const dto: QueuesQueryDto = {
         series: [
           {
-            studyUID: "",
-            modality: "",
-            protocolName: "",
-            seriesDescription: "",
-            seriesNumber: "",
-            seriesInstanceUID: "",
-            aet: ""
-          }
+            studyUID: '',
+            modality: '',
+            protocolName: '',
+            seriesDescription: '',
+            seriesNumber: '',
+            seriesInstanceUID: '',
+            aet: '',
+          },
         ],
         studies: [
           {
-            patientName: "",
-            patientID: "",
-            studyDate: "",
-            modality: "",
-            studyDescription: "",
-            accessionNb: "",
-            studyInstanceUID: "",
-            aet: ""
-          }
+            patientName: '',
+            patientID: '',
+            studyDate: '',
+            modality: '',
+            studyDescription: '',
+            accessionNb: '',
+            studyInstanceUID: '',
+            aet: '',
+          },
         ],
-      }
+      };
 
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(true);
       await expect(controller.addQueryJob(dto, mockRequest)).rejects.toThrow(
@@ -351,47 +371,47 @@ describe('QueuesQueryController', () => {
       const dto: QueuesQueryDto = {
         series: [
           {
-            studyUID: "",
-            modality: "",
-            protocolName: "",
-            seriesDescription: "",
-            seriesNumber: "",
-            seriesInstanceUID: "",
-            aet: ""
+            studyUID: '',
+            modality: '',
+            protocolName: '',
+            seriesDescription: '',
+            seriesNumber: '',
+            seriesInstanceUID: '',
+            aet: '',
           },
           {
-            studyUID: "",
-            modality: "",
-            protocolName: "",
-            seriesDescription: "",
-            seriesNumber: "",
-            seriesInstanceUID: "",
-            aet: ""
+            studyUID: '',
+            modality: '',
+            protocolName: '',
+            seriesDescription: '',
+            seriesNumber: '',
+            seriesInstanceUID: '',
+            aet: '',
           },
         ],
         studies: [
           {
-            patientName: "",
-            patientID: "",
-            studyDate: "",
-            modality: "",
-            studyDescription: "",
-            accessionNb: "",
-            studyInstanceUID: "",
-            aet: ""
+            patientName: '',
+            patientID: '',
+            studyDate: '',
+            modality: '',
+            studyDescription: '',
+            accessionNb: '',
+            studyInstanceUID: '',
+            aet: '',
           },
           {
-            patientName: "",
-            patientID: "",
-            studyDate: "",
-            modality: "",
-            studyDescription: "",
-            accessionNb: "",
-            studyInstanceUID: "",
-            aet: ""
+            patientName: '',
+            patientID: '',
+            studyDate: '',
+            modality: '',
+            studyDescription: '',
+            accessionNb: '',
+            studyInstanceUID: '',
+            aet: '',
           },
         ],
-      }
+      };
 
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
       jest.spyOn(service, 'addJob').mockResolvedValue();
@@ -402,7 +422,9 @@ describe('QueuesQueryController', () => {
       // ASSERT
       expect(result).toHaveProperty('uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
-      expect(service.addJob).toHaveBeenCalledTimes(dto.series.length + dto.studies.length);
+      expect(service.addJob).toHaveBeenCalledTimes(
+        dto.series.length + dto.studies.length,
+      );
       dto.series.forEach((series) => {
         expect(service.addJob).toHaveBeenCalledWith({
           userId: 1,

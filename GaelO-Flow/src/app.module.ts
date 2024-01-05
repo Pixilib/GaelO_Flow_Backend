@@ -51,7 +51,6 @@ import { TasksService } from './tasks/tasks.service';
 import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
-
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -85,7 +84,7 @@ import { ScheduleModule } from '@nestjs/schedule';
     RolesController,
     OptionsController,
     LdapGroupRolesController,
-    LabelsController, 
+    LabelsController,
     OrthancController,
     QueuesDeleteController,
     QueuesAnonController,

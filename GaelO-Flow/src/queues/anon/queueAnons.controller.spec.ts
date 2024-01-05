@@ -40,19 +40,19 @@ describe('QueuesAnonController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job1',
-          results: null
+          results: null,
         },
         ['job2']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
         ['job3']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
       };
       const mockReq = {
@@ -67,7 +67,11 @@ describe('QueuesAnonController', () => {
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
 
       // ACT
-      const result = await controller.getJobs(undefined, undefined, mockReq as any);
+      const result = await controller.getJobs(
+        undefined,
+        undefined,
+        mockReq as any,
+      );
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith();
@@ -86,7 +90,9 @@ describe('QueuesAnonController', () => {
       };
 
       // ACT & ASSERT
-      await expect(controller.getJobs(undefined, undefined, mockReq as any)).rejects.toThrow(ForbiddenException);
+      await expect(
+        controller.getJobs(undefined, undefined, mockReq as any),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     // get uuid of user
@@ -109,7 +115,7 @@ describe('QueuesAnonController', () => {
 
       // ASSERT
       expect(service.getUuidOfUser).toHaveBeenCalledWith(2);
-      expect(result).toEqual({uuid: mockUuid});
+      expect(result).toEqual({ uuid: mockUuid });
     });
 
     it('should throw ForbiddenException if user is not admin when trying to get uuid of another user', async () => {
@@ -124,7 +130,9 @@ describe('QueuesAnonController', () => {
       };
 
       // ACT & ASSERT
-      await expect(controller.getJobs(2, undefined, mockReq as any)).rejects.toThrow(ForbiddenException);
+      await expect(
+        controller.getJobs(2, undefined, mockReq as any),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should return the uuid of the user (user)', async () => {
@@ -146,7 +154,7 @@ describe('QueuesAnonController', () => {
 
       // ASSERT
       expect(service.getUuidOfUser).toHaveBeenCalledWith(1);
-      expect(result).toEqual({uuid: mockUuid});
+      expect(result).toEqual({ uuid: mockUuid });
     });
 
     // get jobs for uuid
@@ -157,19 +165,19 @@ describe('QueuesAnonController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job1',
-          results: null
+          results: null,
         },
         ['job2']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
         ['job3']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
       };
       const mockReq = {
@@ -185,7 +193,11 @@ describe('QueuesAnonController', () => {
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
 
       // ACT
-      const result = await controller.getJobs(undefined, 'test-uuid', mockReq as any);
+      const result = await controller.getJobs(
+        undefined,
+        'test-uuid',
+        mockReq as any,
+      );
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith('test-uuid');
@@ -205,7 +217,9 @@ describe('QueuesAnonController', () => {
       jest.spyOn(service, 'getUuidOfUser').mockResolvedValue('test-uuid-2');
 
       // ACT & ASSERT
-      await expect(controller.getJobs(undefined, 'test-uuid', mockReq as any)).rejects.toThrow(ForbiddenException);
+      await expect(
+        controller.getJobs(undefined, 'test-uuid', mockReq as any),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should return all jobs for a specific uuid (user)', async () => {
@@ -215,19 +229,19 @@ describe('QueuesAnonController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job1',
-          results: null
+          results: null,
         },
         ['job2']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
         ['job3']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
       };
       const mockReq = {
@@ -243,7 +257,11 @@ describe('QueuesAnonController', () => {
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
 
       // ACT
-      const result = await controller.getJobs(undefined, 'test-uuid', mockReq as any);
+      const result = await controller.getJobs(
+        undefined,
+        'test-uuid',
+        mockReq as any,
+      );
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith('test-uuid');
@@ -302,7 +320,7 @@ describe('QueuesAnonController', () => {
         ],
       };
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(true);
-  
+
       // ACT & ASSERT
       await expect(controller.addAnonJob(dto, mockRequest)).rejects.toThrow(
         ForbiddenException,
@@ -332,15 +350,15 @@ describe('QueuesAnonController', () => {
             newPatientID: 'newpatientid2',
             newPatientName: 'newpatientname2',
             newStudyDescription: 'newstudydescription2',
-          }
+          },
         ],
       };
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
       jest.spyOn(service, 'addJob').mockResolvedValue();
-  
+
       // ACT
       const result = await controller.addAnonJob(dto, mockRequest);
-  
+
       // ASSERT
       expect(result).toHaveProperty('uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
@@ -386,116 +404,113 @@ describe('QueuesAnonController', () => {
   //   });
   // });
 
-//   describe('addAnonJob', () => {
-//     it('should return a UUID when a anon job is added', async () => {
-//       // MOCK
-//       const mockRequest: any = { user: { userId: 1 } };
-//       const dto: QueuesAnonsDto = {
-//         anonymizes: [
-//           {
-//             orthancStudyID: 'orthancstudyid',
-//             profile: 'profile',
-//             newAccessionNumber: 'newaccessionnumber',
-//             newPatientID: 'newpatientid',
-//             newPatientName: 'newpatientname',
-//             newStudyDescription: 'newstudydescription',
-//           },
-//         ],
-//       };
-//       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
-//       jest.spyOn(service, 'addJob').mockResolvedValue();
+  //   describe('addAnonJob', () => {
+  //     it('should return a UUID when a anon job is added', async () => {
+  //       // MOCK
+  //       const mockRequest: any = { user: { userId: 1 } };
+  //       const dto: QueuesAnonsDto = {
+  //         anonymizes: [
+  //           {
+  //             orthancStudyID: 'orthancstudyid',
+  //             profile: 'profile',
+  //             newAccessionNumber: 'newaccessionnumber',
+  //             newPatientID: 'newpatientid',
+  //             newPatientName: 'newpatientname',
+  //             newStudyDescription: 'newstudydescription',
+  //           },
+  //         ],
+  //       };
+  //       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
+  //       jest.spyOn(service, 'addJob').mockResolvedValue();
 
-//       // ACT
-//       const result = await controller.addAnonJob(dto, mockRequest);
+  //       // ACT
+  //       const result = await controller.addAnonJob(dto, mockRequest);
 
-//       // ASSERT
-//       expect(result).toHaveProperty('uuid');
-//       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
-//       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledTimes(1);
-//       expect(service.addJob).toHaveBeenCalledWith({
-//         uuid: expect.any(String),
-//         userId: 1,
-//         anonymize: dto.anonymizes[0],
-//       });
-//       expect(service.addJob).toHaveBeenCalledTimes(dto.anonymizes.length);
-//     });
+  //       // ASSERT
+  //       expect(result).toHaveProperty('uuid');
+  //       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
+  //       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledTimes(1);
+  //       expect(service.addJob).toHaveBeenCalledWith({
+  //         uuid: expect.any(String),
+  //         userId: 1,
+  //         anonymize: dto.anonymizes[0],
+  //       });
+  //       expect(service.addJob).toHaveBeenCalledTimes(dto.anonymizes.length);
+  //     });
 
-//     it('should throw ForbiddenException if user already has jobs', async () => {
-//       // MOCK
-//       const mockRequest: any = { user: { userId: 1 } };
-//       const dto: QueuesAnonsDto = {
-//         anonymizes: [
-//           {
-//             orthancStudyID: 'orthancstudyid',
-//             profile: 'profile',
-//             newAccessionNumber: 'newaccessionnumber',
-//             newPatientID: 'newpatientid',
-//             newPatientName: 'newpatientname',
-//             newStudyDescription: 'newstudydescription',
-//           },
-//         ],
-//       };
-//       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(true);
+  //     it('should throw ForbiddenException if user already has jobs', async () => {
+  //       // MOCK
+  //       const mockRequest: any = { user: { userId: 1 } };
+  //       const dto: QueuesAnonsDto = {
+  //         anonymizes: [
+  //           {
+  //             orthancStudyID: 'orthancstudyid',
+  //             profile: 'profile',
+  //             newAccessionNumber: 'newaccessionnumber',
+  //             newPatientID: 'newpatientid',
+  //             newPatientName: 'newpatientname',
+  //             newStudyDescription: 'newstudydescription',
+  //           },
+  //         ],
+  //       };
+  //       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(true);
 
-//       // ACT & ASSERT
-//       await expect(controller.addAnonJob(dto, mockRequest)).rejects.toThrow(
-//         ForbiddenException,
-//       );
-//       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
-//       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledTimes(1);
-//       expect(service.addJob).not.toHaveBeenCalled();
-//     });
+  //       // ACT & ASSERT
+  //       await expect(controller.addAnonJob(dto, mockRequest)).rejects.toThrow(
+  //         ForbiddenException,
+  //       );
+  //       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
+  //       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledTimes(1);
+  //       expect(service.addJob).not.toHaveBeenCalled();
+  //     });
 
-//     it('should call addAnonJob for each orthancSeriesId', async () => {
-//       // MOCK
-//       const mockRequest: any = { user: { userId: 1 } };
-//       const dto: QueuesAnonsDto = {
-//         anonymizes: [
-//           {
-//             orthancStudyID: 'orthancstudyid',
-//             profile: 'profile',
-//             newAccessionNumber: 'newaccessionnumber',
-//             newPatientID: 'newpatientid',
-//             newPatientName: 'newpatientname',
-//             newStudyDescription: 'newstudydescription',
-//           },
-//         ],
-//       };
-//       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
-//       jest.spyOn(service, 'addJob').mockResolvedValue();
+  //     it('should call addAnonJob for each orthancSeriesId', async () => {
+  //       // MOCK
+  //       const mockRequest: any = { user: { userId: 1 } };
+  //       const dto: QueuesAnonsDto = {
+  //         anonymizes: [
+  //           {
+  //             orthancStudyID: 'orthancstudyid',
+  //             profile: 'profile',
+  //             newAccessionNumber: 'newaccessionnumber',
+  //             newPatientID: 'newpatientid',
+  //             newPatientName: 'newpatientname',
+  //             newStudyDescription: 'newstudydescription',
+  //           },
+  //         ],
+  //       };
+  //       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
+  //       jest.spyOn(service, 'addJob').mockResolvedValue();
 
-//       // ACT
-//       const result = await controller.addAnonJob(dto, mockRequest);
+  //       // ACT
+  //       const result = await controller.addAnonJob(dto, mockRequest);
 
-//       // ASSERT
-//       expect(result).toHaveProperty('uuid');
-//       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
-//       expect(service.addJob).toHaveBeenCalledTimes(dto.anonymizes.length);
-//       dto.anonymizes.forEach((id) => {
-//         expect(service.addJob).toHaveBeenCalledWith({
-//           uuid: expect.any(String),
-//           userId: 1,
-//           anonymize: id,
-//         });
-//       });
-//     });
-//   });
+  //       // ASSERT
+  //       expect(result).toHaveProperty('uuid');
+  //       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
+  //       expect(service.addJob).toHaveBeenCalledTimes(dto.anonymizes.length);
+  //       dto.anonymizes.forEach((id) => {
+  //         expect(service.addJob).toHaveBeenCalledWith({
+  //           uuid: expect.any(String),
+  //           userId: 1,
+  //           anonymize: id,
+  //         });
+  //       });
+  //     });
+  //   });
 
-//   describe('removeAnonJob', () => {
-//     it('should call removeAnonJob service method with the correct uuid', async () => {
-//       // MOCK
-//       const uuid = 'test-uuid';
-//       jest.spyOn(service, 'removeJob').mockResolvedValue();
+  //   describe('removeAnonJob', () => {
+  //     it('should call removeAnonJob service method with the correct uuid', async () => {
+  //       // MOCK
+  //       const uuid = 'test-uuid';
+  //       jest.spyOn(service, 'removeJob').mockResolvedValue();
 
-//       // ACT
-//       await controller.removeAnonJob(uuid);
+  //       // ACT
+  //       await controller.removeAnonJob(uuid);
 
-//       // ASSERT
-//       expect(service.removeJob).toHaveBeenCalledWith({ uuid });
-//       expect(service.removeJob).toHaveBeenCalledTimes(1);
-//     });
-//   });
-
+  //       // ASSERT
+  //       expect(service.removeJob).toHaveBeenCalledWith({ uuid });
+  //       expect(service.removeJob).toHaveBeenCalledTimes(1);
+  //     });
+  //   });
 });
-
-

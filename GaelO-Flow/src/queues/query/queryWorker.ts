@@ -13,7 +13,8 @@ async function processStudy(orthancClient: OrthancClient, job: Job) {
     job.data.study.studyDescription,
     job.data.study.accessionNb,
     job.data.study.studyInstanceUID,
-    job.data.study.aet);
+    job.data.study.aet,
+  );
 
   if (queryDetails.length != 1) {
     job.failedReason = `Query returned ${queryDetails.length} results, expected 1`;
@@ -43,10 +44,11 @@ async function processSeries(orthancClient: OrthancClient, job: Job) {
     job.data.series.seriesDescription,
     job.data.series.seriesNumber,
     job.data.series.seriesInstanceUID,
-    job.data.series.aet);
+    job.data.series.aet,
+  );
 
   if (seriesDetails.length != 1) {
-      job.failedReason = `Query returned ${seriesDetails.length} results, expected 1`;
+    job.failedReason = `Query returned ${seriesDetails.length} results, expected 1`;
   }
   const serieDetails = seriesDetails[0];
   job.updateProgress(10);

@@ -36,7 +36,7 @@ export class QueuesDeleteController {
 
     if (!userId && !uuid) {
       if (user.role.admin) {
-        return await this.QueuesDeleteService.getJobsForUuid() // get all jobs;
+        return await this.QueuesDeleteService.getJobsForUuid(); // get all jobs;
       } else {
         throw new ForbiddenException("You don't have access to this resource");
       }

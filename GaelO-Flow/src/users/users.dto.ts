@@ -7,4 +7,4 @@ export class UserDto {
   superAdmin: boolean;
   roleName: string;
   isActive: boolean;
-}
+} // TODO: decorators

@@ -40,19 +40,19 @@ describe('QueuesDeleteController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job1',
-          results: null
+          results: null,
         },
         ['job2']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
         ['job3']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
       };
       const mockReq = {
@@ -67,7 +67,11 @@ describe('QueuesDeleteController', () => {
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
 
       // ACT
-      const result = await controller.getJobs(undefined, undefined, mockReq as any);
+      const result = await controller.getJobs(
+        undefined,
+        undefined,
+        mockReq as any,
+      );
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith();
@@ -86,7 +90,9 @@ describe('QueuesDeleteController', () => {
       };
 
       // ACT & ASSERT
-      await expect(controller.getJobs(undefined, undefined, mockReq as any)).rejects.toThrow(ForbiddenException);
+      await expect(
+        controller.getJobs(undefined, undefined, mockReq as any),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     // get uuid of user
@@ -109,7 +115,7 @@ describe('QueuesDeleteController', () => {
 
       // ASSERT
       expect(service.getUuidOfUser).toHaveBeenCalledWith(2);
-      expect(result).toEqual({uuid: mockUuid});
+      expect(result).toEqual({ uuid: mockUuid });
     });
 
     it('should throw ForbiddenException if user is not admin when trying to get uuid of another user', async () => {
@@ -124,7 +130,9 @@ describe('QueuesDeleteController', () => {
       };
 
       // ACT & ASSERT
-      await expect(controller.getJobs(2, undefined, mockReq as any)).rejects.toThrow(ForbiddenException);
+      await expect(
+        controller.getJobs(2, undefined, mockReq as any),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should return the uuid of the user (user)', async () => {
@@ -146,7 +154,7 @@ describe('QueuesDeleteController', () => {
 
       // ASSERT
       expect(service.getUuidOfUser).toHaveBeenCalledWith(1);
-      expect(result).toEqual({uuid: mockUuid});
+      expect(result).toEqual({ uuid: mockUuid });
     });
 
     // get jobs for uuid
@@ -157,19 +165,19 @@ describe('QueuesDeleteController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job1',
-          results: null
+          results: null,
         },
         ['job2']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
         ['job3']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
       };
       const mockReq = {
@@ -185,7 +193,11 @@ describe('QueuesDeleteController', () => {
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
 
       // ACT
-      const result = await controller.getJobs(undefined, 'test-uuid', mockReq as any);
+      const result = await controller.getJobs(
+        undefined,
+        'test-uuid',
+        mockReq as any,
+      );
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith('test-uuid');
@@ -205,7 +217,9 @@ describe('QueuesDeleteController', () => {
       jest.spyOn(service, 'getUuidOfUser').mockResolvedValue('test-uuid-2');
 
       // ACT & ASSERT
-      await expect(controller.getJobs(undefined, 'test-uuid', mockReq as any)).rejects.toThrow(ForbiddenException);
+      await expect(
+        controller.getJobs(undefined, 'test-uuid', mockReq as any),
+      ).rejects.toThrow(ForbiddenException);
     });
 
     it('should return all jobs for a specific uuid (user)', async () => {
@@ -215,19 +229,19 @@ describe('QueuesDeleteController', () => {
           progress: 0,
           state: 'waiting',
           id: 'job1',
-          results: null
+          results: null,
         },
         ['job2']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
         ['job3']: {
           progress: 0,
           state: 'waiting',
           id: 'job2',
-          results: null
+          results: null,
         },
       };
       const mockReq = {
@@ -243,7 +257,11 @@ describe('QueuesDeleteController', () => {
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
 
       // ACT
-      const result = await controller.getJobs(undefined, 'test-uuid', mockReq as any);
+      const result = await controller.getJobs(
+        undefined,
+        'test-uuid',
+        mockReq as any,
+      );
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith('test-uuid');

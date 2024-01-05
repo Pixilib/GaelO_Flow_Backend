@@ -23,7 +23,7 @@ import { randomUUID } from 'crypto';
 
 @Controller('/queues/query')
 export class QueuesQueryController {
-  constructor(private readonly QueuesQueryService: QueuesQueryService) { }
+  constructor(private readonly QueuesQueryService: QueuesQueryService) {}
 
   @UseGuards(AdminGuard)
   @Delete()

@@ -47,10 +47,10 @@ export class User {
   })
   superAdmin: boolean;
 
-  @Column({ 
-   name: 'role_name',
-   unique: false,
-   nullable: true,
+  @Column({
+    name: 'role_name',
+    unique: false,
+    nullable: true,
   })
   roleName: string;
 
