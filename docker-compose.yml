@@ -8,7 +8,6 @@ services:
     ports: ["6379:6379"]
 
   postgres:
-    container_name: postgres
     image: postgres:13.1
     ports: ["5432:5432"]
     environment:
@@ -20,7 +19,6 @@ services:
 
   orthanc:
     image: osimis/orthanc:23.4.0
-    container_name: orthanc
     restart: unless-stopped
     ports: ["8042:8042"]
     volumes: ["orthanc:/var/lib/orthanc/db:Z"]
@@ -47,7 +45,6 @@ services:
       ORTHANC__DICOM_WEB__SERIES_METADATA: "Full"
       
   pgadmin:
-    container_name: pgadmin4_container
     image: dpage/pgadmin4
     restart: always
     environment:

@@ -2,9 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { writeFileSync } from 'fs';
-import e from 'express';
 import { exit } from 'process';
-import { clear } from 'console';
 
 const buildDocs = async () => {
   const app = await NestFactory.create(AppModule);
@@ -19,9 +17,9 @@ const buildDocs = async () => {
     )
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  writeFileSync('../swagger.json', JSON.stringify(document));
+  writeFileSync('../openapi.json', JSON.stringify(document));
   await app.close();
-  console.log('Documentation built -> swagger.json');
+  console.log('Documentation built -> openapi.json');
   exit(0);
 };
 
