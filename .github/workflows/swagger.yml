@@ -26,6 +26,17 @@ jobs:
         image: osimis/orthanc:23.4.0
         ports: 
           - 8042:8042
+      postgres:
+        image: postgres:13.1
+        env:
+            POSTGRES_HOST_AUTH_METHOD: "trust"
+        options: >-
+            --health-cmd pg_isready
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
+        ports: 
+            - 5432:5432
     steps:
       - name: 'Build checkout'
         uses: actions/checkout@v3
