@@ -8,20 +8,23 @@ import { Repository } from 'typeorm';
 import { MailService } from '../mail/mail.service';
 
 
+
 @Injectable()
 export class AuthService {
+
   constructor(
     private jwtService: JwtService,
     @InjectRepository(User)
     private usersRepository: Repository<User>,
     private mailService: MailService,
-    ) {}
+    ) {
+    }
   
   async verifyToken(token: string): Promise<number> {
     try {
       const decoded = await this.jwtService.verifyAsync(token);
+      console.log({decoded})
       return decoded.id;
-
     }catch (error) {
       return null;
     }
@@ -80,12 +83,17 @@ export class AuthService {
   }
 
   async changePassword(userId: number, newPassword: string): Promise<void> {
+
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // console.table({ salt, hashedPassword });
+
     await this.usersRepository.update(userId, {
       password: hashedPassword,
       salt,
     });
+
   }
 
 

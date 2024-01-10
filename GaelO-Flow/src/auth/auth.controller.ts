@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { Public } from '../interceptors/Public';
 import { RegisterDto } from './register.dto';
 import { ChangePasswordDto } from './changePassword.dto';
+import { response } from 'express';
 
 @Public()
 @Controller('')
@@ -51,13 +52,30 @@ export class AuthController {
 
   @Post('change-password')
   async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
-    const {token, newPassword} = changePasswordDto;
+    const { token, newPassword } = changePasswordDto;
 
-    const userID = this.authService.verifyToken(token);
+    const userID = await this.authService.verifyToken(token);
+    
+    console.log({userID})
     if (!userID) throw new UnauthorizedException('Invalid token');
 
+    const user = await this.usersService.findOne(userID);
+    if (!user) throw new UnauthorizedException('User not found');
 
-    await this.authService.changePassword(userId, newPassword)
+    const passwordExists = !!user.password;
+    await this.authService.changePassword(userID, newPassword);
+
+    if (!passwordExists) {
+      //ajouter la logique pour changer l'état isActive de l'utilisateur
+      // Par exemple:
+      user.isActive = true;
+    }
+
+    return {
+      message: passwordExists ? 'Password updated successfully' : 'Password created successfully'
+    };
   }
- 
 }
+  
+ 
+
