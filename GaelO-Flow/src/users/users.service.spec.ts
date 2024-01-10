@@ -52,7 +52,6 @@ describe('UsersService', () => {
       email: 'first@example.com',
       password: hash,
       superAdmin: false,
-      isActive: true,
       roleName: userRole.name,
       salt: salt,
     };
@@ -66,7 +65,6 @@ describe('UsersService', () => {
       email: 'second@example.com',
       password: hash,
       superAdmin: false,
-      isActive: true,
       roleName: userRole.name,
       salt: salt,
     };
@@ -137,7 +135,6 @@ describe('UsersService', () => {
         email: 'create_testuser@example.com',
         password: 'create_<PASSWORD>',
         superAdmin: false,
-        isActive: true,
         roleName: 'User',
         salt: 'create_<SALT>',
       };

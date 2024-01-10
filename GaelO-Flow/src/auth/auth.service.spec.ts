@@ -7,10 +7,9 @@ describe('AuthService', () => {
   let service: AuthService;
   let jwtService: JwtService;
 
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService, JwtService,MailService],
+      providers: [AuthService, JwtService, MailService],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
@@ -31,14 +30,15 @@ describe('AuthService', () => {
       // Assert
       expect(result).toBe(decoded.id);
       expect(jwtService.verifyAsync).toHaveBeenCalledWith(token);
-    }
-    );
+    });
 
     it('should return null when the token is invalid', async () => {
       // Arrange
       const token = 'invalid_token';
 
-      jest.spyOn(jwtService, 'verifyAsync').mockRejectedValue(new Error('Invalid token'));
+      jest
+        .spyOn(jwtService, 'verifyAsync')
+        .mockRejectedValue(new Error('Invalid token'));
 
       // Act
       const result = await service.verifyToken(token);
@@ -47,6 +47,5 @@ describe('AuthService', () => {
       expect(result).toBeNull();
       expect(jwtService.verifyAsync).toHaveBeenCalledWith(token);
     });
-
   });
 });

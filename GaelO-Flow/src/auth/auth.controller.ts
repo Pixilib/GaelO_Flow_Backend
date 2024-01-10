@@ -5,8 +5,8 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
+  BadRequestException,
   ConflictException,
-  HttpException
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -14,7 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { Public } from '../interceptors/Public';
 import { RegisterDto } from './register.dto';
 import { ChangePasswordDto } from './changePassword.dto';
-import { response } from 'express';
+import { MailService } from 'src/mail/mail.service';
 
 @Public()
 @Controller('')
@@ -22,6 +22,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
+    private mailService: MailService,
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -36,46 +37,70 @@ export class AuthController {
     if (!isMatch) throw new UnauthorizedException();
     return this.authService.signIn(user);
   }
-  
+
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
-    try {
-      const user = await this.authService.register(registerDto);
-      return user;
-    } catch (error) {
-      if (error instanceof ConflictException) {
-        throw new HttpException(error.message, HttpStatus.CONFLICT);
-      }
-      throw error; // Relève les autres erreurs inattendues
+    const { email, firstname, lastname } = registerDto;
+
+    // Check if user already exists
+    const userExists = await this.usersService.findOneByEmail(email, false);
+
+    if (userExists) {
+      throw new ConflictException(
+        'A user already exist with this username or email',
+      );
     }
+
+    await this.usersService.create({
+      ...registerDto,
+      superAdmin: false,
+      salt: null,
+      roleName: 'User',
+      firstname,
+      lastname,
+      password: null,
+    });
+
+    const newUser = await this.usersService.findOneByEmail(email, false);
+
+    //generate a token for confirmation of user:
+    const confirmationToken =
+      await this.authService.createConfirmationToken(newUser);
+
+    await this.mailService.sendChangePasswordEmail(
+      newUser.email,
+      confirmationToken,
+    );
+
+    return {
+      status: HttpStatus.CREATED,
+      message: 'An email has been sent, confirm your account to login',
+    };
   }
 
   @Post('change-password')
-  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
-    const { token, newPassword } = changePasswordDto;
+  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
+    const { token, newPassword, confirmationPassword } = changePasswordDto;
 
-    const userID = await this.authService.verifyToken(token);
-    
-    console.log({userID})
-    if (!userID) throw new UnauthorizedException('Invalid token');
-
-    const user = await this.usersService.findOne(userID);
-    if (!user) throw new UnauthorizedException('User not found');
-
-    const passwordExists = !!user.password;
-    await this.authService.changePassword(userID, newPassword);
-
-    if (!passwordExists) {
-      //ajouter la logique pour changer l'état isActive de l'utilisateur
-      // Par exemple:
-      user.isActive = true;
+    if (newPassword !== confirmationPassword) {
+      throw new BadRequestException('Confirmation password not matching');
     }
 
+    const userID = await this.authService.verifyToken(token);
+    if (!userID) throw new BadRequestException('Invalid token');
+
+    const user = await this.usersService.findOne(userId);
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    user.salt = salt;
+
+    await this.usersService.update(userId, user);
+
     return {
-      message: passwordExists ? 'Password updated successfully' : 'Password created successfully'
+      status: HttpStatus.CREATED,
     };
   }
 }
-  
- 
-

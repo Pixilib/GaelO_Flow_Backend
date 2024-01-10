@@ -1,11 +1,12 @@
-import {IsString } from 'class-validator';
+import { IsString } from 'class-validator';
 
-export class ChangePasswordDto{
+export class ChangePasswordDto {
+  @IsString()
+  token: string;
 
-    @IsString()
-    token: string;
-    
-    @IsString()
-    newPassword: string;
+  @IsString()
+  newPassword: string;
 
+  @IsString()
+  confirmationPassword: string;
 }

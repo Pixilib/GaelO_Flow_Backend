@@ -1,29 +1,24 @@
-import { Injectable } from "@nestjs/common";
-import { MailerService } from "@nestjs-modules/mailer";
-// import * as nodemailer from 'nodemailer';
+import { Injectable } from '@nestjs/common';
+import { MailerService } from '@nestjs-modules/mailer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class MailService {
-    // private transporter: nodemailer.Transporter;
-    constructor(private mailerService:MailerService) {}
-    // constructor() {
-    //     this.transporter = nodemailer.createTransport({
-    //         host: 'smtp.gmail.com',
-    //         port: 2525,
-    //         auth: {
-    //             user: process.env.MAILTRAP_USER,
-    //             pass: process.env.MAILTRAP_PASSWORD,
-    //         },
-    //     });
-    // }
+  // private transporter: nodemailer.Transporter;
+  constructor(
+    private mailerService: MailerService,
+    private configService: ConfigService,
+  ) {}
 
-    async sendConfirmationEmail(email: string, token: string): Promise<void> {
-        const confirmationUrl = `http://localhost:5173/confirm?token=${token}`;
-        await this.mailerService.sendMail({
-            from:'"GaelO-Flow" <noreply@gaeloflow.com>',
-            to: email,
-            subject: 'Confirmez votre email',
-            html: `Veuillez cliquer sur le lien suivant pour confirmer votre compte : <a href="${confirmationUrl}">${confirmationUrl}</a>`,
-        });
-    }
+  async sendChangePasswordEmail(email: string, token: string): Promise<void> {
+    const changePasswordUrl = `${this.configService.get(
+      'APP_URL',
+    )}/change-password?token=${token}`;
+    await this.mailerService.sendMail({
+      from: '"GaelO-Flow" <' + this.configService.get('MAIL_FROM') + '>',
+      to: email,
+      subject: 'Change your password',
+      html: `Follow this link to set your password : <a href="${changePasswordUrl}">${changePasswordUrl}</a>`,
+    });
+  }
 }

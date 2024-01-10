@@ -47,24 +47,16 @@ export class User {
   })
   superAdmin: boolean;
 
-  @Column({ 
-   name: 'role_name',
-   unique: false,
-   nullable: true,
+  @Column({
+    name: 'role_name',
+    unique: false,
+    nullable: true,
   })
   roleName: string;
-
-  //TODO: add lostPassword field timestamp
 
   @ManyToOne(() => Role, (role) => role.name)
   @JoinColumn({ name: 'role_name' })
   role?: Role;
-
-  @Column({
-    default: false,
-    name: 'is_active',
-  })
-  isActive: boolean;
 
   @Column({
     name: 'salt',

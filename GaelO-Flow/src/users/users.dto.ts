@@ -6,5 +6,4 @@ export class UserDto {
   email: string;
   superAdmin: boolean;
   roleName: string;
-  isActive: boolean;
 }
