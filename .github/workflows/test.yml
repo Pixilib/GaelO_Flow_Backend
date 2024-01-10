@@ -28,7 +28,7 @@ jobs:
           - 8042:8042
     steps:
       - name : 'Add build essential (needed for bcrypt)'
-        run : npm install -g node-gyp && apt-get install build-essential python3
+        run : npm install -g node-gyp && sudo apt-get install build-essential python3
 
       - name: 'Build checkout'
         uses: actions/checkout@v3
