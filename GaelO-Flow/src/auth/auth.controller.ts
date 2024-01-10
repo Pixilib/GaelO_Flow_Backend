@@ -10,9 +10,11 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { RegisterDto } from './register-dto';
 import * as bcrypt from 'bcrypt';
 import { Public } from '../interceptors/Public';
+import { RegisterDto } from './register.dto';
+import { ChangePasswordDto } from './changePassword.dto';
+import { response } from 'express';
 
 @Public()
 @Controller('')
@@ -47,15 +49,33 @@ export class AuthController {
       throw error; // Relève les autres erreurs inattendues
     }
   }
-  // @Post('register')
-  // async register(@Body() RegisterDto: Record<string,any>) {
-  //   const user = await this.usersService.findOneByUsername(RegisterDto.username, true);
-  //   if (user)
-  //     throw new UnauthorizedException();
-  // }else {
-  //   const newUser = await this.usersService.create(RegisterDto.password, RegisterDto.username, RegisterDto.email, RegisterDto.firstname, RegisterDto.lastname);
 
-  // }
+  @Post('change-password')
+  async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
+    const { token, newPassword } = changePasswordDto;
 
-  //create a api route to register a user without a role or password just username and email
+    const userID = await this.authService.verifyToken(token);
+    
+    console.log({userID})
+    if (!userID) throw new UnauthorizedException('Invalid token');
+
+    const user = await this.usersService.findOne(userID);
+    if (!user) throw new UnauthorizedException('User not found');
+
+    const passwordExists = !!user.password;
+    await this.authService.changePassword(userID, newPassword);
+
+    if (!passwordExists) {
+      //ajouter la logique pour changer l'état isActive de l'utilisateur
+      // Par exemple:
+      user.isActive = true;
+    }
+
+    return {
+      message: passwordExists ? 'Password updated successfully' : 'Password created successfully'
+    };
+  }
 }
+  
+ 
+
