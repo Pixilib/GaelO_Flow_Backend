@@ -9,6 +9,7 @@ import { User } from '../users/user.entity';
 import { AuthGuard } from '../auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ConfigService } from '@nestjs/config';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    MailService,
   ],
   controllers: [AuthController],
   exports: [AuthService],
