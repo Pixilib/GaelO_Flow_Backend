@@ -119,9 +119,10 @@ export class UsersController {
       !userDto.email == undefined ||
       !userDto.password == undefined ||
       !userDto.superAdmin == undefined ||
-      !userDto.roleName == undefined ||
-    )
+      !userDto.roleName == undefined
+    ) {
       throw new BadRequestException('All the keys are required');
+    }
 
     const salt = await bcryptjs.genSalt();
     const hash = await bcryptjs.hash(userDto.password, salt);
