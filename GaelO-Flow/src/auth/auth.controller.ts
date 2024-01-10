@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 import { Public } from '../interceptors/Public';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './login-dto';
@@ -26,7 +26,7 @@ export class AuthController {
     private usersService: UsersService,
     private mailService: MailService,
   ) {}
-  
+
   @ApiResponse({ status: 200, description: 'Login success' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiBody({ type: LoginDto })
@@ -100,8 +100,8 @@ export class AuthController {
 
     const user = await this.usersService.findOne(userId);
 
-    const salt = await bcrypt.genSalt();
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
+    const salt = await bcryptjs.genSalt();
+    const hashedPassword = await bcryptjs.hash(newPassword, salt);
 
     user.password = hashedPassword;
     user.salt = salt;

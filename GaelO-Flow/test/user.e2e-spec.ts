@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from '../src/users/users.service';
 import { UsersController } from '../src/users/users.controller';
 import { Role } from '../src/roles/role.entity';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 import * as request from 'supertest';
 import { RolesService } from '../src/roles/roles.service';
 
@@ -35,10 +35,10 @@ describe('UserController (e2e)', () => {
     const role = new Role();
     role.name = 'User';
 
-    saltTest = await bcrypt.genSalt();
-    hashTest = await bcrypt.hash('testPassword123!', saltTest);    
+    saltTest = await bcryptjs.genSalt();
+    hashTest = await bcryptjs.hash('testPassword123!', saltTest);
 
-    await rolesService.create(role)
+    await rolesService.create(role);
 
     await usersService.create({
       username: 'testuser',
@@ -47,7 +47,6 @@ describe('UserController (e2e)', () => {
       email: 'testuser@example.com',
       password: hashTest,
       super_admin: false,
-      is_active: true,
       role_name: role.name,
       salt: saltTest,
     });
@@ -61,11 +60,11 @@ describe('UserController (e2e)', () => {
       .get('/users')
       .expect(200)
       .then((response) => {
-        console.log(response.body)
+        console.log(response.body);
 
         // check if the response is an array
         expect(Array.isArray(response.body)).toBeTruthy();
-        
+
         // check if the response is an array of size 1
         expect(response.body.length).toBe(1);
 
@@ -80,7 +79,6 @@ describe('UserController (e2e)', () => {
         expect(response.body[0]).toHaveProperty('password');
         expect(response.body[0]).toHaveProperty('email');
         expect(response.body[0]).toHaveProperty('super_admin');
-        expect(response.body[0]).toHaveProperty('is_active');
         expect(response.body[0]).toHaveProperty('salt');
 
         // check if the response is an array of objects with the following values
@@ -91,7 +89,6 @@ describe('UserController (e2e)', () => {
         expect(response.body[0].password).toBe(hashTest);
         expect(response.body[0].email).toBe('testuser@example.com');
         expect(response.body[0].super_admin).toBe(false);
-        expect(response.body[0].is_active).toBe(true);
         expect(response.body[0].salt).toBe(saltTest);
       });
   });

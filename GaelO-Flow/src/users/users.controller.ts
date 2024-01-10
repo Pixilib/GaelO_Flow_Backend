@@ -16,7 +16,7 @@ import {
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UserDto } from './users.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 import { AdminGuard } from '../roles/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -67,8 +67,8 @@ export class UsersController {
     if (userDto.password) {
       if (regexPassword.test(userDto.password) === false)
         throw new HttpException('Password is not valid', 400);
-      const salt = await bcrypt.genSalt();
-      const hash = await bcrypt.hash(userDto.password, salt);
+      const salt = await bcryptjs.genSalt();
+      const hash = await bcryptjs.hash(userDto.password, salt);
       user.password = hash;
       user.salt = salt;
     }
@@ -123,8 +123,8 @@ export class UsersController {
     )
       throw new BadRequestException('All the keys are required');
 
-    const salt = await bcrypt.genSalt();
-    const hash = await bcrypt.hash(userDto.password, salt);
+    const salt = await bcryptjs.genSalt();
+    const hash = await bcryptjs.hash(userDto.password, salt);
 
     if (regexEmail.test(userDto.email) === false)
       throw new BadRequestException('Email is not valid');
