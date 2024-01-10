@@ -84,7 +84,7 @@ export class QueuesDeleteController {
   async addDeleteJob(
     @Body() queuesDeleteDto: QueuesDeleteDto,
     @Req() request: Request,
-  ): Promise<Object> {
+  ): Promise<object> {
     const user = request['user'];
 
     if (await this.QueuesDeleteService.checkIfUserIdHasJobs(user.userId))

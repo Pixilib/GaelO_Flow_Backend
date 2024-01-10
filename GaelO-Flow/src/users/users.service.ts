@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { Role } from '../roles/role.entity';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -80,11 +79,11 @@ export class UsersService {
   }
 
   public async seed() {
-    const saltAdmin = await bcrypt.genSalt();
-    const hashAdmin = await bcrypt.hash('passwordadmin', saltAdmin);
+    const saltAdmin = await bcryptjs.genSalt();
+    const hashAdmin = await bcryptjs.hash('passwordadmin', saltAdmin);
 
-    const saltUser = await bcrypt.genSalt();
-    const hashUser = await bcrypt.hash('passworduser', saltUser);
+    const saltUser = await bcryptjs.genSalt();
+    const hashUser = await bcryptjs.hash('passworduser', saltUser);
 
     const admin = this.usersRepository.create({
       username: 'admin',
@@ -93,7 +92,6 @@ export class UsersService {
       email: 'admin@localhost.com',
       password: hashAdmin,
       superAdmin: true,
-      isActive: true,
       roleName: 'Admin',
       salt: saltAdmin,
     });
@@ -105,7 +103,6 @@ export class UsersService {
       email: 'user@localhost.com',
       password: hashUser,
       superAdmin: true,
-      isActive: true,
       roleName: 'User',
       salt: saltUser,
     });

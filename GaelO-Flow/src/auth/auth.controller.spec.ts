@@ -3,7 +3,10 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { User } from 'src/users/user.entity';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
+import { MailService } from '../mail/mail.service';
+import { MailModule } from '../mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -12,8 +15,10 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [MailModule, ConfigModule],
       controllers: [AuthController],
       providers: [
+        MailService,
         {
           provide: AuthService,
           useValue: {
@@ -65,7 +70,7 @@ describe('AuthController', () => {
           },
         } as User),
       );
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
+      jest.spyOn(bcryptjs, 'compare').mockResolvedValue(true as never);
 
       const result = await authController.signIn({});
 
@@ -92,7 +97,7 @@ describe('AuthController', () => {
           },
         } as User),
       );
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(false as never);
+      jest.spyOn(bcryptjs, 'compare').mockResolvedValue(false as never);
 
       await expect(authController.signIn({})).rejects.toThrow('Unauthorized');
     });

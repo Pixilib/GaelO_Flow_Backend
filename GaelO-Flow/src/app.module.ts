@@ -46,16 +46,19 @@ import { QueuesAnonService } from './queues/anon/queueAnons.service';
 
 import { QueuesQueryController } from './queues/query/queueQuery.controller';
 import { QueuesQueryService } from './queues/query/queueQuery.service';
-
 import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { SeedService } from './seeder.service';
+import { MailService } from './mail/mail.service';
+
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
+      envFilePath: ['.env', '.env.dev'],
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
@@ -78,6 +81,7 @@ import { SeedService } from './seeder.service';
     TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole, Label]),
     AuthModule,
     TasksModule,
+    MailModule,
   ],
   controllers: [
     AppController,
@@ -103,6 +107,7 @@ import { SeedService } from './seeder.service';
     QueuesDeleteService,
     QueuesAnonService,
     QueuesQueryService,
+    MailService,
   ],
 })
 export class AppModule {}

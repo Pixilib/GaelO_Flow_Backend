@@ -1,18 +1,19 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/user.entity';
-import { RegisterDto } from './register-dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private jwtService: JwtService,
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) {}
+  constructor(private jwtService: JwtService) {}
 
+  async verifyToken(token: string): Promise<number | null> {
+    try {
+      const decoded = await this.jwtService.verifyAsync(token);
+      return decoded.id;
+    } catch (error) {
+      return null;
+    }
+  }
   async signIn(user: User) {
     const payload = {
       sub: user.id,
@@ -25,25 +26,13 @@ export class AuthService {
     };
   }
 
-  async register(registerDto: RegisterDto): Promise<Object> {
-    const { username, email } = registerDto;
-
-    // Check if user already exists
-    const userExists = await this.usersRepository.findOne({
-      where: [{ username }, { email }],
+  async createConfirmationToken(user: User): Promise<string> {
+    const payload = {
+      id: user.id,
+      email: user.email,
+    };
+    return this.jwtService.sign(payload, {
+      expiresIn: '24h', // Expiration en 24 heures
     });
-
-    if (userExists) {
-      throw new ConflictException(
-        'A user already exist with this username or email',
-      );
-    }
-
-    const newUser = this.usersRepository.create(registerDto);
-    const savedUser = await this.usersRepository.save(newUser);
-
-    //return just id
-    return { id: savedUser.id };
   }
-  //TODO: add a job for send a mail to the user with a link to confirm his account
 }

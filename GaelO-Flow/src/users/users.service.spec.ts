@@ -8,7 +8,7 @@ import { Role } from '../roles/role.entity';
 import { RolesService } from '../roles/roles.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -43,8 +43,8 @@ describe('UsersService', () => {
     const adminRole = new Role();
     adminRole.name = 'Admin';
 
-    salt = await bcrypt.genSalt();
-    hash = await bcrypt.hash('first', salt);
+    salt = await bcryptjs.genSalt();
+    hash = await bcryptjs.hash('first', salt);
     firstUser = {
       username: 'first_username',
       firstname: 'first_firstname',
@@ -52,13 +52,12 @@ describe('UsersService', () => {
       email: 'first@example.com',
       password: hash,
       superAdmin: false,
-      isActive: true,
       roleName: userRole.name,
       salt: salt,
     };
 
-    salt = await bcrypt.genSalt();
-    hash = await bcrypt.hash('second', salt);
+    salt = await bcryptjs.genSalt();
+    hash = await bcryptjs.hash('second', salt);
     secondUser = {
       username: 'second_username',
       firstname: 'second_firstname',
@@ -66,7 +65,6 @@ describe('UsersService', () => {
       email: 'second@example.com',
       password: hash,
       superAdmin: false,
-      isActive: true,
       roleName: userRole.name,
       salt: salt,
     };
@@ -119,7 +117,7 @@ describe('UsersService', () => {
 
   describe('update', () => {
     it('should update a user', async () => {
-      let user = { ...firstUser };
+      const user = { ...firstUser };
       user.firstname = 'updateTest';
       const updateResult = await usersService.update(1, user);
       const findOneResult = await usersService.findOne(1);
@@ -137,7 +135,6 @@ describe('UsersService', () => {
         email: 'create_testuser@example.com',
         password: 'create_<PASSWORD>',
         superAdmin: false,
-        isActive: true,
         roleName: 'User',
         salt: 'create_<SALT>',
       };

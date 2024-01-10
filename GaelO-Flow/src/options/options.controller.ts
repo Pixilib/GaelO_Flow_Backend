@@ -31,7 +31,11 @@ export class OptionsController {
   }
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: 'Update options', type: UpdateOptionDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Update options',
+    type: UpdateOptionDto,
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Patch()
