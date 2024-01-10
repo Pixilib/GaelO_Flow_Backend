@@ -5,6 +5,9 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../users/user.entity';
 import { Role } from '../roles/role.entity';
+import { MailModule } from '../mail/mail.module';
+import { MailService } from '../mail/mail.service';
+import { ConfigModule } from '@nestjs/config';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -12,6 +15,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [MailModule, ConfigModule],
       providers: [
         AuthService,
         JwtService,
@@ -19,6 +23,7 @@ describe('AuthService', () => {
           provide: getRepositoryToken(User),
           useClass: Repository,
         },
+        MailService,
       ],
     }).compile();
 
