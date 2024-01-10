@@ -39,7 +39,7 @@ export class AuthController {
       true,
     );
     if (!user) throw new UnauthorizedException();
-    const isMatch = await bcrypt.compare(signInDto.password, user.password);
+    const isMatch = await bcryptjs.compare(signInDto.password, user.password);
     if (!isMatch) throw new UnauthorizedException();
     return this.authService.signIn(user);
   }
