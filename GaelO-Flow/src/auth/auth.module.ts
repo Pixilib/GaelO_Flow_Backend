@@ -9,8 +9,6 @@ import { User } from '../users/user.entity';
 import { AuthGuard } from '../auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
-import { MailService } from '../mail/mail.service';
-import { MailModule } from '../mail/mail.module';
 
 @Module({
   imports: [
@@ -23,7 +21,6 @@ import { MailModule } from '../mail/mail.module';
       }),
     }),
     TypeOrmModule.forFeature([User]),
-    MailModule,
   ],
   providers: [
     AuthService,
@@ -32,7 +29,6 @@ import { MailModule } from '../mail/mail.module';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-    MailService,
   ],
   controllers: [AuthController],
   exports: [AuthService],

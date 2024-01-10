@@ -1,15 +1,16 @@
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Global, Module } from '@nestjs/common';
-import { MailService } from './mail.service';
 import { join } from 'path';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { MailService } from './mail.service';
 
 @Global()
 @Module({
   imports: [
     MailerModule.forRootAsync({
-      // imports: [ConfigModule], // import module if not enabled globally
+      imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: async (config: ConfigService) => ({
         transport: {
           host: config.get('MAIL_HOST'),
@@ -30,7 +31,6 @@ import { ConfigService } from '@nestjs/config';
           },
         },
       }),
-      inject: [ConfigService],
     }),
   ],
   providers: [MailService],

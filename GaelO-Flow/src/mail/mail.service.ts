@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
 import { ConfigService } from '@nestjs/config';
+import { MailerService } from '@nestjs-modules/mailer';
 
 @Injectable()
 export class MailService {
-  // private transporter: nodemailer.Transporter;
   constructor(
     private mailerService: MailerService,
     private configService: ConfigService,

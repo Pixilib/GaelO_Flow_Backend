@@ -50,6 +50,9 @@ import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { SeedService } from './seeder.service';
+import { MailService } from './mail/mail.service';
+
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -78,6 +81,7 @@ import { SeedService } from './seeder.service';
     TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole, Label]),
     AuthModule,
     TasksModule,
+    MailModule,
   ],
   controllers: [
     AppController,
@@ -103,6 +107,7 @@ import { SeedService } from './seeder.service';
     QueuesDeleteService,
     QueuesAnonService,
     QueuesQueryService,
+    MailService,
   ],
 })
 export class AppModule {}

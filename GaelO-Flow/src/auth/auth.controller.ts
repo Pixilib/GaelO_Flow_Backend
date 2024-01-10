@@ -16,8 +16,7 @@ import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './login-dto';
 import { RegisterDto } from './register.dto';
 import { ChangePasswordDto } from './changePassword.dto';
-import { MailService } from 'src/mail/mail.service';
-
+import { MailService } from '../mail/mail.service';
 @ApiTags('auth')
 @Controller('')
 export class AuthController {

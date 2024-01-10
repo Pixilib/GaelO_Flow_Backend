@@ -4,6 +4,7 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { User } from 'src/users/user.entity';
 import * as bcryptjs from 'bcryptjs';
+import { MailService } from '../mail/mail.service';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -14,6 +15,7 @@ describe('AuthController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [
+        MailService,
         {
           provide: AuthService,
           useValue: {

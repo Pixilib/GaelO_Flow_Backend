@@ -29,8 +29,4 @@ export class UserDto {
   @ApiProperty({ example: 'admin' })
   @IsString()
   roleName: string;
-
-  @ApiProperty({ example: true })
-  @IsBoolean()
-  isActive: boolean;
 } // TODO: decorators
