@@ -5,6 +5,8 @@ import { UsersService } from '../users/users.service';
 import { User } from 'src/users/user.entity';
 import * as bcryptjs from 'bcryptjs';
 import { MailService } from '../mail/mail.service';
+import { MailModule } from '../mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -13,6 +15,7 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [MailModule, ConfigModule],
       controllers: [AuthController],
       providers: [
         MailService,
