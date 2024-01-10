@@ -39,6 +39,9 @@ jobs:
         ports: 
             - 5432:5432
     steps:
+      - name : 'Add build essential (needed for bcrypt)'
+        run : sudo apt-get install build-essential
+
       - name: 'Build checkout'
         uses: actions/checkout@v3
         with:
