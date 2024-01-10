@@ -5,16 +5,18 @@ import {
   HttpCode,
   HttpStatus,
   UnauthorizedException,
+  BadRequestException,
   ConflictException,
-  HttpException,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { RegisterDto } from './register-dto';
 import * as bcrypt from 'bcrypt';
 import { Public } from '../interceptors/Public';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './login-dto';
+import { RegisterDto } from './register.dto';
+import { ChangePasswordDto } from './changePassword.dto';
+import { MailService } from 'src/mail/mail.service';
 
 @ApiTags('auth')
 @Controller('')
@@ -22,6 +24,7 @@ export class AuthController {
   constructor(
     private authService: AuthService,
     private usersService: UsersService,
+    private mailService: MailService,
   ) {}
   
   @ApiResponse({ status: 200, description: 'Login success' })
@@ -46,25 +49,67 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
-    try {
-      const user = await this.authService.register(registerDto);
-      return user;
-    } catch (error) {
-      if (error instanceof ConflictException) {
-        throw new HttpException(error.message, HttpStatus.CONFLICT);
-      }
-      throw error; // Relève les autres erreurs inattendues
+    const { email, firstname, lastname } = registerDto;
+
+    // Check if user already exists
+    const userExists = await this.usersService.findOneByEmail(email, false);
+
+    if (userExists) {
+      throw new ConflictException(
+        'A user already exist with this username or email',
+      );
     }
+
+    await this.usersService.create({
+      ...registerDto,
+      superAdmin: false,
+      salt: null,
+      roleName: 'User',
+      firstname,
+      lastname,
+      password: null,
+    });
+
+    const newUser = await this.usersService.findOneByEmail(email, false);
+
+    //generate a token for confirmation of user:
+    const confirmationToken =
+      await this.authService.createConfirmationToken(newUser);
+
+    await this.mailService.sendChangePasswordEmail(
+      newUser.email,
+      confirmationToken,
+    );
+
+    return {
+      status: HttpStatus.CREATED,
+      message: 'An email has been sent, confirm your account to login',
+    };
   }
-  // @Post('register')
-  // async register(@Body() RegisterDto: Record<string,any>) {
-  //   const user = await this.usersService.findOneByUsername(RegisterDto.username, true);
-  //   if (user)
-  //     throw new UnauthorizedException();
-  // }else {
-  //   const newUser = await this.usersService.create(RegisterDto.password, RegisterDto.username, RegisterDto.email, RegisterDto.firstname, RegisterDto.lastname);
 
-  // }
+  @Post('change-password')
+  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
+    const { token, newPassword, confirmationPassword } = changePasswordDto;
 
-  //create a api route to register a user without a role or password just username and email
+    if (newPassword !== confirmationPassword) {
+      throw new BadRequestException('Confirmation password not matching');
+    }
+
+    const userID = await this.authService.verifyToken(token);
+    if (!userID) throw new BadRequestException('Invalid token');
+
+    const user = await this.usersService.findOne(userId);
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    user.salt = salt;
+
+    await this.usersService.update(userId, user);
+
+    return {
+      status: HttpStatus.CREATED,
+    };
+  }
 }

@@ -72,13 +72,6 @@ export class User {
 
   @ApiProperty({ example: true })
   @Column({
-    default: true,
-    name: 'is_active',
-  })
-  isActive: boolean;
-
-  @ApiProperty({ example: 'admin' })
-  @Column({
     name: 'salt',
     nullable: true,
   })

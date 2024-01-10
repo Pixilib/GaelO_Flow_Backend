@@ -46,7 +46,6 @@ import { QueuesAnonService } from './queues/anon/queueAnons.service';
 
 import { QueuesQueryController } from './queues/query/queueQuery.controller';
 import { QueuesQueryService } from './queues/query/queueQuery.service';
-
 import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
@@ -56,6 +55,7 @@ import { SeedService } from './seeder.service';
   imports: [
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
+      envFilePath: ['.env', '.env.dev'],
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({

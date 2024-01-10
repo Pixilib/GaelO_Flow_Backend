@@ -79,7 +79,6 @@ export class UsersController {
     }
     if (userDto.superAdmin) user.superAdmin = userDto.superAdmin;
     if (userDto.roleName) user.roleName = userDto.roleName;
-    if (userDto.isActive) user.isActive = userDto.isActive;
 
     await this.UserService.update(id, user);
   }
@@ -121,7 +120,6 @@ export class UsersController {
       !userDto.password == undefined ||
       !userDto.superAdmin == undefined ||
       !userDto.roleName == undefined ||
-      !userDto.isActive == undefined
     )
       throw new BadRequestException('All the keys are required');
 
@@ -149,7 +147,6 @@ export class UsersController {
     user.password = hash;
     user.email = userDto.email;
     user.superAdmin = userDto.superAdmin;
-    user.isActive = userDto.isActive;
     user.roleName = userDto.roleName;
     user.salt = salt;
 

@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
-import { Role } from '../roles/role.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -93,7 +92,6 @@ export class UsersService {
       email: 'admin@localhost.com',
       password: hashAdmin,
       superAdmin: true,
-      isActive: true,
       roleName: 'Admin',
       salt: saltAdmin,
     });
@@ -105,7 +103,6 @@ export class UsersService {
       email: 'user@localhost.com',
       password: hashUser,
       superAdmin: true,
-      isActive: true,
       roleName: 'User',
       salt: saltUser,
     });
