@@ -21,6 +21,7 @@ import {
 } from './queueQuery.dto';
 import { randomUUID } from 'crypto';
 import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { OrGuard } from '../../utils/orGuards';
 
 @ApiTags('queues/query')
 @Controller('/queues/query')
@@ -42,7 +43,7 @@ export class QueuesQueryController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiQuery({ name: 'userId', required: false })
   @ApiQuery({ name: 'uuid', required: false })
-  @UseGuards(QueryGuard, AdminGuard)
+  @UseGuards(new OrGuard([new QueryGuard(), new AdminGuard()]))
   @Get()
   async getJobs(
     @Query('userId') userId: number,
@@ -83,7 +84,10 @@ export class QueuesQueryController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Add job', type: Object })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden - User already has jobs' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - User already has jobs',
+  })
   @UseGuards(QueryGuard)
   @Post()
   async addQueryJob(

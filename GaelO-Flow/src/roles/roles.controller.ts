@@ -50,6 +50,9 @@ export class RolesController {
     return role;
   }
 
+  // @Get('/:name/labels')
+  // check if user has role 'name'
+
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 201, description: 'Create role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })

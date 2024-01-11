@@ -15,7 +15,14 @@ import { AdminGuard, AnonymizeGuard } from '../../roles/roles.guard';
 import { Job } from 'bullmq';
 import { QueuesAnonsDto } from './queueAnons.dto';
 import { randomUUID } from 'crypto';
-import { ApiBearerAuth, ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { OrGuard } from '../../utils/orGuards';
 
 @ApiTags('queues/anon')
 @Controller('/queues/anon')
@@ -37,7 +44,7 @@ export class QueuesAnonController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiQuery({ name: 'userId', required: false })
   @ApiQuery({ name: 'uuid', required: false })
-  @UseGuards(AnonymizeGuard, AdminGuard)
+  @UseGuards(new OrGuard([new AnonymizeGuard(), new AdminGuard()]))
   @Get()
   async getJobs(
     @Query('userId') userId: number,
@@ -78,7 +85,10 @@ export class QueuesAnonController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Add job', type: Object })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden - User already has jobs' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - User already has jobs',
+  })
   @UseGuards(AnonymizeGuard)
   @Post()
   async addAnonJob(

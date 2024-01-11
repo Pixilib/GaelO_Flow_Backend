@@ -40,9 +40,6 @@ async function main() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
 
-  const outputPath = path.resolve(process.cwd(), 'swagger.json');
-  writeFileSync(outputPath, JSON.stringify(document), { encoding: 'utf8'});
-
   SwaggerModule.setup('docs', app, document);
 
   setupDeleteWorker(orthancClient, configService);
