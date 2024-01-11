@@ -90,7 +90,11 @@ describe('UsersController', () => {
         .spyOn(usersService, 'findOne')
         .mockResolvedValue(userList[0]);
       const result = await usersController.getUsersId(1);
-      expect(result).toEqual(userList[0]);
+      expect(result).toEqual({
+        ...userList[0],
+        password: undefined,
+        salt: undefined,
+      });
       expect(mock).toHaveBeenCalled();
     });
   });
