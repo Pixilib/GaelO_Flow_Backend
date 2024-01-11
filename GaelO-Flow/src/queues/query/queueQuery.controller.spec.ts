@@ -3,6 +3,7 @@ import { QueuesQueryController } from './queueQuery.controller';
 import { QueuesQueryService } from './queueQuery.service';
 import { QueuesQueryDto } from './queueQuery.dto';
 import { ForbiddenException } from '@nestjs/common';
+import { AdminGuard } from '../../roles/roles.guard';
 
 describe('QueuesQueryController', () => {
   let controller: QueuesQueryController;
@@ -63,8 +64,11 @@ describe('QueuesQueryController', () => {
         '__guards__',
         QueuesQueryController.prototype.getJobs,
       );
-      const guardNames = guards.map((guard: any) => guard.name);
-
+      const guardNames = guards[0].guards.map(
+        (guard: any) => guard.constructor.name,
+      );
+      expect(guards.length).toBe(1);
+      expect(guards[0].constructor.name).toBe('OrGuard');
       expect(guardNames.length).toBe(2);
       expect(guardNames).toContain('AdminGuard');
       expect(guardNames).toContain('QueryGuard');

@@ -1,7 +1,10 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsString } from "class-validator";
+import { ApiHideProperty, ApiOperation, ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { User } from './user.entity';
+import { Exclude } from 'class-transformer';
+import { Role } from 'src/roles/role.entity';
 
-export class UserDto {
+export class UpdateUserDto {
   @ApiProperty({ example: 'John' })
   @IsString()
   firstname: string;
@@ -9,24 +12,12 @@ export class UserDto {
   @ApiProperty({ example: 'Doe' })
   @IsString()
   lastname: string;
+}
 
-  @ApiProperty({ example: 'johndoe' })
-  @IsString()
-  username: string;
+export class GetUserDto extends User {}
 
+export class CreateUserDto extends GetUserDto {
   @ApiProperty({ example: 'myPassw0rd' })
   @IsString()
   password: string;
-
-  @ApiProperty({ example: 'john.doe@gmail.com' })
-  @IsString()
-  email: string;
-
-  @ApiProperty({ example: true })
-  @IsBoolean()
-  superAdmin: boolean;
-
-  @ApiProperty({ example: 'admin' })
-  @IsString()
-  roleName: string;
-} // TODO: decorators
+}

@@ -7,7 +7,8 @@ import {
 } from 'typeorm';
 
 import { Role } from '../roles/role.entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -34,14 +35,14 @@ export class User {
   })
   username: string;
 
-  @ApiProperty({ example: 'myPassw0rd' })
   @Column({
     nullable: true,
     name: 'password',
   })
+  @Exclude()
   password: string;
 
-  @ApiProperty({ example: 'john.doe@gmail.com'})
+  @ApiProperty({ example: 'john.doe@gmail.com' })
   @Column({
     unique: true,
     name: 'email',
@@ -69,10 +70,11 @@ export class User {
   @JoinColumn({ name: 'role_name' })
   role?: Role;
 
-  @ApiProperty({ example: true })
   @Column({
     name: 'salt',
     nullable: true,
+    default: null,
   })
-  salt: string;
+  @Exclude()
+  salt?: string;
 }

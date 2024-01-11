@@ -12,14 +12,24 @@ import {
   NotFoundException,
   BadRequestException,
   ConflictException,
+  ClassSerializerInterceptor,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { UserDto } from './users.dto';
+import { CreateUserDto, GetUserDto, UpdateUserDto } from './users.dto';
 import * as bcryptjs from 'bcryptjs';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 import { AdminGuard } from '../roles/roles.guard';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiHideProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { UserIdGuard } from './user.guard';
+import { OrGuard } from '../utils/orGuards';
+import { response } from 'express';
+import { QueuesDeleteDto } from 'src/queues/delete/queueDeletes.dto';
 
 @ApiTags('users')
 @Controller('/users')
@@ -27,58 +37,47 @@ export class UsersController {
   constructor(private readonly UserService: UsersService) {}
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: 'Get all users', type: [User] })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all users',
+    type: [GetUserDto],
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get()
-  async getUsers(): Promise<User[]> {
-    return await this.UserService.findAll();
+  @UseInterceptors(ClassSerializerInterceptor)
+  async getUsers(): Promise<GetUserDto[]> {
+    const allUsers = await this.UserService.findAll();
+    return allUsers;
   }
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: 'Get user by id', type: User })
+  @ApiResponse({ status: 200, description: 'Get user by id', type: GetUserDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(AdminGuard)
+  @UseGuards(new OrGuard([new AdminGuard(), new UserIdGuard()]))
   @Get('/:id')
   @UseInterceptors(NotFoundInterceptor)
-  async getUsersId(@Param('id') id: number): Promise<User> {
+  async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
     const user = await this.UserService.findOne(id);
-    return user;
+    return { ...user, password: undefined, salt: undefined };
   }
 
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Update user' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(AdminGuard)
+  @UseGuards(new OrGuard([new AdminGuard(), new UserIdGuard()]))
   @Put('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async update(
     @Param('id') id: number,
-    @Body() userDto: UserDto,
+    @Body() userDto: UpdateUserDto,
   ): Promise<void> {
     const user = await this.UserService.findOne(id);
-    const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-    const regexPassword =
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/g;
+
+    if (!user) throw new NotFoundException('User not found');
 
     if (userDto.firstname) user.firstname = userDto.firstname;
     if (userDto.lastname) user.lastname = userDto.lastname;
-    if (userDto.username) user.username = userDto.username;
-    if (userDto.password) {
-      if (regexPassword.test(userDto.password) === false)
-        throw new HttpException('Password is not valid', 400);
-      const salt = await bcryptjs.genSalt();
-      const hash = await bcryptjs.hash(userDto.password, salt);
-      user.password = hash;
-      user.salt = salt;
-    }
-    if (userDto.email) {
-      if (regexEmail.test(userDto.email) === false)
-        throw new HttpException('Email is not valid', 400);
-      user.email = userDto.email;
-    }
-    if (userDto.superAdmin) user.superAdmin = userDto.superAdmin;
-    if (userDto.roleName) user.roleName = userDto.roleName;
 
     await this.UserService.update(id, user);
   }
@@ -87,7 +86,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Delete user' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(AdminGuard)
+  @UseGuards(new OrGuard([new AdminGuard(), new UserIdGuard()]))
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<void> {
     const existingUser = await this.UserService.isExistingUser(id);
@@ -105,7 +104,7 @@ export class UsersController {
   @ApiResponse({ status: 409, description: 'Conflict' })
   @UseGuards(AdminGuard)
   @Post()
-  async createUser(@Body() userDto: UserDto): Promise<number> {
+  async createUser(@Body() userDto: CreateUserDto): Promise<number> {
     const user = new User();
     const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
     const regexPassword =
