@@ -4,12 +4,11 @@ export class OrGuard implements CanActivate {
   constructor(private readonly guards: CanActivate[]) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('OrGuard');
     for (const guard of this.guards) {
       if (await guard.canActivate(context)) {
         return true;
       }
     }
-    return false; 
+    return false;
   }
 }

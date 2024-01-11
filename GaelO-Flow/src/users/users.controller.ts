@@ -52,14 +52,14 @@ export class UsersController {
   }
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: 'Get user by id', type: User })
+  @ApiResponse({ status: 200, description: 'Get user by id', type: GetUserDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(new OrGuard([new AdminGuard(), new UserIdGuard()]))
   @Get('/:id')
   @UseInterceptors(NotFoundInterceptor)
-  async getUsersId(@Param('id') id: number): Promise<User> {
+  async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
     const user = await this.UserService.findOne(id);
-    return user;
+    return { ...user, password: undefined, salt: undefined };
   }
 
   @ApiBearerAuth('access-token')
