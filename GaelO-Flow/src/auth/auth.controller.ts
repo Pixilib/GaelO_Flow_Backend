@@ -13,10 +13,10 @@ import { UsersService } from '../users/users.service';
 import * as bcryptjs from 'bcryptjs';
 import { Public } from '../interceptors/Public';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginDto } from './login-dto';
-import { RegisterDto } from './register.dto';
+import { LoginDto } from './login.dto';
 import { ChangePasswordDto } from './changePassword.dto';
 import { MailService } from '../mail/mail.service';
+import { RegisterDto } from './register.dto';
 @ApiTags('auth')
 @Controller('')
 export class AuthController {
@@ -74,6 +74,8 @@ export class AuthController {
     //generate a token for confirmation of user:
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
+    
+    console.table({confirmationToken,newUser})
 
     await this.mailService.sendChangePasswordEmail(
       newUser.email,

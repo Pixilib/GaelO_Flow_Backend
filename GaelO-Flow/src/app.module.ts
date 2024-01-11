@@ -58,7 +58,7 @@ import { MailModule } from './mail/mail.module';
   imports: [
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
-      envFilePath: ['.env', '.env.dev'],
+      envFilePath: ['.env.dev','.env'],
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
