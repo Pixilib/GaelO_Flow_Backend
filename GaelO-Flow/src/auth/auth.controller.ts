@@ -48,7 +48,7 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
-    const { email, firstname, lastname } = registerDto;
+    const { email } = registerDto;
 
     // Check if user already exists
     const userExists = await this.usersService.findOneByEmail(email, false);
@@ -64,8 +64,6 @@ export class AuthController {
       superAdmin: false,
       salt: null,
       roleName: 'User',
-      firstname,
-      lastname,
       password: null,
     });
 
