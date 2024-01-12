@@ -1,6 +1,8 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class LabelDto {
-  @ApiProperty({ example: 'label_name' })
-  labelName: string;
+  @ApiProperty({ example: 'name' })
+  @IsString()
+  name: string;
 }

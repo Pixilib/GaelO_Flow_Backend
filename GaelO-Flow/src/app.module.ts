@@ -49,6 +49,10 @@ import { QueuesQueryService } from './queues/query/queueQuery.service';
 import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
+// ROLE LABEL ROUTE
+import { RoleLabel } from './role_label/role_label.entity';
+import { RoleLabelModule } from './role_label/role_label.module';
+
 import { SeedService } from './seeder.service';
 import { MailService } from './mail/mail.service';
 
@@ -74,14 +78,22 @@ import { MailModule } from './mail/mail.module';
         username: configService.get<string>('TYPEORM_USERNAME', 'postgres'),
         password: configService.get<string>('TYPEORM_PASSWORD', 'postgres'),
         database: configService.get<string>('TYPEORM_DATABASE', 'gaelo-flow'),
-        entities: [User, Role, Option, LdapGroupRole, Label],
+        entities: [User, Role, Option, LdapGroupRole, Label, RoleLabel],
         synchronize: true,
       }),
     }),
-    TypeOrmModule.forFeature([User, Role, Option, LdapGroupRole, Label]),
+    TypeOrmModule.forFeature([
+      User,
+      Role,
+      Option,
+      LdapGroupRole,
+      Label,
+      RoleLabel,
+    ]),
     AuthModule,
     TasksModule,
     MailModule,
+    RoleLabelModule,
   ],
   controllers: [
     AppController,

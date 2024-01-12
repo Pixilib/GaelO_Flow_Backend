@@ -15,12 +15,12 @@ export class LabelsService {
   }
 
   async findOneByOrFail(labelName: string): Promise<Label> {
-    return await this.labelsRepository.findOneByOrFail({ labelName });
+    return await this.labelsRepository.findOneByOrFail({ name: labelName });
   }
 
   //TODO A TESTER
   async isLabelExist(labelName: string): Promise<boolean> {
-    const answser = await this.labelsRepository.findOneBy({ labelName });
+    const answser = await this.labelsRepository.findOneBy({ name: labelName });
     return answser !== null;
   }
 

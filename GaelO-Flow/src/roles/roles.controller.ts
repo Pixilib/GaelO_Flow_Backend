@@ -20,13 +20,16 @@ import { UsersService } from '../users/users.service';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
 import { AdminGuard } from './roles.guard';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { OrGuard } from 'src/utils/orGuards';
+import { RequestCheckValues } from 'src/utils/RequestCompareGuard';
+import { RoleLabel } from 'src/role_label/role_label.entity';
 
 @ApiTags('roles')
 @Controller('/roles')
 export class RolesController {
   constructor(
-    private readonly RoleService: RolesService,
+    private readonly roleService: RolesService,
     private readonly userService: UsersService,
   ) {}
 
@@ -36,7 +39,7 @@ export class RolesController {
   @UseGuards(AdminGuard)
   @Get()
   async findAll(): Promise<Role[]> {
-    return this.RoleService.findAll();
+    return this.roleService.findAll();
   }
 
   @ApiBearerAuth('access-token')
@@ -46,17 +49,19 @@ export class RolesController {
   @Get('/:name')
   @UseInterceptors(NotFoundInterceptor)
   async findOne(@Param('name') name: string): Promise<Role> {
-    const role = await this.RoleService.findOne(name);
+    console.log('name', name);
+    const role = await this.roleService.findOne(name);
     return role;
   }
 
-  // @Get('/:name/labels')
+  // @Get('/:roleName/labels')
   // check if user has role 'name'
 
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 201, description: 'Create role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
+  @ApiBody({ type: RoleDto })
   @Post()
   async CreateRole(@Body() roleDto: RoleDto): Promise<void> {
     const role = new Role();
@@ -64,7 +69,7 @@ export class RolesController {
     if (roleDto.name == undefined)
       throw new BadRequestException("Missing Primary Key 'name'");
 
-    if ((await this.RoleService.findOne(roleDto.name)) != null)
+    if ((await this.roleService.findOne(roleDto.name)) != null)
       throw new ConflictException('Role with this name already exists');
 
     role.name = roleDto.name;
@@ -79,7 +84,7 @@ export class RolesController {
     role.cdBurner = roleDto.cdBurner;
     role.autoRouting = roleDto.autoRouting;
 
-    await this.RoleService.create(role);
+    await this.roleService.create(role);
   }
 
   @ApiBearerAuth('access-token')
@@ -89,12 +94,12 @@ export class RolesController {
   @Delete('/:name')
   @UseInterceptors(NotFoundInterceptor)
   async delete(@Param('name') name: string): Promise<void> {
-    const role = await this.RoleService.findOne(name);
+    const role = await this.roleService.findOne(name);
 
     if (await this.userService.isRoleUsed(role.name))
       throw new ForbiddenException('Role is used');
 
-    return this.RoleService.remove(name);
+    return this.roleService.remove(name);
   }
 
   @ApiBearerAuth('access-token')
@@ -107,7 +112,7 @@ export class RolesController {
     @Param('name') name: string,
     @Body() roleDto: RoleDto,
   ): Promise<void> {
-    const role = await this.RoleService.findOne(name);
+    const role = await this.roleService.findOne(name);
 
     const requiredKeys = [
       'import',
@@ -130,6 +135,59 @@ export class RolesController {
       }
     });
 
-    await this.RoleService.update(name, role);
+    await this.roleService.update(name, role);
+  }
+
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Add label to role' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @UseGuards(
+    new OrGuard([
+      new AdminGuard(),
+      new RequestCheckValues(['params', 'roleName'], ['user', 'role', 'name']),
+    ]),
+  )
+  @Post('/:roleName/label')
+  @ApiBody({ schema: { example: { label: 'label' } } })
+  async addLabelToRole(
+    @Param('roleName') roleName: string,
+    @Body() labelDto: { label: string },
+  ): Promise<void> {
+    console.log(roleName, labelDto.label);
+    await this.roleService.addRoleLabel(roleName, labelDto.label);
+  }
+
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Get all labels from role' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @UseGuards(
+    new OrGuard([
+      new AdminGuard(),
+      new RequestCheckValues(['params', 'roleName'], ['user', 'role', 'name']),
+    ]),
+  )
+  @Get('/:roleName/labels')
+  async getRoleLabels(
+    @Param('roleName') roleName: string,
+  ): Promise<RoleLabel[]> {
+    console.log('LA');
+    return this.roleService.getRoleLabels(roleName);
+  }
+
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Remove label from role' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @UseGuards(
+    new OrGuard([
+      new AdminGuard(),
+      new RequestCheckValues(['params', 'roleName'], ['user', 'role', 'name']),
+    ]),
+  )
+  @Delete('/:roleName/label/:label')
+  async removeLabelFromRole(
+    @Param('roleName') roleName: string,
+    @Param('label') label: string,
+  ): Promise<void> {
+    console.log(roleName, label);
   }
 }
