@@ -72,8 +72,8 @@ export class AuthController {
     //generate a token for confirmation of user:
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
-    
-    console.table({confirmationToken,newUser})
+
+    console.table({ confirmationToken, newUser });
 
     await this.mailService.sendChangePasswordEmail(
       newUser.email,
@@ -86,8 +86,14 @@ export class AuthController {
     };
   }
 
+  @ApiResponse({ status: 201, description: 'Password changed' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiBody({ type: ChangePasswordDto })
   @Post('change-password')
-  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
+  async changePassword(
+    @Body() userId: number,
+    changePasswordDto: ChangePasswordDto,
+  ) {
     const { token, newPassword, confirmationPassword } = changePasswordDto;
 
     if (newPassword !== confirmationPassword) {
