@@ -13,10 +13,10 @@ import { UsersService } from '../users/users.service';
 import * as bcryptjs from 'bcryptjs';
 import { Public } from '../interceptors/Public';
 import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginDto } from './login-dto';
-import { RegisterDto } from './register.dto';
+import { LoginDto } from './login.dto';
 import { ChangePasswordDto } from './changePassword.dto';
 import { MailService } from '../mail/mail.service';
+import { RegisterDto } from './register.dto';
 @ApiTags('auth')
 @Controller('')
 export class AuthController {
@@ -48,7 +48,7 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
-    const { email, firstname, lastname } = registerDto;
+    const { email } = registerDto;
 
     // Check if user already exists
     const userExists = await this.usersService.findOneByEmail(email, false);
@@ -64,8 +64,6 @@ export class AuthController {
       superAdmin: false,
       salt: null,
       roleName: 'User',
-      firstname,
-      lastname,
       password: null,
     });
 
@@ -74,6 +72,8 @@ export class AuthController {
     //generate a token for confirmation of user:
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
+
+    console.table({ confirmationToken, newUser });
 
     await this.mailService.sendChangePasswordEmail(
       newUser.email,
@@ -86,8 +86,14 @@ export class AuthController {
     };
   }
 
+  @ApiResponse({ status: 201, description: 'Password changed' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiBody({ type: ChangePasswordDto })
   @Post('change-password')
-  async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
+  async changePassword(
+    @Body() userId: number,
+    changePasswordDto: ChangePasswordDto,
+  ) {
     const { token, newPassword, confirmationPassword } = changePasswordDto;
 
     if (newPassword !== confirmationPassword) {

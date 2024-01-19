@@ -64,7 +64,8 @@ export class User {
   })
   roleName: string;
 
-  //TODO: add lostPassword field timestamp
+
+  @ApiProperty()
   @ManyToOne(() => Role, (role) => role.name)
   @JoinColumn({ name: 'role_name' })
   role?: Role;
