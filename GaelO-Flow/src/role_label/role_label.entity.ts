@@ -1,5 +1,5 @@
-import { Label } from 'src/labels/label.entity';
-import { Role } from 'src/roles/role.entity';
+import { Label } from '../labels/label.entity';
+import { Role } from '../roles/role.entity';
 import {
   Entity,
   Column,
@@ -7,33 +7,20 @@ import {
   Unique,
   ManyToMany,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity()
-@Unique(['roleName', 'labelName'])
+@Unique(['role', 'label'])
 export class RoleLabel {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
-    name: 'role_name',
-    unique: false,
-    nullable: true,
-  })
-  roleName: string;
-
-  @ManyToMany(() => Role, (role) => role.name)
+  @ManyToOne(() => Role, { eager: true }) // Use eager loading to fetch the related Role
   @JoinColumn({ name: 'role_name' })
-  role?: Role;
+  role: Role;
 
-  @Column({
-    name: 'label_name',
-    unique: false,
-    nullable: true,
-  })
-  labelName: string;
-
-  @ManyToMany(() => Label, (label) => label.name)
+  @ManyToOne(() => Label, { eager: true }) // Use eager loading to fetch the related Label
   @JoinColumn({ name: 'label_name' })
-  label?: Label;
+  label: Label;
 }

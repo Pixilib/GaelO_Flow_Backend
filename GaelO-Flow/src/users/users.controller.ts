@@ -27,7 +27,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { OrGuard } from '../utils/orGuards';
-import { RequestCheckValues } from 'src/utils/RequestCompareGuard';
+import { RequestCheckValues } from '../utils/RequestCompareGuard';
 
 @ApiTags('users')
 @Controller('/users')

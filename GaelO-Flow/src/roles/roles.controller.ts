@@ -21,9 +21,10 @@ import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
 import { AdminGuard } from './roles.guard';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { OrGuard } from 'src/utils/orGuards';
-import { RequestCheckValues } from 'src/utils/RequestCompareGuard';
-import { RoleLabel } from 'src/role_label/role_label.entity';
+import { OrGuard } from '../utils/orGuards';
+import { RequestCheckValues } from '../utils/RequestCompareGuard';
+import { RoleLabel } from '../role_label/role_label.entity';
+import { Label } from 'src/labels/label.entity';
 
 @ApiTags('roles')
 @Controller('/roles')
@@ -153,7 +154,6 @@ export class RolesController {
     @Param('roleName') roleName: string,
     @Body() labelDto: { label: string },
   ): Promise<void> {
-    console.log(roleName, labelDto.label);
     await this.roleService.addRoleLabel(roleName, labelDto.label);
   }
 
@@ -167,11 +167,10 @@ export class RolesController {
     ]),
   )
   @Get('/:roleName/labels')
-  async getRoleLabels(
-    @Param('roleName') roleName: string,
-  ): Promise<RoleLabel[]> {
-    console.log('LA');
-    return this.roleService.getRoleLabels(roleName);
+  async getRoleLabels(@Param('roleName') roleName: string): Promise<String[]> {
+    const allRoleLabels = await this.roleService.getRoleLabels(roleName);
+    const labels = allRoleLabels.map((roleLabel) => roleLabel.label.name);
+    return labels;
   }
 
   @ApiBearerAuth('access-token')
