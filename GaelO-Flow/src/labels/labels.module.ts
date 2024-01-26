@@ -9,4 +9,4 @@ import { Label } from './label.entity';
   providers: [LabelsService],
   controllers: [LabelsController],
 })
-export class UsersModule {}
+export class LabelsModule {}

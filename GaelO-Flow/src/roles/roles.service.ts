@@ -47,17 +47,12 @@ export class RolesService {
       name: labelName,
     });
 
-    if (role == null || label == null)
-      throw new BadRequestException('Role or Label not found');
-
     roleLabel.role = role;
     roleLabel.label = label;
-
     await this.roleLabelRepository.save(roleLabel);
   }
 
   async getAllRoleLabels(): Promise<RoleLabel[]> {
-    console.log('getAllRoleLabels');
     return await this.roleLabelRepository.find();
   }
 
@@ -72,6 +67,7 @@ export class RolesService {
     return allLabels;
   }
 
+  /* istanbul ignore next */
   public async seed() {
     const admin = this.rolesRepository.create({
       name: 'Admin',

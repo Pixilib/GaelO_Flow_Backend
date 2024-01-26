@@ -101,9 +101,23 @@ describe('LabelsController', () => {
         .spyOn(labelsService, 'create')
         .mockResolvedValue(undefined);
 
-      await labelsController.create({ labelName: 'first' } as LabelDto);
+      await labelsController.create({ name: 'first' } as LabelDto);
 
       expect(mockCreate).toHaveBeenCalled();
+    });
+
+    it('checks if create of the controller throws if the labels already exists', async () => {
+      const mockCreate = jest
+        .spyOn(labelsService, 'create')
+        .mockResolvedValue(undefined);
+      const mockIsLabelExist = jest
+        .spyOn(labelsService, 'isLabelExist')
+        .mockResolvedValue(true);
+
+      expect(
+        labelsController.create({ name: 'first' } as LabelDto),
+      ).rejects.toThrow();
+      expect(mockIsLabelExist).toHaveBeenCalled();
     });
   });
 });

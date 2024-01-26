@@ -77,6 +77,4 @@ describe('AuthService', () => {
     expect(result).toBeNull();
     expect(jwtService.verifyAsync).toHaveBeenCalledWith(token);
   });
-
-  // TODO: add tests for register when the it is implemented
 });

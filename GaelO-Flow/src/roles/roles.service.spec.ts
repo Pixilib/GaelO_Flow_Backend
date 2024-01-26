@@ -2,6 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { RolesService } from './roles.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from './role.entity';
+import { Label } from '../labels/label.entity';
+import { RoleLabel } from '../role_label/role_label.entity';
+import { LabelsService } from '../labels/labels.service';
+import { RoleLabelModule } from '../role_label/role_label.module';
+import { RolesModule } from './roles.module';
 
 describe('RolesService', () => {
   let rolesService: RolesService;
@@ -13,12 +18,12 @@ describe('RolesService', () => {
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: ':memory:',
-          entities: [Role],
+          entities: [Role, Label, RoleLabel],
           synchronize: true,
         }),
-        TypeOrmModule.forFeature([Role]),
+        TypeOrmModule.forFeature([Role, Label, RoleLabel]),
       ],
-      providers: [RolesService],
+      providers: [RolesService, LabelsService],
     }).compile();
 
     rolesService = module.get<RolesService>(RolesService);
@@ -95,6 +100,30 @@ describe('RolesService', () => {
       const findOneResult = await rolesService.findOne('User');
       expect(updateResult).toEqual(undefined);
       expect(findOneResult).toEqual(updateRole);
+    });
+  });
+
+  describe('addRoleLabel', () => {
+    it('should add a role label', async () => {
+      const addRoleLabelResult = await rolesService.addRoleLabel(
+        'User',
+        'Label',
+      );
+      expect(addRoleLabelResult).toEqual(undefined);
+    });
+  });
+
+  describe('getAllRoleLabels', () => {
+    it('should get all role labels', async () => {
+      const getAllRoleLabelsResult = await rolesService.getAllRoleLabels();
+      expect(getAllRoleLabelsResult).toEqual([]);
+    });
+  });
+
+  describe('getRoleLabels', () => {
+    it('should get role labels', async () => {
+      const getRoleLabelsResult = await rolesService.getRoleLabels('User');
+      expect(getRoleLabelsResult).toEqual([]);
     });
   });
 });

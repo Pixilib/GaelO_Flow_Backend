@@ -3,6 +3,7 @@ import { LabelsService } from './labels.service';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { Label } from './label.entity';
 import { EntityNotFoundError, Repository } from 'typeorm';
+import { LabelsModule } from './labels.module';
 
 describe('LabelsService', () => {
   let labelsService: LabelsService;
@@ -12,6 +13,7 @@ describe('LabelsService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
+        LabelsModule,
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: ':memory:',
@@ -25,7 +27,7 @@ describe('LabelsService', () => {
 
     labelsService = module.get<LabelsService>(LabelsService);
     labelsRepository = module.get<Repository<Label>>(getRepositoryToken(Label));
-    labels = [{ labelName: 'first' }, { labelName: 'second' }];
+    labels = [{ name: 'first' }, { name: 'second' }];
     await labelsRepository.insert(labels);
   });
 
@@ -39,7 +41,7 @@ describe('LabelsService', () => {
   describe('find one label', () => {
     it('should get one label', async () => {
       const result = await labelsService.findOneByOrFail('first');
-      expect(result).toEqual({ labelName: 'first' });
+      expect(result).toEqual({ name: 'first' });
     });
 
     it("should throw if labels doesn't exists", async () => {
@@ -53,19 +55,19 @@ describe('LabelsService', () => {
     it('should remove one label', async () => {
       await labelsService.remove('first');
       const result = await labelsService.findAll();
-      expect(result).toEqual([{ labelName: 'second' }]);
+      expect(result).toEqual([{ name: 'second' }]);
     });
   });
 
   describe('create label', () => {
     it('should create a new label', async () => {
-      const newLabel: Label = { labelName: 'third' };
+      const newLabel: Label = { name: 'third' };
       await labelsService.create(newLabel);
       const result = await labelsService.findAll();
       expect(result).toEqual([
-        { labelName: 'first' },
-        { labelName: 'second' },
-        { labelName: 'third' },
+        { name: 'first' },
+        { name: 'second' },
+        { name: 'third' },
       ]);
     });
   });

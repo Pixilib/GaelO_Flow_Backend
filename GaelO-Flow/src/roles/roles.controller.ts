@@ -11,20 +11,25 @@ import {
   ConflictException,
   BadRequestException,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { Role } from './role.entity';
-import { RoleDto } from './roles.dto';
+import { RoleDto, WithLabels } from './roles.dto';
 
 import { UsersService } from '../users/users.service';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
 import { AdminGuard } from './roles.guard';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { OrGuard } from '../utils/orGuards';
-import { RequestCheckValues } from '../utils/RequestCompareGuard';
-import { RoleLabel } from '../role_label/role_label.entity';
-import { Label } from 'src/labels/label.entity';
+import { CheckUserRole } from '../utils/CheckUserRole.guard';
 
 @ApiTags('roles')
 @Controller('/roles')
@@ -37,10 +42,21 @@ export class RolesController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Get all roles', type: [Role] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  // @ApiQuery({ name: 'withLabels', required: false })
   @UseGuards(AdminGuard)
   @Get()
-  async findAll(): Promise<Role[]> {
-    return this.roleService.findAll();
+  async findAll(@Query() withLabels: WithLabels): Promise<Role[]> {
+    const allRoles = await this.roleService.findAll();
+    if (withLabels.withLabels) {
+      const allRoleLabels = await this.roleService.getAllRoleLabels();
+      allRoles.forEach((role) => {
+        role['labels'] = allRoleLabels
+          .filter((roleLabel) => roleLabel.role.name === role.name)
+          .map((roleLabel) => roleLabel.label.name);
+      });
+    }
+
+    return allRoles;
   }
 
   @ApiBearerAuth('access-token')
@@ -50,13 +66,9 @@ export class RolesController {
   @Get('/:name')
   @UseInterceptors(NotFoundInterceptor)
   async findOne(@Param('name') name: string): Promise<Role> {
-    console.log('name', name);
     const role = await this.roleService.findOne(name);
     return role;
   }
-
-  // @Get('/:roleName/labels')
-  // check if user has role 'name'
 
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 201, description: 'Create role' })
@@ -143,10 +155,7 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'Add label to role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(
-    new OrGuard([
-      new AdminGuard(),
-      new RequestCheckValues(['params', 'roleName'], ['user', 'role', 'name']),
-    ]),
+    new OrGuard([new AdminGuard(), new CheckUserRole(['params', 'roleName'])]),
   )
   @Post('/:roleName/label')
   @ApiBody({ schema: { example: { label: 'label' } } })
@@ -154,6 +163,17 @@ export class RolesController {
     @Param('roleName') roleName: string,
     @Body() labelDto: { label: string },
   ): Promise<void> {
+    const role = await this.roleService.findOne(roleName);
+    const label = await this.roleService.findOne(labelDto.label);
+
+    const roleLabel = await this.roleService.getRoleLabels(roleName);
+
+    if (role == undefined) throw new BadRequestException('Role does not exist');
+    if (label == undefined)
+      throw new BadRequestException('Label does not exist');
+    if (roleLabel.find((roleLabel) => roleLabel.label.name === label.name))
+      throw new ConflictException('Label already exists for this role');
+
     await this.roleService.addRoleLabel(roleName, labelDto.label);
   }
 
@@ -161,10 +181,7 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'Get all labels from role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(
-    new OrGuard([
-      new AdminGuard(),
-      new RequestCheckValues(['params', 'roleName'], ['user', 'role', 'name']),
-    ]),
+    new OrGuard([new AdminGuard(), new CheckUserRole(['params', 'roleName'])]),
   )
   @Get('/:roleName/labels')
   async getRoleLabels(@Param('roleName') roleName: string): Promise<String[]> {
@@ -177,10 +194,7 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'Remove label from role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(
-    new OrGuard([
-      new AdminGuard(),
-      new RequestCheckValues(['params', 'roleName'], ['user', 'role', 'name']),
-    ]),
+    new OrGuard([new AdminGuard(), new CheckUserRole(['params', 'roleName'])]),
   )
   @Delete('/:roleName/label/:label')
   async removeLabelFromRole(

@@ -50,7 +50,6 @@ function setupAnonWorker(
         'studies',
         anonAnswer.data.ID,
       );
-      // TODO: store study details .data in job -> key "results"
       job.updateData({ ...job.data, results: studyDetails.data });
       for (const seriesOrthancID of studyDetails.data.Series) {
         const seriesDetails = await orthancClient.getOrthancDetails(

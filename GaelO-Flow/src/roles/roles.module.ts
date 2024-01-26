@@ -15,4 +15,4 @@ import { Label } from '../labels/label.entity';
   providers: [RolesService],
   controllers: [RolesController],
 })
-export class UsersModule {}
+export class RolesModule {}

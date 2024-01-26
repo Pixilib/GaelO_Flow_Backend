@@ -21,11 +21,6 @@ import { Option } from './options/option.entity';
 import { OptionsService } from './options/options.service';
 import { OptionsController } from './options/options.controller';
 
-// LDAP GROUP ROUTE
-import { LdapGroupRole } from './ldap_group_roles/ldapgrouprole.entity';
-import { LdapGroupRolesService } from './ldap_group_roles/ldapgrouproles.service';
-import { LdapGroupRolesController } from './ldap_group_roles/ldapgrouproles.controller';
-
 // LABEL ROUTE
 import { Label } from './labels/label.entity';
 import { LabelsController } from './labels/labels.controller';
@@ -62,7 +57,7 @@ import { MailModule } from './mail/mail.module';
   imports: [
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
-      envFilePath: ['.env.dev','.env'],
+      envFilePath: ['.env.dev', '.env'],
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({
@@ -78,18 +73,11 @@ import { MailModule } from './mail/mail.module';
         username: configService.get<string>('TYPEORM_USERNAME', 'postgres'),
         password: configService.get<string>('TYPEORM_PASSWORD', 'postgres'),
         database: configService.get<string>('TYPEORM_DATABASE', 'gaelo-flow'),
-        entities: [User, Role, Option, LdapGroupRole, Label, RoleLabel],
+        entities: [User, Role, Option, Label, RoleLabel],
         synchronize: true,
       }),
     }),
-    TypeOrmModule.forFeature([
-      User,
-      Role,
-      Option,
-      LdapGroupRole,
-      Label,
-      RoleLabel,
-    ]),
+    TypeOrmModule.forFeature([User, Role, Option, Label, RoleLabel]),
     AuthModule,
     TasksModule,
     MailModule,
@@ -100,7 +88,6 @@ import { MailModule } from './mail/mail.module';
     UsersController,
     RolesController,
     OptionsController,
-    LdapGroupRolesController,
     LabelsController,
     OrthancController,
     QueuesDeleteController,
@@ -113,7 +100,6 @@ import { MailModule } from './mail/mail.module';
     RolesService,
     UsersService,
     OptionsService,
-    LdapGroupRolesService,
     LabelsService,
     OrthancClient,
     QueuesDeleteService,

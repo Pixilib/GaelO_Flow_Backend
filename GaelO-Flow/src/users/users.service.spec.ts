@@ -9,6 +9,10 @@ import { RolesService } from '../roles/roles.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
+import { RoleLabel } from '../role_label/role_label.entity';
+import { LabelsService } from '../labels/labels.service';
+import { Label } from '../labels/label.entity';
+import { UsersModule } from './users.module';
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -20,15 +24,16 @@ describe('UsersService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
+        UsersModule,
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: ':memory:',
-          entities: [User, Role],
+          entities: [User, Role, Label, RoleLabel],
           synchronize: true,
         }),
-        TypeOrmModule.forFeature([User, Role]),
+        TypeOrmModule.forFeature([User, Role, Label, RoleLabel]),
       ],
-      providers: [UsersService, RolesService],
+      providers: [UsersService, RolesService, LabelsService],
     }).compile();
 
     usersService = module.get<UsersService>(UsersService);

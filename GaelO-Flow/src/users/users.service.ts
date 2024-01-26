@@ -78,6 +78,7 @@ export class UsersService {
     });
   }
 
+  /* istanbul ignore next */
   public async seed() {
     const saltAdmin = await bcryptjs.genSalt();
     const hashAdmin = await bcryptjs.hash('passwordadmin', saltAdmin);

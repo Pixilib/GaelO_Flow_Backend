@@ -18,7 +18,6 @@ export class LabelsService {
     return await this.labelsRepository.findOneByOrFail({ name: labelName });
   }
 
-  //TODO A TESTER
   async isLabelExist(labelName: string): Promise<boolean> {
     const answser = await this.labelsRepository.findOneBy({ name: labelName });
     return answser !== null;
