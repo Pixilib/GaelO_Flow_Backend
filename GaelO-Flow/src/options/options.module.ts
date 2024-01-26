@@ -9,4 +9,4 @@ import { Option } from './option.entity';
   providers: [OptionsService],
   controllers: [OptionsController],
 })
-export class UsersModule {}
+export class OptionsModule {}

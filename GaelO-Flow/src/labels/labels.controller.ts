@@ -14,7 +14,12 @@ import { LabelDto } from './labels.dto';
 import { NotFoundInterceptor } from './../interceptors/NotFoundInterceptor';
 import { AdminGuard } from '../roles/roles.guard';
 import { LabelsService } from './labels.service';
-import { ApiBearerAuth, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('labels')
 @Controller('/labels')
@@ -47,9 +52,8 @@ export class LabelsController {
   @UseGuards(AdminGuard)
   @Post()
   async create(@Body() labelDto: LabelDto): Promise<void> {
-    if (await this.LabelsService.findOneByOrFail(labelDto.labelName))
+    if (await this.LabelsService.isLabelExist(labelDto.name))
       throw new ConflictException('Label with this name already exists');
-
     return this.LabelsService.create(labelDto);
   }
 }

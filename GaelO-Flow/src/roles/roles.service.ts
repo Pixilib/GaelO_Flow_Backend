@@ -1,13 +1,23 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from './role.entity';
+import { RoleLabel } from '../role_label/role_label.entity';
+import { Label } from '../labels/label.entity';
 
 @Injectable()
 export class RolesService {
   constructor(
     @InjectRepository(Role)
     private rolesRepository: Repository<Role>,
+    @InjectRepository(Label)
+    private labelsRepository: Repository<Label>,
+    @InjectRepository(RoleLabel)
+    private roleLabelRepository: Repository<RoleLabel>,
   ) {}
 
   async findAll(): Promise<Role[]> {
@@ -30,6 +40,34 @@ export class RolesService {
     await this.rolesRepository.update(name, role);
   }
 
+  async addRoleLabel(roleName: string, labelName: string): Promise<void> {
+    const roleLabel = new RoleLabel();
+    const role = await this.rolesRepository.findOneBy({ name: roleName });
+    const label = await this.labelsRepository.findOneBy({
+      name: labelName,
+    });
+
+    roleLabel.role = role;
+    roleLabel.label = label;
+    await this.roleLabelRepository.save(roleLabel);
+  }
+
+  async getAllRoleLabels(): Promise<RoleLabel[]> {
+    return await this.roleLabelRepository.find();
+  }
+
+  async getRoleLabels(roleName: string): Promise<RoleLabel[]> {
+    const allLabels = await this.roleLabelRepository.find({
+      where: {
+        role: {
+          name: roleName,
+        },
+      },
+    });
+    return allLabels;
+  }
+
+  /* istanbul ignore next */
   public async seed() {
     const admin = this.rolesRepository.create({
       name: 'Admin',

@@ -5,10 +5,13 @@ import { Role } from './role.entity';
 
 import { UsersService } from '../users/users.service';
 import { UsersController } from '../users/users.controller';
+import { RoleLabel } from '../role_label/role_label.entity';
+
 describe('RolesController', () => {
   let rolesController: RolesController;
   let rolesService: RolesService;
   let roleList: Role[];
+  let roleLabelList: RoleLabel[];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,6 +25,7 @@ describe('RolesController', () => {
             update: jest.fn(),
             create: jest.fn(),
             remove: jest.fn(),
+            getAllRoleLabels: jest.fn(),
           },
         },
         {
@@ -52,7 +56,39 @@ describe('RolesController', () => {
         cdBurner: true,
         autoRouting: true,
       },
+      {
+        name: 'Admin',
+        import: true,
+        anonymize: true,
+        export: true,
+        query: true,
+        autoQuery: true,
+        delete: true,
+        admin: true,
+        modify: true,
+        cdBurner: true,
+        autoRouting: true,
+      },
     ];
+
+    roleLabelList = [
+      {
+        id: 1,
+        role: roleList[0],
+        label: { name: 'label1' },
+      },
+      {
+        id: 2,
+        role: roleList[0],
+        label: { name: 'label2' },
+      },
+      {
+        id: 3,
+        role: roleList[1],
+        label: { name: 'label3' },
+      },
+    ];
+
     rolesController = module.get<RolesController>(RolesController);
     rolesService = module.get<RolesService>(RolesService);
   });
@@ -73,9 +109,32 @@ describe('RolesController', () => {
       const mock = jest
         .spyOn(rolesService, 'findAll')
         .mockResolvedValue(roleList);
-      const result = await rolesController.findAll();
+      const result = await rolesController.findAll({ withLabels: false });
       expect(result).toEqual(roleList);
       expect(mock).toHaveBeenCalled();
+    });
+
+    it('check if getRoles calls service getAllRoleLabels', async () => {
+      const mockFindAll = jest
+        .spyOn(rolesService, 'findAll')
+        .mockResolvedValue(roleList);
+
+      const mockGetAllRoleLabels = jest
+        .spyOn(rolesService, 'getAllRoleLabels')
+        .mockResolvedValue(roleLabelList);
+
+      const result = await rolesController.findAll({ withLabels: true });
+
+      expect(result).toEqual(
+        roleList.map((role) => {
+          return {
+            ...role,
+            labels: roleLabelList
+              .filter((roleLabel) => roleLabel.role.name === role.name)
+              .map((roleLabel) => roleLabel.label.name),
+          };
+        }),
+      );
     });
   });
 
@@ -186,6 +245,48 @@ describe('RolesController', () => {
 
       expect(result).toBeUndefined();
       expect(mockCreate).toHaveBeenCalled();
+    });
+
+    it('check if error is thrown when role already exists', async () => {
+      const mockCreate = jest.spyOn(rolesService, 'create');
+      jest.spyOn(rolesService, 'findOne').mockResolvedValue(roleList[0]);
+      await expect(
+        rolesController.CreateRole({
+          name: 'User',
+          import: true,
+          anonymize: true,
+          export: true,
+          query: true,
+          autoQuery: true,
+          delete: true,
+          admin: false,
+          modify: true,
+          cdBurner: true,
+          autoRouting: true,
+        }),
+      ).rejects.toThrow();
+      expect(mockCreate).not.toHaveBeenCalled();
+    });
+
+    it('check if error is thrown when role name is invalid', async () => {
+      const mockCreate = jest.spyOn(rolesService, 'create');
+      jest.spyOn(rolesService, 'findOne').mockResolvedValue(undefined);
+      await expect(
+        rolesController.CreateRole({
+          name: undefined,
+          import: true,
+          anonymize: true,
+          export: true,
+          query: true,
+          autoQuery: true,
+          delete: true,
+          admin: false,
+          modify: true,
+          cdBurner: true,
+          autoRouting: true,
+        }),
+      ).rejects.toThrow();
+      expect(mockCreate).not.toHaveBeenCalled();
     });
   });
 });

@@ -19,6 +19,7 @@ export class OptionsService {
     await this.optionsRepository.update(1, option);
   }
 
+  /* istanbul ignore next */
   public async seed() {
     const option = this.optionsRepository.create({
       autoQueryHourStart: 22,

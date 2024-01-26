@@ -26,10 +26,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserIdGuard } from './user.guard';
 import { OrGuard } from '../utils/orGuards';
-import { response } from 'express';
-import { QueuesDeleteDto } from 'src/queues/delete/queueDeletes.dto';
+import { CheckUserId } from '../utils/CheckUserId.guard';
 
 @ApiTags('users')
 @Controller('/users')
@@ -54,7 +52,7 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Get user by id', type: GetUserDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(new OrGuard([new AdminGuard(), new UserIdGuard()]))
+  @UseGuards(new OrGuard([new AdminGuard(), new CheckUserId(['params', 'id'])]))
   @Get('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
@@ -65,7 +63,7 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Update user' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(new OrGuard([new AdminGuard(), new UserIdGuard()]))
+  @UseGuards(new OrGuard([new AdminGuard(), new CheckUserId(['params', 'id'])]))
   @Put('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async update(
@@ -86,7 +84,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Delete user' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(new OrGuard([new AdminGuard(), new UserIdGuard()]))
+  @UseGuards(new OrGuard([new AdminGuard(), new CheckUserId(['params', 'id'])]))
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<void> {
     const existingUser = await this.UserService.isExistingUser(id);
