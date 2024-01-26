@@ -29,10 +29,17 @@ import { LabelsService } from './labels/labels.service';
 // AUTH ROUTE
 import { AuthModule } from './auth/auth.module';
 
-// QUEUES
-import { OrthancController } from './orthanc/OrthancAdmin.controller';
+import { OrthancController } from './orthanc/Orthanc.controller';
+import { OrthancDeleteController } from './orthanc/OrthancDelete.controller';
+import { OrthancExportController } from './orthanc/OrthancExport.controller';
+import { OrthancImportController } from './orthanc/OrthancImport.controller';
+import { OrthancModifyController } from './orthanc/OrthancModify.controller';
+import { OrthancQueryController } from './orthanc/OrthancQuery.controller';
+import { OrthancAdminController } from './orthanc/OrthancAdmin.controller';
+
 import OrthancClient from './orthanc/OrthancClient';
 
+// QUEUES
 import { QueuesDeleteController } from './queues/delete/queueDeletes.controller';
 import { QueuesDeleteService } from './queues/delete/queueDeletes.service';
 
@@ -90,6 +97,12 @@ import { MailModule } from './mail/mail.module';
     OptionsController,
     LabelsController,
     OrthancController,
+    OrthancDeleteController,
+    OrthancExportController,
+    OrthancImportController,
+    OrthancModifyController,
+    OrthancQueryController,
+    OrthancAdminController,
     QueuesDeleteController,
     QueuesAnonController,
     QueuesQueryController,

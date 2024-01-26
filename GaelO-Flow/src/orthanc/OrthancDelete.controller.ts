@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { DeleteGuard } from '../roles/roles.guard';
 
 @ApiTags('orthanc')
