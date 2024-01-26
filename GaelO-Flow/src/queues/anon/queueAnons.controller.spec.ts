@@ -63,8 +63,11 @@ describe('QueuesAnonController', () => {
         '__guards__',
         QueuesAnonController.prototype.getJobs,
       );
-      const guardNames = guards.map((guard: any) => guard.name);
-
+      const guardNames = guards[0].guards.map(
+        (guard: any) => guard.constructor.name,
+      );
+      expect(guards.length).toBe(1);
+      expect(guards[0].constructor.name).toBe('OrGuard');
       expect(guardNames.length).toBe(2);
       expect(guardNames).toContain('AdminGuard');
       expect(guardNames).toContain('AnonymizeGuard');

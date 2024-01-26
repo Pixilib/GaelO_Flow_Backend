@@ -14,8 +14,15 @@ import { QueuesDeleteService } from './queueDeletes.service';
 import { AdminGuard, DeleteGuard } from '../../roles/roles.guard';
 import { QueuesDeleteDto } from './queueDeletes.dto';
 import { randomUUID } from 'crypto';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiResponseProperty, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiQuery,
+  ApiResponse,
+  ApiResponseProperty,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Job } from 'bullmq';
+import { OrGuard } from '../../utils/orGuards';
 
 @ApiTags('queues/delete')
 @Controller('/queues/delete')
@@ -37,7 +44,7 @@ export class QueuesDeleteController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiQuery({ name: 'userId', required: false })
   @ApiQuery({ name: 'uuid', required: false })
-  @UseGuards(DeleteGuard, AdminGuard)
+  @UseGuards(new OrGuard([new DeleteGuard(), new AdminGuard()]))
   @Get()
   async getJobs(
     @Query('userId') userId: number,
@@ -78,7 +85,10 @@ export class QueuesDeleteController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Add job', type: Object })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 403, description: 'Forbidden - User already has jobs' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - User already has jobs',
+  })
   @UseGuards(DeleteGuard)
   @Post()
   async addDeleteJob(

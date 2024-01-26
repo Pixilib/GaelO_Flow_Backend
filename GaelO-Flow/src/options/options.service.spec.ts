@@ -3,6 +3,7 @@ import { OptionsService } from './options.service';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
 import { Option } from './option.entity';
 import { Repository } from 'typeorm';
+import { OptionsModule } from './options.module';
 
 describe('OptionsService', () => {
   let optionsService: OptionsService;
@@ -12,6 +13,7 @@ describe('OptionsService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
+        OptionsModule,
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: ':memory:',

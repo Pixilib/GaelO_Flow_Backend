@@ -3,7 +3,7 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
-import { UserDto } from './users.dto';
+import { GetUserDto, UpdateUserDto } from './users.dto';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -59,11 +59,12 @@ describe('UsersController', () => {
     });
 
     it('check if getUsers calls service findAll', async () => {
+      const mockResult: GetUserDto[] = userList;
       const mock = jest
         .spyOn(usersService, 'findAll')
         .mockResolvedValue(userList);
       const result = await usersController.getUsers();
-      expect(result).toEqual(userList);
+      expect(result).toEqual(mockResult);
       expect(mock).toHaveBeenCalled();
     });
   });
@@ -74,10 +75,14 @@ describe('UsersController', () => {
         '__guards__',
         UsersController.prototype.getUsersId,
       );
-      const guardNames = guards.map((guard: any) => guard.name);
-
-      expect(guardNames.length).toBe(1);
+      const guardNames = guards[0].guards.map(
+        (guard: any) => guard.constructor.name,
+      );
+      expect(guards.length).toBe(1);
+      expect(guards[0].constructor.name).toBe('OrGuard');
+      expect(guardNames.length).toBe(2);
       expect(guardNames).toContain('AdminGuard');
+      expect(guardNames).toContain('CheckUserId');
     });
 
     it('check if getUsersId calls service findOne', async () => {
@@ -85,7 +90,11 @@ describe('UsersController', () => {
         .spyOn(usersService, 'findOne')
         .mockResolvedValue(userList[0]);
       const result = await usersController.getUsersId(1);
-      expect(result).toEqual(userList[0]);
+      expect(result).toEqual({
+        ...userList[0],
+        password: undefined,
+        salt: undefined,
+      });
       expect(mock).toHaveBeenCalled();
     });
   });
@@ -96,10 +105,14 @@ describe('UsersController', () => {
         '__guards__',
         UsersController.prototype.update,
       );
-      const guardNames = guards.map((guard: any) => guard.name);
-
-      expect(guardNames.length).toBe(1);
+      const guardNames = guards[0].guards.map(
+        (guard: any) => guard.constructor.name,
+      );
+      expect(guards.length).toBe(1);
+      expect(guards[0].constructor.name).toBe('OrGuard');
+      expect(guardNames.length).toBe(2);
       expect(guardNames).toContain('AdminGuard');
+      expect(guardNames).toContain('CheckUserId');
     });
 
     it('check if update calls service update', async () => {
@@ -108,8 +121,8 @@ describe('UsersController', () => {
         .mockResolvedValue(userList[0]);
       const mockUpdate = jest.spyOn(usersService, 'update');
       const result = await usersController.update(1, {
-        username: 'newUsername',
-      } as UserDto);
+        firstname: 'firstname',
+      } as UpdateUserDto);
       expect(result).toBeUndefined();
       expect(mockFindOne).toHaveBeenCalled();
       expect(mockUpdate).toHaveBeenCalled();
@@ -122,10 +135,14 @@ describe('UsersController', () => {
         '__guards__',
         UsersController.prototype.delete,
       );
-      const guardNames = guards.map((guard: any) => guard.name);
-
-      expect(guardNames.length).toBe(1);
+      const guardNames = guards[0].guards.map(
+        (guard: any) => guard.constructor.name,
+      );
+      expect(guards.length).toBe(1);
+      expect(guards[0].constructor.name).toBe('OrGuard');
+      expect(guardNames.length).toBe(2);
       expect(guardNames).toContain('AdminGuard');
+      expect(guardNames).toContain('CheckUserId');
     });
 
     it('check if delete calls service remove', async () => {
@@ -180,7 +197,7 @@ describe('UsersController', () => {
           password: 'Password123!',
           email: 'email',
           superAdmin: true,
-          roleName: 'roleName'
+          roleName: 'roleName',
         });
 
         expect(true).toBe(false);

@@ -2,16 +2,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { User } from 'src/users/user.entity';
+import { User } from '../users/user.entity';
 import * as bcryptjs from 'bcryptjs';
 import { MailService } from '../mail/mail.service';
 import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
+import { HttpStatus } from '@nestjs/common';
 
 describe('AuthController', () => {
   let authController: AuthController;
   let authService: AuthService;
   let usersService: UsersService;
+  let mailService: MailService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,6 +25,7 @@ describe('AuthController', () => {
           provide: AuthService,
           useValue: {
             signIn: jest.fn(),
+            createConfirmationToken: jest.fn(),
           },
         },
         {
@@ -35,6 +38,13 @@ describe('AuthController', () => {
             remove: jest.fn(),
             isRoleUsed: jest.fn(),
             findOneByUsername: jest.fn(),
+            findOneByEmail: jest.fn(),
+          },
+        },
+        {
+          provide: MailService,
+          useValue: {
+            sendChangePasswordEmail: jest.fn(),
           },
         },
       ],
@@ -43,6 +53,7 @@ describe('AuthController', () => {
     authController = module.get<AuthController>(AuthController);
     authService = module.get<AuthService>(AuthService);
     usersService = module.get<UsersService>(UsersService);
+    mailService = module.get<MailService>(MailService);
   });
 
   describe('signIn', () => {
@@ -103,5 +114,52 @@ describe('AuthController', () => {
     });
   });
 
-  // TODO: add tests for register when it is implemented
+
+  describe('register', () => {
+    it('check if signIn is public', async () => {
+      const isPublic = Reflect.getMetadata(
+        'isPublic',
+        AuthController.prototype.register,
+      );
+
+      expect(isPublic).toBe(true);
+    });
+
+    it('should create a new user and send confirmation email', async () => {
+
+
+      const registerDto = {
+        email: 'test@example.com',
+        firstname: 'John',
+        lastname: 'Doe',
+        username: 'johndoe',
+      };
+
+      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValueOnce(undefined);
+      jest.spyOn(usersService, 'create').mockResolvedValueOnce(1);
+
+      const mockUser = { 
+        ...registerDto, 
+        email: registerDto.email,
+        superAdmin: false,
+        roleName: 'User',
+        password: null,
+        salt: null 
+      };
+
+      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValueOnce(mockUser);
+
+      jest.spyOn(authService, 'createConfirmationToken').mockResolvedValueOnce('confirmation_token');
+      jest.spyOn(mailService, 'sendChangePasswordEmail').mockResolvedValue(null);
+
+      const result = await authController.register(registerDto);
+      expect(usersService.findOneByEmail).toHaveBeenCalledWith(registerDto.email, false);
+      expect(usersService.create).toHaveBeenCalledWith(mockUser);
+      expect(result).toEqual({
+        status: HttpStatus.CREATED,
+        message: 'An email has been sent, confirm your account to login',
+      });
+    });
+
+  });
 });
