@@ -30,7 +30,7 @@ import { LabelsService } from './labels/labels.service';
 import { AuthModule } from './auth/auth.module';
 
 // QUEUES
-import { OrthancController } from './orthanc/Orthanc.controller';
+import { OrthancController } from './orthanc/OrthancAdmin.controller';
 import OrthancClient from './orthanc/OrthancClient';
 
 import { QueuesDeleteController } from './queues/delete/queueDeletes.controller';
