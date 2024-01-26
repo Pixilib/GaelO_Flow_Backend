@@ -1,7 +1,17 @@
-import { Controller, Get, Response, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Response,
+  Request,
+  UseGuards,
+  Post,
+  Delete,
+  Put,
+} from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
 import { ApiTags } from '@nestjs/swagger';
+import { AdminGuard } from 'src/roles/roles.guard';
 
 @ApiTags('orthanc')
 @Controller()
@@ -16,7 +26,113 @@ export class OrthancController {
   }
 
   @Get('/system')
-  reverseProxy(
+  @UseGuards(AdminGuard)
+  getSystem(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Post('/tools/reset')
+  @UseGuards(AdminGuard)
+  resetOrthanc(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Post('/tools/shutdown')
+  @UseGuards(AdminGuard)
+  shutdownOrthanc(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Get('/tools/log-level')
+  @UseGuards(AdminGuard)
+  getLogLevel(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Put('/tools/log-level')
+  @UseGuards(AdminGuard)
+  updateLogLevel(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Get('/plugins')
+  @UseGuards(AdminGuard)
+  getPlugins(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Post('/jobs/*')
+  @UseGuards(AdminGuard)
+  getJobs(@Request() request: RequestType, @Response() response: ResponseType) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Delete('/modalities/*')
+  @UseGuards(AdminGuard)
+  deleteModality(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Post('/modalities/*/echo')
+  @UseGuards(AdminGuard)
+  createEcho(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Put('/modalities/*')
+  @UseGuards(AdminGuard)
+  editModality(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Delete('/peers/*')
+  @UseGuards(AdminGuard)
+  deletePeer(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Get('/peers/*/system')
+  @UseGuards(AdminGuard)
+  getPeerSystem(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @Put('/peer/*/')
+  @UseGuards(AdminGuard)
+  editPeer(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {

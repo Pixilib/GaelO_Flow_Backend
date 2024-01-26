@@ -13,13 +13,8 @@ import { Label } from './label.entity';
 import { LabelDto } from './labels.dto';
 import { NotFoundInterceptor } from './../interceptors/NotFoundInterceptor';
 import { AdminGuard } from '../roles/roles.guard';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LabelsService } from './labels.service';
-import {
-  ApiBearerAuth,
-  ApiProperty,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
 
 @ApiTags('labels')
 @Controller('/labels')
