@@ -84,31 +84,16 @@ describe('AuthController', () => {
         } as User),
       );
 
-      const result = await authController.login({} as LoginDto);
+      const result = await authController.login({
+        user: {
+          username: 'username',
+          password: 'password',
+        },
+      } as any);
 
       expect(result).toStrictEqual({
         access_token: 'token',
       });
-    });
-
-    it('should throw an UnauthorizedException if user does not exist', async () => {
-      jest
-        .spyOn(authService, 'validateUser')
-        .mockReturnValue(Promise.resolve(null));
-
-      await expect(authController.login({} as LoginDto)).rejects.toThrow(
-        'Invalid credentials',
-      );
-    });
-
-    it('should throw an UnauthorizedException if password is incorrect', async () => {
-      jest
-        .spyOn(authService, 'validateUser')
-        .mockReturnValue(Promise.resolve(null));
-
-      await expect(authController.login({} as LoginDto)).rejects.toThrow(
-        'Invalid credentials',
-      );
     });
   });
 

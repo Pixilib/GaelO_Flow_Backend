@@ -9,6 +9,7 @@ import {
   ConflictException,
   Req,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -19,6 +20,8 @@ import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
+import { LocalAuthGuard } from './local-auth.guard';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @ApiTags('auth')
 @Controller('')
@@ -34,15 +37,10 @@ export class AuthController {
   @ApiBody({ type: LoginDto })
   @Public()
   @HttpCode(HttpStatus.OK)
+  @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Body() loginDto: LoginDto) {
-    const user = await this.authService.validateUser(
-      loginDto.username,
-      loginDto.password,
-    );
-    if (!user) throw new UnauthorizedException('Invalid credentials');
-
-    return await this.authService.login(user);
+  async login(@Request() req: Request) {
+    return await this.authService.login(req['user']);
   }
 
   @ApiResponse({ status: 201, description: 'Register success' })
@@ -52,7 +50,6 @@ export class AuthController {
   async register(@Body() registerDto: RegisterDto) {
     const { email } = registerDto;
 
-    // Check if user already exists
     const userExists = await this.usersService.findOneByEmail(email, false);
 
     if (userExists) {

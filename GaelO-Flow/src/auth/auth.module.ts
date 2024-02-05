@@ -9,7 +9,9 @@ import { User } from '../users/user.entity';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from '../mail/mail.service';
-import { AuthGuard } from './auth.guard';
+import { LocalStrategy } from './local.strategy';
+import { JwtStrategy } from './jwt.strategy';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Module({
   imports: [
@@ -24,11 +26,13 @@ import { AuthGuard } from './auth.guard';
     TypeOrmModule.forFeature([User]),
   ],
   providers: [
+    LocalStrategy,
+    JwtStrategy,
     AuthService,
     UsersService,
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
+      useClass: JwtAuthGuard,
     },
     MailService,
   ],
