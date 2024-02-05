@@ -37,7 +37,7 @@ export class UsersService {
 
   async findOneByEmail(
     email: string,
-    withRole: boolean,
+    withRole: boolean = false,
   ): Promise<User> | undefined {
     return await this.usersRepository.findOne({
       where: { email: email },
@@ -49,7 +49,7 @@ export class UsersService {
 
   async findOneByUsername(
     username: string,
-    withRole: boolean,
+    withRole: boolean = false,
   ): Promise<User> | undefined {
     return await this.usersRepository.findOne({
       where: { username: username },
@@ -94,7 +94,6 @@ export class UsersService {
       password: hashAdmin,
       superAdmin: true,
       roleName: 'Admin',
-      salt: saltAdmin,
     });
 
     const user = this.usersRepository.create({
@@ -105,7 +104,6 @@ export class UsersService {
       password: hashUser,
       superAdmin: true,
       roleName: 'User',
-      salt: saltUser,
     });
 
     await this.usersRepository.insert([admin, user]);

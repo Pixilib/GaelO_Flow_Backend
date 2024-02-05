@@ -6,10 +6,10 @@ import { AuthController } from './auth.controller';
 import { UsersService } from '../users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/user.entity';
-import { AuthGuard } from '../auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from '../mail/mail.service';
+import { AuthGuard } from './auth.guard';
 
 @Module({
   imports: [

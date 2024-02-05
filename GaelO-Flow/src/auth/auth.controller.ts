@@ -7,16 +7,19 @@ import {
   UnauthorizedException,
   BadRequestException,
   ConflictException,
+  Req,
+  Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import * as bcryptjs from 'bcryptjs';
 import { Public } from '../interceptors/Public';
-import { ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginDto } from './login.dto';
-import { ChangePasswordDto } from './changePassword.dto';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginDto } from './dto/login.dto';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '../mail/mail.service';
-import { RegisterDto } from './register.dto';
+import { RegisterDto } from './dto/register.dto';
+
 @ApiTags('auth')
 @Controller('')
 export class AuthController {
@@ -32,15 +35,14 @@ export class AuthController {
   @Public()
   @HttpCode(HttpStatus.OK)
   @Post('login')
-  async signIn(@Body() signInDto: Record<string, any>) {
-    const user = await this.usersService.findOneByUsername(
-      signInDto.username,
-      true,
+  async login(@Body() loginDto: LoginDto) {
+    const user = await this.authService.validateUser(
+      loginDto.username,
+      loginDto.password,
     );
-    if (!user) throw new UnauthorizedException();
-    const isMatch = await bcryptjs.compare(signInDto.password, user.password);
-    if (!isMatch) throw new UnauthorizedException();
-    return this.authService.signIn(user);
+    if (!user) throw new UnauthorizedException('Invalid credentials');
+
+    return await this.authService.login(user);
   }
 
   @ApiResponse({ status: 201, description: 'Register success' })
@@ -62,7 +64,6 @@ export class AuthController {
     await this.usersService.create({
       ...registerDto,
       superAdmin: false,
-      salt: null,
       roleName: 'User',
       password: null,
     });
@@ -73,35 +74,26 @@ export class AuthController {
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
 
-    console.table({ confirmationToken, newUser });
-
     await this.mailService.sendChangePasswordEmail(
       newUser.email,
       confirmationToken,
     );
-
-    return {
-      status: HttpStatus.CREATED,
-      message: 'An email has been sent, confirm your account to login',
-    };
   }
 
   @ApiResponse({ status: 201, description: 'Password changed' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiBody({ type: ChangePasswordDto })
+  @ApiBearerAuth('access-token')
   @Post('change-password')
   async changePassword(
-    @Body() userId: number,
-    changePasswordDto: ChangePasswordDto,
-  ) {
-    const { token, newPassword, confirmationPassword } = changePasswordDto;
-
+    @Body() changePasswordDto: ChangePasswordDto,
+    @Req() req: Request,
+  ): Promise<undefined> {
+    const { newPassword, confirmationPassword } = changePasswordDto;
+    const userId = req['user'].userId;
     if (newPassword !== confirmationPassword) {
       throw new BadRequestException('Confirmation password not matching');
     }
-
-    const userID = await this.authService.verifyToken(token);
-    if (!userID) throw new BadRequestException('Invalid token');
 
     const user = await this.usersService.findOne(userId);
 
@@ -109,12 +101,7 @@ export class AuthController {
     const hashedPassword = await bcryptjs.hash(newPassword, salt);
 
     user.password = hashedPassword;
-    user.salt = salt;
 
     await this.usersService.update(userId, user);
-
-    return {
-      status: HttpStatus.CREATED,
-    };
   }
 }

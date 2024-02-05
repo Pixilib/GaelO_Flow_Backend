@@ -8,6 +8,8 @@ import { Role } from '../roles/role.entity';
 import { MailModule } from '../mail/mail.module';
 import { MailService } from '../mail/mail.service';
 import { ConfigModule } from '@nestjs/config';
+import { UsersService } from '../users/users.service';
+import * as bcryptjs from 'bcryptjs';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -17,6 +19,7 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [MailModule, ConfigModule],
       providers: [
+        UsersService,
         AuthService,
         JwtService,
         {
@@ -31,50 +34,118 @@ describe('AuthService', () => {
     jwtService = module.get<JwtService>(JwtService);
   });
 
-  it('should return an access token', async () => {
-    const mock = jest.spyOn(jwtService, 'signAsync').mockResolvedValue('token');
+  describe('login', () => {
+    it('should return an access token', async () => {
+      const mock = jest
+        .spyOn(jwtService, 'signAsync')
+        .mockResolvedValue('token');
 
-    const user = new User();
-    user.id = 1;
-    user.username = 'username';
-    user.role = new Role();
-    user.role.name = 'User';
+      const user = new User();
+      user.id = 1;
+      user.username = 'username';
+      user.role = new Role();
+      user.role.name = 'User';
 
-    const result = await authService.signIn(user);
+      const result = await authService.login(user);
 
-    expect(result).toStrictEqual({
-      access_token: 'token',
+      expect(result).toStrictEqual({
+        access_token: 'token',
+      });
+      expect(mock).toHaveBeenCalledWith({
+        userId: user.id,
+        sub: user.id,
+        username: user.username,
+        role: user.role,
+      });
     });
   });
 
-  it('should return the decoded id when the token is valid', async () => {
-    // Arrange
-    const token = 'valid_token';
-    const decoded = { id: 123 };
+  describe('validateUser', () => {
+    it('should return the user when the credentials are valid', async () => {
+      const user = new User();
+      user.id = 1;
+      user.username = 'username';
+      user.password = 'password';
+      user.role = new Role();
+      user.role.name = 'User';
 
-    jest.spyOn(jwtService, 'verifyAsync').mockResolvedValue(decoded);
+      jest
+        .spyOn(UsersService.prototype, 'findOneByUsername')
+        .mockResolvedValue(user);
+      jest.spyOn(bcryptjs, 'compare').mockResolvedValue(true as never);
 
-    // Act
-    const result = await authService.verifyToken(token);
+      const result = await authService.validateUser('username', 'password');
 
-    // Assert
-    expect(result).toBe(decoded.id);
-    expect(jwtService.verifyAsync).toHaveBeenCalledWith(token);
+      expect(result).toStrictEqual({
+        id: user.id,
+        username: user.username,
+        role: user.role,
+      });
+    });
+
+    it('should return null when the password is invalid', async () => {
+      const user = new User();
+      user.password = 'password';
+
+      jest
+        .spyOn(UsersService.prototype, 'findOneByUsername')
+        .mockResolvedValue(user);
+      jest.spyOn(bcryptjs, 'compare').mockResolvedValue(false as never);
+
+      const result = await authService.validateUser('username', 'invalid');
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null when the user is invalid', async () => {
+      jest
+        .spyOn(UsersService.prototype, 'findOneByUsername')
+        .mockResolvedValue(undefined);
+
+      const result = await authService.validateUser('invalid', 'password');
+
+      expect(result).toBeNull();
+    });
   });
 
-  it('should return null when the token is invalid', async () => {
-    // Arrange
-    const token = 'invalid_token';
+  describe('createConfirmationToken', () => {
+    it('should return a confirmation token', async () => {
+      const user = new User();
+      user.id = 1;
+      user.username = 'username';
+      user.email = 'email';
 
-    jest
-      .spyOn(jwtService, 'verifyAsync')
-      .mockRejectedValue(new Error('Invalid token'));
+      const mock = jest
+        .spyOn(jwtService, 'signAsync')
+        .mockResolvedValue('token');
 
-    // Act
-    const result = await authService.verifyToken(token);
+      const result = await authService.createConfirmationToken(user);
 
-    // Assert
-    expect(result).toBeNull();
-    expect(jwtService.verifyAsync).toHaveBeenCalledWith(token);
+      expect(result).toBe('token');
+      expect(mock).toHaveBeenCalledWith(
+        {
+          id: user.id,
+          email: user.email,
+        },
+        { expiresIn: '24h' },
+      );
+    });
+  });
+
+  describe('verifyToken', () => {
+    it('should return the id when the token is valid', async () => {
+      const payload = { id: 1, email: 'email' };
+      jest.spyOn(jwtService, 'verifyAsync').mockResolvedValue(payload);
+
+      const result = await authService.verifyToken('token');
+
+      expect(result).toBe(1);
+    });
+
+    it('should throw an error when the token is invalid', async () => {
+      jest.spyOn(jwtService, 'verifyAsync').mockRejectedValue(new Error());
+
+      expect(await authService.verifyToken('invalid')).toBeNull();
+    });
   });
 });
