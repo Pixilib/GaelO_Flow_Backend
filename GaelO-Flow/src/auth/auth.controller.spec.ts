@@ -6,9 +6,6 @@ import { User } from '../users/user.entity';
 import { MailService } from '../mail/mail.service';
 import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
-import { LoginDto } from './dto/login.dto';
-import { HttpStatus } from '@nestjs/common';
-import { Role } from 'src/roles/role.entity';
 
 describe('AuthController', () => {
   let authController: AuthController;
