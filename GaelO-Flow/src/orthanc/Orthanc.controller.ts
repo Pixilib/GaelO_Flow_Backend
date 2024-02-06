@@ -11,7 +11,7 @@ import {
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
 import { ApiTags } from '@nestjs/swagger';
-import { AdminGuard } from 'src/roles/roles.guard';
+import { AdminGuard } from '../roles/roles.guard';
 
 @ApiTags('orthanc')
 @Controller()
