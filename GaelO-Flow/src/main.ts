@@ -1,6 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { BadRequestException, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  RequestMethod,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 import OrthancClient from './orthanc/OrthancClient';
@@ -13,7 +17,9 @@ import { writeFileSync } from 'fs';
 
 async function main() {
   const app = await NestFactory.create(AppModule);
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix('api', {
+    exclude: [{ path: 'oauth2-redirect.html', method: RequestMethod.GET }],
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -30,12 +36,26 @@ async function main() {
   const port = configService.get<number>('API_PORT', 3000);
 
   const config = new DocumentBuilder()
+    .setBasePath('docs')
     .setTitle('GaelO Flow API')
     .setDescription('The GaelO Flow API description')
     .setVersion('2.0')
     .addBearerAuth(
       { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
       'access-token',
+    )
+    .addOAuth2(
+      {
+        type: 'oauth2',
+        flows: {
+          implicit: {
+            authorizationUrl:
+              'http://localhost:8080/realms/master/protocol/openid-connect/auth',
+            scopes: { email: 'email', profile: 'profile' },
+          },
+        },
+      },
+      'oauth2',
     )
     .build();
   const document = SwaggerModule.createDocument(app, config);

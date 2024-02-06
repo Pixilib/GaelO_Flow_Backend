@@ -12,7 +12,7 @@ import { MailService } from '../mail/mail.service';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { KeycloakStrategy } from './keycloak.strategy';
+import { Oauth2Strategy } from './oauth2.strategy';
 
 @Module({
   imports: [
@@ -29,7 +29,7 @@ import { KeycloakStrategy } from './keycloak.strategy';
   providers: [
     LocalStrategy,
     JwtStrategy,
-    // KeycloakStrategy, // no keycloak server for now
+    Oauth2Strategy,
     AuthService,
     UsersService,
     {

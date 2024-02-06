@@ -10,18 +10,26 @@ import {
   Req,
   Request,
   UseGuards,
+  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import * as bcryptjs from 'bcryptjs';
 import { Public } from '../interceptors/Public';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOAuth2,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
 import { LocalAuthGuard } from './local-auth.guard';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import { Oauth2AuthGuard } from './oauth2-auth.guard';
 
 @ApiTags('auth')
 @Controller('')
@@ -41,6 +49,30 @@ export class AuthController {
   @Post('login')
   async login(@Request() req: Request) {
     return await this.authService.login(req['user']);
+  }
+
+  @ApiResponse({ status: 200, description: 'Login success' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiOAuth2(['email', 'profile'])
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(Oauth2AuthGuard)
+  @Post('oauth2')
+  async oauth2Login(@Request() req: Request) {
+    console.log('LOGIN', req);
+    // return await this.authService.login(req['user']);
+  }
+
+  @ApiResponse({ status: 200, description: 'Login success' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiOAuth2(['email', 'profile'])
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(Oauth2AuthGuard)
+  @Post('oauth2/callback')
+  async oauth2Callback(@Request() req: Request) {
+    console.log('CALLBACK', req);
+    // return await this.authService.login(req['user']);
   }
 
   @ApiResponse({ status: 201, description: 'Register success' })
