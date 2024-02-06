@@ -32,18 +32,12 @@ export class OptionsController {
     const options = await this.optionService.getOptions();
     delete options.id;
 
-    const valuesToRetrieve = {
-      ORTHANC_ADDRESS: 'orthanc_address',
-      ORTHANC_PORT: 'orthanc_port',
-      ORTHANC_USERNAME: 'orthanc_username',
-      ORTHANC_PASSWORD: 'orthanc_password',
-      REDIS_ADDRESS: 'redis_address',
-      REDIS_PORT: 'redis_port',
-    };
-
-    Object.keys(valuesToRetrieve).forEach((key) => {
-      options[valuesToRetrieve[key]] = this.configService.get(key);
-    });
+    options['orthanc_address'] = this.configService.get('ORTHANC_ADDRESS');
+    options['orthanc_port'] = this.configService.get('ORTHANC_PORT');
+    options['orthanc_username'] = this.configService.get('ORTHANC_USERNAME');
+    options['orthanc_password'] = this.configService.get('ORTHANC_PASSWORD');
+    options['redis_address'] = this.configService.get('REDIS_ADDRESS');
+    options['redis_port'] = this.configService.get('REDIS_PORT');
 
     return options;
   }
