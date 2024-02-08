@@ -10,6 +10,7 @@ import { MailService } from '../mail/mail.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import * as bcryptjs from 'bcryptjs';
+import { HttpModule, HttpService } from '@nestjs/axios';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -17,7 +18,7 @@ describe('AuthService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [MailModule, ConfigModule],
+      imports: [MailModule, ConfigModule, HttpModule],
       providers: [
         UsersService,
         AuthService,
@@ -50,6 +51,7 @@ describe('AuthService', () => {
 
       expect(result).toStrictEqual({
         access_token: 'token',
+        user_id: user.id,
       });
       expect(mock).toHaveBeenCalledWith({
         userId: user.id,

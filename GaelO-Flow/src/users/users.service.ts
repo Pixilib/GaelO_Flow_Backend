@@ -21,7 +21,9 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.usersRepository.find();
+    return await this.usersRepository.find({
+      relations: { role: true },
+    });
   }
 
   async findOne(id: number): Promise<User> {
@@ -37,8 +39,9 @@ export class UsersService {
 
   async findOneByEmail(
     email: string,
-    withRole: boolean = false,
+    withRole: boolean = true,
   ): Promise<User> | undefined {
+    if (email === undefined) return undefined;
     return await this.usersRepository.findOne({
       where: { email: email },
       relations: {
@@ -49,7 +52,7 @@ export class UsersService {
 
   async findOneByUsername(
     username: string,
-    withRole: boolean = false,
+    withRole: boolean = true,
   ): Promise<User> | undefined {
     return await this.usersRepository.findOne({
       where: { username: username },

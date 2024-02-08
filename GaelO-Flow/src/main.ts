@@ -12,8 +12,6 @@ import setupDeleteWorker from './queues/delete/deleteWorker';
 import setupAnonWorker from './queues/anon/anonWorker';
 import setupQueryWorker from './queues/query/queryWorker';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import * as path from 'path';
-import { writeFileSync } from 'fs';
 
 async function main() {
   const app = await NestFactory.create(AppModule);
@@ -34,9 +32,7 @@ async function main() {
   const configService = app.get(ConfigService);
   const orthancClient = app.get(OrthancClient);
   const port = configService.get<number>('API_PORT', 3000);
-
   const config = new DocumentBuilder()
-    .setBasePath('docs')
     .setTitle('GaelO Flow API')
     .setDescription('The GaelO Flow API description')
     .setVersion('2.0')
@@ -51,7 +47,7 @@ async function main() {
           implicit: {
             authorizationUrl:
               'http://localhost:8080/realms/master/protocol/openid-connect/auth',
-            scopes: { email: 'email', profile: 'profile' },
+            scopes: { openid: 'openid' },
           },
         },
       },

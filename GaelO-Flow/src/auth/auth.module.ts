@@ -12,11 +12,14 @@ import { MailService } from '../mail/mail.service';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { Oauth2Strategy } from './oauth2.strategy';
+import { OauthConfig } from '../oauth_configs/oauth_config.entity';
+import { HttpModule, HttpService } from '@nestjs/axios';
+import { JwtOauthStrategy } from './jwt-oauth.strategy';
 
 @Module({
   imports: [
     UsersModule,
+    HttpModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService): any => ({
@@ -24,12 +27,12 @@ import { Oauth2Strategy } from './oauth2.strategy';
         signOptions: { expiresIn: '6h' },
       }),
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, OauthConfig]),
   ],
   providers: [
     LocalStrategy,
     JwtStrategy,
-    Oauth2Strategy,
+    JwtOauthStrategy,
     AuthService,
     UsersService,
     {

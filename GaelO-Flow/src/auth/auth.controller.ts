@@ -28,8 +28,7 @@ import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
 import { LocalAuthGuard } from './local-auth.guard';
-import { JwtAuthGuard } from './jwt-auth.guard';
-import { Oauth2AuthGuard } from './oauth2-auth.guard';
+import { JwtOAuthGuard } from './jwt-oauth.guard';
 
 @ApiTags('auth')
 @Controller('')
@@ -53,26 +52,33 @@ export class AuthController {
 
   @ApiResponse({ status: 200, description: 'Login success' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiOAuth2(['email', 'profile'])
+  @ApiOAuth2(['openid'])
   @Public()
+  @UseGuards(JwtOAuthGuard)
   @HttpCode(HttpStatus.OK)
-  @UseGuards(Oauth2AuthGuard)
   @Post('oauth2')
   async oauth2Login(@Request() req: Request) {
-    console.log('LOGIN', req);
-    // return await this.authService.login(req['user']);
-  }
+    const userData = req['user'];
 
-  @ApiResponse({ status: 200, description: 'Login success' })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiOAuth2(['email', 'profile'])
-  @Public()
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(Oauth2AuthGuard)
-  @Post('oauth2/callback')
-  async oauth2Callback(@Request() req: Request) {
-    console.log('CALLBACK', req);
-    // return await this.authService.login(req['user']);
+    if (!userData || !userData.email) {
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    const userExists = await this.usersService.findOneByEmail(userData.email);
+    if (!userExists) {
+      await this.usersService.create({
+        email: userData.email,
+        firstname: userData.firstname,
+        lastname: userData.lastname,
+        username: userData.username,
+        superAdmin: false,
+        roleName: 'User',
+        password: null,
+      });
+    }
+
+    const user = await this.usersService.findOneByEmail(userData.email);
+    return await this.authService.login(user);
   }
 
   @ApiResponse({ status: 201, description: 'Register success' })

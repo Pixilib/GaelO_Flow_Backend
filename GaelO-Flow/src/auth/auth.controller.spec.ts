@@ -69,6 +69,7 @@ describe('AuthController', () => {
       jest.spyOn(authService, 'login').mockReturnValue(
         Promise.resolve({
           access_token: 'token',
+          user_id: 1,
         }),
       );
       jest.spyOn(authService, 'validateUser').mockReturnValue(
@@ -90,6 +91,7 @@ describe('AuthController', () => {
 
       expect(result).toStrictEqual({
         access_token: 'token',
+        user_id: 1,
       });
     });
   });

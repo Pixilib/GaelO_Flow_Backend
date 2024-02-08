@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RolesService } from './roles/roles.service';
 import { UsersService } from './users/users.service';
 import { OptionsService } from './options/options.service';
+import { OauthConfigService } from './oauth_configs/oauth_configs.service';
 
 @Injectable()
 export class SeedService {
@@ -9,15 +10,13 @@ export class SeedService {
     private readonly rolesService: RolesService,
     private readonly usersService: UsersService,
     private readonly optionService: OptionsService,
-  ) {
-    this.rolesService = rolesService;
-    this.usersService = usersService;
-    this.optionService = optionService;
-  }
+    private readonly oauthConfigService: OauthConfigService,
+  ) {}
 
   public async seed() {
     await this.rolesService.seed();
     await this.usersService.seed();
     await this.optionService.seed();
+    await this.oauthConfigService.seed();
   }
 }

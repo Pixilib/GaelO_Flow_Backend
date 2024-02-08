@@ -1,14 +1,26 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcryptjs from 'bcryptjs';
 import { User } from '../users/user.entity';
+import { HttpService } from '@nestjs/axios';
+
+interface KeycloakUserInfoResponse {
+  sub: string;
+  email_verified: boolean;
+  name: string;
+  preferred_username: string;
+  given_name: string;
+  family_name: string;
+  email: string;
+}
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private httpService: HttpService,
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -30,6 +42,7 @@ export class AuthService {
     };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      user_id: user.id,
     };
   }
 
@@ -50,5 +63,31 @@ export class AuthService {
     } catch (error) {
       return null;
     }
+  }
+
+  async verifyKeycloakToken(token: string): Promise<any> {
+    const decoded = await this.jwtService.decode(token);
+    const url = decoded['iss'] + '/protocol/openid-connect/userinfo';
+
+    try {
+      const response = await this.httpService
+        .get<KeycloakUserInfoResponse>(url, {
+          headers: {
+            authorization: `Bearer ${token}`,
+          },
+        })
+        .toPromise();
+
+      return {
+        username: response.data.preferred_username,
+        email: response.data.email,
+        firstname: response.data.given_name,
+        lastname: response.data.family_name,
+      };
+    } catch (error) {
+      throw new UnauthorizedException();
+    }
+
+    return null;
   }
 }
