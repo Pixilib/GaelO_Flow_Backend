@@ -27,7 +27,7 @@ import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
-import { LocalAuthGuard } from './local-auth.guard';
+import { LocalAuthGuard } from './local.guard';
 import { JwtOAuthGuard } from './jwt-oauth.guard';
 
 @ApiTags('auth')

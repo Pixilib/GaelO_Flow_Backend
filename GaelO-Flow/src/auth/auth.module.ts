@@ -11,7 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { MailService } from '../mail/mail.service';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuard } from './jwt.guard';
 import { OauthConfig } from '../oauth_configs/oauth_config.entity';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { JwtOauthStrategy } from './jwt-oauth.strategy';

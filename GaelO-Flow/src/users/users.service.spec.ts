@@ -94,15 +94,20 @@ describe('UsersService', () => {
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
+      const role = await rolesService.findOne('User');
       const result = await usersService.findAll();
-      expect(result).toEqual([firstUser, secondUser]);
+      expect(result).toEqual([
+        { ...firstUser, role },
+        { ...secondUser, role },
+      ]);
     });
   });
 
   describe('findOne', () => {
     it('should return the first user', async () => {
+      const role = await rolesService.findOne('User');
       const result = await usersService.findOne(1);
-      expect(result).toEqual(firstUser);
+      expect(result).toEqual({ ...firstUser, role });
     });
   });
 
@@ -120,17 +125,19 @@ describe('UsersService', () => {
 
   describe('update', () => {
     it('should update a user', async () => {
+      const role = await rolesService.findOne('User');
       const user = { ...firstUser };
       user.firstname = 'updateTest';
       const updateResult = await usersService.update(1, user);
       const findOneResult = await usersService.findOne(1);
       expect(updateResult).toEqual(undefined);
-      expect(findOneResult).toEqual(user);
+      expect(findOneResult).toEqual({ ...user, role });
     });
   });
 
   describe('create', () => {
     it('should create a user', async () => {
+      const role = await rolesService.findOne('User');
       const createUser = {
         username: 'create_testuser',
         firstname: 'create_testfirstname',
@@ -144,7 +151,7 @@ describe('UsersService', () => {
       const findOneResult = await usersService.findOne(createResult);
       expect(typeof createResult).toBe('number');
       expect(createResult).toBeGreaterThan(0);
-      expect(findOneResult).toEqual(createUser);
+      expect(findOneResult).toEqual({ ...createUser, role });
     });
   });
 

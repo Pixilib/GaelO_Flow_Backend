@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import {
   BadRequestException,
+  INestApplication,
   RequestMethod,
   ValidationPipe,
 } from '@nestjs/common';
@@ -12,6 +13,41 @@ import setupDeleteWorker from './queues/delete/deleteWorker';
 import setupAnonWorker from './queues/anon/anonWorker';
 import setupQueryWorker from './queues/query/queryWorker';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { OauthConfigService } from './oauth_configs/oauth_configs.service';
+
+async function buildSwagger(app: INestApplication<any>) {
+  const oauthConfigs = await app.get(OauthConfigService).getOauthConfig();
+  console.log('here', oauthConfigs);
+
+  const documentBuilder = new DocumentBuilder()
+    .setTitle('GaelO Flow API')
+    .setDescription('The GaelO Flow API description')
+    .setVersion('2.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'access-token',
+    );
+
+  oauthConfigs.forEach((config) => {
+    documentBuilder.addOAuth2(
+      {
+        type: 'oauth2',
+        flows: {
+          implicit: {
+            authorizationUrl: config.url,
+            scopes: { openid: 'openid' },
+          },
+        },
+      },
+      'oauth2',
+    );
+  });
+
+  const config = documentBuilder.build();
+  const document = SwaggerModule.createDocument(app, config);
+
+  SwaggerModule.setup('docs', app, document);
+}
 
 async function main() {
   const app = await NestFactory.create(AppModule);
@@ -31,38 +67,14 @@ async function main() {
 
   const configService = app.get(ConfigService);
   const orthancClient = app.get(OrthancClient);
-  const port = configService.get<number>('API_PORT', 3000);
-  const config = new DocumentBuilder()
-    .setTitle('GaelO Flow API')
-    .setDescription('The GaelO Flow API description')
-    .setVersion('2.0')
-    .addBearerAuth(
-      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
-      'access-token',
-    )
-    .addOAuth2(
-      {
-        type: 'oauth2',
-        flows: {
-          implicit: {
-            authorizationUrl:
-              'http://localhost:8080/realms/master/protocol/openid-connect/auth',
-            scopes: { openid: 'openid' },
-          },
-        },
-      },
-      'oauth2',
-    )
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-
-  SwaggerModule.setup('docs', app, document);
-
   setupDeleteWorker(orthancClient, configService);
   setupAnonWorker(orthancClient, configService);
   setupQueryWorker(orthancClient, configService);
-  await app.listen(port);
 
+  const port = configService.get<number>('API_PORT', 3000);
+
+  await buildSwagger(app);
+  await app.listen(port);
   const address = (await app.getUrl()).replace('[::1]', 'localhost');
   console.log(`Swagger on: ${address}/docs`);
 }
