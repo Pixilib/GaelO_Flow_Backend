@@ -24,7 +24,8 @@ export class OrthancController {
     const body = request.body;
     this.orthancClient.streamAnswerToRes(url, method, body, response);
   }
-
+  
+  @ApiBearerAuth('access-token')
   @Get('/system')
   @UseGuards(AdminGuard)
   getSystem(
