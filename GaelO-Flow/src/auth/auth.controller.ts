@@ -52,7 +52,7 @@ export class AuthController {
 
   @ApiResponse({ status: 200, description: 'Login success' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiOAuth2(['openid'])
+  @ApiOAuth2(['openid'], 'oauth2')
   @Public()
   @UseGuards(JwtOAuthGuard)
   @HttpCode(HttpStatus.OK)

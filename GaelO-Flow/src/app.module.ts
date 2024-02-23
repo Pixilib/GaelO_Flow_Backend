@@ -59,6 +59,8 @@ import { OauthConfigService } from './oauth_configs/oauth_configs.service';
 import { OauthConfigModule } from './oauth_configs/oauth_configs.module';
 import { OauthConfig } from './oauth_configs/oauth_config.entity';
 
+import { HttpModule, HttpService } from '@nestjs/axios';
+
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -96,6 +98,7 @@ import { OauthConfig } from './oauth_configs/oauth_config.entity';
     MailModule,
     RoleLabelModule,
     OauthConfigModule,
+    HttpModule,
   ],
   controllers: [
     AppController,
