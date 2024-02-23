@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { OrGuard } from '../utils/orGuards';
 import {
   AdminGuard,
@@ -26,12 +26,17 @@ export class OrthancController {
 
   private doReverseProxy(request: RequestType, response: ResponseType) {
     const url = request.url;
+    const orthancCalledApi = url.replace('/api', '');
     const method = request.method;
     const body = request.body;
-    this.orthancClient.streamAnswerToRes(url, method, body, response);
+    this.orthancClient.streamAnswerToRes(
+      orthancCalledApi,
+      method,
+      body,
+      response,
+    );
   }
 
-  /*
   @Post('/modalities')
   @UseGuards(
     new OrGuard([
@@ -42,8 +47,12 @@ export class OrthancController {
     ]),
   )
   createInstances(
-  */
-  
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
   @ApiBearerAuth('access-token')
   @Get('/system')
   @UseGuards(AdminGuard)
