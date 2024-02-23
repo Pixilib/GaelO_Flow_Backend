@@ -4,11 +4,11 @@ import {
   Response,
   Request,
   UseGuards,
-  Post
+  Post,
 } from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { ExportGuard } from '../roles/roles.guard';
 import { doReverseProxy } from './Utils';
 
@@ -17,6 +17,7 @@ import { doReverseProxy } from './Utils';
 export class OrthancExportController {
   constructor(private orthancClient: OrthancClient) {}
 
+  @ApiBearerAuth('access-token')
   @Post('/modalities/*/store')
   @UseGuards(ExportGuard)
   createModalitiesExport(
@@ -26,6 +27,7 @@ export class OrthancExportController {
     doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Post('/tools/create-archive')
   @UseGuards(ExportGuard)
   createArchive(
@@ -35,6 +37,7 @@ export class OrthancExportController {
     doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Post('/tools/create-media')
   @UseGuards(ExportGuard)
   createMedia(
@@ -44,6 +47,7 @@ export class OrthancExportController {
     doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Post('/tools/create-media-extended')
   @UseGuards(ExportGuard)
   createMediaExtended(
@@ -53,6 +57,7 @@ export class OrthancExportController {
     doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Get('/peers*')
   @UseGuards(ExportGuard)
   getPeers(
@@ -62,6 +67,7 @@ export class OrthancExportController {
     doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Post('/peers/*/store')
   @UseGuards(ExportGuard)
   createPeersStore(
@@ -71,6 +77,7 @@ export class OrthancExportController {
     doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Post('/tasks/:user/export')
   @UseGuards(ExportGuard)
   createTasksUserExport(

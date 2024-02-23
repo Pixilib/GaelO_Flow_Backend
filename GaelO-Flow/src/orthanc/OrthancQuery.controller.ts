@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { QueryGuard } from '../roles/roles.guard';
 import { doReverseProxy } from './Utils';
 
@@ -17,6 +17,7 @@ import { doReverseProxy } from './Utils';
 export class OrthancQueryController {
   constructor(private orthancClient: OrthancClient) {}
 
+  @ApiBearerAuth('access-token')
   @Post('/modalities/*/query')
   @UseGuards(QueryGuard)
   createModalitiesQuery(
@@ -26,6 +27,7 @@ export class OrthancQueryController {
     doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Get('/queries/*/answers*')
   @UseGuards(QueryGuard)
   getQueryAnswers(
