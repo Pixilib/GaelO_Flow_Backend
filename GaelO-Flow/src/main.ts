@@ -17,8 +17,6 @@ import { OauthConfigService } from './oauth_configs/oauth_configs.service';
 
 async function buildSwagger(app: INestApplication<any>) {
   const oauthConfigs = await app.get(OauthConfigService).getOauthConfig();
-  // console.log('here', oauthConfigs);
-
   const documentBuilder = new DocumentBuilder()
     .setTitle('GaelO Flow API')
     .setDescription('The GaelO Flow API description')
@@ -39,7 +37,8 @@ async function buildSwagger(app: INestApplication<any>) {
           },
         },
       },
-      'oauth2',
+      // config.provider,
+      'oauth2', // won't work unless this is 'oauth2', but only one can be 'oauth2'
     );
   });
 

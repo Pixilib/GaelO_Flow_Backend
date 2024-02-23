@@ -57,6 +57,7 @@
     "rxjs": "^7.8.1",
     "sqlite": "^5.0.1",
     "sqlite3": "^5.1.6",
+    "tmp": "^0.2.1",
     "typeorm": "^0.3.17"
   },
   "devDependencies": {
@@ -72,6 +73,7 @@
     "@types/passport-local": "^1.0.38",
     "@types/passport-oauth2": "^1.4.15",
     "@types/supertest": "^2.0.12",
+    "@types/tmp": "^0.2.6",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "eslint": "^8.42.0",
