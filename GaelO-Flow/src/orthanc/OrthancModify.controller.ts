@@ -1,29 +1,14 @@
-import {
-  Controller,
-  Get,
-  Response,
-  Request,
-  UseGuards,
-  Post,
-  Delete,
-  Put,
-} from '@nestjs/common';
+import { Controller, Response, Request, UseGuards, Post } from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
 import { ApiTags } from '@nestjs/swagger';
 import { ModifyGuard } from '../roles/roles.guard';
+import { doReverseProxy } from './Utils';
 
 @ApiTags('orthanc')
 @Controller()
 export class OrthancModifyController {
   constructor(private orthancClient: OrthancClient) {}
-
-  private doReverseProxy(request: RequestType, response: ResponseType) {
-    const url = request.url;
-    const method = request.method;
-    const body = request.body;
-    this.orthancClient.streamAnswerToRes(url, method, body, response);
-  }
 
   @Post('/modalities/*/modify')
   @UseGuards(ModifyGuard)
@@ -31,7 +16,7 @@ export class OrthancModifyController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   @Post('/studies/*/modify')
@@ -40,7 +25,7 @@ export class OrthancModifyController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   @Post('/series/*/modify')
@@ -49,6 +34,6 @@ export class OrthancModifyController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 }

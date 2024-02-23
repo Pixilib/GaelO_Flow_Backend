@@ -4,26 +4,18 @@ import {
   Response,
   Request,
   UseGuards,
-  Post,
-  Delete,
-  Put,
+  Post
 } from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
 import { ApiTags } from '@nestjs/swagger';
 import { ExportGuard } from '../roles/roles.guard';
+import { doReverseProxy } from './Utils';
 
 @ApiTags('orthanc')
 @Controller()
 export class OrthancExportController {
   constructor(private orthancClient: OrthancClient) {}
-
-  private doReverseProxy(request: RequestType, response: ResponseType) {
-    const url = request.url;
-    const method = request.method;
-    const body = request.body;
-    this.orthancClient.streamAnswerToRes(url, method, body, response);
-  }
 
   @Post('/modalities/*/store')
   @UseGuards(ExportGuard)
@@ -31,7 +23,7 @@ export class OrthancExportController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   @Post('/tools/create-archive')
@@ -40,7 +32,7 @@ export class OrthancExportController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   @Post('/tools/create-media')
@@ -49,7 +41,7 @@ export class OrthancExportController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   @Post('/tools/create-media-extended')
@@ -58,7 +50,7 @@ export class OrthancExportController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   @Get('/peers*')
@@ -67,7 +59,7 @@ export class OrthancExportController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   @Post('/peers/*/store')
@@ -76,7 +68,7 @@ export class OrthancExportController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   @Post('/tasks/:user/export')
@@ -85,6 +77,6 @@ export class OrthancExportController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 }

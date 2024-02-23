@@ -5,25 +5,17 @@ import {
   Request,
   UseGuards,
   Post,
-  Delete,
-  Put,
 } from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
 import { ApiTags } from '@nestjs/swagger';
 import { QueryGuard } from '../roles/roles.guard';
+import { doReverseProxy } from './Utils';
 
 @ApiTags('orthanc')
 @Controller()
 export class OrthancQueryController {
   constructor(private orthancClient: OrthancClient) {}
-
-  private doReverseProxy(request: RequestType, response: ResponseType) {
-    const url = request.url;
-    const method = request.method;
-    const body = request.body;
-    this.orthancClient.streamAnswerToRes(url, method, body, response);
-  }
 
   @Post('/modalities/*/query')
   @UseGuards(QueryGuard)
@@ -31,7 +23,7 @@ export class OrthancQueryController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   @Get('/queries/*/answers*')
@@ -40,7 +32,7 @@ export class OrthancQueryController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   // @Post('/retrieve')

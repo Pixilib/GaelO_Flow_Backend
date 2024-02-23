@@ -18,73 +18,18 @@ import {
   ExportGuard,
   QueryGuard,
 } from '../roles/roles.guard';
+import { doReverseProxy } from './Utils';
 
 @ApiTags('orthanc')
 @Controller()
 export class OrthancController {
   constructor(private orthancClient: OrthancClient) {}
 
-  private doReverseProxy(request: RequestType, response: ResponseType) {
-    const url = request.url;
-    const orthancCalledApi = url.replace('/api', '');
-    const method = request.method;
-    const body = request.body;
-    this.orthancClient.streamAnswerToRes(
-      orthancCalledApi,
-      method,
-      body,
-      response,
-    );
-  }
-
-  @Post('/modalities')
-  @UseGuards(
-    new OrGuard([
-      new AdminGuard(),
-      new QueryGuard(),
-      new AutoQueryGuard(),
-      new ExportGuard(),
-    ]),
-  )
-  createInstances(
-    @Request() request: RequestType,
-    @Response() response: ResponseType,
-  ) {
-    this.doReverseProxy(request, response);
-  }
-
-  @ApiBearerAuth('access-token')
-  @Get('/system')
-  @UseGuards(AdminGuard)
-  getSystem(
-    @Request() request: RequestType,
-    @Response() response: ResponseType,
-  ) {
-    this.doReverseProxy(request, response);
-  }
-
-  @ApiBearerAuth('access-token')
-  @Post('/tools/reset')
-  @UseGuards(AdminGuard)
-  resetOrthanc(
-    @Request() request: RequestType,
-    @Response() response: ResponseType,
-  ) {
-    this.doReverseProxy(request, response);
-  }
-
-  @ApiBearerAuth('access-token')
-  @Get('/jobs*')
-  // @UseGuards() ???
-  getJobs(@Request() request: RequestType, @Response() response: ResponseType) {
-    this.doReverseProxy(request, response);
-  }
-
   @ApiBearerAuth('access-token')
   @Post('/tools/find')
   // @UseGuards() ???
   find(@Request() request: RequestType, @Response() response: ResponseType) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   //SK Voir role pour la modification des labels
@@ -95,7 +40,7 @@ export class OrthancController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   @ApiBearerAuth('access-token')
@@ -105,7 +50,7 @@ export class OrthancController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
   // //Get dicoms studyes according to labels
@@ -118,54 +63,60 @@ export class OrthancController {
 
   //Reverse Proxy Routes for orthanc content => Warning non RBAC Protected
   //SK A VERIFIER QUE LES RACINES SONT BIEN VEROUILLEES
+  @ApiBearerAuth('access-token')
   @Get('/patients/*')
   // @UseGuards() ???
   getPatients(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Get('/studies/*')
   // @UseGuards() ???
   getStudies(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Get('/series/*')
   // @UseGuards() ???
   getSeries(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Get('/instances/*')
   // @UseGuards() ???
   getInstances(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Get('/dicom-web/*')
   // @UseGuards() ???
   getDicomWeb(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 
+  @ApiBearerAuth('access-token')
   @Get('/wado/*')
   // @UseGuards() ???
   getWado(@Request() request: RequestType, @Response() response: ResponseType) {
-    this.doReverseProxy(request, response);
+    doReverseProxy(request, response, this.orthancClient);
   }
 }
