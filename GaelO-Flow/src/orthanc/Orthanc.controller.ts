@@ -31,6 +31,7 @@ export class OrthancController {
     this.orthancClient.streamAnswerToRes(url, method, body, response);
   }
 
+  /*
   @Post('/modalities')
   @UseGuards(
     new OrGuard([
@@ -41,18 +42,36 @@ export class OrthancController {
     ]),
   )
   createInstances(
+  */
+  
+  @ApiBearerAuth('access-token')
+  @Get('/system')
+  @UseGuards(AdminGuard)
+  getSystem(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
     this.doReverseProxy(request, response);
   }
 
+  @ApiBearerAuth('access-token')
+  @Post('/tools/reset')
+  @UseGuards(AdminGuard)
+  resetOrthanc(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    this.doReverseProxy(request, response);
+  }
+
+  @ApiBearerAuth('access-token')
   @Get('/jobs*')
   // @UseGuards() ???
   getJobs(@Request() request: RequestType, @Response() response: ResponseType) {
     this.doReverseProxy(request, response);
   }
 
+  @ApiBearerAuth('access-token')
   @Post('/tools/find')
   // @UseGuards() ???
   find(@Request() request: RequestType, @Response() response: ResponseType) {
@@ -60,6 +79,7 @@ export class OrthancController {
   }
 
   //SK Voir role pour la modification des labels
+  @ApiBearerAuth('access-token')
   @Put('/studies/*/labels/*')
   // @UseGuards() ???
   updateLabels(
@@ -69,6 +89,7 @@ export class OrthancController {
     this.doReverseProxy(request, response);
   }
 
+  @ApiBearerAuth('access-token')
   @Delete('/studies/*/labels/*')
   // @UseGuards() ???
   deleteLabels(
