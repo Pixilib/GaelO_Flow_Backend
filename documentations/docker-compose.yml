@@ -11,7 +11,7 @@ services:
       ports: ["3000:3000"]
       environment:
         APP_URL : "http://localhost"
-        ORTHANC_ADDRESS : "http://orthanc"
+        ORTHANC_ADDRESS : "http://orthanc-flow"
         ORTHANC_PORT : 8042
         ORTHANC_USERNAME: "orthanc"
         ORTHANC_PASSWORD: "orthanc"
