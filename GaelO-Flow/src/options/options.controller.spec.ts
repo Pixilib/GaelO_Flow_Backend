@@ -3,6 +3,7 @@ import { OptionsService } from './options.service';
 import { OptionsController } from './options.controller';
 import { Option } from './option.entity';
 import { OptionDto } from './options.dto';
+import { ConfigService } from '@nestjs/config';
 
 describe('OptionsController', () => {
   let optionsController: OptionsController;
@@ -12,6 +13,7 @@ describe('OptionsController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [OptionsController],
       providers: [
+        ConfigService,
         {
           provide: OptionsService,
           useValue: {

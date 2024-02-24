@@ -3,11 +3,9 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
-import * as bcryptjs from 'bcryptjs';
 import { MailService } from '../mail/mail.service';
 import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
-import { HttpStatus } from '@nestjs/common';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -24,7 +22,8 @@ describe('AuthController', () => {
         {
           provide: AuthService,
           useValue: {
-            signIn: jest.fn(),
+            login: jest.fn(),
+            validateUser: jest.fn(),
             createConfirmationToken: jest.fn(),
           },
         },
@@ -56,23 +55,24 @@ describe('AuthController', () => {
     mailService = module.get<MailService>(MailService);
   });
 
-  describe('signIn', () => {
+  describe('login', () => {
     it('check if signIn is public', async () => {
       const isPublic = Reflect.getMetadata(
         'isPublic',
-        AuthController.prototype.signIn,
+        AuthController.prototype.login,
       );
 
       expect(isPublic).toBe(true);
     });
 
     it('should return an access token', async () => {
-      jest.spyOn(authService, 'signIn').mockReturnValue(
+      jest.spyOn(authService, 'login').mockReturnValue(
         Promise.resolve({
           access_token: 'token',
+          user_id: 1,
         }),
       );
-      jest.spyOn(usersService, 'findOneByUsername').mockReturnValue(
+      jest.spyOn(authService, 'validateUser').mockReturnValue(
         Promise.resolve({
           id: 1,
           username: 'username',
@@ -81,39 +81,20 @@ describe('AuthController', () => {
           },
         } as User),
       );
-      jest.spyOn(bcryptjs, 'compare').mockResolvedValue(true as never);
 
-      const result = await authController.signIn({});
+      const result = await authController.login({
+        user: {
+          username: 'username',
+          password: 'password',
+        },
+      } as any);
 
       expect(result).toStrictEqual({
         access_token: 'token',
+        user_id: 1,
       });
     });
-
-    it('should throw an UnauthorizedException if user does not exist', async () => {
-      jest
-        .spyOn(usersService, 'findOneByUsername')
-        .mockReturnValue(Promise.resolve(undefined));
-
-      await expect(authController.signIn({})).rejects.toThrow('Unauthorized');
-    });
-
-    it('should throw an UnauthorizedException if password is incorrect', async () => {
-      jest.spyOn(usersService, 'findOneByUsername').mockReturnValue(
-        Promise.resolve({
-          id: 1,
-          username: 'username',
-          role: {
-            name: 'User',
-          },
-        } as User),
-      );
-      jest.spyOn(bcryptjs, 'compare').mockResolvedValue(false as never);
-
-      await expect(authController.signIn({})).rejects.toThrow('Unauthorized');
-    });
   });
-
 
   describe('register', () => {
     it('check if signIn is public', async () => {
@@ -126,8 +107,6 @@ describe('AuthController', () => {
     });
 
     it('should create a new user and send confirmation email', async () => {
-
-
       const registerDto = {
         email: 'test@example.com',
         firstname: 'John',
@@ -135,31 +114,114 @@ describe('AuthController', () => {
         username: 'johndoe',
       };
 
-      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValueOnce(undefined);
+      jest
+        .spyOn(usersService, 'findOneByEmail')
+        .mockResolvedValueOnce(undefined);
       jest.spyOn(usersService, 'create').mockResolvedValueOnce(1);
 
-      const mockUser = { 
-        ...registerDto, 
+      const mockUser = {
+        ...registerDto,
         email: registerDto.email,
         superAdmin: false,
         roleName: 'User',
         password: null,
-        salt: null 
       };
 
-      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValueOnce(mockUser);
+      jest
+        .spyOn(usersService, 'findOneByEmail')
+        .mockResolvedValueOnce(mockUser);
 
-      jest.spyOn(authService, 'createConfirmationToken').mockResolvedValueOnce('confirmation_token');
-      jest.spyOn(mailService, 'sendChangePasswordEmail').mockResolvedValue(null);
+      jest
+        .spyOn(authService, 'createConfirmationToken')
+        .mockResolvedValueOnce('confirmation_token');
+      jest
+        .spyOn(mailService, 'sendChangePasswordEmail')
+        .mockResolvedValue(null);
 
       const result = await authController.register(registerDto);
-      expect(usersService.findOneByEmail).toHaveBeenCalledWith(registerDto.email, false);
+      expect(usersService.findOneByEmail).toHaveBeenCalledWith(
+        registerDto.email,
+        false,
+      );
       expect(usersService.create).toHaveBeenCalledWith(mockUser);
-      expect(result).toEqual({
-        status: HttpStatus.CREATED,
-        message: 'An email has been sent, confirm your account to login',
-      });
+      expect(authService.createConfirmationToken).toHaveBeenCalledWith(
+        mockUser,
+      );
     });
 
+    it('should throw a ConflictException if user already exists', async () => {
+      const registerDto = {
+        email: 'test@example.com',
+        firstname: 'John',
+        lastname: 'Doe',
+        username: 'johndoe',
+      };
+
+      jest
+        .spyOn(usersService, 'findOneByEmail')
+        .mockResolvedValueOnce({} as User);
+
+      await expect(authController.register(registerDto)).rejects.toThrow(
+        'A user already exist with this username or email',
+      );
+    });
+  });
+
+  describe('changePassword', () => {
+    it('should change the password', async () => {
+      const mockUser = {
+        id: 1,
+        username: 'username',
+        role: {
+          name: 'User',
+        },
+      };
+      const mockReq = {
+        user: {
+          userId: 1,
+        },
+      };
+      const changePasswordDto = {
+        newPassword: 'Password123!',
+        confirmationPassword: 'Password123!',
+      };
+
+      jest
+        .spyOn(usersService, 'findOne')
+        .mockResolvedValueOnce(mockUser as User);
+      jest.spyOn(usersService, 'update').mockResolvedValueOnce(null);
+
+      await authController.changePassword(changePasswordDto, mockReq as any);
+      expect(usersService.findOne).toHaveBeenCalledWith(1);
+      expect(usersService.update).toHaveBeenCalledWith(1, mockUser);
+    });
+
+    it('should throw a BadRequestException if passwords do not match', async () => {
+      const mockUser = {
+        id: 1,
+        username: 'username',
+        role: {
+          name: 'User',
+        },
+      };
+      const mockReq = {
+        user: {
+          userId: 1,
+        },
+      };
+      const changePasswordDto = {
+        newPassword: 'Password123!',
+        confirmationPassword: 'Password1234!',
+      };
+
+      jest
+        .spyOn(usersService, 'findOne')
+        .mockResolvedValueOnce(mockUser as User);
+      jest.spyOn(usersService, 'update').mockResolvedValueOnce(null);
+
+      await expect(
+        authController.changePassword(changePasswordDto, mockReq as any),
+      ).rejects.toThrow('Confirmation password not matching');
+    });
   });
 });

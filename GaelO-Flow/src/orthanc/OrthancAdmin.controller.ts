@@ -11,32 +11,18 @@ import {
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { OrGuard } from '../utils/orGuards';
-import {
-  AdminGuard,
-  AutoQueryGuard,
-  ExportGuard,
-  QueryGuard,
-} from '../roles/roles.guard';
+import { AdminGuard } from '../roles/roles.guard';
 import { doReverseProxy } from './Utils';
 
 @ApiTags('orthanc')
 @Controller()
-export class OrthancController {
+export class OrthancAdminController {
   constructor(private orthancClient: OrthancClient) {}
 
   @ApiBearerAuth('access-token')
-  @Post('/tools/find')
-  // @UseGuards() ???
-  find(@Request() request: RequestType, @Response() response: ResponseType) {
-    doReverseProxy(request, response, this.orthancClient);
-  }
-
-  //SK Voir role pour la modification des labels
-  @ApiBearerAuth('access-token')
-  @Put('/studies/*/labels/*')
-  // @UseGuards() ???
-  updateLabels(
+  @Get('/system')
+  @UseGuards(AdminGuard)
+  getSystem(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -44,29 +30,9 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Delete('/studies/*/labels/*')
-  // @UseGuards() ???
-  deleteLabels(
-    @Request() request: RequestType,
-    @Response() response: ResponseType,
-  ) {
-    doReverseProxy(request, response, this.orthancClient);
-  }
-
-  // //Get dicoms studyes according to labels
-  // @Get('/labels/:name/studies')
-  // // @UseGuards() ???
-  // getStudiesWithLabel(
-  //   @Request() request: RequestType,
-  //   @Response() response: ResponseType,
-  // ) {}
-
-  //Reverse Proxy Routes for orthanc content => Warning non RBAC Protected
-  //SK A VERIFIER QUE LES RACINES SONT BIEN VEROUILLEES
-  @ApiBearerAuth('access-token')
-  @Get('/patients/*')
-  // @UseGuards() ???
-  getPatients(
+  @Post('/tools/reset')
+  @UseGuards(AdminGuard)
+  resetOrthanc(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -74,9 +40,9 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/studies/*')
-  // @UseGuards() ???
-  getStudies(
+  @Post('/tools/shutdown')
+  @UseGuards(AdminGuard)
+  shutdownOrthanc(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -84,9 +50,9 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/series/*')
-  // @UseGuards() ???
-  getSeries(
+  @Get('/tools/log-level')
+  @UseGuards(AdminGuard)
+  getLogLevel(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -94,9 +60,9 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/instances/*')
-  // @UseGuards() ???
-  getInstances(
+  @Put('/tools/log-level')
+  @UseGuards(AdminGuard)
+  updateLogLevel(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -104,9 +70,9 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/dicom-web/*')
-  // @UseGuards() ???
-  getDicomWeb(
+  @Get('/plugins')
+  @UseGuards(AdminGuard)
+  getPlugins(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -114,9 +80,69 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/wado/*')
-  // @UseGuards() ???
-  getWado(@Request() request: RequestType, @Response() response: ResponseType) {
+  @Post('/jobs/*')
+  @UseGuards(AdminGuard)
+  getJobs(@Request() request: RequestType, @Response() response: ResponseType) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
+
+  @ApiBearerAuth('access-token')
+  @Delete('/modalities/*')
+  @UseGuards(AdminGuard)
+  deleteModality(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
+
+  @ApiBearerAuth('access-token')
+  @Post('/modalities/*/echo')
+  @UseGuards(AdminGuard)
+  createEcho(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
+
+  @ApiBearerAuth('access-token')
+  @Put('/modalities/*')
+  @UseGuards(AdminGuard)
+  editModality(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
+
+  @ApiBearerAuth('access-token')
+  @Delete('/peers/*')
+  @UseGuards(AdminGuard)
+  deletePeer(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
+
+  @ApiBearerAuth('access-token')
+  @Get('/peers/*/system')
+  @UseGuards(AdminGuard)
+  getPeerSystem(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
+
+  @ApiBearerAuth('access-token')
+  @Put('/peer/*/')
+  @UseGuards(AdminGuard)
+  editPeer(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
     doReverseProxy(request, response, this.orthancClient);
   }
 }

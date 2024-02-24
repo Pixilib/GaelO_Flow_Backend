@@ -6,14 +6,20 @@ import { AuthController } from './auth.controller';
 import { UsersService } from '../users/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/user.entity';
-import { AuthGuard } from '../auth/auth.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { MailService } from '../mail/mail.service';
+import { LocalStrategy } from './local.strategy';
+import { JwtStrategy } from './jwt.strategy';
+import { JwtAuthGuard } from './jwt.guard';
+import { OauthConfig } from '../oauth_configs/oauth_config.entity';
+import { HttpModule, HttpService } from '@nestjs/axios';
+import { JwtOauthStrategy } from './jwt-oauth.strategy';
 
 @Module({
   imports: [
     UsersModule,
+    HttpModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService): any => ({
@@ -21,14 +27,17 @@ import { MailService } from '../mail/mail.service';
         signOptions: { expiresIn: '6h' },
       }),
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, OauthConfig]),
   ],
   providers: [
+    LocalStrategy,
+    JwtStrategy,
+    JwtOauthStrategy,
     AuthService,
     UsersService,
     {
       provide: APP_GUARD,
-      useClass: AuthGuard,
+      useClass: JwtAuthGuard,
     },
     MailService,
   ],

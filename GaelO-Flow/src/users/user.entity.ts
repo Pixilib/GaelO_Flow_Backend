@@ -64,17 +64,8 @@ export class User {
   })
   roleName: string;
 
-
   @ApiProperty()
   @ManyToOne(() => Role, (role) => role.name)
   @JoinColumn({ name: 'role_name' })
   role?: Role;
-
-  @Column({
-    name: 'salt',
-    nullable: true,
-    default: null,
-  })
-  @Exclude()
-  salt?: string;
 }

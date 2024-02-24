@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './user.entity';
@@ -21,11 +21,20 @@ export class UsersService {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.usersRepository.find();
+    return await this.usersRepository.find({
+      relations: { role: true },
+    });
   }
 
-  async findOne(id: number): Promise<User> {
-    return await this.usersRepository.findOneByOrFail({ id });
+  async findOne(id: number, withRole: boolean = true): Promise<User> {
+    const user = await this.usersRepository.findOne({
+      where: { id: id },
+      relations: {
+        role: withRole,
+      },
+    });
+    if (!user) throw new NotFoundException('User not found');
+    return user;
   }
 
   async isExistingUser(id: number): Promise<boolean> {
@@ -37,8 +46,9 @@ export class UsersService {
 
   async findOneByEmail(
     email: string,
-    withRole: boolean,
+    withRole: boolean = true,
   ): Promise<User> | undefined {
+    if (email === undefined) return undefined;
     return await this.usersRepository.findOne({
       where: { email: email },
       relations: {
@@ -49,7 +59,7 @@ export class UsersService {
 
   async findOneByUsername(
     username: string,
-    withRole: boolean,
+    withRole: boolean = true,
   ): Promise<User> | undefined {
     return await this.usersRepository.findOne({
       where: { username: username },
@@ -94,7 +104,6 @@ export class UsersService {
       password: hashAdmin,
       superAdmin: true,
       roleName: 'Admin',
-      salt: saltAdmin,
     });
 
     const user = this.usersRepository.create({
@@ -105,7 +114,6 @@ export class UsersService {
       password: hashUser,
       superAdmin: true,
       roleName: 'User',
-      salt: saltUser,
     });
 
     await this.usersRepository.insert([admin, user]);

@@ -5,38 +5,22 @@ import {
   Request,
   UseGuards,
   Post,
-  Delete,
-  Put,
 } from '@nestjs/common';
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { OrGuard } from '../utils/orGuards';
-import {
-  AdminGuard,
-  AutoQueryGuard,
-  ExportGuard,
-  QueryGuard,
-} from '../roles/roles.guard';
+import { ExportGuard } from '../roles/roles.guard';
 import { doReverseProxy } from './Utils';
 
 @ApiTags('orthanc')
 @Controller()
-export class OrthancController {
+export class OrthancExportController {
   constructor(private orthancClient: OrthancClient) {}
 
   @ApiBearerAuth('access-token')
-  @Post('/tools/find')
-  // @UseGuards() ???
-  find(@Request() request: RequestType, @Response() response: ResponseType) {
-    doReverseProxy(request, response, this.orthancClient);
-  }
-
-  //SK Voir role pour la modification des labels
-  @ApiBearerAuth('access-token')
-  @Put('/studies/*/labels/*')
-  // @UseGuards() ???
-  updateLabels(
+  @Post('/modalities/*/store')
+  @UseGuards(ExportGuard)
+  createModalitiesExport(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -44,29 +28,9 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Delete('/studies/*/labels/*')
-  // @UseGuards() ???
-  deleteLabels(
-    @Request() request: RequestType,
-    @Response() response: ResponseType,
-  ) {
-    doReverseProxy(request, response, this.orthancClient);
-  }
-
-  // //Get dicoms studyes according to labels
-  // @Get('/labels/:name/studies')
-  // // @UseGuards() ???
-  // getStudiesWithLabel(
-  //   @Request() request: RequestType,
-  //   @Response() response: ResponseType,
-  // ) {}
-
-  //Reverse Proxy Routes for orthanc content => Warning non RBAC Protected
-  //SK A VERIFIER QUE LES RACINES SONT BIEN VEROUILLEES
-  @ApiBearerAuth('access-token')
-  @Get('/patients/*')
-  // @UseGuards() ???
-  getPatients(
+  @Post('/tools/create-archive')
+  @UseGuards(ExportGuard)
+  createArchive(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -74,9 +38,9 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/studies/*')
-  // @UseGuards() ???
-  getStudies(
+  @Post('/tools/create-media')
+  @UseGuards(ExportGuard)
+  createMedia(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -84,9 +48,9 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/series/*')
-  // @UseGuards() ???
-  getSeries(
+  @Post('/tools/create-media-extended')
+  @UseGuards(ExportGuard)
+  createMediaExtended(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -94,9 +58,9 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/instances/*')
-  // @UseGuards() ???
-  getInstances(
+  @Get('/peers*')
+  @UseGuards(ExportGuard)
+  getPeers(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -104,9 +68,9 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/dicom-web/*')
-  // @UseGuards() ???
-  getDicomWeb(
+  @Post('/peers/*/store')
+  @UseGuards(ExportGuard)
+  createPeersStore(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
@@ -114,9 +78,12 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/wado/*')
-  // @UseGuards() ???
-  getWado(@Request() request: RequestType, @Response() response: ResponseType) {
+  @Post('/tasks/:user/export')
+  @UseGuards(ExportGuard)
+  createTasksUserExport(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
     doReverseProxy(request, response, this.orthancClient);
   }
 }

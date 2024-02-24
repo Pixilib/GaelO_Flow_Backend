@@ -57,7 +57,7 @@ export class UsersController {
   @UseInterceptors(NotFoundInterceptor)
   async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
     const user = await this.UserService.findOne(id);
-    return { ...user, password: undefined, salt: undefined };
+    return { ...user, password: undefined };
   }
 
   @ApiBearerAuth('access-token')
@@ -146,7 +146,6 @@ export class UsersController {
     user.email = userDto.email;
     user.superAdmin = userDto.superAdmin;
     user.roleName = userDto.roleName;
-    user.salt = salt;
 
     try {
       return await this.UserService.create(user);
