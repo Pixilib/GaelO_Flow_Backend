@@ -60,6 +60,12 @@ import { MailService } from './mail/mail.service';
 
 import { MailModule } from './mail/mail.module';
 
+// OAUTHCONFIG ROUTE
+import { OauthConfigController } from './oauth_configs/oauth_configs.controller';
+import { OauthConfigService } from './oauth_configs/oauth_configs.service';
+import { OauthConfigModule } from './oauth_configs/oauth_configs.module';
+import { OauthConfig } from './oauth_configs/oauth_config.entity';
+
 @Module({
   imports: [
     ScheduleModule.forRoot(),
@@ -80,15 +86,23 @@ import { MailModule } from './mail/mail.module';
         username: configService.get<string>('TYPEORM_USERNAME', 'postgres'),
         password: configService.get<string>('TYPEORM_PASSWORD', 'postgres'),
         database: configService.get<string>('TYPEORM_DATABASE', 'gaelo-flow'),
-        entities: [User, Role, Option, Label, RoleLabel],
+        entities: [User, Role, Option, Label, RoleLabel, OauthConfig],
         synchronize: true,
       }),
     }),
-    TypeOrmModule.forFeature([User, Role, Option, Label, RoleLabel]),
+    TypeOrmModule.forFeature([
+      User,
+      Role,
+      Option,
+      Label,
+      RoleLabel,
+      OauthConfig,
+    ]),
     AuthModule,
     TasksModule,
     MailModule,
     RoleLabelModule,
+    OauthConfigModule,
   ],
   controllers: [
     AppController,
@@ -106,6 +120,7 @@ import { MailModule } from './mail/mail.module';
     QueuesDeleteController,
     QueuesAnonController,
     QueuesQueryController,
+    OauthConfigController,
   ],
   providers: [
     AppService,
@@ -119,6 +134,7 @@ import { MailModule } from './mail/mail.module';
     QueuesAnonService,
     QueuesQueryService,
     MailService,
+    OauthConfigService,
   ],
 })
 export class AppModule {}

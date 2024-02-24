@@ -39,7 +39,6 @@ describe('UsersController', () => {
         superAdmin: true,
         roleName: 'roleName',
         role: new Role(),
-        salt: 'salt',
       },
     ];
     usersController = module.get<UsersController>(UsersController);

@@ -1,20 +1,27 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '../users/users.service';
+import * as bcryptjs from 'bcryptjs';
 import { User } from '../users/user.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private usersService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
-  async verifyToken(token: string): Promise<number | null> {
-    try {
-      const decoded = await this.jwtService.verifyAsync(token);
-      return decoded.id;
-    } catch (error) {
-      return null;
+  async validateUser(username: string, pass: string): Promise<any> {
+    const user = await this.usersService.findOneByUsername(username);
+
+    if (user && (await bcryptjs.compare(pass, user.password))) {
+      const { password, ...result } = user;
+      return result;
     }
+    return null;
   }
-  async signIn(user: User) {
+
+  async login(user: any) {
     const payload = {
       sub: user.id,
       username: user.username,
@@ -23,6 +30,7 @@ export class AuthService {
     };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      user_id: user.id,
     };
   }
 
@@ -31,8 +39,17 @@ export class AuthService {
       id: user.id,
       email: user.email,
     };
-    return this.jwtService.sign(payload, {
+    return this.jwtService.signAsync(payload, {
       expiresIn: '24h', // Expiration en 24 heures
     });
+  }
+
+  async verifyToken(token: string): Promise<number | null> {
+    try {
+      const decoded = await this.jwtService.verifyAsync(token);
+      return decoded.id;
+    } catch (error) {
+      return null;
+    }
   }
 }
