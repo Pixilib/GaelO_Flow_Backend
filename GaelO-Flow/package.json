@@ -24,7 +24,7 @@
     "build-docs": "ts-node src/build_docs.ts"
   },
   "dependencies": {
-    "@nestjs-modules/mailer": "^1.10.3",
+    "@nestjs-modules/mailer": "^1.11.0",
     "@nestjs/axios": "^3.0.1",
     "@nestjs/bullmq": "^10.0.1",
     "@nestjs/common": "^10.0.0",
@@ -42,6 +42,7 @@
     "bullmq": "^4.15.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
+    "css-inline": "^0.11.2",
     "handlebars": "^4.7.8",
     "moment": "^2.29.4",
     "nodemailer": "^6.9.7",
