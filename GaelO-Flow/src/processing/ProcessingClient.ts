@@ -1,87 +1,66 @@
-import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { firstValueFrom } from 'rxjs';
-import OrthancClient from 'src/orthanc/OrthancClient';
-import { tmpName, tmpNameSync } from 'tmp';
-import { ProcessingRequest } from './processingRequest';
 import { HttpClient } from '../utils/HttpClient';
+import { Stream } from 'stream';
 
 @Injectable()
-export class ProcessingClient {
-  processingRequest: ProcessingRequest;
-  httpClient: HttpClient;
+class ProcessingClient extends HttpClient {
 
   constructor(
-    private readonly orthancClient: OrthancClient,
     private readonly configService: ConfigService,
-    private readonly httpService: HttpService,
   ) {
-    this.processingRequest = new ProcessingRequest(
-      orthancClient,
-      configService,
-      httpService,
+    super();
+    this.setAddress(
+      this.configService.get<string>('GAELO_PROCESSING_URL', 'http://localhost'),
     );
-    this.httpClient = new HttpClient();
-    this.httpClient.setAddress(
-      configService.get<string>('GAELO_PROCESSING_URL', 'http://localhost'),
+    this.setUsername(
+      this.configService.get<string>('GAELO_PROCESSING_LOGIN', 'admin'),
     );
-    this.httpClient.setUsername(
-      configService.get<string>('GAELO_PROCESSING_LOGIN', 'admin'),
-    );
-    this.httpClient.setPassword(
-      configService.get<string>('GAELO_PROCESSING_PASSWORD', 'admin'),
+    this.setPassword(
+      this.configService.get<string>('GAELO_PROCESSING_PASSWORD', 'admin'),
     );
   }
 
-  async createSeriesFromOrthanc(
+  createSeriesFromOrthanc(
     orthancSeriesId: string,
     pet: boolean = false,
     convertToSuv: boolean = false,
   ): Promise<any> {
-    const response = await this.httpClient.request(
-      'POST',
+    return this.request(
       '/tools/create-series-from-orthanc',
+      'POST',
       { orthancSeriesId, pet, convertToSuv },
     );
-    return response;
   }
 
-  async createDicom(filename: string) {
-    await this.processingRequest.uploadFile(
+  async createDicom(stram: Stream) {
+    return this.request(
       '/dicoms',
-      filename,
+      'POST',
+      stram,
     );
-    const response = await this.httpClient.
-    return response;
   }
 
-  async executeInference(modelName: string, payload: any): Promise<any> {
-    const response = await this.processingRequest.post(
+  executeInference(modelName: string, payload: any): Promise<any> {
+    return this.request(
       `/models/${modelName}/inference`,
+      'POST',
       payload,
     );
-    console.log(response);
-    return response;
   }
 
-  async createMIPForSeries(
+  createMIPForSeries(
     seriesId: string,
     payload: any = { orientation: 'LPI' },
   ) {
-    const downloadPath = tmpNameSync({ dir: './' });
-    const response = await this.processingRequest.requestStreamResponseToFile(
-      'POST',
+    return this.request(
       `/series/${seriesId}/mip`,
-      downloadPath,
-      { 'Content-Type': 'application/json' },
+      'POST',
       payload,
     );
-    console.log(response);
-    return downloadPath;
   }
 
-  async createMosaicForSeries(
+  createMosaicForSeries(
     seriesId: string,
     payload: any = {
       min: null,
@@ -93,119 +72,104 @@ export class ProcessingClient {
       orientation: 'LPI',
     },
   ) {
-    const downloadPath = tmpNameSync({ dir: './' });
-    const response = await this.processingRequest.requestStreamResponseToFile(
-      'POST',
+    return this.request(
       `/series/${seriesId}/mosaic`,
-      downloadPath,
-      { 'Content-Type': 'application/json' },
+      'POST',
       payload,
     );
-    console.log(response);
-    return downloadPath;
   }
 
-  async getNiftiMask(maskId: string): Promise<string> {
-    return '<path>';
+  getNiftiMask(maskId: string) {
+    return this.requestStream(`/masks/${maskId}/file`, 'GET', null)
   }
 
-  async getNiftiSeries(imageId: string): Promise<string> {
-    return '<path>';
+  getNiftiSeries(imageId: string) {
+    return this.requestStream(`/series/${imageId}/file`, 'GET', {});
   }
 
-  async createRtssFromMask(orthancSeriesId: string, maskId: string) {
-    const response = await this.processingRequest.post('/tools/mask-to-rtss', {
+  createRtssFromMask(orthancSeriesId: string, maskId: string) {
+    return this.request(
+      '/tools/mask-to-rtss',
+      'POST',
+      {
+        orthancSeriesId,
+        maskId,
+      });
+  }
+
+  getRtss(rtss: string) {
+    return this.requestStream(`/rtss/${rtss}/file`, 'GET', null)
+  }
+
+  createSegFromMask(orthancSeriesId: string, maskId: string) {
+    return this.request('/tools/mask-to-seg',
+    'POST',
+    {
       orthancSeriesId,
       maskId,
     });
-    console.log(response);
-    return response;
   }
 
-  async getRtss(rtss: string) {
-    return '<path>';
-  }
-
-  async createSegFromMask(orthancSeriesId: string, maskId: string) {
-    const response = await this.processingRequest.post('/tools/mask-to-seg', {
-      orthancSeriesId,
-      maskId,
-    });
-    console.log(response);
-    return response;
-  }
-
-  async getSeg(seg: string) {
-    const downloadPath = tmpNameSync({ dir: './' });
-    await this.processingRequest.requestStreamResponseToFile(
-      'GET',
+  getSeg(seg: string) {
+    return this.requestStream(
       `/seg/${seg}/file`,
-      downloadPath,
-      {},
+      'GET',
+      {}
     );
-    return downloadPath;
   }
 
-  async thresholdMask(
+  thresholdMask(
     maskId: string,
     seriesId: string,
     threshold: string | number,
-  ) {
-    const response = await this.processingRequest.post(
+  ){
+    return this.request(
       '/tools/threshold-mask',
+      'POST',
       {
         maskId,
         seriesId,
         threshold,
       },
     );
-    console.log(response);
-    return response;
   }
 
-  async fragmentMask(seriesId: string, maskId: string, output3D: boolean) {
-    const response = await this.processingRequest.post('/tools/fragment-mask', {
+  fragmentMask(seriesId: string, maskId: string, output3D: boolean) {
+    return this.request('/tools/fragment-mask', 'POST', {
       seriesId,
       maskId,
       output3D,
     });
-    console.log(response);
-    return response;
   }
 
-  async getMaskDicomOrientation(
+  getMaskDicomOrientation(
     maskId: string,
     orientation: string,
     compress: boolean,
   ) {
-    const downloadPath = tmpNameSync({ dir: './' });
-    this.processingRequest.requestStreamResponseToFile(
-      'POST',
+    return this.requestStream(
       '/tools/mask-dicom',
-      downloadPath,
-      {},
+      'POST',
       { maskId, orientation, compress },
     );
-    return downloadPath;
   }
 
   async getStatsMask(maskId: string) {
-    const response = await this.processingRequest.get(`/tools/${maskId}/stats`);
-    console.log(response);
+    const response = await this.request(`/tools/${maskId}/stats`, 'GET', null);
     return response;
   }
 
-  async getStatsMaskSeries(maskId: string, seriesId: string) {
-    const response = await this.processingRequest.get(
+  getStatsMaskSeries(maskId: string, seriesId: string) {
+    return this.request(
       `/tools/${maskId}/stats/${seriesId}`,
+      'GET',
+      null
     );
-    console.log(response);
-    return response;
   }
 
-  async deleteRessource(type: string, id: string) {
-    const response = await this.processingRequest.delete(`/${type}/${id}`);
-    console.log(response);
-    return response;
+  deleteRessource(type: string, id: string) {
+    return this.request(`/${type}/${id}`, 'DELETE', null);
   }
 }
+
+export default ProcessingClient
