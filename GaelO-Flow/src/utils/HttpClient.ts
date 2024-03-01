@@ -75,6 +75,18 @@ export class HttpClient {
     });
   };
 
+  requestStream = (
+    url: string,
+    method: string,
+    body: object | string,
+    headers: object | undefined = undefined,
+  ) => {
+    const option = this.getOptions(url, method, headers, body, true);
+    return axios.request(option).catch(function (error) {
+      throw error;
+    });
+  };
+
   streamAnswerToRes = (
     url: string,
     method: string,
@@ -93,7 +105,7 @@ export class HttpClient {
         console.error(error);
         if (error.response) {
           if (error.response.status === 401) {
-            res.status(500).send('Bad redentials');
+            res.status(500).send('Bad credentials');
           } else {
             res
               .status(error.response.status)
@@ -103,12 +115,12 @@ export class HttpClient {
       });
   };
 
-  streamToWriteAnswerWithCallBack(
+  async streamToWriteAnswerWithCallBack(
     url: string,
     method: string,
     body: object,
-    streamWriter,
-    finishCallBack,
+    streamWriter: any,
+    finishCallBack: any,
   ) {
     const config = this.getOptions(url, method, body, {}, true);
     return axios
@@ -121,5 +133,14 @@ export class HttpClient {
       .catch(function (error) {
         throw error;
       });
+  }
+
+  async getResponseAsStream(
+    url: string,
+    method: string,
+    body: object | string = {},
+  ): Promise<any> {
+    const response = await this.request(url, method, body, {});
+    return response.data;
   }
 }

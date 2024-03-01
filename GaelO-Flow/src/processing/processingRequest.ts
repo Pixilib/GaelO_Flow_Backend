@@ -4,9 +4,9 @@ import { firstValueFrom } from 'rxjs';
 import OrthancClient from 'src/orthanc/OrthancClient';
 
 export class ProcessingRequest {
-  gaeloProcessingUrl: string = this.configService
-    .get<string>('GAELO_PROCESSING_URL')
-    .replace(/\/$/, '');
+  gaeloProcessingUrl: string = this.configService.get<string>(
+    'GAELO_PROCESSING_URL',
+  );
   gaeloProcessingLogin: string = this.configService.get<string>(
     'GAELO_PROCESSING_LOGIN',
   );

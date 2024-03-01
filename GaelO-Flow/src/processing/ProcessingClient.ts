@@ -5,10 +5,12 @@ import { firstValueFrom } from 'rxjs';
 import OrthancClient from 'src/orthanc/OrthancClient';
 import { tmpName, tmpNameSync } from 'tmp';
 import { ProcessingRequest } from './processingRequest';
+import { HttpClient } from '../utils/HttpClient';
 
 @Injectable()
-export class GaeloProcessingService {
+export class ProcessingClient {
   processingRequest: ProcessingRequest;
+  httpClient: HttpClient;
 
   constructor(
     private readonly orthancClient: OrthancClient,
@@ -20,6 +22,16 @@ export class GaeloProcessingService {
       configService,
       httpService,
     );
+    this.httpClient = new HttpClient();
+    this.httpClient.setAddress(
+      configService.get<string>('GAELO_PROCESSING_URL', 'http://localhost'),
+    );
+    this.httpClient.setUsername(
+      configService.get<string>('GAELO_PROCESSING_LOGIN', 'admin'),
+    );
+    this.httpClient.setPassword(
+      configService.get<string>('GAELO_PROCESSING_PASSWORD', 'admin'),
+    );
   }
 
   async createSeriesFromOrthanc(
@@ -27,24 +39,20 @@ export class GaeloProcessingService {
     pet: boolean = false,
     convertToSuv: boolean = false,
   ): Promise<any> {
-    const response = await this.processingRequest.post(
-      `/tools/create-series-from-orthanc`,
-      {
-        orthancSeriesId,
-        pet,
-        convertToSuv,
-      },
+    const response = await this.httpClient.request(
+      'POST',
+      '/tools/create-series-from-orthanc',
+      { orthancSeriesId, pet, convertToSuv },
     );
-    console.log(response);
     return response;
   }
 
   async createDicom(filename: string) {
-    const response = await this.processingRequest.uploadFile(
+    await this.processingRequest.uploadFile(
       '/dicoms',
       filename,
     );
-    console.log(response);
+    const response = await this.httpClient.
     return response;
   }
 
