@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProcessingMaskEnum } from './processingMask.enum';
-import { GaeloProcessingService } from './gaeloProcessing.service';
+import { ProcessingClient } from './ProcessingClient';
 import OrthancClient from '../orthanc/OrthancClient';
 // TODO: Import OrthancClient
 
@@ -12,7 +12,7 @@ export class MaskProcessingService {
 
   constructor(
     private readonly orthancClient: OrthancClient,
-    private readonly gaeloProcessingService: GaeloProcessingService,
+    private readonly gaeloProcessingService: ProcessingClient,
   ) {
     // TODO: Set Orthanc Server
   }

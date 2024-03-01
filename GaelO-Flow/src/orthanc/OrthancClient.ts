@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { ConfigService } from '@nestjs/config';
-import { HttpClient } from './HttpClient';
+import { HttpClient } from '../utils/HttpClient';
 import { Injectable } from '@nestjs/common';
 import TagAnon, { TagPolicies } from './TagAnon';
 import { AxiosResponse } from 'axios';
@@ -78,6 +78,31 @@ export default class OrthancClient extends HttpClient {
         reject();
       }
     });
+  };
+
+  getArchiveDicomAsStream = (
+    orthancIds: string[],
+    hierarchical: boolean = true,
+    transcoding: string | null = null,
+  ) => {
+    let payload;
+
+    if (transcoding) {
+      payload = {
+        Transcode: transcoding,
+        Resources: orthancIds,
+      };
+    } else {
+      payload = {
+        Resources: orthancIds,
+      };
+    }
+
+    const api = hierarchical
+      ? '/tools/create-archive'
+      : '/tools/create-media-extended';
+
+    return this.getResponseAsStream(api, 'POST', payload);
   };
 
   findInOrthanc = (
