@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Response } from 'express';
+import { Stream } from 'stream';
 
 export class HttpClient {
   protected address: string;
@@ -8,8 +9,6 @@ export class HttpClient {
   protected password: string;
   protected forwardedAddress: string;
   protected forwardedProtocol: string;
-
-  constructor() {}
 
   getOptions = (
     url: string,
@@ -66,7 +65,7 @@ export class HttpClient {
   request = (
     url: string,
     method: string,
-    body: object | string,
+    body: object | string | null,
     headers: object | undefined = undefined,
   ) => {
     const option = this.getOptions(url, method, headers, body, false);
@@ -78,7 +77,7 @@ export class HttpClient {
   requestStream = (
     url: string,
     method: string,
-    body: object | string,
+    body: object | string | null,
     headers: object | undefined = undefined,
   ) => {
     const option = this.getOptions(url, method, headers, body, true);
@@ -139,7 +138,7 @@ export class HttpClient {
     url: string,
     method: string,
     body: object | string = {},
-  ): Promise<any> {
+  ): Promise<Stream> {
     const response = await this.request(url, method, body, {});
     return response.data;
   }
