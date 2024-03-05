@@ -15,78 +15,15 @@ export class TmtvProcessingService {
     private readonly processingClient: ProcessingClient,
   ) {}
 
-  public setPetSeriesOrthancId = (seriesOrthancId) => {
-    this.ptOrthancSeriesId = seriesOrthancId;
-  };
-
-  public setCtSeriesOrthancId = (seriesOrthancId) => {
-    this.ctOrthancSeriesId = seriesOrthancId;
-  };
-
-  public async runInference(): Promise<MaskProcessingService> {
-    const petArchive = await this.orthancClient.getArchiveDicomAsStream(
-      [this.ptOrthancSeriesId],
-      true,
-    );
-    this.processingClient.createDicom(petArchive);
-
-    const ctArchive = await this.orthancClient.getArchiveDicomAsStream(
-      [this.ctOrthancSeriesId],
-      true,
-    );
-
-    this.processingClient.createDicom(ctArchive);
-    this.addCreatedResource('dicoms', this.ptOrthancSeriesId);
-    this.addCreatedResource('dicoms', this.ctOrthancSeriesId);
-
-    const idPT = await this.processingClient.createSeriesFromOrthanc(
-      this.ptOrthancSeriesId,
-      true,
-      true,
-    );
-
-    this.addCreatedResource('series', idPT);
-
-    const idCT = await this.processingClient.createSeriesFromOrthanc(
-      this.ctOrthancSeriesId,
-    );
-
-    this.addCreatedResource('series', idCT);
-
-    const inferencePayload = {
-      idPT: idPT,
-      idCT: idCT,
-    };
-
-    const inferenceResponse = await this.processingClient.executeInference(
-      'pt_seg_attentionunet',
-      inferencePayload,
-    );
-
-    const maskId = inferenceResponse['id_mask'];
-    const maskProcessingService = new MaskProcessingService(
-      this.orthancClient,
-      this.processingClient,
-    );
-
-    maskProcessingService.setMaskId(maskId);
-    maskProcessingService.setPetId(idPT, this.ptOrthancSeriesId);
-    this.addCreatedResource('masks', maskId);
-    return maskProcessingService;
+  setPtOrthancSeriesId(orthancSeriesId: string): void {
+    this.ptOrthancSeriesId = orthancSeriesId;
   }
 
-  public addCreatedResource(type: string, id: string): void {
-    this.createdFiles.push(new ProcessingFile(type, id));
+  setCtOrthancSeriesId(orthancSeriesId: string): void {
+    this.ctOrthancSeriesId = orthancSeriesId;
   }
 
-  public async deleteCreatedResources(): Promise<void> {
-    for (const gaeloProcessingFile of this.createdFiles) {
-      try {
-        await this.processingClient.deleteRessource(
-          gaeloProcessingFile.getType(),
-          gaeloProcessingFile.getId(),
-        );
-      } catch (error) {}
-    }
+  createDicom(stream: Buffer) {
+    return this.processingClient.createDicom(stream);
   }
 }
