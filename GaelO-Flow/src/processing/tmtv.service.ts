@@ -13,31 +13,29 @@ export class TmtvProcessingService {
   constructor(
     private readonly orthancClient: OrthancClient,
     private readonly processingClient: ProcessingClient,
-  ) {
-  }
+  ) {}
 
   public setPetSeriesOrthancId = (seriesOrthancId) => {
     this.ptOrthancSeriesId = seriesOrthancId;
-  }
+  };
 
   public setCtSeriesOrthancId = (seriesOrthancId) => {
     this.ctOrthancSeriesId = seriesOrthancId;
-  }
+  };
 
   public async runInference(): Promise<MaskProcessingService> {
-
     const petArchive = await this.orthancClient.getArchiveDicomAsStream(
       [this.ptOrthancSeriesId],
-      true
+      true,
     );
-    this.processingClient.createDicom(petArchive)
+    this.processingClient.createDicom(petArchive);
 
     const ctArchive = await this.orthancClient.getArchiveDicomAsStream(
       [this.ctOrthancSeriesId],
-      true
+      true,
     );
 
-    this.processingClient.createDicom(ctArchive); 
+    this.processingClient.createDicom(ctArchive);
     this.addCreatedResource('dicoms', this.ptOrthancSeriesId);
     this.addCreatedResource('dicoms', this.ctOrthancSeriesId);
 
@@ -88,7 +86,7 @@ export class TmtvProcessingService {
           gaeloProcessingFile.getType(),
           gaeloProcessingFile.getId(),
         );
-      } catch (error) { }
+      } catch (error) {}
     }
   }
 }
