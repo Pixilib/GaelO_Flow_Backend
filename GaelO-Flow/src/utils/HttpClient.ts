@@ -3,8 +3,7 @@ import { Response } from 'express';
 import { Stream } from 'stream';
 
 export class HttpClient {
-  protected address: string;
-  protected port: number;
+  protected url: string;
   protected username: string;
   protected password: string;
   protected forwardedAddress: string;
@@ -19,7 +18,7 @@ export class HttpClient {
   ): object => {
     return {
       method: method,
-      baseURL: this.address + ':' + this.port,
+      baseURL: this.url,
       url: url,
       auth: {
         username: this.username,
@@ -46,8 +45,8 @@ export class HttpClient {
     this.forwardedProtocol = protocol;
   }
 
-  setAddress(address: string) {
-    this.address = address;
+  setUrl(url: string) {
+    this.url = url;
   }
 
   setUsername(username: string) {
@@ -56,10 +55,6 @@ export class HttpClient {
 
   setPassword(password: string) {
     this.password = password;
-  }
-
-  setPort(port: number) {
-    this.port = port;
   }
 
   request = (
@@ -93,7 +88,7 @@ export class HttpClient {
     res: Response,
     headers: object | undefined = undefined,
   ) => {
-    const option = this.getOptions(url, method, body, headers, true);
+    const option = this.getOptions(url, method, headers, body, true);
     return axios
       .request(option)
       .then((response) => {
@@ -121,7 +116,7 @@ export class HttpClient {
     streamWriter: any,
     finishCallBack: any,
   ) {
-    const config = this.getOptions(url, method, body, {}, true);
+    const config = this.getOptions(url, method, {}, body, true);
     return axios
       .request(config)
       .then((response) => {

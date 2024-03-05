@@ -2,6 +2,9 @@
 /dist
 /node_modules
 
+# tmp
+/tmp
+
 # Logs
 logs
 *.log
@@ -36,3 +39,4 @@ lerna-debug.log*
 
 # Variables environnement
 .env.dev
+.env.testing

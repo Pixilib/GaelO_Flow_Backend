@@ -5,19 +5,12 @@ import { Stream } from 'stream';
 
 @Injectable()
 class ProcessingClient extends HttpClient {
-
-  constructor(
-    private readonly configService: ConfigService,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     super();
-    this.setAddress(
-      this.configService.get<string>('GAELO_PROCESSING_URL', 'http://localhost'),
-    );
-    this.setUsername(
-      this.configService.get<string>('GAELO_PROCESSING_LOGIN', 'admin'),
-    );
+    this.setUrl(this.configService.get<string>('GAELO_PROCESSING_URL'));
+    this.setUsername(this.configService.get<string>('GAELO_PROCESSING_LOGIN'));
     this.setPassword(
-      this.configService.get<string>('GAELO_PROCESSING_PASSWORD', 'admin'),
+      this.configService.get<string>('GAELO_PROCESSING_PASSWORD'),
     );
   }
 
@@ -26,38 +19,25 @@ class ProcessingClient extends HttpClient {
     pet: boolean = false,
     convertToSuv: boolean = false,
   ): Promise<any> {
-    return this.request(
-      '/tools/create-series-from-orthanc',
-      'POST',
-      { orthancSeriesId, pet, convertToSuv },
-    );
+    return this.request('/tools/create-series-from-orthanc', 'POST', {
+      seriesId: orthancSeriesId,
+      pet,
+      convertToSuv,
+    });
   }
 
-  async createDicom(stram: Stream) {
-    return this.request(
-      '/dicoms',
-      'POST',
-      stram,
-    );
+  createDicom(stream: Buffer) {
+    return this.request('/dicoms', 'POST', stream, {
+      'Content-Type': 'application/zip',
+    });
   }
 
   executeInference(modelName: string, payload: any): Promise<any> {
-    return this.request(
-      `/models/${modelName}/inference`,
-      'POST',
-      payload,
-    );
+    return this.request(`/models/${modelName}/inference`, 'POST', payload);
   }
 
-  createMIPForSeries(
-    seriesId: string,
-    payload: any = { orientation: 'LPI' },
-  ) {
-    return this.request(
-      `/series/${seriesId}/mip`,
-      'POST',
-      payload,
-    );
+  createMIPForSeries(seriesId: string, payload: any = { orientation: 'LPI' }) {
+    return this.requestStream(`/series/${seriesId}/mip`, 'POST', payload);
   }
 
   createMosaicForSeries(
@@ -72,15 +52,11 @@ class ProcessingClient extends HttpClient {
       orientation: 'LPI',
     },
   ) {
-    return this.request(
-      `/series/${seriesId}/mosaic`,
-      'POST',
-      payload,
-    );
+    return this.requestStream(`/series/${seriesId}/mosaic`, 'POST', payload);
   }
 
   getNiftiMask(maskId: string) {
-    return this.requestStream(`/masks/${maskId}/file`, 'GET', null)
+    return this.requestStream(`/masks/${maskId}/file`, 'GET', null);
   }
 
   getNiftiSeries(imageId: string) {
@@ -88,54 +64,37 @@ class ProcessingClient extends HttpClient {
   }
 
   createRtssFromMask(orthancSeriesId: string, maskId: string) {
-    return this.request(
-      '/tools/mask-to-rtss',
-      'POST',
-      {
-        orthancSeriesId,
-        maskId,
-      });
+    return this.request('/tools/mask-to-rtss', 'POST', {
+      orthancSeriesId,
+      maskId,
+    });
   }
 
   getRtss(rtss: string) {
-    return this.requestStream(`/rtss/${rtss}/file`, 'GET', null)
+    return this.requestStream(`/rtss/${rtss}/file`, 'GET', null);
   }
 
   createSegFromMask(orthancSeriesId: string, maskId: string) {
-    return this.request('/tools/mask-to-seg',
-    'POST',
-    {
+    return this.request('/tools/mask-to-seg', 'POST', {
       orthancSeriesId,
       maskId,
     });
   }
 
   getSeg(seg: string) {
-    return this.requestStream(
-      `/seg/${seg}/file`,
-      'GET',
-      {}
-    );
+    return this.requestStream(`/seg/${seg}/file`, 'GET', {});
   }
 
-  thresholdMask(
-    maskId: string,
-    seriesId: string,
-    threshold: string | number,
-  ){
-    return this.request(
-      '/tools/threshold-mask',
-      'POST',
-      {
-        maskId,
-        seriesId,
-        threshold,
-      },
-    );
+  thresholdMask(maskId: string, seriesId: string, threshold: string | number) {
+    return this.request('/tools/threshold-mask', 'POST', {
+      maskId,
+      seriesId,
+      threshold,
+    });
   }
 
   fragmentMask(seriesId: string, maskId: string, output3D: boolean) {
-    return this.request('/tools/fragment-mask', 'POST', {
+    return this.request('/tools/mask-fragmentation', 'POST', {
       seriesId,
       maskId,
       output3D,
@@ -147,24 +106,22 @@ class ProcessingClient extends HttpClient {
     orientation: string,
     compress: boolean,
   ) {
-    return this.requestStream(
-      '/tools/mask-dicom',
-      'POST',
-      { maskId, orientation, compress },
-    );
+    return this.requestStream('/tools/mask-dicom', 'POST', {
+      maskId,
+      orientation,
+      compress,
+    });
   }
 
-  async getStatsMask(maskId: string) {
-    const response = await this.request(`/tools/${maskId}/stats`, 'GET', null);
-    return response;
+  getStatsMask(maskId: string) {
+    return this.request(`/masks/${maskId}/stats`, 'GET', null);
   }
 
   getStatsMaskSeries(maskId: string, seriesId: string) {
-    return this.request(
-      `/tools/${maskId}/stats/${seriesId}`,
-      'GET',
-      null
-    );
+    return this.request(`/tools/stats-mask-image`, 'POST', {
+      seriesId,
+      maskId,
+    });
   }
 
   deleteRessource(type: string, id: string) {
@@ -172,4 +129,4 @@ class ProcessingClient extends HttpClient {
   }
 }
 
-export default ProcessingClient
+export default ProcessingClient;

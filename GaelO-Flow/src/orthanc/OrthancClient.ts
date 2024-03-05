@@ -16,11 +16,9 @@ export default class OrthancClient extends HttpClient {
 
   loadCredentials = () => {
     const orthancAddress = this.configService.get('ORTHANC_ADDRESS');
-    const orthancPort = this.configService.get('ORTHANC_PORT');
     const orthancUsername = this.configService.get('ORTHANC_USERNAME');
     const orthancPassword = this.configService.get('ORTHANC_PASSWORD');
-    this.setAddress(orthancAddress);
-    this.setPort(orthancPort);
+    this.setUrl(orthancAddress);
     this.setUsername(orthancUsername);
     this.setPassword(orthancPassword);
     const url = new URL(this.configService.get('APP_URL'));
