@@ -133,8 +133,10 @@ export class HttpClient {
     url: string,
     method: string,
     body: object | string = {},
-  ): Promise<Stream> {
-    const response = await this.request(url, method, body, {});
+  ): Promise<any> {
+    const response = await this.request(url, method, body, {
+      responseType: 'stream',
+    });
     return response.data;
   }
 }

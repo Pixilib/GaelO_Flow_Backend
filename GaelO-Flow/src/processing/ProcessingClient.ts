@@ -25,7 +25,7 @@ class ProcessingClient extends HttpClient {
     });
   }
 
-  createDicom(stream: Buffer) {
+  createDicom(stream: any) {
     return this.request('/dicoms', 'POST', stream, {
       'Content-Type': 'application/zip',
     });
