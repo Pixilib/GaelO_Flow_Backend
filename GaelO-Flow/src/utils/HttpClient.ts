@@ -13,7 +13,7 @@ export class HttpClient {
     url: string,
     method: string,
     headers: object,
-    data: object | string,
+    data: object | string | Buffer | any,
     getAsStream: boolean,
   ): object => {
     return {
@@ -60,7 +60,7 @@ export class HttpClient {
   request = (
     url: string,
     method: string,
-    body: object | string | null,
+    body: object | string | null | any,
     headers: object | undefined = undefined,
   ) => {
     const option = this.getOptions(url, method, headers, body, false);
@@ -134,9 +134,19 @@ export class HttpClient {
     method: string,
     body: object | string = {},
   ): Promise<any> {
-    const response = await this.request(url, method, body, {
-      responseType: 'stream',
-    });
+    const response = await this.requestStream(url, method, body);
     return response.data;
+  }
+
+  async getResponseAsBuffer(
+    url: string,
+    method: string,
+    body: object | string = {},
+  ): Promise<any> {
+    const response = await this.request(url, method, body, {
+      responseType: 'arraybuffer',
+    });
+    console.log('response', response);
+    return Buffer.from(response.data, 'binary');
   }
 }

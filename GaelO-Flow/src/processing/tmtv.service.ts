@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import OrthancClient from '../orthanc/OrthancClient';
 import ProcessingClient from './ProcessingClient';
 import { ProcessingFile } from './ProcessingFile';
+import { createWriteStream } from 'fs';
 
 @Injectable()
 export class TmtvService {
@@ -23,18 +24,24 @@ export class TmtvService {
   }
 
   async sendDicomToProcessing() {
-    console.log('here');
     const ptDicom = await this.orthancClient.getArchiveDicomAsStream([
       this.ptOrthancSeriesId,
     ]);
-    const ptResponse = await this.processingClient.createDicom(ptDicom);
-    this.createdFiles.push(new ProcessingFile(ptResponse.data, 'dicoms'));
 
-    const ctDicom = await this.orthancClient.getArchiveDicomAsStream([
-      this.ctOrthancSeriesId,
-    ]);
-    const ctResponse = await this.processingClient.createDicom(ctDicom);
-    this.createdFiles.push(new ProcessingFile(ctResponse.data, 'dicoms'));
-    console.log('here');
+    const writer = createWriteStream('ptDicom.zip');
+    writer.write(ptDicom);
+    writer.end();
+
+    console.log('ptDicom: ', ptDicom);
+    console.log('typeof ptDicom: ', typeof ptDicom);
+    console.log('ptDicom instanceof Buffer', ptDicom instanceof Buffer);
+    // const ptResponse = await this.processingClient.createDicom(ptDicom);
+    // this.createdFiles.push(new ProcessingFile(ptResponse.data, 'dicoms'));
+
+    // const ctDicom = await this.orthancClient.getArchiveDicomAsStream([
+    //   this.ctOrthancSeriesId,
+    // ]);
+    // const ctResponse = await this.processingClient.createDicom(ctDicom);
+    // this.createdFiles.push(new ProcessingFile(ctResponse.data, 'dicoms'));
   }
 }

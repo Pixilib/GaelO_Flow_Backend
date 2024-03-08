@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import OrthancClient from './OrthancClient';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { createWriteStream } from 'fs';
 
 describe('OrthancClient', () => {
   let orthancClient: OrthancClient;
@@ -22,5 +23,24 @@ describe('OrthancClient', () => {
       const answer = await orthancClient.getSystem();
       expect(typeof answer.DicomAet).toBe('string');
     });
+  });
+
+  describe('get archive dicom as stream', () => {
+    it(
+      'downloads archive from orthanc',
+      async () => {
+        const ptId: string = 'e2d08f24-7a1c85a2-b5a747b9-59ee2cda-4f10abde';
+        const file = createWriteStream('test.zip');
+
+        await orthancClient
+          .getArchiveDicomAsStream([ptId])
+          .then(async (result) => {
+            result.pipe(file);
+
+            await new Promise((resolve) => result.on('finish', resolve));
+          });
+      },
+      2 * 60 * 1000,
+    );
   });
 });

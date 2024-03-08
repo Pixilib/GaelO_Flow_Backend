@@ -6,7 +6,7 @@ import { join } from 'path';
 import { createWriteStream } from 'fs';
 import exp from 'constants';
 
-describe.skip('OrthancClient', () => {
+describe('ProcessingClient', () => {
   let processingClient: ProcessingClient;
   const PATH = process.cwd() + '/tmp/';
 
