@@ -14,7 +14,7 @@ export class UsersService {
   async isRoleUsed(roleName: string): Promise<boolean> {
     const roleCount = await this.usersRepository.findAndCount({
       where: {
-        roleName: roleName,
+        RoleName: roleName,
       },
     });
     return roleCount[1] > 0;
@@ -22,15 +22,15 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     return await this.usersRepository.find({
-      relations: { role: true },
+      relations: { Role: true },
     });
   }
 
   async findOne(id: number, withRole: boolean = true): Promise<User> {
     const user = await this.usersRepository.findOne({
-      where: { id: id },
+      where: { Id: id },
       relations: {
-        role: withRole,
+        Role: withRole,
       },
     });
     if (!user) throw new NotFoundException('User not found');
@@ -39,7 +39,7 @@ export class UsersService {
 
   async isExistingUser(id: number): Promise<boolean> {
     const user = await this.usersRepository.findOne({
-      where: { id: id },
+      where: { Id: id },
     });
     return user ? true : false;
   }
@@ -50,9 +50,9 @@ export class UsersService {
   ): Promise<User> | undefined {
     if (email === undefined) return undefined;
     return await this.usersRepository.findOne({
-      where: { email: email },
+      where: { Email: email },
       relations: {
-        role: withRole,
+        Role: withRole,
       },
     });
   }
@@ -62,9 +62,9 @@ export class UsersService {
     withRole: boolean = true,
   ): Promise<User> | undefined {
     return await this.usersRepository.findOne({
-      where: { username: username },
+      where: { Username: username },
       relations: {
-        role: withRole,
+        Role: withRole,
       },
     });
   }
@@ -75,7 +75,7 @@ export class UsersService {
 
   async create(user: User): Promise<number> {
     const newUser = await this.usersRepository.insert(user);
-    return newUser.identifiers[0].id;
+    return newUser.identifiers[0].Id;
   }
 
   async remove(id: number): Promise<void> {
@@ -84,7 +84,7 @@ export class UsersService {
 
   async findByUsernameOrEmail(username: string, email: string): Promise<User> {
     return await this.usersRepository.findOne({
-      where: [{ username }, { email }],
+      where: [{ Username: username }, { Email: email }],
     });
   }
 
@@ -97,23 +97,23 @@ export class UsersService {
     const hashUser = await bcryptjs.hash('passworduser', saltUser);
 
     const admin = this.usersRepository.create({
-      username: 'admin',
-      firstname: 'Admin',
-      lastname: 'Admin',
-      email: 'admin@localhost.com',
-      password: hashAdmin,
-      superAdmin: true,
-      roleName: 'Admin',
+      Username: 'admin',
+      Firstname: 'Admin',
+      Lastname: 'Admin',
+      Email: 'admin@localhost.com',
+      Password: hashAdmin,
+      SuperAdmin: true,
+      RoleName: 'Admin',
     });
 
     const user = this.usersRepository.create({
-      username: 'user',
-      firstname: 'User',
-      lastname: 'User',
-      email: 'user@localhost.com',
-      password: hashUser,
-      superAdmin: true,
-      roleName: 'User',
+      Username: 'user',
+      Firstname: 'User',
+      Lastname: 'User',
+      Email: 'user@localhost.com',
+      Password: hashUser,
+      SuperAdmin: true,
+      RoleName: 'User',
     });
 
     await this.usersRepository.insert([admin, user]);

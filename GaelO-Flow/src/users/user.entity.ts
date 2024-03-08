@@ -13,48 +13,48 @@ import { Exclude } from 'class-transformer';
 @Entity()
 export class User {
   @ApiProperty({ example: 1 })
-  @PrimaryGeneratedColumn()
-  id?: number;
+  @PrimaryGeneratedColumn({ name: 'id' })
+  Id?: number;
 
   @ApiProperty({ example: 'John' })
   @Column({
     name: 'firstname',
   })
-  firstname: string;
+  Firstname: string;
 
   @ApiProperty({ example: 'Doe' })
   @Column({
     name: 'lastname',
   })
-  lastname: string;
+  Lastname: string;
 
   @ApiProperty({ example: 'johndoe' })
   @Column({
     unique: true,
     name: 'username',
   })
-  username: string;
+  Username: string;
 
   @Column({
     nullable: true,
     name: 'password',
   })
   @Exclude()
-  password: string;
+  Password: string;
 
   @ApiProperty({ example: 'john.doe@gmail.com' })
   @Column({
     unique: true,
     name: 'email',
   })
-  email: string;
+  Email: string;
 
   @ApiProperty({ example: true })
   @Column({
     default: false,
     name: 'super_admin',
   })
-  superAdmin: boolean;
+  SuperAdmin: boolean;
 
   @ApiProperty({ example: 'admin' })
   @Column({
@@ -62,10 +62,10 @@ export class User {
     unique: false,
     nullable: true,
   })
-  roleName: string;
+  RoleName: string;
 
   @ApiProperty()
-  @ManyToOne(() => Role, (role) => role.name)
+  @ManyToOne(() => Role, (role) => role.Name)
   @JoinColumn({ name: 'role_name' })
-  role?: Role;
+  Role?: Role;
 }

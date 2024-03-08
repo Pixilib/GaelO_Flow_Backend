@@ -67,13 +67,13 @@ export class AuthController {
     const userExists = await this.usersService.findOneByEmail(userData.email);
     if (!userExists) {
       await this.usersService.create({
-        email: userData.email,
-        firstname: userData.firstname,
-        lastname: userData.lastname,
-        username: userData.username,
-        superAdmin: false,
-        roleName: 'User',
-        password: null,
+        Email: userData.email,
+        Firstname: userData.firstname,
+        Lastname: userData.lastname,
+        Username: userData.username,
+        SuperAdmin: false,
+        RoleName: 'User',
+        Password: null,
       });
     }
 
@@ -86,9 +86,10 @@ export class AuthController {
   @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
-    const { email } = registerDto;
-
-    const userExists = await this.usersService.findOneByEmail(email, false);
+    const userExists = await this.usersService.findOneByEmail(
+      registerDto.Email,
+      false,
+    );
 
     if (userExists) {
       throw new ConflictException(
@@ -97,20 +98,26 @@ export class AuthController {
     }
 
     await this.usersService.create({
-      ...registerDto,
-      superAdmin: false,
-      roleName: 'User',
-      password: null,
+      Email: registerDto.Email,
+      Firstname: registerDto.Firstname,
+      Lastname: registerDto.Lastname,
+      Username: registerDto.Username,
+      SuperAdmin: false,
+      RoleName: 'User',
+      Password: null,
     });
 
-    const newUser = await this.usersService.findOneByEmail(email, false);
+    const newUser = await this.usersService.findOneByEmail(
+      registerDto.Email,
+      false,
+    );
 
     //generate a token for confirmation of user:
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
 
     await this.mailService.sendChangePasswordEmail(
-      newUser.email,
+      newUser.Email,
       confirmationToken,
     );
   }
@@ -124,18 +131,22 @@ export class AuthController {
     @Body() changePasswordDto: ChangePasswordDto,
     @Req() req: Request,
   ): Promise<undefined> {
-    const { newPassword, confirmationPassword } = changePasswordDto;
     const userId = req['user'].userId;
-    if (newPassword !== confirmationPassword) {
+    if (
+      changePasswordDto.NewPassword !== changePasswordDto.ConfirmationPassword
+    ) {
       throw new BadRequestException('Confirmation password not matching');
     }
 
     const user = await this.usersService.findOne(userId);
 
     const salt = await bcryptjs.genSalt();
-    const hashedPassword = await bcryptjs.hash(newPassword, salt);
+    const hashedPassword = await bcryptjs.hash(
+      changePasswordDto.NewPassword,
+      salt,
+    );
 
-    user.password = hashedPassword;
+    user.Password = hashedPassword;
 
     await this.usersService.update(userId, user);
   }

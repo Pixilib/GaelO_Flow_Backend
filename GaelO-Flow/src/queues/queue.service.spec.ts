@@ -299,17 +299,17 @@ describe('QueuesService', () => {
     it('should return the jobs for a given uuid', async () => {
       const jobs = await service.getJobsForUuid('uuid1');
       expect(jobs).toStrictEqual({
-        '1': { progress: 0, state: 'wait', id: '1', results: undefined },
-        '2': { progress: 0, state: 'wait', id: '2', results: undefined },
+        '1': { Progress: 0, State: 'wait', Id: '1', Results: undefined },
+        '2': { Progress: 0, State: 'wait', Id: '2', Results: undefined },
       });
     });
 
     it('should return all jobs if no uuid is provided', async () => {
       const jobs = await service.getJobsForUuid();
       expect(jobs).toStrictEqual({
-        '1': { progress: 0, state: 'wait', id: '1', results: undefined },
-        '2': { progress: 0, state: 'wait', id: '2', results: undefined },
-        '3': { progress: 0, state: 'wait', id: '3', results: undefined },
+        '1': { Progress: 0, State: 'wait', Id: '1', Results: undefined },
+        '2': { Progress: 0, State: 'wait', Id: '2', Results: undefined },
+        '3': { Progress: 0, State: 'wait', Id: '3', Results: undefined },
       });
     });
   });

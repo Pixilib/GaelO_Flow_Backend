@@ -43,7 +43,7 @@ describe('OptionsController', () => {
     it('check if getOptions of the controller calls getOptions of the service', async () => {
       const mock = jest
         .spyOn(optionsService, 'getOptions')
-        .mockResolvedValue({ id: 1 } as Option);
+        .mockResolvedValue({ Id: 1 } as Option);
 
       await optionsController.getOptions();
       expect(mock).toHaveBeenCalled();
@@ -67,7 +67,7 @@ describe('OptionsController', () => {
         .spyOn(optionsService, 'update')
         .mockResolvedValue(undefined);
 
-      await optionsController.update({ useLdap: true } as OptionDto);
+      await optionsController.update({ AutoQueryHourStart: 23 } as OptionDto);
       expect(mockUpdate).toHaveBeenCalled();
     });
   });

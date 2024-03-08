@@ -78,29 +78,29 @@ describe('QueuesQueryController', () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job1',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job1',
+          Results: null,
         },
         ['job2']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
         ['job3']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
       };
       const mockReq = {
         user: {
           userId: 1,
           role: {
-            admin: true,
+            Admin: true,
           },
         },
       };
@@ -125,7 +125,7 @@ describe('QueuesQueryController', () => {
         user: {
           userId: 1,
           role: {
-            admin: false,
+            Admin: false,
           },
         },
       };
@@ -144,7 +144,7 @@ describe('QueuesQueryController', () => {
         user: {
           userId: 1,
           role: {
-            admin: true,
+            Admin: true,
           },
         },
       };
@@ -165,7 +165,7 @@ describe('QueuesQueryController', () => {
         user: {
           userId: 1,
           role: {
-            admin: false,
+            Admin: false,
           },
         },
       };
@@ -183,7 +183,7 @@ describe('QueuesQueryController', () => {
         user: {
           userId: 1,
           role: {
-            admin: false,
+            Admin: false,
           },
         },
       };
@@ -203,29 +203,29 @@ describe('QueuesQueryController', () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job1',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job1',
+          Results: null,
         },
         ['job2']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
         ['job3']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
       };
       const mockReq = {
         user: {
           userId: 1,
           role: {
-            admin: true,
+            Admin: true,
           },
         },
       };
@@ -251,7 +251,7 @@ describe('QueuesQueryController', () => {
         user: {
           userId: 1,
           role: {
-            admin: false,
+            Admin: false,
           },
         },
       };
@@ -267,29 +267,29 @@ describe('QueuesQueryController', () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job1',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job1',
+          Results: null,
         },
         ['job2']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
         ['job3']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
       };
       const mockReq = {
         user: {
           userId: 1,
           role: {
-            admin: false,
+            Admin: false,
           },
         },
       };
@@ -326,27 +326,27 @@ describe('QueuesQueryController', () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
       const dto: QueuesQueryDto = {
-        series: [
+        Series: [
           {
-            studyUID: '',
-            modality: '',
-            protocolName: '',
-            seriesDescription: '',
-            seriesNumber: '',
-            seriesInstanceUID: '',
-            aet: '',
+            StudyUID: '',
+            Modality: '',
+            ProtocolName: '',
+            SeriesDescription: '',
+            SeriesNumber: '',
+            SeriesInstanceUID: '',
+            Aet: '',
           },
         ],
-        studies: [
+        Studies: [
           {
-            patientName: '',
-            patientID: '',
-            studyDate: '',
-            modality: '',
-            studyDescription: '',
-            accessionNb: '',
-            studyInstanceUID: '',
-            aet: '',
+            PatientName: '',
+            PatientID: '',
+            StudyDate: '',
+            Modality: '',
+            StudyDescription: '',
+            AccessionNb: '',
+            StudyInstanceUID: '',
+            Aet: '',
           },
         ],
       };
@@ -358,7 +358,7 @@ describe('QueuesQueryController', () => {
       const result = await controller.addQueryJob(dto, mockRequest);
 
       // ASSERT
-      expect(result).toHaveProperty('uuid');
+      expect(result).toHaveProperty('Uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledTimes(1);
       expect(service.addJob).toHaveBeenCalledWith(
@@ -366,16 +366,16 @@ describe('QueuesQueryController', () => {
           userId: 1,
           uuid: expect.any(String),
           results: null,
-          series: dto.series[0],
+          series: dto.Series[0],
         } || {
           userId: 1,
           uuid: expect.any(String),
           results: null,
-          study: dto.studies[0],
+          study: dto.Studies[0],
         },
       );
       expect(service.addJob).toHaveBeenCalledTimes(
-        dto.series.length + dto.studies.length,
+        dto.Series.length + dto.Studies.length,
       );
     });
 
@@ -383,27 +383,27 @@ describe('QueuesQueryController', () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
       const dto: QueuesQueryDto = {
-        series: [
+        Series: [
           {
-            studyUID: '',
-            modality: '',
-            protocolName: '',
-            seriesDescription: '',
-            seriesNumber: '',
-            seriesInstanceUID: '',
-            aet: '',
+            StudyUID: '',
+            Modality: '',
+            ProtocolName: '',
+            SeriesDescription: '',
+            SeriesNumber: '',
+            SeriesInstanceUID: '',
+            Aet: '',
           },
         ],
-        studies: [
+        Studies: [
           {
-            patientName: '',
-            patientID: '',
-            studyDate: '',
-            modality: '',
-            studyDescription: '',
-            accessionNb: '',
-            studyInstanceUID: '',
-            aet: '',
+            PatientName: '',
+            PatientID: '',
+            StudyDate: '',
+            Modality: '',
+            StudyDescription: '',
+            AccessionNb: '',
+            StudyInstanceUID: '',
+            Aet: '',
           },
         ],
       };
@@ -421,46 +421,46 @@ describe('QueuesQueryController', () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
       const dto: QueuesQueryDto = {
-        series: [
+        Series: [
           {
-            studyUID: '',
-            modality: '',
-            protocolName: '',
-            seriesDescription: '',
-            seriesNumber: '',
-            seriesInstanceUID: '',
-            aet: '',
+            StudyUID: '',
+            Modality: '',
+            ProtocolName: '',
+            SeriesDescription: '',
+            SeriesNumber: '',
+            SeriesInstanceUID: '',
+            Aet: '',
           },
           {
-            studyUID: '',
-            modality: '',
-            protocolName: '',
-            seriesDescription: '',
-            seriesNumber: '',
-            seriesInstanceUID: '',
-            aet: '',
+            StudyUID: '',
+            Modality: '',
+            ProtocolName: '',
+            SeriesDescription: '',
+            SeriesNumber: '',
+            SeriesInstanceUID: '',
+            Aet: '',
           },
         ],
-        studies: [
+        Studies: [
           {
-            patientName: '',
-            patientID: '',
-            studyDate: '',
-            modality: '',
-            studyDescription: '',
-            accessionNb: '',
-            studyInstanceUID: '',
-            aet: '',
+            PatientName: '',
+            PatientID: '',
+            StudyDate: '',
+            Modality: '',
+            StudyDescription: '',
+            AccessionNb: '',
+            StudyInstanceUID: '',
+            Aet: '',
           },
           {
-            patientName: '',
-            patientID: '',
-            studyDate: '',
-            modality: '',
-            studyDescription: '',
-            accessionNb: '',
-            studyInstanceUID: '',
-            aet: '',
+            PatientName: '',
+            PatientID: '',
+            StudyDate: '',
+            Modality: '',
+            StudyDescription: '',
+            AccessionNb: '',
+            StudyInstanceUID: '',
+            Aet: '',
           },
         ],
       };
@@ -472,12 +472,12 @@ describe('QueuesQueryController', () => {
       const result = await controller.addQueryJob(dto, mockRequest);
 
       // ASSERT
-      expect(result).toHaveProperty('uuid');
+      expect(result).toHaveProperty('Uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
       expect(service.addJob).toHaveBeenCalledTimes(
-        dto.series.length + dto.studies.length,
+        dto.Series.length + dto.Studies.length,
       );
-      dto.series.forEach((series) => {
+      dto.Series.forEach((series) => {
         expect(service.addJob).toHaveBeenCalledWith({
           userId: 1,
           uuid: expect.any(String),
@@ -485,7 +485,7 @@ describe('QueuesQueryController', () => {
           series: series,
         });
       });
-      dto.studies.forEach((study) => {
+      dto.Studies.forEach((study) => {
         expect(service.addJob).toHaveBeenCalledWith({
           userId: 1,
           uuid: expect.any(String),
@@ -499,8 +499,8 @@ describe('QueuesQueryController', () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
       const dto: QueuesQueryDto = {
-        series: [],
-        studies: [],
+        Series: [],
+        Studies: [],
       };
 
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);

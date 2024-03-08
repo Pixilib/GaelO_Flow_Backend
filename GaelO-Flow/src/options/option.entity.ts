@@ -5,113 +5,73 @@ import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 export class Option {
   @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn({ name: 'id' })
-  id: number;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @Column({ nullable: true, default: null, name: 'ldap_type' })
-  ldapType: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @Column({ nullable: true, default: null, name: 'ldap_protocol' })
-  ldapProtocol: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @Column({ nullable: true, default: null, name: 'ldap_server' })
-  ldapServer: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @Column({ nullable: true, default: null, name: 'ldap_port' })
-  ldapPort: number;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @Column({ nullable: true, default: null, name: 'ldap_base_dn' })
-  ldapBaseDn: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @Column({ nullable: true, default: null, name: 'ldap_bind_on' })
-  ladpBindDn: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @Column({ nullable: true, default: null, name: 'ldap_bind_password' })
-  ldapBindPassword: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @Column({ nullable: true, default: null, name: 'ldap_group' })
-  ldapGroup: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @Column({ nullable: true, default: null, name: 'ldap_user' })
-  ldapUser: string;
+  Id: number;
 
   @ApiProperty({ example: 22 })
   @Column({ name: 'auto_query_hour_start' })
-  autoQueryHourStart: number;
+  AutoQueryHourStart: number;
 
   @ApiProperty({ example: 0 })
   @Column({ name: 'auto_query_minute_start' })
-  autoQueryMinuteStart: number;
+  AutoQueryMinuteStart: number;
 
   @ApiProperty({ example: 6 })
   @Column({ name: 'auto_query_hour_stop' })
-  autoQueryHourStop: number;
+  AutoQueryHourStop: number;
 
   @ApiProperty({ example: 0 })
   @Column({ name: 'auto_query_minute_stop' })
-  autoQueryMinuteStop: number;
-
-  @ApiProperty({ example: false, required: false })
-  @Column({ default: false, name: 'use_ldap' })
-  useLdap: boolean;
+  AutoQueryMinuteStop: number;
 
   @ApiProperty({ example: 10, required: false })
   @Column({ default: 10, name: 'orthanc_monitoring_rate' })
-  orthancMonitoringRate: number;
+  OrthancMonitoringRate: number;
 
   @ApiProperty({ example: false, required: false })
   @Column({ default: false, name: 'burner_started' })
-  burnerStarted: boolean;
+  BurnerStarted: boolean;
 
   @ApiProperty({ example: '', required: false, default: '' })
   @Column({ default: '', name: 'burner_label_path' })
-  burnerLabelPath: string;
+  BurnerLabelPath: string;
 
   @ApiProperty({ example: 'Study', required: false, default: 'Study' })
   @Column({ default: 'Study', name: 'burner_monitoring_level' })
-  burnerMonitoringLevel: string;
+  BurnerMonitoringLevel: string;
 
   @ApiProperty({ example: 'Epson', required: false, default: 'Epson' })
   @Column({ default: 'Epson', name: 'burner_manifacturer' })
-  burnerManifacturer: string;
+  BurnerManifacturer: string;
 
   @ApiProperty({ example: '', required: false, default: '' })
   @Column({ default: '', name: 'burner_monitored_path' })
-  burnerMonitoredPath: string;
+  BurnerMonitoredPath: string;
 
   @ApiProperty({ example: false, required: false, default: false })
   @Column({ default: false, name: 'burner_delete_study_after_sent' })
-  burnerDeleteStudyAfterSent: boolean;
+  BurnerDeleteStudyAfterSent: boolean;
 
   @ApiProperty({ example: 'Auto', required: false, default: 'Auto' })
   @Column({ default: 'Auto', name: 'burner_support_type' })
-  burnerSupportType: string;
+  BurnerSupportType: string;
 
   @ApiProperty({ example: '', required: false, default: '' })
   @Column({ default: '', name: 'burner_viewer_path' })
-  burnerViewerPath: string;
+  BurnerViewerPath: string;
 
   @ApiProperty({ example: 'None', required: false, default: 'None' })
   @Column({ default: 'None', name: 'burner_transfer_syntax' })
-  burnerTransferSyntax: string;
+  BurnerTransferSyntax: string;
 
   @ApiProperty({ example: 'uk', required: false, default: 'uk' })
   @Column({ default: 'uk', name: 'burner_date_format' })
-  burnerDateFormat: string;
+  BurnerDateFormat: string;
 
   @ApiProperty({ example: 'None', required: false, default: 'None' })
   @Column({ default: 'None', name: 'burner_transcoding' })
-  burnerTranscoding: string;
+  BurnerTranscoding: string;
 
   @ApiProperty({ example: false, required: false, default: false })
   @Column({ default: false, name: 'autorouter_started' })
-  autorouterStarted: boolean;
+  AutorouterStarted: boolean;
 }

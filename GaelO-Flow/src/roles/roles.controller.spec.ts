@@ -44,48 +44,48 @@ describe('RolesController', () => {
 
     roleList = [
       {
-        name: 'User',
-        import: true,
-        anonymize: true,
-        export: true,
-        query: true,
-        autoQuery: true,
-        delete: true,
-        admin: false,
-        modify: true,
-        cdBurner: true,
-        autoRouting: true,
+        Name: 'User',
+        Import: true,
+        Anonymize: true,
+        Export: true,
+        Query: true,
+        AutoQuery: true,
+        Delete: true,
+        Admin: true,
+        Modify: true,
+        CdBurner: true,
+        AutoRouting: true,
       },
       {
-        name: 'Admin',
-        import: true,
-        anonymize: true,
-        export: true,
-        query: true,
-        autoQuery: true,
-        delete: true,
-        admin: true,
-        modify: true,
-        cdBurner: true,
-        autoRouting: true,
+        Name: 'Admin',
+        Import: true,
+        Anonymize: true,
+        Export: true,
+        Query: true,
+        AutoQuery: true,
+        Delete: true,
+        Admin: true,
+        Modify: true,
+        CdBurner: true,
+        AutoRouting: true,
       },
     ];
 
     roleLabelList = [
       {
-        id: 1,
-        role: roleList[0],
-        label: { name: 'label1' },
+        Id: 1,
+        Role: roleList[0],
+        Label: { Name: 'label1' },
       },
       {
-        id: 2,
-        role: roleList[0],
-        label: { name: 'label2' },
+        Id: 2,
+        Role: roleList[0],
+        Label: { Name: 'label2' },
       },
       {
-        id: 3,
-        role: roleList[1],
-        label: { name: 'label3' },
+        Id: 3,
+        Role: roleList[1],
+        Label: { Name: 'label3' },
       },
     ];
 
@@ -109,7 +109,7 @@ describe('RolesController', () => {
       const mock = jest
         .spyOn(rolesService, 'findAll')
         .mockResolvedValue(roleList);
-      const result = await rolesController.findAll({ withLabels: false });
+      const result = await rolesController.findAll({ WithLabels: false });
       expect(result).toEqual(roleList);
       expect(mock).toHaveBeenCalled();
     });
@@ -123,15 +123,15 @@ describe('RolesController', () => {
         .spyOn(rolesService, 'getAllRoleLabels')
         .mockResolvedValue(roleLabelList);
 
-      const result = await rolesController.findAll({ withLabels: true });
+      const result = await rolesController.findAll({ WithLabels: true });
 
       expect(result).toEqual(
         roleList.map((role) => {
           return {
             ...role,
             labels: roleLabelList
-              .filter((roleLabel) => roleLabel.role.name === role.name)
-              .map((roleLabel) => roleLabel.label.name),
+              .filter((roleLabel) => roleLabel.Role.Name === role.Name)
+              .map((roleLabel) => roleLabel.Label.Name),
           };
         }),
       );
@@ -230,17 +230,17 @@ describe('RolesController', () => {
     it('check if createRole calls service create', async () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
       const result = await rolesController.CreateRole({
-        name: 'Admin',
-        import: true,
-        anonymize: true,
-        export: true,
-        query: true,
-        autoQuery: true,
-        delete: true,
-        admin: true,
-        modify: true,
-        cdBurner: true,
-        autoRouting: true,
+        Name: 'Admin',
+        Import: true,
+        Anonymize: true,
+        Export: true,
+        Query: true,
+        AutoQuery: true,
+        Delete: true,
+        Admin: true,
+        Modify: true,
+        CdBurner: true,
+        AutoRouting: true,
       });
 
       expect(result).toBeUndefined();
@@ -252,17 +252,17 @@ describe('RolesController', () => {
       jest.spyOn(rolesService, 'findOne').mockResolvedValue(roleList[0]);
       await expect(
         rolesController.CreateRole({
-          name: 'User',
-          import: true,
-          anonymize: true,
-          export: true,
-          query: true,
-          autoQuery: true,
-          delete: true,
-          admin: false,
-          modify: true,
-          cdBurner: true,
-          autoRouting: true,
+          Name: 'User',
+          Import: true,
+          Anonymize: true,
+          Export: true,
+          Query: true,
+          AutoQuery: true,
+          Delete: true,
+          Admin: true,
+          Modify: true,
+          CdBurner: true,
+          AutoRouting: true,
         }),
       ).rejects.toThrow();
       expect(mockCreate).not.toHaveBeenCalled();
@@ -273,17 +273,17 @@ describe('RolesController', () => {
       jest.spyOn(rolesService, 'findOne').mockResolvedValue(undefined);
       await expect(
         rolesController.CreateRole({
-          name: undefined,
-          import: true,
-          anonymize: true,
-          export: true,
-          query: true,
-          autoQuery: true,
-          delete: true,
-          admin: false,
-          modify: true,
-          cdBurner: true,
-          autoRouting: true,
+          Name: undefined,
+          Import: true,
+          Anonymize: true,
+          Export: true,
+          Query: true,
+          AutoQuery: true,
+          Delete: true,
+          Admin: true,
+          Modify: true,
+          CdBurner: true,
+          AutoRouting: true,
         }),
       ).rejects.toThrow();
       expect(mockCreate).not.toHaveBeenCalled();

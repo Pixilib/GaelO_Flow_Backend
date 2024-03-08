@@ -43,33 +43,33 @@ describe('UsersService', () => {
     let salt: string;
     let hash: string;
     const userRole = new Role();
-    userRole.name = 'User';
+    userRole.Name = 'User';
 
     const adminRole = new Role();
-    adminRole.name = 'Admin';
+    adminRole.Name = 'Admin';
 
     salt = await bcryptjs.genSalt();
     hash = await bcryptjs.hash('first', salt);
     firstUser = {
-      username: 'first_username',
-      firstname: 'first_firstname',
-      lastname: 'first_lastname',
-      email: 'first@example.com',
-      password: hash,
-      superAdmin: false,
-      roleName: userRole.name,
+      Username: 'first_username',
+      Firstname: 'first_firstname',
+      Lastname: 'first_lastname',
+      Email: 'first@example.com',
+      Password: hash,
+      SuperAdmin: false,
+      RoleName: userRole.Name,
     };
 
     salt = await bcryptjs.genSalt();
     hash = await bcryptjs.hash('second', salt);
     secondUser = {
-      username: 'second_username',
-      firstname: 'second_firstname',
-      lastname: 'second_lastname',
-      email: 'second@example.com',
-      password: hash,
-      superAdmin: false,
-      roleName: userRole.name,
+      Username: 'second_username',
+      Firstname: 'second_firstname',
+      Lastname: 'second_lastname',
+      Email: 'second@example.com',
+      Password: hash,
+      SuperAdmin: false,
+      RoleName: userRole.Name,
     };
 
     await rolesService.create(userRole);
@@ -97,8 +97,8 @@ describe('UsersService', () => {
       const role = await rolesService.findOne('User');
       const result = await usersService.findAll();
       expect(result).toEqual([
-        { ...firstUser, role },
-        { ...secondUser, role },
+        { ...firstUser, Role: role },
+        { ...secondUser, Role: role },
       ]);
     });
   });
@@ -107,7 +107,7 @@ describe('UsersService', () => {
     it('should return the first user', async () => {
       const role = await rolesService.findOne('User');
       const result = await usersService.findOne(1);
-      expect(result).toEqual({ ...firstUser, role });
+      expect(result).toEqual({ ...firstUser, Role: role });
     });
   });
 
@@ -127,11 +127,11 @@ describe('UsersService', () => {
     it('should update a user', async () => {
       const role = await rolesService.findOne('User');
       const user = { ...firstUser };
-      user.firstname = 'updateTest';
+      user.Firstname = 'updateTest';
       const updateResult = await usersService.update(1, user);
       const findOneResult = await usersService.findOne(1);
       expect(updateResult).toEqual(undefined);
-      expect(findOneResult).toEqual({ ...user, role });
+      expect(findOneResult).toEqual({ ...user, Role: role });
     });
   });
 
@@ -139,19 +139,19 @@ describe('UsersService', () => {
     it('should create a user', async () => {
       const role = await rolesService.findOne('User');
       const createUser = {
-        username: 'create_testuser',
-        firstname: 'create_testfirstname',
-        lastname: 'create_testlastname',
-        email: 'create_testuser@example.com',
-        password: 'create_<PASSWORD>',
-        superAdmin: false,
-        roleName: 'User',
+        Username: 'create_testuser',
+        Firstname: 'create_testfirstname',
+        Lastname: 'create_testlastname',
+        Email: 'create_testuser@example.com',
+        Password: 'create_<PASSWORD>',
+        SuperAdmin: false,
+        RoleName: 'User',
       };
       const createResult = await usersService.create(createUser);
       const findOneResult = await usersService.findOne(createResult);
       expect(typeof createResult).toBe('number');
       expect(createResult).toBeGreaterThan(0);
-      expect(findOneResult).toEqual({ ...createUser, role });
+      expect(findOneResult).toEqual({ ...createUser, Role: role });
     });
   });
 

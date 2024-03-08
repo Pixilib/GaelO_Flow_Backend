@@ -28,17 +28,17 @@ describe('RolesService', () => {
 
     rolesService = module.get<RolesService>(RolesService);
     role = {
-      name: 'User',
-      import: true,
-      anonymize: true,
-      export: true,
-      query: true,
-      autoQuery: true,
-      delete: true,
-      admin: false,
-      modify: true,
-      cdBurner: true,
-      autoRouting: true,
+      Name: 'User',
+      Import: true,
+      Anonymize: true,
+      Export: true,
+      Query: true,
+      AutoQuery: true,
+      Delete: true,
+      Admin: true,
+      Modify: true,
+      CdBurner: true,
+      AutoRouting: true,
     };
 
     await rolesService.create(role);
@@ -66,17 +66,17 @@ describe('RolesService', () => {
   describe('create', () => {
     it('should create a role', async () => {
       const createRole = {
-        name: 'Admin',
-        import: true,
-        anonymize: true,
-        export: true,
-        query: true,
-        autoQuery: true,
-        delete: true,
-        admin: true,
-        modify: true,
-        cdBurner: true,
-        autoRouting: true,
+        Name: 'Admin',
+        Import: true,
+        Anonymize: true,
+        Export: true,
+        Query: true,
+        AutoQuery: true,
+        Delete: true,
+        Admin: true,
+        Modify: true,
+        CdBurner: true,
+        AutoRouting: true,
       };
       const createResult = await rolesService.create(createRole);
       const findOneResult = await rolesService.findOne('Admin');
@@ -95,7 +95,7 @@ describe('RolesService', () => {
   describe('update', () => {
     it('should update a role', async () => {
       const updateRole = { ...role };
-      updateRole.admin = true;
+      updateRole.Admin = true;
       const updateResult = await rolesService.update('User', updateRole);
       const findOneResult = await rolesService.findOne('User');
       expect(updateResult).toEqual(undefined);

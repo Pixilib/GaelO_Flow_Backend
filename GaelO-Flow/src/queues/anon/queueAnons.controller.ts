@@ -54,7 +54,7 @@ export class QueuesAnonController {
     const user = request['user'];
 
     if (!userId && !uuid) {
-      if (user.role.admin) {
+      if (user.role.Admin) {
         return await this.QueuesAnonService.getJobsForUuid(); // get all jobs;
       } else {
         throw new ForbiddenException("You don't have access to this resource");
@@ -62,7 +62,7 @@ export class QueuesAnonController {
     }
 
     if (userId && !uuid) {
-      if (user.role.admin || user.userId == userId) {
+      if (user.role.Admin || user.userId == userId) {
         const uuid = await this.QueuesAnonService.getUuidOfUser(userId);
         return { uuid: uuid };
       } else {
@@ -72,8 +72,8 @@ export class QueuesAnonController {
 
     if (uuid) {
       if (
-        user.role.admin ||
-        (await this.QueuesAnonService.getUuidOfUser(user.userId)) == uuid
+        user.role.Admin ||
+        (await this.QueuesAnonService.getUuidOfUser(user.UserId)) == uuid
       ) {
         return await this.QueuesAnonService.getJobsForUuid(uuid);
       } else {
@@ -100,7 +100,7 @@ export class QueuesAnonController {
     if (await this.QueuesAnonService.checkIfUserIdHasJobs(user.userId))
       throw new ForbiddenException('User already has jobs');
 
-    const anonymizes = queuesAnonsDto.anonymizes;
+    const anonymizes = queuesAnonsDto.Anonymizes;
     const uuid = randomUUID();
     anonymizes.forEach((anonymize) => {
       this.QueuesAnonService.addJob({
@@ -110,7 +110,7 @@ export class QueuesAnonController {
         results: null,
       });
     });
-    return { uuid };
+    return { Uuid: uuid };
   }
 
   @ApiBearerAuth('access-token')
@@ -119,6 +119,6 @@ export class QueuesAnonController {
   @UseGuards(AnonymizeGuard)
   @Delete(':uuid')
   async removeAnonJob(@Param('uuid') uuid: string): Promise<void> {
-    this.QueuesAnonService.removeJob({ uuid: uuid });
+    this.QueuesAnonService.removeJob({ Uuid: uuid });
   }
 }

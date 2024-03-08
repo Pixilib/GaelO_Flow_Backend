@@ -31,14 +31,14 @@ describe('UsersController', () => {
 
     userList = [
       {
-        firstname: 'firstname',
-        lastname: 'lastname',
-        username: 'username',
-        password: 'password',
-        email: 'email',
-        superAdmin: true,
-        roleName: 'roleName',
-        role: new Role(),
+        Firstname: 'firstname',
+        Lastname: 'lastname',
+        Username: 'username',
+        Password: 'password',
+        Email: 'email',
+        SuperAdmin: true,
+        RoleName: 'roleName',
+        Role: new Role(),
       },
     ];
     usersController = module.get<UsersController>(UsersController);
@@ -91,8 +91,8 @@ describe('UsersController', () => {
       const result = await usersController.getUsersId(1);
       expect(result).toEqual({
         ...userList[0],
-        password: undefined,
-        salt: undefined,
+        Password: undefined,
+        Salt: undefined,
       });
       expect(mock).toHaveBeenCalled();
     });
@@ -120,7 +120,7 @@ describe('UsersController', () => {
         .mockResolvedValue(userList[0]);
       const mockUpdate = jest.spyOn(usersService, 'update');
       const result = await usersController.update(1, {
-        firstname: 'firstname',
+        Firstname: 'firstname',
       } as UpdateUserDto);
       expect(result).toBeUndefined();
       expect(mockFindOne).toHaveBeenCalled();
@@ -173,13 +173,13 @@ describe('UsersController', () => {
         .spyOn(usersService, 'create')
         .mockResolvedValue(1);
       const result = await usersController.createUser({
-        firstname: 'firstname',
-        lastname: 'lastname',
-        username: 'username',
-        password: 'Password123!',
-        email: 'email@email.com',
-        superAdmin: true,
-        roleName: 'roleName',
+        Firstname: 'firstname',
+        Lastname: 'lastname',
+        Username: 'username',
+        Password: 'Password123!',
+        Email: 'email@email.com',
+        SuperAdmin: true,
+        RoleName: 'roleName',
       });
 
       expect(typeof result).toBe('number');
@@ -190,13 +190,13 @@ describe('UsersController', () => {
       const mockCreate = jest.spyOn(usersService, 'create');
       try {
         await usersController.createUser({
-          firstname: 'firstname',
-          lastname: 'lastname',
-          username: 'username',
-          password: 'Password123!',
-          email: 'email',
-          superAdmin: true,
-          roleName: 'roleName',
+          Firstname: 'firstname',
+          Lastname: 'lastname',
+          Username: 'username',
+          Password: 'Password123!',
+          Email: 'email',
+          SuperAdmin: true,
+          RoleName: 'roleName',
         });
 
         expect(true).toBe(false);
@@ -209,13 +209,13 @@ describe('UsersController', () => {
       const mockCreate = jest.spyOn(usersService, 'create');
       try {
         await usersController.createUser({
-          firstname: 'firstname',
-          lastname: 'lastname',
-          username: 'username',
-          password: 'very_secured',
-          email: 'email@email.com',
-          superAdmin: true,
-          roleName: 'roleName',
+          Firstname: 'firstname',
+          Lastname: 'lastname',
+          Username: 'username',
+          Password: 'very_secured',
+          Email: 'email@email.com',
+          SuperAdmin: true,
+          RoleName: 'roleName',
         });
 
         expect(true).toBe(false);

@@ -4,5 +4,5 @@ import { IsString } from 'class-validator';
 export class LabelDto {
   @ApiProperty({ example: 'name' })
   @IsString()
-  name: string;
+  Name: string;
 }

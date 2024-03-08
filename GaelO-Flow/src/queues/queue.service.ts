@@ -105,10 +105,10 @@ export abstract class AbstractQueueService {
       .forEach((job) => {
         const id = job.id;
         const progress = {
-          progress: job.progress,
-          state: job.data.state,
-          id: job.id,
-          results: job.data.results,
+          Progress: job.progress,
+          State: job.data.state,
+          Id: job.id,
+          Results: job.data.results,
         };
         results[id] = progress;
       });

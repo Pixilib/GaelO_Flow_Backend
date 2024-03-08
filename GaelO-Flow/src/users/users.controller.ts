@@ -57,7 +57,7 @@ export class UsersController {
   @UseInterceptors(NotFoundInterceptor)
   async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
     const user = await this.UserService.findOne(id);
-    return { ...user, password: undefined };
+    return { ...user, Password: undefined };
   }
 
   @ApiBearerAuth('access-token')
@@ -74,8 +74,8 @@ export class UsersController {
 
     if (!user) throw new NotFoundException('User not found');
 
-    if (userDto.firstname) user.firstname = userDto.firstname;
-    if (userDto.lastname) user.lastname = userDto.lastname;
+    if (userDto.Firstname) user.Firstname = userDto.Firstname;
+    if (userDto.Lastname) user.Lastname = userDto.Lastname;
 
     await this.UserService.update(id, user);
   }
@@ -110,42 +110,42 @@ export class UsersController {
 
     // check if all the keys are present
     if (
-      !userDto.firstname == undefined ||
-      !userDto.lastname == undefined ||
-      !userDto.username == undefined ||
-      !userDto.email == undefined ||
-      !userDto.password == undefined ||
-      !userDto.superAdmin == undefined ||
-      !userDto.roleName == undefined
+      !userDto.Firstname == undefined ||
+      !userDto.Lastname == undefined ||
+      !userDto.Username == undefined ||
+      !userDto.Email == undefined ||
+      !userDto.Password == undefined ||
+      !userDto.SuperAdmin == undefined ||
+      !userDto.RoleName == undefined
     ) {
       throw new BadRequestException('All the keys are required');
     }
 
     const salt = await bcryptjs.genSalt();
-    const hash = await bcryptjs.hash(userDto.password, salt);
+    const hash = await bcryptjs.hash(userDto.Password, salt);
 
-    if (regexEmail.test(userDto.email) === false)
+    if (regexEmail.test(userDto.Email) === false)
       throw new BadRequestException('Email is not valid');
 
-    if (regexPassword.test(userDto.password) === false)
+    if (regexPassword.test(userDto.Password) === false)
       throw new BadRequestException('Password is not valid');
 
     const existingUser = await this.UserService.findByUsernameOrEmail(
-      userDto.username,
-      userDto.email,
+      userDto.Username,
+      userDto.Email,
     );
 
     if (existingUser) {
       throw new ConflictException('User with this username already exists');
     }
 
-    user.firstname = userDto.firstname;
-    user.lastname = userDto.lastname;
-    user.username = userDto.username;
-    user.password = hash;
-    user.email = userDto.email;
-    user.superAdmin = userDto.superAdmin;
-    user.roleName = userDto.roleName;
+    user.Firstname = userDto.Firstname;
+    user.Lastname = userDto.Lastname;
+    user.Username = userDto.Username;
+    user.Password = hash;
+    user.Email = userDto.Email;
+    user.SuperAdmin = userDto.SuperAdmin;
+    user.RoleName = userDto.RoleName;
 
     try {
       return await this.UserService.create(user);

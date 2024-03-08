@@ -4,75 +4,75 @@ import { IsArray, IsObject, IsString } from 'class-validator';
 export class QueuesQueryStudyDto {
   @ApiProperty({ example: 'patient_name' })
   @IsString()
-  patientName: string;
+  PatientName: string;
 
   @ApiProperty({ example: 'patient_id' })
   @IsString()
-  patientID: string;
+  PatientID: string;
 
   @ApiProperty({ example: 'patient_birthdate' })
   @IsString()
-  studyDate: string;
+  StudyDate: string;
 
   @ApiProperty({ example: 'modality' })
   @IsString()
-  modality: string;
+  Modality: string;
 
   @ApiProperty({ example: 'study_description' })
   @IsString()
-  studyDescription: string;
+  StudyDescription: string;
 
   @ApiProperty({ example: 'accession_nb' })
   @IsString()
-  accessionNb: string;
+  AccessionNb: string;
 
   @ApiProperty({ example: 'study_instance_uid' })
   @IsString()
-  studyInstanceUID: string;
+  StudyInstanceUID: string;
 
   @ApiProperty({ example: 'aet' })
   @IsString()
-  aet: string;
+  Aet: string;
 }
 
 export class QueuesQuerySeriesDto {
   @ApiProperty({ example: 'study_uid' })
   @IsString()
-  studyUID: string;
+  StudyUID: string;
 
   @ApiProperty({ example: 'modality' })
   @IsString()
-  modality: string;
+  Modality: string;
 
   @ApiProperty({ example: 'protocol_name' })
   @IsString()
-  protocolName: string;
+  ProtocolName: string;
 
   @ApiProperty({ example: 'series_description' })
   @IsString()
-  seriesDescription: string;
+  SeriesDescription: string;
 
   @ApiProperty({ example: 'series_number' })
   @IsString()
-  seriesNumber: string;
+  SeriesNumber: string;
 
   @ApiProperty({ example: 'series_instance_uid' })
   @IsString()
-  seriesInstanceUID: string;
+  SeriesInstanceUID: string;
 
   @ApiProperty({ example: 'aet' })
   @IsString()
-  aet: string;
+  Aet: string;
 }
 
 export class QueuesQueryDto {
   @ApiProperty({ example: [QueuesQueryStudyDto], required: false })
   @IsArray()
   @IsObject({ each: true })
-  studies: QueuesQueryStudyDto[] = [];
+  Studies: QueuesQueryStudyDto[] = [];
 
   @ApiProperty({ example: [QueuesQuerySeriesDto], required: false })
   @IsArray()
   @IsObject({ each: true })
-  series: QueuesQuerySeriesDto[] = [];
+  Series: QueuesQuerySeriesDto[] = [];
 }

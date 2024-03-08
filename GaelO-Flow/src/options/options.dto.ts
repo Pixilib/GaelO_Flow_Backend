@@ -2,113 +2,73 @@ import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { IsString, IsBoolean, IsNumber } from 'class-validator';
 
 export class OptionDto {
-  @ApiProperty({ example: null, required: false, default: null })
-  @IsString()
-  ldapType: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @IsString()
-  ldapProtocol: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @IsString()
-  ldapServer: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @IsNumber()
-  ldapPort: number;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @IsString()
-  ldapBaseDn: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @IsString()
-  ladpBindDn: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @IsString()
-  ldapBindPassword: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @IsString()
-  ldapGroup: string;
-
-  @ApiProperty({ example: null, required: false, default: null })
-  @IsString()
-  ldapUser: string;
-
   @ApiProperty({ example: 22 })
   @IsNumber()
-  autoQueryHourStart: number;
+  AutoQueryHourStart: number;
 
   @ApiProperty({ example: 0 })
   @IsNumber()
-  autoQueryMinuteStart: number;
+  AutoQueryMinuteStart: number;
 
   @ApiProperty({ example: 6 })
   @IsNumber()
-  autoQueryHourStop: number;
+  AutoQueryHourStop: number;
 
   @ApiProperty({ example: 0 })
   @IsNumber()
-  autoQueryMinuteStop: number;
-
-  @ApiProperty({ example: false, required: false, default: false })
-  @IsBoolean()
-  useLdap: boolean;
+  AutoQueryMinuteStop: number;
 
   @ApiProperty({ example: 10, required: false, default: 10 })
   @IsNumber()
-  orthancMonitoringRate: number;
+  OrthancMonitoringRate: number;
 
   @ApiProperty({ example: true, required: false, default: true })
   @IsBoolean()
-  burnerStarted: boolean;
+  BurnerStarted: boolean;
 
   @ApiProperty({ example: '', required: false, default: '' })
   @IsString()
-  burnerLabelPath: string;
+  BurnerLabelPath: string;
 
   @ApiProperty({ example: 'Study', required: false, default: 'Study' })
   @IsString()
-  burnerMonitoringLevel: string;
+  BurnerMonitoringLevel: string;
 
   @ApiProperty({ example: 'Epson', required: false, default: 'Epson' })
   @IsString()
-  burnerManifacturer: string;
+  BurnerManifacturer: string;
 
   @ApiProperty({ example: '', required: false, default: '' })
   @IsString()
-  burnerMonitoredPath: string;
+  BurnerMonitoredPath: string;
 
   @ApiProperty({ example: false, required: false, default: false })
   @IsBoolean()
-  burnerDeleteStudyAfterSent: boolean;
+  BurnerDeleteStudyAfterSent: boolean;
 
   @ApiProperty({ example: 'Auto', required: false, default: 'Auto' })
   @IsString()
-  burnerSupportType: string;
+  BurnerSupportType: string;
 
   @ApiProperty({ example: '', required: false, default: '' })
   @IsString()
-  burnerViewerPath: string;
+  BurnerViewerPath: string;
 
   @ApiProperty({ example: 'None', required: false, default: 'None' })
   @IsString()
-  burnerTransferSyntax: string;
+  BurnerTransferSyntax: string;
 
   @ApiProperty({ example: 'uk', required: false, default: 'uk' })
   @IsString()
-  burnerDateFormat: string;
+  BurnerDateFormat: string;
 
   @ApiProperty({ example: 'None', required: false, default: 'None' })
   @IsString()
-  burnerTranscoding: string;
+  BurnerTranscoding: string;
 
   @ApiProperty({ example: false, required: false, default: false })
   @IsBoolean()
-  autorouterStarted: boolean;
+  AutorouterStarted: boolean;
 }
 
 export class UpdateOptionDto extends PartialType(OptionDto) {}

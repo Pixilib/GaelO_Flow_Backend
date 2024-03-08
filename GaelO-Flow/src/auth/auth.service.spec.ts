@@ -42,22 +42,22 @@ describe('AuthService', () => {
         .mockResolvedValue('token');
 
       const user = new User();
-      user.id = 1;
-      user.username = 'username';
-      user.role = new Role();
-      user.role.name = 'User';
+      user.Id = 1;
+      user.Username = 'username';
+      user.Role = new Role();
+      user.Role.Name = 'User';
 
       const result = await authService.login(user);
 
       expect(result).toStrictEqual({
-        access_token: 'token',
-        user_id: user.id,
+        AccessToken: 'token',
+        UserId: user.Id,
       });
       expect(mock).toHaveBeenCalledWith({
-        userId: user.id,
-        sub: user.id,
-        username: user.username,
-        role: user.role,
+        userId: user.Id,
+        sub: user.Id,
+        username: user.Username,
+        role: user.Role,
       });
     });
   });
@@ -65,11 +65,11 @@ describe('AuthService', () => {
   describe('validateUser', () => {
     it('should return the user when the credentials are valid', async () => {
       const user = new User();
-      user.id = 1;
-      user.username = 'username';
-      user.password = 'password';
-      user.role = new Role();
-      user.role.name = 'User';
+      user.Id = 1;
+      user.Username = 'username';
+      user.Password = 'password';
+      user.Role = new Role();
+      user.Role.Name = 'User';
 
       jest
         .spyOn(UsersService.prototype, 'findOneByUsername')
@@ -79,15 +79,15 @@ describe('AuthService', () => {
       const result = await authService.validateUser('username', 'password');
 
       expect(result).toStrictEqual({
-        id: user.id,
-        username: user.username,
-        role: user.role,
+        Id: user.Id,
+        Username: user.Username,
+        Role: user.Role,
       });
     });
 
     it('should return null when the password is invalid', async () => {
       const user = new User();
-      user.password = 'password';
+      user.Password = 'password';
 
       jest
         .spyOn(UsersService.prototype, 'findOneByUsername')
@@ -113,9 +113,9 @@ describe('AuthService', () => {
   describe('createConfirmationToken', () => {
     it('should return a confirmation token', async () => {
       const user = new User();
-      user.id = 1;
-      user.username = 'username';
-      user.email = 'email';
+      user.Id = 1;
+      user.Username = 'username';
+      user.Email = 'email';
 
       const mock = jest
         .spyOn(jwtService, 'signAsync')
@@ -126,8 +126,8 @@ describe('AuthService', () => {
       expect(result).toBe('token');
       expect(mock).toHaveBeenCalledWith(
         {
-          id: user.id,
-          email: user.email,
+          id: user.Id,
+          email: user.Email,
         },
         { expiresIn: '24h' },
       );

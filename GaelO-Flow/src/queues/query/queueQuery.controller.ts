@@ -53,7 +53,7 @@ export class QueuesQueryController {
     const user = request['user'];
 
     if (!userId && !uuid) {
-      if (user.role.admin) {
+      if (user.role.Admin) {
         return await this.QueuesQueryService.getJobsForUuid(); // get all jobs;
       } else {
         throw new ForbiddenException("You don't have access to this resource");
@@ -61,7 +61,7 @@ export class QueuesQueryController {
     }
 
     if (userId && !uuid) {
-      if (user.role.admin || user.userId == userId) {
+      if (user.role.Admin || user.userId == userId) {
         const uuid = await this.QueuesQueryService.getUuidOfUser(userId);
         return { uuid: uuid };
       } else {
@@ -71,7 +71,7 @@ export class QueuesQueryController {
 
     if (uuid) {
       if (
-        user.role.admin ||
+        user.role.Admin ||
         (await this.QueuesQueryService.getUuidOfUser(user.userId)) == uuid
       ) {
         return await this.QueuesQueryService.getJobsForUuid(uuid);
@@ -99,8 +99,8 @@ export class QueuesQueryController {
     if (await this.QueuesQueryService.checkIfUserIdHasJobs(user.userId))
       throw new ForbiddenException('User already has jobs');
 
-    const queuesQueryStudy: QueuesQueryStudyDto[] = queuesQueryDto.studies;
-    const queuesQuerySeries: QueuesQuerySeriesDto[] = queuesQueryDto.series;
+    const queuesQueryStudy: QueuesQueryStudyDto[] = queuesQueryDto.Studies;
+    const queuesQuerySeries: QueuesQuerySeriesDto[] = queuesQueryDto.Series;
 
     if (queuesQuerySeries.length === 0 && queuesQueryStudy.length === 0)
       throw new BadRequestException('No studies or series found');
@@ -122,7 +122,7 @@ export class QueuesQueryController {
         results: null,
       });
     });
-    return { uuid };
+    return { Uuid: uuid };
   }
 
   @ApiBearerAuth('access-token')

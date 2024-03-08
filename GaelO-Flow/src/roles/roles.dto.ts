@@ -5,47 +5,47 @@ import { IsBoolean, IsOptional, IsString } from 'class-validator';
 export class RoleDto {
   @ApiProperty({ example: 'admin' })
   @IsString()
-  name: string;
+  Name: string;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  import: boolean;
+  Import: boolean;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  anonymize: boolean;
+  Anonymize: boolean;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  export: boolean;
+  Export: boolean;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  query: boolean;
+  Query: boolean;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  autoQuery: boolean;
+  AutoQuery: boolean;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  delete: boolean;
+  Delete: boolean;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  admin: boolean;
+  Admin: boolean;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  modify: boolean;
+  Modify: boolean;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  cdBurner: boolean;
+  CdBurner: boolean;
 
   @ApiProperty({ example: true })
   @IsBoolean()
-  autoRouting: boolean;
+  AutoRouting: boolean;
 }
 
 export class WithLabels {
@@ -58,5 +58,5 @@ export class WithLabels {
     { toClassOnly: true },
   )
   @IsBoolean()
-  withLabels: boolean = false;
+  WithLabels: boolean = false;
 }
