@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 
 import { Role } from '../roles/role.entity';
-import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 
 @Entity()
