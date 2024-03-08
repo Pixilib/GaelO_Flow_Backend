@@ -101,7 +101,7 @@ describe('LabelsController', () => {
         .spyOn(labelsService, 'create')
         .mockResolvedValue(undefined);
 
-      await labelsController.create({ name: 'first' } as LabelDto);
+      await labelsController.create({ Name: 'first' } as LabelDto);
 
       expect(mockCreate).toHaveBeenCalled();
     });
@@ -115,7 +115,7 @@ describe('LabelsController', () => {
         .mockResolvedValue(true);
 
       expect(
-        labelsController.create({ name: 'first' } as LabelDto),
+        labelsController.create({ Name: 'first' } as LabelDto),
       ).rejects.toThrow();
       expect(mockIsLabelExist).toHaveBeenCalled();
     });

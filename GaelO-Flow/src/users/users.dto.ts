@@ -7,11 +7,11 @@ import { Role } from '../roles/role.entity';
 export class UpdateUserDto {
   @ApiProperty({ example: 'John' })
   @IsString()
-  firstname: string;
+  Firstname: string;
 
   @ApiProperty({ example: 'Doe' })
   @IsString()
-  lastname: string;
+  Lastname: string;
 }
 
 export class GetUserDto extends User {}
@@ -19,5 +19,5 @@ export class GetUserDto extends User {}
 export class CreateUserDto extends GetUserDto {
   @ApiProperty({ example: 'myPassw0rd' })
   @IsString()
-  password: string;
+  Password: string;
 }

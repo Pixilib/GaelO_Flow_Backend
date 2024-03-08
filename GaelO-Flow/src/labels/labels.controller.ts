@@ -47,7 +47,7 @@ export class LabelsController {
   @UseGuards(AdminGuard)
   @Post()
   async create(@Body() labelDto: LabelDto): Promise<void> {
-    if (await this.LabelsService.isLabelExist(labelDto.name))
+    if (await this.LabelsService.isLabelExist(labelDto.Name))
       throw new ConflictException('Label with this name already exists');
     return this.LabelsService.create(labelDto);
   }

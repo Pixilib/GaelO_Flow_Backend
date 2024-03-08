@@ -30,7 +30,7 @@ export class OptionsController {
   @Get()
   async getOptions(): Promise<Option> {
     const options = await this.optionService.getOptions();
-    delete options.id;
+    delete options.Id;
 
     options['orthanc_address'] = this.configService.get('ORTHANC_ADDRESS');
     options['orthanc_port'] = this.configService.get('ORTHANC_PORT');

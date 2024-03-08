@@ -30,11 +30,10 @@ describe('OptionsService', () => {
       getRepositoryToken(Option),
     );
     option = optionsRepository.create({
-      autoQueryHourStart: 22,
-      autoQueryMinuteStart: 0,
-      autoQueryHourStop: 24,
-      autoQueryMinuteStop: 0,
-      useLdap: false,
+      AutoQueryHourStart: 22,
+      AutoQueryMinuteStart: 0,
+      AutoQueryHourStop: 24,
+      AutoQueryMinuteStop: 0,
     });
     await optionsRepository.insert(option);
   });
@@ -55,7 +54,7 @@ describe('OptionsService', () => {
 
   describe('update', () => {
     it('should update the options', async () => {
-      const newOption = { ...option, useLdap: true };
+      const newOption = { ...option, AutoQueryHourStart: 23 };
       await optionsService.update(newOption);
       const getOptions = await optionsService.getOptions();
 

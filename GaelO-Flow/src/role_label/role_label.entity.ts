@@ -9,16 +9,16 @@ import {
 } from 'typeorm';
 
 @Entity()
-@Unique(['role', 'label'])
+@Unique(['Role', 'Label'])
 export class RoleLabel {
   @PrimaryGeneratedColumn()
-  id: number;
+  Id: number;
 
   @ManyToOne(() => Role, { eager: true })
   @JoinColumn({ name: 'role_name' })
-  role: Role;
+  Role: Role;
 
   @ManyToOne(() => Label, { eager: true })
   @JoinColumn({ name: 'label_name' })
-  label: Label;
+  Label: Label;
 }

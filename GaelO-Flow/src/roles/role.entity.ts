@@ -5,45 +5,45 @@ import { Entity, Column, PrimaryColumn } from 'typeorm';
 export class Role {
   @ApiProperty({ example: 'admin' })
   @PrimaryColumn({ name: 'name' })
-  name: string;
+  Name: string;
 
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'import' })
-  import: boolean;
+  Import: boolean;
 
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'anonymize' })
-  anonymize: boolean;
+  Anonymize: boolean;
 
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'export' })
-  export: boolean;
+  Export: boolean;
 
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'query' })
-  query: boolean;
+  Query: boolean;
 
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'auto_query' })
-  autoQuery: boolean;
+  AutoQuery: boolean;
 
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'delete' })
-  delete: boolean;
+  Delete: boolean;
 
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'admin' })
-  admin: boolean;
+  Admin: boolean;
 
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'modify' })
-  modify: boolean;
+  Modify: boolean;
 
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'cd_burner' })
-  cdBurner: boolean;
+  CdBurner: boolean;
 
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'auto_routing' })
-  autoRouting: boolean;
+  AutoRouting: boolean;
 }

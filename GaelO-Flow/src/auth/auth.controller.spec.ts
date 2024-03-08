@@ -68,16 +68,16 @@ describe('AuthController', () => {
     it('should return an access token', async () => {
       jest.spyOn(authService, 'login').mockReturnValue(
         Promise.resolve({
-          access_token: 'token',
-          user_id: 1,
+          AccessToken: 'token',
+          UserId: 1,
         }),
       );
       jest.spyOn(authService, 'validateUser').mockReturnValue(
         Promise.resolve({
-          id: 1,
-          username: 'username',
-          role: {
-            name: 'User',
+          Id: 1,
+          Username: 'username',
+          Role: {
+            Name: 'User',
           },
         } as User),
       );
@@ -90,8 +90,8 @@ describe('AuthController', () => {
       } as any);
 
       expect(result).toStrictEqual({
-        access_token: 'token',
-        user_id: 1,
+        AccessToken: 'token',
+        UserId: 1,
       });
     });
   });
@@ -108,10 +108,10 @@ describe('AuthController', () => {
 
     it('should create a new user and send confirmation email', async () => {
       const registerDto = {
-        email: 'test@example.com',
-        firstname: 'John',
-        lastname: 'Doe',
-        username: 'johndoe',
+        Email: 'test@example.com',
+        Firstname: 'John',
+        Lastname: 'Doe',
+        Username: 'johndoe',
       };
 
       jest
@@ -120,11 +120,13 @@ describe('AuthController', () => {
       jest.spyOn(usersService, 'create').mockResolvedValueOnce(1);
 
       const mockUser = {
-        ...registerDto,
-        email: registerDto.email,
-        superAdmin: false,
-        roleName: 'User',
-        password: null,
+        Firstname: registerDto.Firstname,
+        Lastname: registerDto.Lastname,
+        Username: registerDto.Username,
+        Email: registerDto.Email,
+        SuperAdmin: false,
+        RoleName: 'User',
+        Password: null,
       };
 
       jest
@@ -140,7 +142,7 @@ describe('AuthController', () => {
 
       const result = await authController.register(registerDto);
       expect(usersService.findOneByEmail).toHaveBeenCalledWith(
-        registerDto.email,
+        registerDto.Email,
         false,
       );
       expect(usersService.create).toHaveBeenCalledWith(mockUser);
@@ -151,10 +153,10 @@ describe('AuthController', () => {
 
     it('should throw a ConflictException if user already exists', async () => {
       const registerDto = {
-        email: 'test@example.com',
-        firstname: 'John',
-        lastname: 'Doe',
-        username: 'johndoe',
+        Email: 'test@example.com',
+        Firstname: 'John',
+        Lastname: 'Doe',
+        Username: 'johndoe',
       };
 
       jest
@@ -170,10 +172,10 @@ describe('AuthController', () => {
   describe('changePassword', () => {
     it('should change the password', async () => {
       const mockUser = {
-        id: 1,
-        username: 'username',
-        role: {
-          name: 'User',
+        Id: 1,
+        Username: 'username',
+        Role: {
+          Name: 'User',
         },
       };
       const mockReq = {
@@ -182,8 +184,8 @@ describe('AuthController', () => {
         },
       };
       const changePasswordDto = {
-        newPassword: 'Password123!',
-        confirmationPassword: 'Password123!',
+        NewPassword: 'Password123!',
+        ConfirmationPassword: 'Password123!',
       };
 
       jest
@@ -198,10 +200,10 @@ describe('AuthController', () => {
 
     it('should throw a BadRequestException if passwords do not match', async () => {
       const mockUser = {
-        id: 1,
-        username: 'username',
-        role: {
-          name: 'User',
+        Id: 1,
+        Username: 'username',
+        Role: {
+          Name: 'User',
         },
       };
       const mockReq = {
@@ -210,8 +212,8 @@ describe('AuthController', () => {
         },
       };
       const changePasswordDto = {
-        newPassword: 'Password123!',
-        confirmationPassword: 'Password1234!',
+        NewPassword: 'Password123!',
+        ConfirmationPassword: 'Password1234!',
       };
 
       jest
