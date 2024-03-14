@@ -91,7 +91,7 @@ export class RolesService {
       Query: true,
       AutoQuery: true,
       Delete: true,
-      Admin: true,
+      Admin: false,
       Modify: true,
       CdBurner: true,
       AutoRouting: true,
