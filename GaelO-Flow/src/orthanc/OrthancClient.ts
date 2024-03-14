@@ -78,6 +78,31 @@ export default class OrthancClient extends HttpClient {
     });
   };
 
+  getArchiveDicomAsBuffer = (
+    orthancIds: string[],
+    hierarchical: boolean = true,
+    transcoding: string | null = null,
+  ) => {
+    let payload;
+
+    if (transcoding) {
+      payload = {
+        Transcode: transcoding,
+        Resources: orthancIds,
+      };
+    } else {
+      payload = {
+        Resources: orthancIds,
+      };
+    }
+
+    const api = hierarchical
+      ? '/tools/create-archive'
+      : '/tools/create-media-extended';
+
+    return this.getResponseAsBuffer(api, 'POST', payload);
+  };
+
   getArchiveDicomAsStream = (
     orthancIds: string[],
     hierarchical: boolean = true,
@@ -651,4 +676,10 @@ export default class OrthancClient extends HttpClient {
 
     return answersObjects;
   };
+
+  sendToOrthanc(stream: any): Promise<object> {
+    return this.request('/instances', 'POST', stream).then(
+      (response) => response.data,
+    );
+  }
 }

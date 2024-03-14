@@ -14,7 +14,7 @@ export class HttpClient {
     method: string,
     headers: object,
     data: object | string | Buffer | any,
-    getAsStream: boolean,
+    responseType: string | undefined = undefined,
   ): object => {
     return {
       method: method,
@@ -33,7 +33,7 @@ export class HttpClient {
         ...headers,
       },
       data: data ?? undefined,
-      responseType: getAsStream ? 'stream' : undefined,
+      responseType: responseType,
     };
   };
 
@@ -63,7 +63,19 @@ export class HttpClient {
     body: object | string | null | any,
     headers: object | undefined = undefined,
   ) => {
-    const option = this.getOptions(url, method, headers, body, false);
+    const option = this.getOptions(url, method, headers, body);
+    return axios.request(option).catch(function (error) {
+      throw error;
+    });
+  };
+
+  requestBuffer = (
+    url: string,
+    method: string,
+    body: object | string | null | any,
+    headers: object | undefined = undefined,
+  ) => {
+    const option = this.getOptions(url, method, headers, body, 'arraybuffer');
     return axios.request(option).catch(function (error) {
       throw error;
     });
@@ -75,7 +87,7 @@ export class HttpClient {
     body: object | string | null,
     headers: object | undefined = undefined,
   ) => {
-    const option = this.getOptions(url, method, headers, body, true);
+    const option = this.getOptions(url, method, headers, body, 'stream');
     return axios.request(option).catch(function (error) {
       throw error;
     });
@@ -88,7 +100,7 @@ export class HttpClient {
     res: Response,
     headers: object | undefined = undefined,
   ) => {
-    const option = this.getOptions(url, method, headers, body, true);
+    const option = this.getOptions(url, method, headers, body, 'stream');
     return axios
       .request(option)
       .then((response) => {
@@ -116,7 +128,7 @@ export class HttpClient {
     streamWriter: any,
     finishCallBack: any,
   ) {
-    const config = this.getOptions(url, method, {}, body, true);
+    const config = this.getOptions(url, method, {}, body, 'stream');
     return axios
       .request(config)
       .then((response) => {
@@ -143,10 +155,7 @@ export class HttpClient {
     method: string,
     body: object | string = {},
   ): Promise<any> {
-    const response = await this.request(url, method, body, {
-      responseType: 'arraybuffer',
-    });
-    console.log('response', response);
+    const response = await this.requestBuffer(url, method, body);
     return Buffer.from(response.data, 'binary');
   }
 }

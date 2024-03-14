@@ -9,7 +9,7 @@ describe('TmtvService', () => {
   const ctId: string = '5958d213-4a906ee4-28527d57-57d250fd-847acb3f';
   const ptId: string = 'e2d08f24-7a1c85a2-b5a747b9-59ee2cda-4f10abde';
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
@@ -33,11 +33,67 @@ describe('TmtvService', () => {
     it(
       'should call ProcessingClient sendDicomToProcessing',
       async () => {
-        console.log('here 1');
         await tmtvService.sendDicomToProcessing();
-        console.log('here 2');
+
+        expect(tmtvService.getCreatedFiles().length).toBe(2);
       },
       2 * 60 * 1000,
     );
   });
+
+  describe('createSeries', () => {
+    it(
+      'should call ProcessingClient createSeriesFromOrthanc',
+      async () => {
+        await tmtvService.createSeries();
+
+        expect(tmtvService.getCreatedFiles().length).toBe(4);
+      },
+      2 * 60 * 1000,
+    );
+  });
+
+  describe('runInference', () => {
+    it(
+      'should call ProcessingClient executeInference',
+      async () => {
+        await tmtvService.runInference(true);
+
+        expect(tmtvService.getCreatedFiles().length).toBe(6);
+      },
+      2 * 60 * 1000,
+    );
+  });
+
+  // describe('sendMaskAsRtssToOrthanc', () => {
+  //   it(
+  //     'should call ProcessingClient sendMaskAsRtssToOrthanc',
+  //     async () => {
+  //       await tmtvService.sendMaskAsRtssToOrthanc();
+
+  //       // expect(tmtvService.getCreatedFiles().length).toBe(7);
+  //     },
+  //     2 * 60 * 1000,
+  //   );
+  // });
+
+  // describe('sendMaskAsSegToOrthanc', () => {
+  //   it(
+  //     'should call ProcessingClient sendMaskAsSegToOrthanc',
+  //     async () => {
+  //       await tmtvService.sendMaskAsSegToOrthanc();
+
+  //       expect(tmtvService.getCreatedFiles().length).toBe(8);
+  //     },
+  //     2 * 60 * 1000,
+  //   );
+  // });
+
+  // describe('deleteAllRessources', () => {
+  //   it('should call ProcessingClient deleteRessource', async () => {
+  //     await tmtvService.deleteAllRessources();
+
+  //     expect(tmtvService.getCreatedFiles().length).toBe(0);
+  //   });
+  // });
 });

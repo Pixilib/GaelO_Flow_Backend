@@ -1,10 +1,10 @@
 export class ProcessingFile {
-  private type: string;
   private id: string;
+  private type: string;
 
-  constructor(type: string, id: string) {
-    this.type = type;
+  constructor(id: string, type: string) {
     this.id = id;
+    this.type = type;
   }
 
   public getType(): string {

@@ -17,26 +17,33 @@ class ProcessingClient extends HttpClient {
     orthancSeriesId: string,
     pet: boolean = false,
     convertToSuv: boolean = false,
-  ): Promise<any> {
+  ): Promise<string> {
     return this.request('/tools/create-series-from-orthanc', 'POST', {
       seriesId: orthancSeriesId,
       pet,
       convertToSuv,
-    });
+    }).then((response) => response.data);
   }
 
-  createDicom(stream: any) {
+  createDicom(stream: any): Promise<string> {
     return this.request('/dicoms', 'POST', stream, {
       'Content-Type': 'application/zip',
-    });
+    }).then((response) => response.data);
   }
 
-  executeInference(modelName: string, payload: any): Promise<any> {
-    return this.request(`/models/${modelName}/inference`, 'POST', payload);
+  executeInference(modelName: string, payload: any): Promise<string> {
+    return this.request(`/models/${modelName}/inference`, 'POST', payload).then(
+      (response) => response.data,
+    );
   }
 
-  createMIPForSeries(seriesId: string, payload: any = { orientation: 'LPI' }) {
-    return this.requestStream(`/series/${seriesId}/mip`, 'POST', payload);
+  createMIPForSeries(
+    seriesId: string,
+    payload: any = { orientation: 'LPI' },
+  ): Promise<any> {
+    return this.requestStream(`/series/${seriesId}/mip`, 'POST', payload).then(
+      (response) => response.data,
+    );
   }
 
   createMosaicForSeries(
@@ -50,81 +57,105 @@ class ProcessingClient extends HttpClient {
       height: 512,
       orientation: 'LPI',
     },
-  ) {
-    return this.requestStream(`/series/${seriesId}/mosaic`, 'POST', payload);
+  ): Promise<any> {
+    return this.requestStream(
+      `/series/${seriesId}/mosaic`,
+      'POST',
+      payload,
+    ).then((response) => response.data);
   }
 
-  getNiftiMask(maskId: string) {
-    return this.requestStream(`/masks/${maskId}/file`, 'GET', null);
+  getNiftiMask(maskId: string): Promise<any> {
+    return this.requestStream(`/masks/${maskId}/file`, 'GET', null).then(
+      (response) => response.data,
+    );
   }
 
-  getNiftiSeries(imageId: string) {
-    return this.requestStream(`/series/${imageId}/file`, 'GET', {});
+  getNiftiSeries(imageId: string): Promise<any> {
+    return this.requestStream(`/series/${imageId}/file`, 'GET', {}).then(
+      (response) => response.data,
+    );
   }
 
-  createRtssFromMask(orthancSeriesId: string, maskId: string) {
+  createRtssFromMask(orthancSeriesId: string, maskId: string): Promise<string> {
     return this.request('/tools/mask-to-rtss', 'POST', {
       orthancSeriesId,
       maskId,
-    });
+    }).then((response) => response.data);
   }
 
-  getRtss(rtss: string) {
-    return this.requestStream(`/rtss/${rtss}/file`, 'GET', null);
+  getRtss(rtss: string): Promise<any> {
+    return this.requestStream(`/rtss/${rtss}/file`, 'GET', {}).then(
+      (response) => response.data,
+    );
   }
 
-  createSegFromMask(orthancSeriesId: string, maskId: string) {
+  createSegFromMask(orthancSeriesId: string, maskId: string): Promise<string> {
     return this.request('/tools/mask-to-seg', 'POST', {
       orthancSeriesId,
       maskId,
-    });
+    }).then((response) => response.data);
   }
 
-  getSeg(seg: string) {
-    return this.requestStream(`/seg/${seg}/file`, 'GET', {});
+  getSeg(seg: string): Promise<any> {
+    return this.requestStream(`/seg/${seg}/file`, 'GET', {}).then(
+      (response) => response.data,
+    );
   }
 
-  thresholdMask(maskId: string, seriesId: string, threshold: string | number) {
+  thresholdMask(
+    maskId: string,
+    seriesId: string,
+    threshold: string | number,
+  ): Promise<string> {
     return this.request('/tools/threshold-mask', 'POST', {
       maskId,
       seriesId,
       threshold,
-    });
+    }).then((response) => response.data);
   }
 
-  fragmentMask(seriesId: string, maskId: string, output3D: boolean) {
+  fragmentMask(
+    seriesId: string,
+    maskId: string,
+    output3D: boolean,
+  ): Promise<string> {
+    console.log('fragmentMask');
     return this.request('/tools/mask-fragmentation', 'POST', {
       seriesId,
       maskId,
       output3D,
-    });
+    }).then((response) => response.data);
+    // return null;
   }
 
   getMaskDicomOrientation(
     maskId: string,
     orientation: string,
     compress: boolean,
-  ) {
+  ): Promise<any> {
     return this.requestStream('/tools/mask-dicom', 'POST', {
       maskId,
       orientation,
       compress,
-    });
+    }).then((response) => response.data);
   }
 
-  getStatsMask(maskId: string) {
-    return this.request(`/masks/${maskId}/stats`, 'GET', null);
+  getStatsMask(maskId: string): Promise<object> {
+    return this.request(`/masks/${maskId}/stats`, 'GET', null).then(
+      (response) => response.data,
+    );
   }
 
-  getStatsMaskSeries(maskId: string, seriesId: string) {
+  getStatsMaskSeries(maskId: string, seriesId: string): Promise<object> {
     return this.request(`/tools/stats-mask-image`, 'POST', {
       seriesId,
       maskId,
-    });
+    }).then((response) => response.data);
   }
 
   deleteRessource(type: string, id: string) {
-    return this.request(`/${type}/${id}`, 'DELETE', null);
+    return this.request(`/${type}/${id}`, 'DELETE', null).then(() => true);
   }
 }
 

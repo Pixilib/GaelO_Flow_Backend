@@ -4,7 +4,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { createWriteStream } from 'fs';
-import exp from 'constants';
 
 describe('ProcessingClient', () => {
   let processingClient: ProcessingClient;
@@ -66,9 +65,7 @@ describe('ProcessingClient', () => {
       'should create a GK dicom',
       async () => {
         const streamGK = await readFile(GK.filePath);
-        const responseGK = await processingClient.createDicom(streamGK);
-        expect(responseGK).toBeDefined();
-        GK.dicomUuid = responseGK.data;
+        GK.dicomUuid = await processingClient.createDicom(streamGK);
         expect(GK.dicomUuid).toBeDefined();
       },
       2 * 60 * 1000,
@@ -78,9 +75,7 @@ describe('ProcessingClient', () => {
       'should create a PET dicom',
       async () => {
         const streamPET = await readFile(join(PET.filePath));
-        const responsePET = await processingClient.createDicom(streamPET);
-        expect(responsePET).toBeDefined();
-        PET.dicomUuid = responsePET.data;
+        PET.dicomUuid = await processingClient.createDicom(streamPET);
         expect(PET.dicomUuid).toBeDefined();
       },
       2 * 60 * 1000,
@@ -91,13 +86,12 @@ describe('ProcessingClient', () => {
     it(
       'create a GK series',
       async () => {
-        const response = await processingClient.createSeriesFromOrthanc(
+        GK.seriesId = await processingClient.createSeriesFromOrthanc(
           GK.dicomUuid,
           false,
           false,
         );
-        expect(response).toBeDefined();
-        GK.seriesId = response.data;
+        expect(GK.seriesId).toBeDefined();
         expect(GK.seriesId).toBeDefined();
       },
       2 * 60 * 1000,
@@ -106,13 +100,12 @@ describe('ProcessingClient', () => {
     it(
       'create a PET series',
       async () => {
-        const response = await processingClient.createSeriesFromOrthanc(
+        PET.seriesId = await processingClient.createSeriesFromOrthanc(
           PET.dicomUuid,
           true,
           true,
         );
-        expect(response).toBeDefined();
-        PET.seriesId = response.data;
+        expect(PET.seriesId).toBeDefined();
         expect(PET.seriesId).toBeDefined();
       },
       2 * 60 * 1000,
@@ -128,9 +121,8 @@ describe('ProcessingClient', () => {
           { idCT: GK.seriesId, idPT: PET.seriesId },
         );
         expect(response).toBeDefined();
-        expect(response.data).toBeDefined();
-
-        mask.inferenceID = response.data['id_mask'];
+        mask.inferenceID = response['id_mask'];
+        expect(mask.inferenceID).toBeDefined();
       },
       2 * 60 * 1000,
     );
@@ -142,11 +134,9 @@ describe('ProcessingClient', () => {
       async () => {
         const response = await processingClient.createMIPForSeries(GK.seriesId);
         expect(response).toBeDefined();
-        expect(response.headers['content-type']).toBe('image/gif');
 
         const file = createWriteStream(GK.gifPath);
-
-        response.data.pipe(file);
+        response.pipe(file);
 
         file.on('finish', () => {
           file.close();
@@ -162,10 +152,9 @@ describe('ProcessingClient', () => {
           PET.seriesId,
         );
         expect(response).toBeDefined();
-        expect(response.headers['content-type']).toBe('image/gif');
 
         const file = createWriteStream(PET.gifPath);
-        response.data.pipe(file);
+        response.pipe(file);
 
         file.on('finish', () => {
           file.close();
@@ -189,12 +178,10 @@ describe('ProcessingClient', () => {
           PET.seriesId,
           mipFragmentedPayload,
         );
-
         expect(response).toBeDefined();
-        expect(response.headers['content-type']).toBe('image/gif');
 
         const file = createWriteStream(PET.gifWMaskPath);
-        response.data.pipe(file);
+        response.pipe(file);
 
         file.on('finish', () => {
           file.close();
@@ -210,10 +197,9 @@ describe('ProcessingClient', () => {
         GK.seriesId,
       );
       expect(response).toBeDefined();
-      expect(response.headers['content-type']).toBe('image/png');
 
       const file = createWriteStream(GK.pngPath);
-      response.data.pipe(file);
+      response.pipe(file);
 
       file.on('finish', () => {
         file.close();
@@ -225,10 +211,9 @@ describe('ProcessingClient', () => {
         PET.seriesId,
       );
       expect(response).toBeDefined();
-      expect(response.headers['content-type']).toBe('image/png');
 
       const file = createWriteStream(PET.pngPath);
-      response.data.pipe(file);
+      response.pipe(file);
 
       file.on('finish', () => {
         file.close();
@@ -240,10 +225,9 @@ describe('ProcessingClient', () => {
     it('should execute getNiftiMask', async () => {
       const response = await processingClient.getNiftiMask(mask.inferenceID);
       expect(response).toBeDefined();
-      expect(response.headers['content-type']).toBe('application/gzip');
 
       const file = createWriteStream(mask.maskGzip);
-      response.data.pipe(file);
+      response.pipe(file);
 
       file.on('finish', () => {
         file.close();
@@ -255,10 +239,9 @@ describe('ProcessingClient', () => {
     it('should get the GK nifti series', async () => {
       const response = await processingClient.getNiftiSeries(GK.seriesId);
       expect(response).toBeDefined();
-      expect(response.headers['content-type']).toBe('application/gzip');
 
       const file = createWriteStream(GK.gzipPath);
-      response.data.pipe(file);
+      response.pipe(file);
 
       file.on('finish', () => {
         file.close();
@@ -268,10 +251,9 @@ describe('ProcessingClient', () => {
     it('should get the PET nifti series', async () => {
       const response = await processingClient.getNiftiSeries(PET.seriesId);
       expect(response).toBeDefined();
-      expect(response.headers['content-type']).toBe('application/gzip');
 
       const file = createWriteStream(PET.gzipPath);
-      response.data.pipe(file);
+      response.pipe(file);
 
       file.on('finish', () => {
         file.close();
@@ -281,13 +263,11 @@ describe('ProcessingClient', () => {
 
   describe('createRtssFromMask', () => {
     it('should create a RTSS from the mask', async () => {
-      const response = await processingClient.createRtssFromMask(
+      mask.rtssID = await processingClient.createRtssFromMask(
         PET.dicomUuid,
         mask.inferenceID,
       );
-      expect(response).toBeDefined();
-      expect(response.data).toBeDefined();
-      mask.rtssID = response.data;
+      expect(mask.rtssID).toBeDefined();
     });
   });
 
@@ -295,10 +275,9 @@ describe('ProcessingClient', () => {
     it('should get the RTSS', async () => {
       const response = await processingClient.getRtss(mask.rtssID);
       expect(response).toBeDefined();
-      expect(response.headers['content-type']).toBe('application/octet-stream');
 
       const file = createWriteStream(mask.rtssPath);
-      response.data.pipe(file);
+      response.pipe(file);
 
       file.on('finish', () => {
         file.close();
@@ -308,13 +287,11 @@ describe('ProcessingClient', () => {
 
   describe('createSegFromMask', () => {
     it('should create a SEG from the mask', async () => {
-      const response = await processingClient.createSegFromMask(
+      mask.segID = await processingClient.createSegFromMask(
         PET.dicomUuid,
         mask.inferenceID,
       );
-      expect(response).toBeDefined();
-      expect(response.data).toBeDefined();
-      mask.segID = response.data;
+      expect(mask.segID).toBeDefined();
     });
   });
 
@@ -322,10 +299,9 @@ describe('ProcessingClient', () => {
     it('should get the SEG', async () => {
       const response = await processingClient.getSeg(mask.segID);
       expect(response).toBeDefined();
-      expect(response.headers['content-type']).toBe('application/octet-stream');
 
       const file = createWriteStream(mask.segPath);
-      response.data.pipe(file);
+      response.pipe(file);
 
       file.on('finish', () => {
         file.close();
@@ -335,27 +311,23 @@ describe('ProcessingClient', () => {
 
   describe('thresholdMask', () => {
     it('should give a new mask id', async () => {
-      const response = await processingClient.thresholdMask(
+      mask.thresholdedMaskId = await processingClient.thresholdMask(
         mask.inferenceID,
         PET.seriesId,
         20,
       );
-      expect(response).toBeDefined();
-      expect(response.data).toBeDefined();
-      mask.thresholdedMaskId = response.data;
+      expect(mask.thresholdedMaskId).toBeDefined();
     });
   });
 
   describe('fragmentMask', () => {
     it('should give a new mask id', async () => {
-      const response = await processingClient.fragmentMask(
+      mask.fragmentMaskId = await processingClient.fragmentMask(
         PET.seriesId,
         mask.inferenceID,
         true,
       );
-      expect(response).toBeDefined();
-      expect(response.data).toBeDefined();
-      mask.fragmentMaskId = response.data;
+      expect(mask.fragmentMaskId).toBeDefined();
     });
   });
 
@@ -367,10 +339,9 @@ describe('ProcessingClient', () => {
         true,
       );
       expect(response).toBeDefined();
-      expect(response.headers['content-type']).toBe('application/gzip');
 
       const file = createWriteStream(mask.maskDicomOrientation);
-      response.data.pipe(file);
+      response.pipe(file);
 
       file.on('finish', () => {
         file.close();
@@ -380,33 +351,30 @@ describe('ProcessingClient', () => {
 
   describe('getStatMask', () => {
     it('should get the stats for the mask', async () => {
-      const response = await processingClient.getStatsMask(mask.inferenceID);
-      expect(response).toBeDefined();
-      expect(response.data).toBeDefined();
-      mask.stat = response.data;
+      mask.stat = await processingClient.getStatsMask(mask.inferenceID);
+      expect(mask.stat).toBeDefined();
 
-      expect(response.data['dmax']).toBeDefined();
-      expect(response.data['volume']).toBeDefined();
+      expect(mask.stat['dmax']).toBeDefined();
+      expect(mask.stat['volume']).toBeDefined();
     });
   });
 
   describe('getStatsMaskSeries', () => {
     it('should get the stat for the mask and series', async () => {
-      const response = await processingClient.getStatsMaskSeries(
+      const stats = await processingClient.getStatsMaskSeries(
         mask.inferenceID,
         PET.seriesId,
       );
-      expect(response).toBeDefined();
-      expect(response.data).toBeDefined();
-      mask.statSeries = response.data;
+      expect(stats).toBeDefined();
+      mask.statSeries = stats;
 
-      expect(response.data['dmax']).toBeDefined();
-      expect(response.data['volume']).toBeDefined();
-      expect(response.data['suvmean']).toBeDefined();
-      expect(response.data['suvmax']).toBeDefined();
-      expect(response.data['suvpeak']).toBeDefined();
-      expect(response.data['tlg']).toBeDefined();
-      expect(response.data['dmaxbulk']).toBeDefined();
+      expect(stats['dmax']).toBeDefined();
+      expect(stats['volume']).toBeDefined();
+      expect(stats['suvmean']).toBeDefined();
+      expect(stats['suvmax']).toBeDefined();
+      expect(stats['suvpeak']).toBeDefined();
+      expect(stats['tlg']).toBeDefined();
+      expect(stats['dmaxbulk']).toBeDefined();
     });
   });
 
@@ -417,8 +385,7 @@ describe('ProcessingClient', () => {
           'series',
           GK.seriesId,
         );
-        expect(response).toBeDefined();
-        expect(response.data).toBeDefined();
+        expect(response).toBeTruthy();
       });
 
       it('should delete the GK dicom', async () => {
@@ -427,7 +394,6 @@ describe('ProcessingClient', () => {
           GK.dicomUuid,
         );
         expect(response).toBeDefined();
-        expect(response.data).toBeDefined();
       });
     });
 
@@ -438,7 +404,6 @@ describe('ProcessingClient', () => {
           PET.seriesId,
         );
         expect(response).toBeDefined();
-        expect(response.data).toBeDefined();
       });
 
       it('should delete the PET dicom', async () => {
@@ -447,7 +412,6 @@ describe('ProcessingClient', () => {
           PET.dicomUuid,
         );
         expect(response).toBeDefined();
-        expect(response.data).toBeDefined();
       });
     });
 
@@ -458,7 +422,6 @@ describe('ProcessingClient', () => {
           mask.inferenceID,
         );
         expect(response).toBeDefined();
-        expect(response.data).toBeDefined();
       });
 
       it('should delete the thresholded mask ID', async () => {
@@ -467,7 +430,6 @@ describe('ProcessingClient', () => {
           mask.thresholdedMaskId,
         );
         expect(response).toBeDefined();
-        expect(response.data).toBeDefined();
       });
 
       it('should delete the fragment mask ID', async () => {
@@ -476,7 +438,6 @@ describe('ProcessingClient', () => {
           mask.fragmentMaskId,
         );
         expect(response).toBeDefined();
-        expect(response.data).toBeDefined();
       });
 
       it('should delete the RTSS ID', async () => {
@@ -485,7 +446,6 @@ describe('ProcessingClient', () => {
           mask.rtssID,
         );
         expect(response).toBeDefined();
-        expect(response.data).toBeDefined();
       });
 
       it('should delete the SEG ID', async () => {
@@ -494,7 +454,6 @@ describe('ProcessingClient', () => {
           mask.segID,
         );
         expect(response).toBeDefined();
-        expect(response.data).toBeDefined();
       });
     });
   });
