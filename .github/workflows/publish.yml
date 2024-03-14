@@ -3,7 +3,8 @@ name: 'publish'
 on:
   push:
     branches:
-      - '*'
+      - 'dev'
+      - 'main'
     tags:
       - '*'
 
