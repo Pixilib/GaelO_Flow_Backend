@@ -65,35 +65,35 @@ describe('TmtvService', () => {
     );
   });
 
-  // describe('sendMaskAsRtssToOrthanc', () => {
-  //   it(
-  //     'should call ProcessingClient sendMaskAsRtssToOrthanc',
-  //     async () => {
-  //       await tmtvService.sendMaskAsRtssToOrthanc();
+  describe('sendMaskAsRtssToOrthanc', () => {
+    it(
+      'should call ProcessingClient sendMaskAsRtssToOrthanc',
+      async () => {
+        const results = await tmtvService.sendMaskAsRtssToOrthanc();
 
-  //       // expect(tmtvService.getCreatedFiles().length).toBe(7);
-  //     },
-  //     2 * 60 * 1000,
-  //   );
-  // });
+        expect(results).toBeDefined();
+      },
+      2 * 60 * 1000,
+    );
+  });
 
-  // describe('sendMaskAsSegToOrthanc', () => {
-  //   it(
-  //     'should call ProcessingClient sendMaskAsSegToOrthanc',
-  //     async () => {
-  //       await tmtvService.sendMaskAsSegToOrthanc();
+  describe('sendMaskAsSegToOrthanc', () => {
+    it(
+      'should call ProcessingClient sendMaskAsSegToOrthanc',
+      async () => {
+        const results = await tmtvService.sendMaskAsSegToOrthanc();
 
-  //       expect(tmtvService.getCreatedFiles().length).toBe(8);
-  //     },
-  //     2 * 60 * 1000,
-  //   );
-  // });
+        expect(results).toBeDefined();
+      },
+      2 * 60 * 1000,
+    );
+  });
 
-  // describe('deleteAllRessources', () => {
-  //   it('should call ProcessingClient deleteRessource', async () => {
-  //     await tmtvService.deleteAllRessources();
+  describe('deleteAllRessources', () => {
+    it('should call ProcessingClient deleteRessource', async () => {
+      await tmtvService.deleteAllRessources();
 
-  //     expect(tmtvService.getCreatedFiles().length).toBe(0);
-  //   });
-  // });
+      expect(tmtvService.getCreatedFiles().length).toBe(0);
+    });
+  });
 });

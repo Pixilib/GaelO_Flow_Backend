@@ -40,7 +40,6 @@ export class MaskProcessingService {
           this.petSeriesOrthancId,
           this.maskId,
         );
-        console.log('rtssId: ', rtssId);
         const rtssStream = await this.processingService.getRtss(rtssId);
         await this.processingService.deleteRessource('rtss', rtssId);
         return rtssStream;

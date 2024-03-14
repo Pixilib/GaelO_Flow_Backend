@@ -120,13 +120,11 @@ class ProcessingClient extends HttpClient {
     maskId: string,
     output3D: boolean,
   ): Promise<string> {
-    console.log('fragmentMask');
     return this.request('/tools/mask-fragmentation', 'POST', {
       seriesId,
       maskId,
       output3D,
     }).then((response) => response.data);
-    // return null;
   }
 
   getMaskDicomOrientation(

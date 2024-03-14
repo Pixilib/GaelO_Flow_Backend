@@ -83,48 +83,38 @@ export class TmtvService {
     this.createdFiles.push(new ProcessingFile(maskId, 'masks'));
 
     if (fragmented) {
-      console.log('this.ptSeriesId: ', this.ptSeriesId);
-      console.log('maskId: ', maskId);
-
       const fragmentedMaskId = await this.processingClient.fragmentMask(
         this.ptSeriesId,
         maskId,
         true,
       );
+      const fragmentedMask = new MaskProcessingService(this.processingClient);
 
-      console.log(fragmentedMaskId, 'fragmentedMaskId');
-      // this.createdFiles.push(new ProcessingFile(fragmentedMaskId, 'masks'));
-      // const fragmentedMask = new MaskProcessingService(this.processingClient);
-      // fragmentedMask.setMaskId(fragmentedMaskId);
-      // fragmentedMask.setPetId(this.ptSeriesId, this.ptOrthancSeriesId);
-      // this.fragmentedMask = fragmentedMask;
+      this.createdFiles.push(new ProcessingFile(fragmentedMaskId, 'masks'));
+      fragmentedMask.setMaskId(fragmentedMaskId);
+      fragmentedMask.setPetId(this.ptSeriesId, this.ptOrthancSeriesId);
+      this.fragmentedMask = fragmentedMask;
     }
   }
 
-  async sendMaskAsRtssToOrthanc() {
+  async sendMaskAsRtssToOrthanc(): Promise<object> {
     const rtssStream = await this.fragmentedMask.getMaskAs(
       ProcessingMaskEnum.RTSS,
     );
-    // this.createdFiles.push(new ProcessingFile(rtssID, 'rtss'));
-    // console.log(rtssStream, 'rtssID');
-
-    // const rtssStream = await this.processingClient.getRtss(rtssID);
-    // console.log(rtssStream, 'rtssStream');
-    // this.orthancClient.sendToOrthanc(rtssStream);
+    return await this.orthancClient.sendToOrthanc(rtssStream);
   }
 
-  async sendMaskAsSegToOrthanc() {
-    const segId = await this.fragmentedMask.getMaskAs(ProcessingMaskEnum.SEG);
-    this.createdFiles.push(new ProcessingFile(segId, 'seg'));
-    console.log(segId, 'segId');
-
-    const segStream = this.processingClient.getSeg(segId);
-    this.orthancClient.sendToOrthanc(segStream);
+  async sendMaskAsSegToOrthanc(): Promise<object> {
+    const segStream = await this.fragmentedMask.getMaskAs(
+      ProcessingMaskEnum.SEG,
+    );
+    return await this.orthancClient.sendToOrthanc(segStream);
   }
 
   async deleteAllRessources() {
     this.createdFiles.forEach((file) => {
       this.processingClient.deleteRessource(file.getType(), file.getId());
     });
+    this.createdFiles = [];
   }
 }
