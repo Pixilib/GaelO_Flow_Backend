@@ -1,11 +1,9 @@
-import { Injectable } from '@nestjs/common';
 import OrthancClient from '../orthanc/OrthancClient';
 import ProcessingClient from './ProcessingClient';
 import { ProcessingFile } from './ProcessingFile';
 import { MaskProcessingService } from './maskProcessing.service';
 import { ProcessingMaskEnum } from './processingMask.enum';
 
-@Injectable()
 export class TmtvService {
   private ptOrthancSeriesId: string;
   private ctOrthancSeriesId: string;
