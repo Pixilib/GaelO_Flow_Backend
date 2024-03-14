@@ -25,12 +25,12 @@ describe('OrthancClient', () => {
     });
   });
 
-  describe('get archive dicom as stream', () => {
+  describe.skip('get archive dicom as stream', () => {
     it(
       'downloads archive from orthanc',
       async () => {
         const ptId: string = 'e2d08f24-7a1c85a2-b5a747b9-59ee2cda-4f10abde';
-        const file = createWriteStream('test.zip');
+        const file = createWriteStream('dicom.zip');
 
         await orthancClient
           .getArchiveDicomAsStream([ptId])

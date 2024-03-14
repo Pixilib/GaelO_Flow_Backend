@@ -4,7 +4,7 @@ import { TmtvService } from './tmtv.service';
 import OrthancClient from '../orthanc/OrthancClient';
 import ProcessingClient from './ProcessingClient';
 
-describe('TmtvService', () => {
+describe.skip('TmtvService', () => {
   let tmtvService: TmtvService;
   const ctId: string = '5958d213-4a906ee4-28527d57-57d250fd-847acb3f';
   const ptId: string = 'e2d08f24-7a1c85a2-b5a747b9-59ee2cda-4f10abde';

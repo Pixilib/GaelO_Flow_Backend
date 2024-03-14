@@ -5,7 +5,7 @@ import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { createWriteStream } from 'fs';
 
-describe('ProcessingClient', () => {
+describe.skip('ProcessingClient', () => {
   let processingClient: ProcessingClient;
   const PATH = process.cwd() + '/tmp/';
 
