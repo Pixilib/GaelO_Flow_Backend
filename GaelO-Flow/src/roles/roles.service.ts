@@ -25,7 +25,7 @@ export class RolesService {
   }
 
   async findOne(name: string): Promise<Role | null> {
-    return await this.rolesRepository.findOneByOrFail({ name });
+    return await this.rolesRepository.findOneByOrFail({ Name: name });
   }
 
   async create(role: Role): Promise<void> {
@@ -42,13 +42,13 @@ export class RolesService {
 
   async addRoleLabel(roleName: string, labelName: string): Promise<void> {
     const roleLabel = new RoleLabel();
-    const role = await this.rolesRepository.findOneBy({ name: roleName });
+    const role = await this.rolesRepository.findOneBy({ Name: roleName });
     const label = await this.labelsRepository.findOneBy({
-      name: labelName,
+      Name: labelName,
     });
 
-    roleLabel.role = role;
-    roleLabel.label = label;
+    roleLabel.Role = role;
+    roleLabel.Label = label;
     await this.roleLabelRepository.save(roleLabel);
   }
 
@@ -59,8 +59,8 @@ export class RolesService {
   async getRoleLabels(roleName: string): Promise<RoleLabel[]> {
     const allLabels = await this.roleLabelRepository.find({
       where: {
-        role: {
-          name: roleName,
+        Role: {
+          Name: roleName,
         },
       },
     });
@@ -70,31 +70,31 @@ export class RolesService {
   /* istanbul ignore next */
   public async seed() {
     const admin = this.rolesRepository.create({
-      name: 'Admin',
-      import: true,
-      anonymize: true,
-      export: true,
-      query: true,
-      autoQuery: true,
-      delete: true,
-      admin: true,
-      modify: true,
-      cdBurner: true,
-      autoRouting: true,
+      Name: 'Admin',
+      Import: true,
+      Anonymize: true,
+      Export: true,
+      Query: true,
+      AutoQuery: true,
+      Delete: true,
+      Admin: true,
+      Modify: true,
+      CdBurner: true,
+      AutoRouting: true,
     });
 
     const user = this.rolesRepository.create({
-      name: 'User',
-      import: true,
-      anonymize: true,
-      export: true,
-      query: true,
-      autoQuery: true,
-      delete: true,
-      admin: false,
-      modify: true,
-      cdBurner: true,
-      autoRouting: true,
+      Name: 'User',
+      Import: true,
+      Anonymize: true,
+      Export: true,
+      Query: true,
+      AutoQuery: true,
+      Delete: true,
+      Admin: false,
+      Modify: true,
+      CdBurner: true,
+      AutoRouting: true,
     });
 
     await this.rolesRepository.insert([admin, user]);

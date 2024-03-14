@@ -30,14 +30,14 @@ export class OptionsController {
   @Get()
   async getOptions(): Promise<Option> {
     const options = await this.optionService.getOptions();
-    delete options.id;
+    delete options.Id;
 
-    options['orthanc_address'] = this.configService.get('ORTHANC_ADDRESS');
-    options['orthanc_port'] = this.configService.get('ORTHANC_PORT');
-    options['orthanc_username'] = this.configService.get('ORTHANC_USERNAME');
-    options['orthanc_password'] = this.configService.get('ORTHANC_PASSWORD');
-    options['redis_address'] = this.configService.get('REDIS_ADDRESS');
-    options['redis_port'] = this.configService.get('REDIS_PORT');
+    options['OrthancAddress'] = this.configService.get('ORTHANC_ADDRESS');
+    options['OrthancPort'] = this.configService.get('ORTHANC_PORT');
+    options['OrthancUsername'] = this.configService.get('ORTHANC_USERNAME');
+    options['OrthancPassword'] = this.configService.get('ORTHANC_PASSWORD');
+    options['RedisAddress'] = this.configService.get('REDIS_ADDRESS');
+    options['RedisPort'] = this.configService.get('REDIS_PORT');
 
     return options;
   }

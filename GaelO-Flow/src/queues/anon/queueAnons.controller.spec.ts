@@ -77,29 +77,29 @@ describe('QueuesAnonController', () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job1',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job1',
+          Results: null,
         },
         ['job2']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
         ['job3']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
       };
       const mockReq = {
         user: {
           userId: 1,
           role: {
-            admin: true,
+            Admin: true,
           },
         },
       };
@@ -124,7 +124,7 @@ describe('QueuesAnonController', () => {
         user: {
           userId: 1,
           role: {
-            admin: false,
+            Admin: false,
           },
         },
       };
@@ -143,7 +143,7 @@ describe('QueuesAnonController', () => {
         user: {
           userId: 1,
           role: {
-            admin: true,
+            Admin: true,
           },
         },
       };
@@ -164,7 +164,7 @@ describe('QueuesAnonController', () => {
         user: {
           userId: 1,
           role: {
-            admin: false,
+            Admin: false,
           },
         },
       };
@@ -182,7 +182,7 @@ describe('QueuesAnonController', () => {
         user: {
           userId: 1,
           role: {
-            admin: false,
+            Admin: false,
           },
         },
       };
@@ -202,29 +202,29 @@ describe('QueuesAnonController', () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job1',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job1',
+          Results: null,
         },
         ['job2']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
         ['job3']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
       };
       const mockReq = {
         user: {
           userId: 1,
           role: {
-            admin: true,
+            Admin: true,
           },
         },
       };
@@ -250,7 +250,7 @@ describe('QueuesAnonController', () => {
         user: {
           userId: 1,
           role: {
-            admin: false,
+            Admin: false,
           },
         },
       };
@@ -266,29 +266,29 @@ describe('QueuesAnonController', () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job1',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job1',
+          Results: null,
         },
         ['job2']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
         ['job3']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
       };
       const mockReq = {
         user: {
           userId: 1,
           role: {
-            admin: false,
+            Admin: false,
           },
         },
       };
@@ -325,14 +325,14 @@ describe('QueuesAnonController', () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
       const dto: QueuesAnonsDto = {
-        anonymizes: [
+        Anonymizes: [
           {
-            orthancStudyID: 'orthancstudyid',
-            profile: 'profile',
-            newAccessionNumber: 'newaccessionnumber',
-            newPatientID: 'newpatientid',
-            newPatientName: 'newpatientname',
-            newStudyDescription: 'newstudydescription',
+            OrthancStudyID: 'orthancstudyid',
+            Profile: 'profile',
+            NewAccessionNumber: 'newaccessionnumber',
+            NewPatientID: 'newpatientid',
+            NewPatientName: 'newpatientname',
+            NewStudyDescription: 'newstudydescription',
           },
         ],
       };
@@ -343,30 +343,30 @@ describe('QueuesAnonController', () => {
       const result = await controller.addAnonJob(dto, mockRequest);
 
       // ASSERT
-      expect(result).toHaveProperty('uuid');
+      expect(result).toHaveProperty('Uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledTimes(1);
       expect(service.addJob).toHaveBeenCalledWith({
         uuid: expect.any(String),
         userId: 1,
         results: null,
-        anonymize: dto.anonymizes[0],
+        anonymize: dto.Anonymizes[0],
       });
-      expect(service.addJob).toHaveBeenCalledTimes(dto.anonymizes.length);
+      expect(service.addJob).toHaveBeenCalledTimes(dto.Anonymizes.length);
     });
 
     it('should throw ForbiddenException if user already has jobs', async () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
       const dto: QueuesAnonsDto = {
-        anonymizes: [
+        Anonymizes: [
           {
-            orthancStudyID: 'orthancstudyid',
-            profile: 'profile',
-            newAccessionNumber: 'newaccessionnumber',
-            newPatientID: 'newpatientid',
-            newPatientName: 'newpatientname',
-            newStudyDescription: 'newstudydescription',
+            OrthancStudyID: 'orthancstudyid',
+            Profile: 'profile',
+            NewAccessionNumber: 'newaccessionnumber',
+            NewPatientID: 'newpatientid',
+            NewPatientName: 'newpatientname',
+            NewStudyDescription: 'newstudydescription',
           },
         ],
       };
@@ -385,22 +385,22 @@ describe('QueuesAnonController', () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
       const dto: QueuesAnonsDto = {
-        anonymizes: [
+        Anonymizes: [
           {
-            orthancStudyID: 'orthancstudyid',
-            profile: 'profile',
-            newAccessionNumber: 'newaccessionnumber',
-            newPatientID: 'newpatientid',
-            newPatientName: 'newpatientname',
-            newStudyDescription: 'newstudydescription',
+            OrthancStudyID: 'orthancstudyid',
+            Profile: 'profile',
+            NewAccessionNumber: 'newaccessionnumber',
+            NewPatientID: 'newpatientid',
+            NewPatientName: 'newpatientname',
+            NewStudyDescription: 'newstudydescription',
           },
           {
-            orthancStudyID: 'orthancstudyid2',
-            profile: 'profile2',
-            newAccessionNumber: 'newaccessionnumber2',
-            newPatientID: 'newpatientid2',
-            newPatientName: 'newpatientname2',
-            newStudyDescription: 'newstudydescription2',
+            OrthancStudyID: 'orthancstudyid2',
+            Profile: 'profile2',
+            NewAccessionNumber: 'newaccessionnumber2',
+            NewPatientID: 'newpatientid2',
+            NewPatientName: 'newpatientname2',
+            NewStudyDescription: 'newstudydescription2',
           },
         ],
       };
@@ -411,10 +411,10 @@ describe('QueuesAnonController', () => {
       const result = await controller.addAnonJob(dto, mockRequest);
 
       // ASSERT
-      expect(result).toHaveProperty('uuid');
+      expect(result).toHaveProperty('Uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
-      expect(service.addJob).toHaveBeenCalledTimes(dto.anonymizes.length);
-      dto.anonymizes.forEach((anon) => {
+      expect(service.addJob).toHaveBeenCalledTimes(dto.Anonymizes.length);
+      dto.Anonymizes.forEach((anon) => {
         expect(service.addJob).toHaveBeenCalledWith({
           uuid: expect.any(String),
           userId: 1,
@@ -446,7 +446,7 @@ describe('QueuesAnonController', () => {
       await controller.removeAnonJob(uuid);
 
       // ASSERT
-      expect(service.removeJob).toHaveBeenCalledWith({ uuid });
+      expect(service.removeJob).toHaveBeenCalledWith({ Uuid: uuid });
       expect(service.removeJob).toHaveBeenCalledTimes(1);
     });
   });

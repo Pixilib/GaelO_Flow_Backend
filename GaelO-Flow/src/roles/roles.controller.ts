@@ -47,12 +47,12 @@ export class RolesController {
   @Get()
   async findAll(@Query() withLabels: WithLabels): Promise<Role[]> {
     const allRoles = await this.roleService.findAll();
-    if (withLabels.withLabels) {
+    if (withLabels.WithLabels) {
       const allRoleLabels = await this.roleService.getAllRoleLabels();
       allRoles.forEach((role) => {
         role['labels'] = allRoleLabels
-          .filter((roleLabel) => roleLabel.role.name === role.name)
-          .map((roleLabel) => roleLabel.label.name);
+          .filter((roleLabel) => roleLabel.Role.Name === role.Name)
+          .map((roleLabel) => roleLabel.Label.Name);
       });
     }
 
@@ -79,23 +79,23 @@ export class RolesController {
   async CreateRole(@Body() roleDto: RoleDto): Promise<void> {
     const role = new Role();
 
-    if (roleDto.name == undefined)
+    if (roleDto.Name == undefined)
       throw new BadRequestException("Missing Primary Key 'name'");
 
-    if ((await this.roleService.findOne(roleDto.name)) != null)
+    if ((await this.roleService.findOne(roleDto.Name)) != null)
       throw new ConflictException('Role with this name already exists');
 
-    role.name = roleDto.name;
-    role.import = roleDto.import;
-    role.anonymize = roleDto.anonymize;
-    role.export = roleDto.export;
-    role.query = roleDto.query;
-    role.autoQuery = roleDto.autoQuery;
-    role.delete = roleDto.delete;
-    role.admin = roleDto.admin;
-    role.modify = roleDto.modify;
-    role.cdBurner = roleDto.cdBurner;
-    role.autoRouting = roleDto.autoRouting;
+    role.Name = roleDto.Name;
+    role.Import = roleDto.Import;
+    role.Anonymize = roleDto.Anonymize;
+    role.Export = roleDto.Export;
+    role.Query = roleDto.Query;
+    role.AutoQuery = roleDto.AutoQuery;
+    role.Delete = roleDto.Delete;
+    role.Admin = roleDto.Admin;
+    role.Modify = roleDto.Modify;
+    role.CdBurner = roleDto.CdBurner;
+    role.AutoRouting = roleDto.AutoRouting;
 
     await this.roleService.create(role);
   }
@@ -109,7 +109,7 @@ export class RolesController {
   async delete(@Param('name') name: string): Promise<void> {
     const role = await this.roleService.findOne(name);
 
-    if (await this.userService.isRoleUsed(role.name))
+    if (await this.userService.isRoleUsed(role.Name))
       throw new ForbiddenException('Role is used');
 
     return this.roleService.remove(name);
@@ -171,7 +171,7 @@ export class RolesController {
     if (role == undefined) throw new BadRequestException('Role does not exist');
     if (label == undefined)
       throw new BadRequestException('Label does not exist');
-    if (roleLabel.find((roleLabel) => roleLabel.label.name === label.name))
+    if (roleLabel.find((roleLabel) => roleLabel.Label.Name === label.Name))
       throw new ConflictException('Label already exists for this role');
 
     await this.roleService.addRoleLabel(roleName, labelDto.label);
@@ -186,7 +186,7 @@ export class RolesController {
   @Get('/:roleName/labels')
   async getRoleLabels(@Param('roleName') roleName: string): Promise<String[]> {
     const allRoleLabels = await this.roleService.getRoleLabels(roleName);
-    const labels = allRoleLabels.map((roleLabel) => roleLabel.label.name);
+    const labels = allRoleLabels.map((roleLabel) => roleLabel.Label.Name);
     return labels;
   }
 

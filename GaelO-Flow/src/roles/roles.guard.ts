@@ -6,7 +6,7 @@ export class ImportGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.role.import;
+    return user && user.role.Import;
   }
 }
 
@@ -16,7 +16,7 @@ export class AnonymizeGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.role.anonymize;
+    return user && user.role.Anonymize;
   }
 }
 
@@ -26,7 +26,7 @@ export class ExportGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.role.export;
+    return user && user.role.Export;
   }
 }
 
@@ -36,7 +36,7 @@ export class QueryGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.role.query;
+    return user && user.role.Query;
   }
 }
 
@@ -46,7 +46,7 @@ export class AutoQueryGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.role.autoQuery;
+    return user && user.role.AutoQuery;
   }
 }
 
@@ -56,7 +56,7 @@ export class DeleteGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.role.delete;
+    return user && user.role.Delete;
   }
 }
 
@@ -66,7 +66,7 @@ export class AdminGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.role.admin;
+    return user && user.role.Admin;
   }
 }
 
@@ -76,7 +76,7 @@ export class ModifyGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.role.modify;
+    return user && user.role.Modify;
   }
 }
 
@@ -86,7 +86,7 @@ export class CdBurnerGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.role.cdBurner;
+    return user && user.role.CdBurner;
   }
 }
 
@@ -96,6 +96,6 @@ export class AutoRoutingGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    return user && user.role.autoRouting;
+    return user && user.role.AutoRouting;
   }
 }

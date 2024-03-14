@@ -77,29 +77,29 @@ describe('QueuesDeleteController', () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job1',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job1',
+          Results: null,
         },
         ['job2']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
         ['job3']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
       };
       const mockReq = {
         user: {
-          userId: 1,
-          role: {
-            admin: true,
+          UserId: 1,
+          Role: {
+            Admin: true,
           },
         },
       };
@@ -122,9 +122,9 @@ describe('QueuesDeleteController', () => {
       // MOCK
       const mockReq = {
         user: {
-          userId: 1,
-          role: {
-            admin: false,
+          UserId: 1,
+          Role: {
+            Admin: false,
           },
         },
       };
@@ -141,9 +141,9 @@ describe('QueuesDeleteController', () => {
       const mockUuid = 'test-uuid';
       const mockReq = {
         user: {
-          userId: 1,
-          role: {
-            admin: true,
+          UserId: 1,
+          Role: {
+            Admin: true,
           },
         },
       };
@@ -162,9 +162,9 @@ describe('QueuesDeleteController', () => {
       // MOCK
       const mockReq = {
         user: {
-          userId: 1,
-          role: {
-            admin: false,
+          UserId: 1,
+          Role: {
+            Admin: false,
           },
         },
       };
@@ -180,9 +180,9 @@ describe('QueuesDeleteController', () => {
       const mockUuid = 'test-uuid';
       const mockReq = {
         user: {
-          userId: 1,
-          role: {
-            admin: false,
+          UserId: 1,
+          Role: {
+            Admin: false,
           },
         },
       };
@@ -202,29 +202,29 @@ describe('QueuesDeleteController', () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job1',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job1',
+          Results: null,
         },
         ['job2']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
         ['job3']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
       };
       const mockReq = {
         user: {
-          userId: 1,
-          role: {
-            admin: true,
+          UserId: 1,
+          Role: {
+            Admin: true,
           },
         },
       };
@@ -248,9 +248,9 @@ describe('QueuesDeleteController', () => {
       // MOCK
       const mockReq = {
         user: {
-          userId: 1,
-          role: {
-            admin: false,
+          UserId: 1,
+          Role: {
+            Admin: false,
           },
         },
       };
@@ -266,29 +266,29 @@ describe('QueuesDeleteController', () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job1',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job1',
+          Results: null,
         },
         ['job2']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
         ['job3']: {
-          progress: 0,
-          state: 'waiting',
-          id: 'job2',
-          results: null,
+          Progress: 0,
+          State: 'waiting',
+          Id: 'job2',
+          Results: null,
         },
       };
       const mockReq = {
         user: {
-          userId: 1,
-          role: {
-            admin: false,
+          UserId: 1,
+          Role: {
+            Admin: false,
           },
         },
       };
@@ -325,7 +325,7 @@ describe('QueuesDeleteController', () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
       const dto: QueuesDeleteDto = {
-        orthancSeriesIds: ['123', '456'],
+        OrthancSeriesIds: ['123', '456'],
       };
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
       jest.spyOn(service, 'addJob').mockResolvedValue();
@@ -334,7 +334,7 @@ describe('QueuesDeleteController', () => {
       const result = await controller.addDeleteJob(dto, mockRequest);
 
       // ASSERT
-      expect(result).toHaveProperty('uuid');
+      expect(result).toHaveProperty('Uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledTimes(1);
       expect(service.addJob).toHaveBeenCalledWith({
@@ -343,14 +343,14 @@ describe('QueuesDeleteController', () => {
         orthancSeriesId: '123',
         results: null,
       });
-      expect(service.addJob).toHaveBeenCalledTimes(dto.orthancSeriesIds.length);
+      expect(service.addJob).toHaveBeenCalledTimes(dto.OrthancSeriesIds.length);
     });
 
     it('should throw ForbiddenException if user already has jobs', async () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
       const dto: QueuesDeleteDto = {
-        orthancSeriesIds: ['123', '456'],
+        OrthancSeriesIds: ['123', '456'],
       };
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(true);
 
@@ -367,7 +367,7 @@ describe('QueuesDeleteController', () => {
       // MOCK
       const mockRequest: any = { user: { userId: 1 } };
       const dto: QueuesDeleteDto = {
-        orthancSeriesIds: ['123', '456', '789'],
+        OrthancSeriesIds: ['123', '456', '789'],
       };
       jest.spyOn(service, 'checkIfUserIdHasJobs').mockResolvedValue(false);
       jest.spyOn(service, 'addJob').mockResolvedValue();
@@ -376,10 +376,10 @@ describe('QueuesDeleteController', () => {
       const result = await controller.addDeleteJob(dto, mockRequest);
 
       // ASSERT
-      expect(result).toHaveProperty('uuid');
+      expect(result).toHaveProperty('Uuid');
       expect(service.checkIfUserIdHasJobs).toHaveBeenCalledWith(1);
-      expect(service.addJob).toHaveBeenCalledTimes(dto.orthancSeriesIds.length);
-      dto.orthancSeriesIds.forEach((id) => {
+      expect(service.addJob).toHaveBeenCalledTimes(dto.OrthancSeriesIds.length);
+      dto.OrthancSeriesIds.forEach((id) => {
         expect(service.addJob).toHaveBeenCalledWith({
           uuid: expect.any(String),
           userId: 1,
@@ -411,7 +411,7 @@ describe('QueuesDeleteController', () => {
       await controller.removeDeleteJob(uuid);
 
       // ASSERT
-      expect(service.removeJob).toHaveBeenCalledWith({ uuid });
+      expect(service.removeJob).toHaveBeenCalledWith({ Uuid: uuid });
       expect(service.removeJob).toHaveBeenCalledTimes(1);
     });
   });

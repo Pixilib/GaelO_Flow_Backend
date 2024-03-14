@@ -20,10 +20,10 @@ export class TasksService {
     const currentHour = new Date().getHours();
     const currentMinute = new Date().getMinutes();
     const isBetween = isTimeBetween(
-      options.autoQueryHourStart,
-      options.autoQueryMinuteStart,
-      options.autoQueryHourStop,
-      options.autoQueryMinuteStop,
+      options.AutoQueryHourStart,
+      options.AutoQueryMinuteStart,
+      options.AutoQueryHourStop,
+      options.AutoQueryMinuteStop,
       currentHour,
       currentMinute,
     );

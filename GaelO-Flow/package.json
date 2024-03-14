@@ -53,7 +53,7 @@
     "passport-oauth2": "^1.8.0",
     "pg": "^8.11.3",
     "postgres": "^3.3.5",
-    "reflect-metadata": "^0.1.13",
+    "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1",
     "sqlite": "^5.0.1",
     "sqlite3": "^5.1.6",
@@ -103,8 +103,5 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
-  },
-  "resolutions": {
-    "jackspeak": "2.1.1"
   }
 }

@@ -12,7 +12,7 @@ export class OptionsService {
   ) {}
 
   async getOptions(): Promise<Option> {
-    return await this.optionsRepository.findOneByOrFail({ id: 1 });
+    return await this.optionsRepository.findOneByOrFail({ Id: 1 });
   }
 
   async update(option: UpdateOptionDto): Promise<void> {
@@ -22,11 +22,10 @@ export class OptionsService {
   /* istanbul ignore next */
   public async seed() {
     const option = this.optionsRepository.create({
-      autoQueryHourStart: 22,
-      autoQueryMinuteStart: 0,
-      autoQueryHourStop: 6,
-      autoQueryMinuteStop: 0,
-      useLdap: false,
+      AutoQueryHourStart: 22,
+      AutoQueryMinuteStart: 0,
+      AutoQueryHourStop: 6,
+      AutoQueryMinuteStop: 0,
     });
     await this.optionsRepository.insert(option);
   }

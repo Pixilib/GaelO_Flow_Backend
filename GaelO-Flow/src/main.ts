@@ -17,7 +17,7 @@ import { OauthConfigService } from './oauth_configs/oauth_configs.service';
 
 async function buildSwagger(app: INestApplication<any>) {
   const oauthConfigs = await app.get(OauthConfigService).getOauthConfig();
-  console.log('here', oauthConfigs);
+  // console.log('here', oauthConfigs);
 
   const documentBuilder = new DocumentBuilder()
     .setTitle('GaelO Flow API')

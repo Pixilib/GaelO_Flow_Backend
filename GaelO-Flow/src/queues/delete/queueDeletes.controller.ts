@@ -54,7 +54,7 @@ export class QueuesDeleteController {
     const user = request['user'];
 
     if (!userId && !uuid) {
-      if (user.role.admin) {
+      if (user.Role.Admin) {
         return await this.QueuesDeleteService.getJobsForUuid(); // get all jobs;
       } else {
         throw new ForbiddenException("You don't have access to this resource");
@@ -62,7 +62,7 @@ export class QueuesDeleteController {
     }
 
     if (userId && !uuid) {
-      if (user.role.admin || user.userId == userId) {
+      if (user.Role.Admin || user.UserId == userId) {
         const uuid = await this.QueuesDeleteService.getUuidOfUser(userId);
         return { uuid: uuid };
       } else {
@@ -72,7 +72,7 @@ export class QueuesDeleteController {
 
     if (uuid) {
       if (
-        user.role.admin ||
+        user.Role.Admin ||
         (await this.QueuesDeleteService.getUuidOfUser(user.userId)) == uuid
       ) {
         return await this.QueuesDeleteService.getJobsForUuid(uuid);
@@ -100,7 +100,7 @@ export class QueuesDeleteController {
     if (await this.QueuesDeleteService.checkIfUserIdHasJobs(user.userId))
       throw new ForbiddenException('User already has jobs');
 
-    const orthancSeriesIds = queuesDeleteDto.orthancSeriesIds;
+    const orthancSeriesIds = queuesDeleteDto.OrthancSeriesIds;
     const uuid = randomUUID();
     orthancSeriesIds.forEach((orthancSeriesId) => {
       this.QueuesDeleteService.addJob({
@@ -110,7 +110,7 @@ export class QueuesDeleteController {
         results: null,
       });
     });
-    return { uuid };
+    return { Uuid: uuid };
   }
 
   @ApiBearerAuth('access-token')
@@ -119,6 +119,6 @@ export class QueuesDeleteController {
   @UseGuards(DeleteGuard)
   @Delete(':uuid')
   async removeDeleteJob(@Param('uuid') uuid: string): Promise<void> {
-    this.QueuesDeleteService.removeJob({ uuid: uuid });
+    this.QueuesDeleteService.removeJob({ Uuid: uuid });
   }
 }

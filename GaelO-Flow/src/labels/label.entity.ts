@@ -5,5 +5,5 @@ import { Entity, PrimaryColumn } from 'typeorm';
 export class Label {
   @ApiProperty({ example: 'name' })
   @PrimaryColumn({ name: 'name' })
-  name: string;
+  Name: string;
 }

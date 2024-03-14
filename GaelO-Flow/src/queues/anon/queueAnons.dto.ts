@@ -4,27 +4,27 @@ import { IsArray, IsObject, IsString } from 'class-validator';
 class QueuesAnonDto {
   @ApiProperty({ example: 'orthanc_study_id' })
   @IsString()
-  orthancStudyID: string;
+  OrthancStudyID: string;
 
   @ApiProperty({ example: 'profile' })
   @IsString()
-  profile: string;
+  Profile: string;
 
   @ApiProperty({ example: 'new_accession_number' })
   @IsString()
-  newAccessionNumber: string;
+  NewAccessionNumber: string;
 
   @ApiProperty({ example: 'new_patient_id' })
   @IsString()
-  newPatientID: string;
+  NewPatientID: string;
 
   @ApiProperty({ example: 'new_patient_name' })
   @IsString()
-  newPatientName: string;
+  NewPatientName: string;
 
   @ApiProperty({ example: 'new_study_description' })
   @IsString()
-  newStudyDescription: string;
+  NewStudyDescription: string;
 }
 
 export class QueuesAnonsDto {
@@ -33,5 +33,5 @@ export class QueuesAnonsDto {
   })
   @IsArray()
   @IsObject({ each: true })
-  anonymizes: QueuesAnonDto[];
+  Anonymizes: QueuesAnonDto[];
 }
