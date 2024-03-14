@@ -3,7 +3,8 @@ name: 'build swagger'
 on:
   push:
     branches:
-      - '*'
+      - 'dev'
+      - 'main'
 
 jobs:  
   swagger:
