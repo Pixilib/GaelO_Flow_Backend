@@ -79,9 +79,13 @@ import { HttpModule, HttpService } from '@nestjs/axios';
 import { logger } from './utils/logger.middleware';
 import { TmtvService } from './processing/tmtv.service';
 import { ProcessingQueueService } from './processing/processingQueue.service';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
+    EventEmitterModule.forRoot({
+      wildcard: true,
+    }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       envFilePath: ['.env.dev', '.env'],
