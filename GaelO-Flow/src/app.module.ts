@@ -1,4 +1,9 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
@@ -66,7 +71,14 @@ import { OauthConfigService } from './oauth_configs/oauth_configs.service';
 import { OauthConfigModule } from './oauth_configs/oauth_configs.module';
 import { OauthConfig } from './oauth_configs/oauth_config.entity';
 
+// PROCESSING
+import ProcessingClient from './processing/ProcessingClient';
+import { ProcessingController } from './processing/tmtv.controller';
+
 import { HttpModule, HttpService } from '@nestjs/axios';
+import { logger } from './utils/logger.middleware';
+import { TmtvService } from './processing/tmtv.service';
+import { ProcessingQueueService } from './processing/processingQueue.service';
 
 @Module({
   imports: [
@@ -124,6 +136,7 @@ import { HttpModule, HttpService } from '@nestjs/axios';
     QueuesAnonController,
     QueuesQueryController,
     OauthConfigController,
+    ProcessingController,
   ],
   providers: [
     AppService,
@@ -138,6 +151,13 @@ import { HttpModule, HttpService } from '@nestjs/axios';
     QueuesQueryService,
     MailService,
     OauthConfigService,
+    ProcessingClient,
+    TmtvService,
+    ProcessingQueueService,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(logger).forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

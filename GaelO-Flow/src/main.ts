@@ -14,6 +14,8 @@ import setupAnonWorker from './queues/anon/anonWorker';
 import setupQueryWorker from './queues/query/queryWorker';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { OauthConfigService } from './oauth_configs/oauth_configs.service';
+import setupProcessingWorker from './processing/processingWorker';
+import ProcessingClient from './processing/ProcessingClient';
 
 async function buildSwagger(app: INestApplication<any>) {
   const oauthConfigs = await app.get(OauthConfigService).getOauthConfig();
@@ -32,13 +34,13 @@ async function buildSwagger(app: INestApplication<any>) {
         type: 'oauth2',
         flows: {
           implicit: {
-            authorizationUrl: config.url,
+            authorizationUrl: config.AuthorizationUrl,
             scopes: { openid: 'openid' },
           },
         },
       },
-      // config.provider,
-      'oauth2', // won't work unless this is 'oauth2', but only one can be 'oauth2'
+      // config.Provider,
+      'oauth2',
     );
   });
 
@@ -46,6 +48,16 @@ async function buildSwagger(app: INestApplication<any>) {
   const document = SwaggerModule.createDocument(app, config);
 
   SwaggerModule.setup('docs', app, document);
+}
+
+async function setupWorkers(app: INestApplication<any>) {
+  const orthancClient = app.get(OrthancClient);
+  const configService = app.get(ConfigService);
+  const processingClient = app.get(ProcessingClient);
+  setupDeleteWorker(orthancClient, configService);
+  setupAnonWorker(orthancClient, configService);
+  setupQueryWorker(orthancClient, configService);
+  setupProcessingWorker(orthancClient, configService, processingClient);
 }
 
 async function main() {
@@ -64,13 +76,9 @@ async function main() {
     }),
   );
 
-  const configService = app.get(ConfigService);
-  const orthancClient = app.get(OrthancClient);
-  setupDeleteWorker(orthancClient, configService);
-  setupAnonWorker(orthancClient, configService);
-  setupQueryWorker(orthancClient, configService);
+  await setupWorkers(app);
 
-  const port = configService.get<number>('API_PORT', 3000);
+  const port = app.get(ConfigService).get<number>('API_PORT', 3000);
 
   await buildSwagger(app);
   await app.listen(port);

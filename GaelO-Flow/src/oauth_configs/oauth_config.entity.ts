@@ -1,25 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class OauthConfig {
   @ApiProperty({ example: 1 })
   @PrimaryGeneratedColumn({ name: 'id' })
-  id: number;
+  Id: number;
 
   @ApiProperty({ example: 'keycloak' })
-  @Column()
-  provider: string;
+  @PrimaryColumn()
+  Provider: string;
 
   @ApiProperty({
     example: 'http://localhost:8080/realms/master/protocol/openid-connect/auth',
   })
   @Column()
-  url: string;
+  AuthorizationUrl: string;
 
   @ApiProperty({
     example: 'https://www.keycloak.org/resources/images/logo.svg',
   })
   @Column({ nullable: true })
-  logo: string;
+  Logo: string;
 }

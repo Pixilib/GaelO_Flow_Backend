@@ -7,7 +7,6 @@ import { ProcessingMaskEnum } from './processingMask.enum';
 export class TmtvService {
   private ptOrthancSeriesId: string;
   private ctOrthancSeriesId: string;
-
   private ptSeriesId: string;
   private ctSeriesId: string;
 

@@ -7,7 +7,7 @@ import Redis from 'ioredis';
 import ProcessingClient from './ProcessingClient';
 import { ProcessingMaskEnum } from './processingMask.enum';
 
-async function TmtvWorker(
+async function setupProcessingWorker(
   orthancClient: OrthancClient,
   configService: ConfigService,
   processingClient: ProcessingClient,
@@ -16,7 +16,7 @@ async function TmtvWorker(
   const redisPort = configService.get('REDIS_PORT', 6379);
   const connectionString = 'redis://' + redisHost + ':' + redisPort;
   const redis = new Redis(connectionString, { maxRetriesPerRequest: null });
-  const TmtvWorker = new Worker(
+  const processingWorker = new Worker(
     'processing',
     async (job: Job) => {
       const tmtvService = new TmtvService(orthancClient, processingClient);
@@ -58,9 +58,9 @@ async function TmtvWorker(
     { connection: redis },
   );
 
-  TmtvWorker.on('failed', (job, err) => {
-    console.error(`Job ${job.id} failed with error ${err.message}`);
+  processingWorker.on('failed', (job, err) => {
+    console.error(`Processing Job ${job.id} failed with error ${err.message}`);
   });
 }
 
-export default TmtvWorker;
+export default setupProcessingWorker;
