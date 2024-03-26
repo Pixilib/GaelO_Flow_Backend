@@ -5,7 +5,7 @@ import { Option } from '../options/option.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueuesQueryService } from '../queues/query/queueQuery.service';
 import { isTimeBetween } from '../utils/dateIntervals';
-import OrthancClient from 'src/orthanc/OrthancClient';
+import OrthancClient from '../orthanc/OrthancClient';
 import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()

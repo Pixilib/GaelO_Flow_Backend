@@ -16,8 +16,8 @@ import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminGuard } from '../roles/roles.guard';
 import { ProcessingQueueService } from './processingQueue.service';
 import { NewProcessingJobDto } from './dto/newProcessingJob.dto';
-import { OrGuard } from 'src/utils/orGuards';
-import { CheckUserId } from 'src/utils/CheckUserId.guard';
+import { OrGuard } from '../utils/orGuards';
+import { CheckUserId } from '../utils/CheckUserId.guard';
 
 @ApiTags('processing')
 @Controller('/processing')
