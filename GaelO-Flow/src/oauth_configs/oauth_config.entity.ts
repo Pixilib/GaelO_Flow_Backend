@@ -16,10 +16,4 @@ export class OauthConfig {
   })
   @Column()
   AuthorizationUrl: string;
-
-  @ApiProperty({
-    example: 'https://www.keycloak.org/resources/images/logo.svg',
-  })
-  @Column({ nullable: true })
-  Logo: string;
 }

@@ -35,7 +35,6 @@ export class OauthConfigController {
     for (const config of oauthConfig) {
       oauthConfigDto[config.Provider] = {
         AuthorizationUrl: config.AuthorizationUrl,
-        Logo: config.Logo,
       };
     }
 
@@ -72,7 +71,6 @@ export class OauthConfigController {
     return this.oauthConfigService.addOauthConfig(
       oauthConfigDto.Provider,
       oauthConfigDto.AuthorizationUrl,
-      oauthConfigDto.Logo,
     );
   }
 }

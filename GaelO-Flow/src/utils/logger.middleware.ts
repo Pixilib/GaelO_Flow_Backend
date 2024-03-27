@@ -4,13 +4,18 @@ const jwtService = new JwtService();
 
 export function logger(req: Request, res: Response, next: NextFunction) {
   const { method, url, ip } = req;
-  const timestamp = new Date().toISOString();
+  const time = new Date();
+  const month = time
+    .toLocaleString('default', { month: 'long' })
+    .substring(0, 3);
+  const timestamp = `${time.getDate()}/${month}/${time.getFullYear()}:${time.getHours()}:${time.getMinutes()}:${time.getSeconds()} -0700`;
 
-  const bearer = req.headers.authorization;
-  const decoded = bearer ? jwtService.decode(bearer.split(' ')[1]) : null;
-  const roleName = decoded ? decoded.role.Name : '-';
-  const id = decoded ? decoded.userId : '-';
+  const userAgent = req.headers['user-agent'];
+  const httpVersion = req.httpVersion;
+  const referer = req.headers['referer'];
 
-  console.log(`${ip} ${timestamp} ${roleName} ${id} ${method} ${url}`);
+  console.log(
+    `${ip} - [${timestamp}] "${method} ${url} HTTP/${httpVersion}" "${referer}" "${userAgent}"`,
+  );
   next();
 }

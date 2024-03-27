@@ -1,12 +1,12 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
+import { Injectable } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { Option } from '../options/option.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueuesQueryService } from '../queues/query/queueQuery.service';
 import { isTimeBetween } from '../utils/dateIntervals';
 import OrthancClient from '../orthanc/OrthancClient';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TasksService {
@@ -57,9 +57,4 @@ export class TasksService {
       this.eventEmitter.emit('orthanc.' + element.ChangeType, element);
     });
   }
-
-  // @OnEvent('orthanc.*')
-  // handleOrderCreatedEvent(payload: any) {
-  //   console.log('orthanc: ', payload);
-  // }
 }

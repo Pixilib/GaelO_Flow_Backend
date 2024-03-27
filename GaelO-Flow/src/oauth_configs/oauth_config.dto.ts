@@ -9,8 +9,4 @@ export class OauthConfigDto {
   @ApiProperty()
   @IsString()
   AuthorizationUrl: string;
-
-  @ApiProperty()
-  @IsString()
-  Logo: string;
 }

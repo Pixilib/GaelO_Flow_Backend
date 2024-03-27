@@ -26,15 +26,10 @@ export class OauthConfigService {
     await this.oauthConfigsRepository.delete({ Provider });
   }
 
-  public async addOauthConfig(
-    Provider: string,
-    AuthorizationUrl: string,
-    Logo: string,
-  ) {
+  public async addOauthConfig(Provider: string, AuthorizationUrl: string) {
     const config = this.oauthConfigsRepository.create({
       Provider,
       AuthorizationUrl,
-      Logo,
     });
 
     await this.oauthConfigsRepository.insert(config);
@@ -46,7 +41,6 @@ export class OauthConfigService {
       Provider: 'keycloak',
       AuthorizationUrl:
         'http://localhost:8080/realms/master/protocol/openid-connect/auth',
-      Logo: 'https://www.keycloak.org/resources/images/logo.svg',
     });
     await this.oauthConfigsRepository.insert(option);
   }

@@ -54,7 +54,7 @@ export class QueuesQueryController {
 
     if (!userId && !uuid) {
       if (user.role.Admin) {
-        return await this.QueuesQueryService.getJobsForUuid(); // get all jobs;
+        return await this.QueuesQueryService.getJobsForUuid();
       } else {
         throw new ForbiddenException("You don't have access to this resource");
       }
