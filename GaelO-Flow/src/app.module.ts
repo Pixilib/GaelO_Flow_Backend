@@ -73,7 +73,7 @@ import { OauthConfig } from './oauth_configs/oauth_config.entity';
 
 // PROCESSING
 import ProcessingClient from './processing/ProcessingClient';
-import { ProcessingController } from './processing/tmtv.controller';
+import { ProcessingController } from './processing/processing.controller';
 
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { logger } from './utils/logger.middleware';
