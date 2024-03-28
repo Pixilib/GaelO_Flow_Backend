@@ -131,6 +131,8 @@ export class AuthController {
     @Body() changePasswordDto: ChangePasswordDto,
     @Req() req: Request,
   ): Promise<undefined> {
+    console.log('Change Password Request Started');
+    console.log('Change Password DTO:', changePasswordDto);
     const userId = req['user'].userId;
     if (
       changePasswordDto.NewPassword !== changePasswordDto.ConfirmationPassword
@@ -139,6 +141,7 @@ export class AuthController {
     }
 
     const user = await this.usersService.findOne(userId);
+    console.log('User Found:', user);
 
     const salt = await bcryptjs.genSalt();
     const hashedPassword = await bcryptjs.hash(
