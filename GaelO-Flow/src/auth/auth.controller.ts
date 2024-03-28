@@ -116,10 +116,10 @@ export class AuthController {
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
 
-    await this.mailService.sendChangePasswordEmail(
-      newUser.Email,
-      confirmationToken,
-    );
+    //await this.mailService.sendChangePasswordEmail(
+      //newUser.Email,
+      //confirmationToken,
+    //);
   }
 
   @ApiResponse({ status: 201, description: 'Password changed' })
