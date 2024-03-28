@@ -12,7 +12,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Job } from 'bullmq';
-import { ApiBearerAuth, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AdminGuard } from '../roles/roles.guard';
 import { ProcessingQueueService } from './processingQueue.service';
 import { NewProcessingJobDto } from './dto/newProcessingJob.dto';
@@ -35,44 +41,105 @@ export class ProcessingController {
     await this.processingQueueService.flush();
   }
 
+  // @ApiBearerAuth('access-token')
+  // @ApiResponse({
+  //   status: 200,
+  //   description: 'Get all jobs that the user created',
+  //   type: Object,
+  // })
+  // @ApiResponse({ status: 401, description: 'Unauthorized' })
+  // @ApiResponse({ status: 403, description: 'Forbidden' })
+  // @ApiQuery({ name: 'jobId', required: false })
+  // @ApiQuery({ name: 'userId', required: false })
+  // @Get()
+  // @UseGuards(
+  //   new OrGuard([new AdminGuard(), new CheckUserId(['query', 'userId'])]),
+  // )
+  // async getJobs(
+  //   @Req() request: Request,
+  //   @Query('jobId') jobId: string,
+  //   @Query('userId') userId: number,
+  // ): Promise<object> {
+  //   const user = request['user'];
+  //   const jobIdsOfUser = await this.processingQueueService.getJobIdsOfUser(
+  //     user.userId,
+  //   );
+  //   if (jobId && !jobIdsOfUser.includes(jobId) && !user.role.Admin)
+  //     throw new BadRequestException('JobId not found');
+
+  //   const jobs = await this.processingQueueService.getJobs(userId, jobId);
+  //   const results = [];
+  //   jobs.forEach((job: Job<any, any, string>) => {
+  //     results.push({
+  //       Progress: job.progress,
+  //       State: job.data.state,
+  //       Id: job.id,
+  //       Results: job.data.results,
+  //     });
+  //   });
+
+  //   return results;
+  // }
+
+  @ApiBearerAuth('access-token')
+  @ApiResponse({ status: 200, description: 'Get all uuids', type: [String] })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiQuery({ name: 'userId', required: false })
+  @UseGuards(
+    new OrGuard([new AdminGuard(), new CheckUserId(['query', 'userId'])]),
+  )
+  @Get()
+  async getUuid(
+    @Query('userId') userId: number,
+    @Req() request: Request,
+  ): Promise<object> {
+    const user = request['user'];
+
+    if (!userId && user.role.Admin) {
+      return await this.processingQueueService.getAllUuids();
+    } else {
+      return await this.processingQueueService.getUuidsOfUser(userId);
+    }
+  }
+
   @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 200,
-    description: 'Get all jobs that the user created',
+    description: 'Get all jobs for the uuid',
     type: Object,
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
-  @ApiQuery({ name: 'jobId', required: false })
-  @ApiQuery({ name: 'userId', required: false })
-  @Get()
-  @UseGuards(
-    new OrGuard([new AdminGuard(), new CheckUserId(['query', 'userId'])]),
-  )
+  @ApiParam({ name: 'uuid', required: true })
+  @Get(':uuid')
   async getJobs(
+    @Param('uuid') uuid: string,
     @Req() request: Request,
-    @Query('jobId') jobId: string,
-    @Query('userId') userId: number,
   ): Promise<object> {
     const user = request['user'];
-    const jobIdsOfUser = await this.processingQueueService.getJobIdsOfUser(
+
+    if (!uuid) throw new BadRequestException('Uuid is required');
+
+    const uuidsOfUser = await this.processingQueueService.getUuidsOfUser(
       user.userId,
     );
-    if (jobId && !jobIdsOfUser.includes(jobId) && !user.role.Admin)
-      throw new BadRequestException('JobId not found');
 
-    const jobs = await this.processingQueueService.getJobs(userId, jobId);
-    const results = [];
-    jobs.forEach((job: Job<any, any, string>) => {
-      results.push({
-        Progress: job.progress,
-        State: job.data.state,
-        Id: job.id,
-        Results: job.data.results,
+    if (user.role.Admin || uuidsOfUser.includes(uuid)) {
+      const jobs = await this.processingQueueService.getJobs(undefined, uuid);
+      const results = [];
+      jobs.forEach((job: Job<any, any, string>) => {
+        results.push({
+          Progress: job.progress,
+          State: job.data.state,
+          Id: job.id,
+          Results: job.data.results,
+        });
       });
-    });
-
-    return results;
+      return results;
+    } else {
+      throw new ForbiddenException("You don't have access to this resource");
+    }
   }
 
   @ApiBearerAuth('access-token')

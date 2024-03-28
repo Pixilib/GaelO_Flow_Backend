@@ -66,12 +66,39 @@ export class QueuesQuerySeriesDto {
 }
 
 export class QueuesQueryDto {
-  @ApiProperty({ example: [QueuesQueryStudyDto], required: false })
+  @ApiProperty({
+    example: [
+      {
+        PatientName: 'patient_name',
+        PatientID: 'patient_id',
+        StudyDate: 'patient_birthdate',
+        Modality: 'modality',
+        StudyDescription: 'study_description',
+        AccessionNb: 'accession_nb',
+        StudyInstanceUID: 'study_instance_uid',
+        Aet: 'aet',
+      },
+    ],
+    required: false,
+  })
   @IsArray()
   @IsObject({ each: true })
   Studies: QueuesQueryStudyDto[] = [];
 
-  @ApiProperty({ example: [QueuesQuerySeriesDto], required: false })
+  @ApiProperty({
+    example: [
+      {
+        StudyUID: 'study_uid',
+        Modality: 'modality',
+        ProtocolName: 'protocol_name',
+        SeriesDescription: 'series_description',
+        SeriesNumber: 'series_number',
+        SeriesInstanceUID: 'series_instance_uid',
+        Aet: 'aet',
+      },
+    ],
+    required: false,
+  })
   @IsArray()
   @IsObject({ each: true })
   Series: QueuesQuerySeriesDto[] = [];

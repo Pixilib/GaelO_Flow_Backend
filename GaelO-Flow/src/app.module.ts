@@ -9,7 +9,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 
 // MAIN ROUTE
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 
 // USER ROUTE
 import { User } from './users/user.entity';
@@ -143,7 +142,6 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ProcessingController,
   ],
   providers: [
-    AppService,
     SeedService,
     RolesService,
     UsersService,

@@ -3,7 +3,6 @@ import { QueuesQueryController } from './queueQuery.controller';
 import { QueuesQueryService } from './queueQuery.service';
 import { QueuesQueryDto } from './queueQuery.dto';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
-import { AdminGuard } from '../../roles/roles.guard';
 
 describe('QueuesQueryController', () => {
   let controller: QueuesQueryController;
@@ -19,6 +18,7 @@ describe('QueuesQueryController', () => {
             addJob: jest.fn(),
             removeJob: jest.fn(),
             getJobs: jest.fn(),
+            getAllUuids: jest.fn(),
             checkIfUserIdHasJobs: jest.fn(),
             getUuidOfUser: jest.fn(),
             closeQueueConnection: jest.fn(),
@@ -58,15 +58,16 @@ describe('QueuesQueryController', () => {
     });
   });
 
-  describe('getJobs', () => {
-    it('check if getJobs has AdminGuard and QueryGuard', async () => {
+  describe('getUuid', () => {
+    it('check if getUuid has AdminGuard and QueryGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
-        QueuesQueryController.prototype.getJobs,
+        QueuesQueryController.prototype.getUuid,
       );
       const guardNames = guards[0].guards.map(
         (guard: any) => guard.constructor.name,
       );
+
       expect(guards.length).toBe(1);
       expect(guards[0].constructor.name).toBe('OrGuard');
       expect(guardNames.length).toBe(2);
@@ -74,28 +75,9 @@ describe('QueuesQueryController', () => {
       expect(guardNames).toContain('QueryGuard');
     });
 
-    it('should return all jobs for all users (admin)', async () => {
+    it('should return all uuids if no userId is provided and user is admin', async () => {
       // MOCK
-      const mockJobs: any = {
-        ['job1']: {
-          Progress: 0,
-          State: 'waiting',
-          Id: 'job1',
-          Results: null,
-        },
-        ['job2']: {
-          Progress: 0,
-          State: 'waiting',
-          Id: 'job2',
-          Results: null,
-        },
-        ['job3']: {
-          Progress: 0,
-          State: 'waiting',
-          Id: 'job2',
-          Results: null,
-        },
-      };
+      const mockUuids = ['test-uuid-1', 'test-uuid-2'];
       const mockReq = {
         user: {
           userId: 1,
@@ -105,41 +87,19 @@ describe('QueuesQueryController', () => {
         },
       };
 
-      jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
+      jest.spyOn(service, 'getAllUuids').mockResolvedValue(mockUuids);
 
       // ACT
-      const result = await controller.getJobs(
-        undefined,
-        undefined,
-        mockReq as any,
-      );
+      const result = await controller.getUuid(undefined, mockReq as any);
 
       // ASSERT
-      expect(service.getJobsForUuid).toHaveBeenCalledWith();
-      expect(result).toEqual(mockJobs);
+      expect(service.getAllUuids).toHaveBeenCalledWith();
+      expect(result).toEqual(mockUuids);
     });
 
-    it('should throw ForbiddenException if user is not admin when trying to get all the jobs', async () => {
+    it('should return the uuid of a specific user if userId is provided and user is admin', async () => {
       // MOCK
-      const mockReq = {
-        user: {
-          userId: 1,
-          role: {
-            Admin: false,
-          },
-        },
-      };
-
-      // ACT & ASSERT
-      await expect(
-        controller.getJobs(undefined, undefined, mockReq as any),
-      ).rejects.toThrow(ForbiddenException);
-    });
-
-    // get uuid of user
-    it('should return the uuid of a specific user (admin)', async () => {
-      // MOCK
-      const mockUuid = 'test-uuid';
+      const mockUuid = 'test-uuid-1';
       const mockReq = {
         user: {
           userId: 1,
@@ -152,11 +112,11 @@ describe('QueuesQueryController', () => {
       jest.spyOn(service, 'getUuidOfUser').mockResolvedValue(mockUuid);
 
       // ACT
-      const result = await controller.getJobs(2, undefined, mockReq as any);
+      const result = await controller.getUuid(2, mockReq as any);
 
       // ASSERT
       expect(service.getUuidOfUser).toHaveBeenCalledWith(2);
-      expect(result).toEqual({ uuid: mockUuid });
+      expect(result).toEqual([mockUuid]);
     });
 
     it('should throw ForbiddenException if user is not admin when trying to get uuid of another user', async () => {
@@ -171,14 +131,14 @@ describe('QueuesQueryController', () => {
       };
 
       // ACT & ASSERT
-      await expect(
-        controller.getJobs(2, undefined, mockReq as any),
-      ).rejects.toThrow(ForbiddenException);
+      await expect(controller.getUuid(2, mockReq as any)).rejects.toThrow(
+        ForbiddenException,
+      );
     });
 
-    it('should return the uuid of the user (user)', async () => {
+    it('should return the uuid of the user if userId is the same as the user', async () => {
       // MOCK
-      const mockUuid = 'test-uuid';
+      const mockUuid = 'test-uuid-1';
       const mockReq = {
         user: {
           userId: 1,
@@ -188,18 +148,71 @@ describe('QueuesQueryController', () => {
         },
       };
 
-      jest.spyOn(service, 'getUuidOfUser').mockResolvedValue(mockUuid);
-
       // ACT
-      const result = await controller.getJobs(1, undefined, mockReq as any);
+      jest.spyOn(service, 'getUuidOfUser').mockResolvedValue(mockUuid);
+      const result = await controller.getUuid(1, mockReq as any);
 
       // ASSERT
       expect(service.getUuidOfUser).toHaveBeenCalledWith(1);
-      expect(result).toEqual({ uuid: mockUuid });
+      expect(result).toEqual([mockUuid]);
     });
 
-    // get jobs for uuid
-    it('should return all jobs for a specific uuid (admin)', async () => {
+    it('should return empty array if no uuids are found for the user', async () => {
+      // MOCK
+      const mockReq = {
+        user: {
+          userId: 1,
+          role: {
+            Admin: false,
+          },
+        },
+      };
+
+      // ACT
+      jest.spyOn(service, 'getUuidOfUser').mockResolvedValue(null);
+      const result = await controller.getUuid(1, mockReq as any);
+
+      // ASSERT
+      expect(service.getUuidOfUser).toHaveBeenCalledWith(1);
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('getJobs', () => {
+    it('check if getJobs has AdminGuard and QueryGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        QueuesQueryController.prototype.getJobs,
+      );
+      const guardNames = guards[0].guards.map(
+        (guard: any) => guard.constructor.name,
+      );
+
+      expect(guards.length).toBe(1);
+      expect(guards[0].constructor.name).toBe('OrGuard');
+      expect(guardNames.length).toBe(2);
+      expect(guardNames).toContain('AdminGuard');
+      expect(guardNames).toContain('QueryGuard');
+    });
+
+    it('Should throw BadRequestException if uuid is not provided', async () => {
+      // MOCK
+      const mockReq = {
+        user: {
+          userId: 1,
+          role: {
+            Admin: true,
+          },
+        },
+      };
+
+      // ACT & ASSERT
+      await expect(
+        controller.getJobs(undefined, mockReq as any),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should return all jobs with the uuid of another user', async () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
@@ -230,15 +243,10 @@ describe('QueuesQueryController', () => {
         },
       };
 
-      jest.spyOn(service, 'getUuidOfUser').mockResolvedValue('test-uuid-2');
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
 
       // ACT
-      const result = await controller.getJobs(
-        undefined,
-        'test-uuid',
-        mockReq as any,
-      );
+      const result = await controller.getJobs('test-uuid', mockReq as any);
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith('test-uuid');
@@ -255,15 +263,14 @@ describe('QueuesQueryController', () => {
           },
         },
       };
-      jest.spyOn(service, 'getUuidOfUser').mockResolvedValue('test-uuid-2');
 
       // ACT & ASSERT
       await expect(
-        controller.getJobs(undefined, 'test-uuid', mockReq as any),
+        controller.getJobs('test-uuid', mockReq as any),
       ).rejects.toThrow(ForbiddenException);
     });
 
-    it('should return all jobs for a specific uuid (user)', async () => {
+    it('should return all jobs with the uuid of the user', async () => {
       // MOCK
       const mockJobs: any = {
         ['job1']: {
@@ -294,15 +301,10 @@ describe('QueuesQueryController', () => {
         },
       };
 
+      // ACT
       jest.spyOn(service, 'getUuidOfUser').mockResolvedValue('test-uuid');
       jest.spyOn(service, 'getJobsForUuid').mockResolvedValue(mockJobs);
-
-      // ACT
-      const result = await controller.getJobs(
-        undefined,
-        'test-uuid',
-        mockReq as any,
-      );
+      const result = await controller.getJobs('test-uuid', mockReq as any);
 
       // ASSERT
       expect(service.getJobsForUuid).toHaveBeenCalledWith('test-uuid');

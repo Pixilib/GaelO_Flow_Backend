@@ -8,7 +8,7 @@ export class OauthConfig {
   Id: number;
 
   @ApiProperty({ example: 'keycloak' })
-  @PrimaryColumn()
+  @Column()
   Provider: string;
 
   @ApiProperty({

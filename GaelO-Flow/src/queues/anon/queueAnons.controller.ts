@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -18,6 +19,7 @@ import { randomUUID } from 'crypto';
 import {
   ApiBearerAuth,
   ApiBody,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiTags,
@@ -39,46 +41,53 @@ export class QueuesAnonController {
   }
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: 'Get all jobs', type: Object })
+  @ApiResponse({ status: 200, description: 'Get all uuids', type: [String] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiQuery({ name: 'userId', required: false })
-  @ApiQuery({ name: 'uuid', required: false })
   @UseGuards(new OrGuard([new AnonymizeGuard(), new AdminGuard()]))
   @Get()
-  async getJobs(
+  async getUuid(
     @Query('userId') userId: number,
-    @Query('uuid') uuid: string,
     @Req() request: Request,
   ): Promise<object> {
     const user = request['user'];
 
-    if (!userId && !uuid) {
-      if (user.role.Admin) {
-        return await this.QueuesAnonService.getJobsForUuid(); // get all jobs;
-      } else {
-        throw new ForbiddenException("You don't have access to this resource");
-      }
+    if (!userId && user.role.Admin) {
+      return await this.QueuesAnonService.getAllUuids();
+    } else if (userId && (user.userId == userId || user.role.Admin)) {
+      const uuid = await this.QueuesAnonService.getUuidOfUser(userId);
+      return uuid ? [uuid] : [];
+    } else {
+      throw new ForbiddenException("You don't have access to this resource");
     }
+  }
 
-    if (userId && !uuid) {
-      if (user.role.Admin || user.userId == userId) {
-        const uuid = await this.QueuesAnonService.getUuidOfUser(userId);
-        return { uuid: uuid };
-      } else {
-        throw new ForbiddenException("You don't have access to this resource");
-      }
-    }
+  @ApiBearerAuth('access-token')
+  @ApiResponse({
+    status: 200,
+    description: 'Get all jobs for the uuid',
+    type: Object,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiParam({ name: 'uuid', required: true })
+  @UseGuards(new OrGuard([new AnonymizeGuard(), new AdminGuard()]))
+  @Get(':uuid')
+  async getJobs(
+    @Param('uuid') uuid: string,
+    @Req() request: Request,
+  ): Promise<object> {
+    const user = request['user'];
 
-    if (uuid) {
-      if (
-        user.role.Admin ||
-        (await this.QueuesAnonService.getUuidOfUser(user.UserId)) == uuid
-      ) {
-        return await this.QueuesAnonService.getJobsForUuid(uuid);
-      } else {
-        throw new ForbiddenException("You don't have access to this resource");
-      }
+    if (!uuid) throw new BadRequestException('Uuid is required');
+
+    const uuidOfUser = await this.QueuesAnonService.getUuidOfUser(user.userId);
+
+    if (user.role.Admin || uuidOfUser == uuid) {
+      return await this.QueuesAnonService.getJobsForUuid(uuid);
+    } else {
+      throw new ForbiddenException("You don't have access to this resource");
     }
   }
 
