@@ -10,17 +10,37 @@ export class OauthConfigService {
     private oauthConfigsRepository: Repository<OauthConfig>,
   ) {}
 
+  public async findOneByProvider(Provider: string): Promise<OauthConfig> {
+    const config = await this.oauthConfigsRepository.findOne({
+      where: { Provider },
+    });
+    return config;
+  }
+
   public async getOauthConfig(): Promise<OauthConfig[]> {
     const oauthConfig = await this.oauthConfigsRepository.find();
     return oauthConfig;
   }
 
+  public async deleteOauthConfig(Provider: string) {
+    await this.oauthConfigsRepository.delete({ Provider });
+  }
+
+  public async addOauthConfig(Provider: string, AuthorizationUrl: string) {
+    const config = this.oauthConfigsRepository.create({
+      Provider,
+      AuthorizationUrl,
+    });
+
+    await this.oauthConfigsRepository.insert(config);
+  }
+
   /* istanbul ignore next */
   public async seed() {
     const option = this.oauthConfigsRepository.create({
-      provider: 'keycloak',
-      url: 'http://localhost:8080/realms/master/protocol/openid-connect/auth',
-      logo: 'https://www.keycloak.org/resources/images/logo.svg',
+      Provider: 'keycloak',
+      AuthorizationUrl:
+        'http://localhost:8080/realms/master/protocol/openid-connect/auth',
     });
     await this.oauthConfigsRepository.insert(option);
   }

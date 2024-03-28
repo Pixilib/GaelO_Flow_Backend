@@ -1,18 +1,28 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { Cron, CronExpression, Interval, Timeout } from '@nestjs/schedule';
+import { Injectable } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { Option } from '../options/option.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { QueuesQueryService } from '../queues/query/queueQuery.service';
 import { isTimeBetween } from '../utils/dateIntervals';
+import OrthancClient from '../orthanc/OrthancClient';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TasksService {
+  private lastChanges: Number = 0;
+
   constructor(
     @InjectRepository(Option)
     private optionRepository: Repository<Option>,
     private queueQueryService: QueuesQueryService,
-  ) {}
+    private orthancClient: OrthancClient,
+    private eventEmitter: EventEmitter2,
+  ) {
+    (async () => {
+      this.lastChanges = (await this.orthancClient.getLastChanges()).data.Last;
+    })();
+  }
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   async queryQueueCron() {
@@ -34,5 +44,17 @@ export class TasksService {
     } else if (!queueState && !isBetween) {
       await this.queueQueryService.pause();
     }
+  }
+
+  @Cron(CronExpression.EVERY_10_SECONDS)
+  async orthancMonitoringCron() {
+    const changes = (
+      await this.orthancClient.getChangesSince(this.lastChanges.toString())
+    ).data;
+
+    this.lastChanges = changes.Last;
+    changes.Changes.forEach((element: any) => {
+      this.eventEmitter.emit('orthanc.' + element.ChangeType, element);
+    });
   }
 }

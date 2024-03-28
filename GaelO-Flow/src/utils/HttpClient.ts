@@ -1,26 +1,24 @@
 import axios from 'axios';
 import { Response } from 'express';
+import { Stream } from 'stream';
 
 export class HttpClient {
-  protected address: string;
-  protected port: number;
+  protected url: string;
   protected username: string;
   protected password: string;
   protected forwardedAddress: string;
   protected forwardedProtocol: string;
 
-  constructor() {}
-
   getOptions = (
     url: string,
     method: string,
     headers: object,
-    data: object | string,
-    getAsStream: boolean,
+    data: object | string | Buffer | any,
+    responseType: string | undefined = undefined,
   ): object => {
     return {
       method: method,
-      baseURL: this.address + ':' + this.port,
+      baseURL: this.url,
       url: url,
       auth: {
         username: this.username,
@@ -35,7 +33,7 @@ export class HttpClient {
         ...headers,
       },
       data: data ?? undefined,
-      responseType: getAsStream ? 'stream' : undefined,
+      responseType: responseType,
     };
   };
 
@@ -47,8 +45,8 @@ export class HttpClient {
     this.forwardedProtocol = protocol;
   }
 
-  setAddress(address: string) {
-    this.address = address;
+  setUrl(url: string) {
+    this.url = url;
   }
 
   setUsername(username: string) {
@@ -59,17 +57,37 @@ export class HttpClient {
     this.password = password;
   }
 
-  setPort(port: number) {
-    this.port = port;
-  }
-
   request = (
     url: string,
     method: string,
-    body: object | string,
+    body: object | string | null | any,
     headers: object | undefined = undefined,
   ) => {
-    const option = this.getOptions(url, method, headers, body, false);
+    const option = this.getOptions(url, method, headers, body);
+    return axios.request(option).catch(function (error) {
+      throw error;
+    });
+  };
+
+  requestBuffer = (
+    url: string,
+    method: string,
+    body: object | string | null | any,
+    headers: object | undefined = undefined,
+  ) => {
+    const option = this.getOptions(url, method, headers, body, 'arraybuffer');
+    return axios.request(option).catch(function (error) {
+      throw error;
+    });
+  };
+
+  requestStream = (
+    url: string,
+    method: string,
+    body: object | string | null,
+    headers: object | undefined = undefined,
+  ) => {
+    const option = this.getOptions(url, method, headers, body, 'stream');
     return axios.request(option).catch(function (error) {
       throw error;
     });
@@ -82,7 +100,7 @@ export class HttpClient {
     res: Response,
     headers: object | undefined = undefined,
   ) => {
-    const option = this.getOptions(url, method, body, headers, true);
+    const option = this.getOptions(url, method, headers, body, 'stream');
     return axios
       .request(option)
       .then((response) => {
@@ -93,7 +111,7 @@ export class HttpClient {
         console.error(error);
         if (error.response) {
           if (error.response.status === 401) {
-            res.status(500).send('Bad redentials');
+            res.status(500).send('Bad credentials');
           } else {
             res
               .status(error.response.status)
@@ -103,14 +121,14 @@ export class HttpClient {
       });
   };
 
-  streamToWriteAnswerWithCallBack(
+  async streamToWriteAnswerWithCallBack(
     url: string,
     method: string,
     body: object,
-    streamWriter,
-    finishCallBack,
+    streamWriter: any,
+    finishCallBack: any,
   ) {
-    const config = this.getOptions(url, method, body, {}, true);
+    const config = this.getOptions(url, method, {}, body, 'stream');
     return axios
       .request(config)
       .then((response) => {
@@ -121,5 +139,23 @@ export class HttpClient {
       .catch(function (error) {
         throw error;
       });
+  }
+
+  async getResponseAsStream(
+    url: string,
+    method: string,
+    body: object | string = {},
+  ): Promise<any> {
+    const response = await this.requestStream(url, method, body);
+    return response.data;
+  }
+
+  async getResponseAsBuffer(
+    url: string,
+    method: string,
+    body: object | string = {},
+  ): Promise<any> {
+    const response = await this.requestBuffer(url, method, body);
+    return Buffer.from(response.data, 'binary');
   }
 }

@@ -1,10 +1,14 @@
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 // MAIN ROUTE
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 
 // USER ROUTE
 import { User } from './users/user.entity';
@@ -66,8 +70,21 @@ import { OauthConfigService } from './oauth_configs/oauth_configs.service';
 import { OauthConfigModule } from './oauth_configs/oauth_configs.module';
 import { OauthConfig } from './oauth_configs/oauth_config.entity';
 
+// PROCESSING
+import ProcessingClient from './processing/ProcessingClient';
+import { ProcessingController } from './processing/processing.controller';
+
+import { HttpModule, HttpService } from '@nestjs/axios';
+import { logger } from './utils/logger.middleware';
+import { TmtvService } from './processing/tmtv.service';
+import { ProcessingQueueService } from './processing/processingQueue.service';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+
 @Module({
   imports: [
+    EventEmitterModule.forRoot({
+      wildcard: true,
+    }),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       envFilePath: ['.env.dev', '.env'],
@@ -103,6 +120,7 @@ import { OauthConfig } from './oauth_configs/oauth_config.entity';
     MailModule,
     RoleLabelModule,
     OauthConfigModule,
+    HttpModule,
   ],
   controllers: [
     AppController,
@@ -121,9 +139,9 @@ import { OauthConfig } from './oauth_configs/oauth_config.entity';
     QueuesAnonController,
     QueuesQueryController,
     OauthConfigController,
+    ProcessingController,
   ],
   providers: [
-    AppService,
     SeedService,
     RolesService,
     UsersService,
@@ -135,6 +153,13 @@ import { OauthConfig } from './oauth_configs/oauth_config.entity';
     QueuesQueryService,
     MailService,
     OauthConfigService,
+    ProcessingClient,
+    TmtvService,
+    ProcessingQueueService,
   ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(logger).forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}

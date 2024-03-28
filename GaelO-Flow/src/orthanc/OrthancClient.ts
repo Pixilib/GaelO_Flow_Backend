@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { ConfigService } from '@nestjs/config';
-import { HttpClient } from './HttpClient';
+import { HttpClient } from '../utils/HttpClient';
 import { Injectable } from '@nestjs/common';
 import TagAnon, { TagPolicies } from './TagAnon';
 import { AxiosResponse } from 'axios';
@@ -16,11 +16,9 @@ export default class OrthancClient extends HttpClient {
 
   loadCredentials = () => {
     const orthancAddress = this.configService.get('ORTHANC_ADDRESS');
-    const orthancPort = this.configService.get('ORTHANC_PORT');
     const orthancUsername = this.configService.get('ORTHANC_USERNAME');
     const orthancPassword = this.configService.get('ORTHANC_PASSWORD');
-    this.setAddress(orthancAddress);
-    this.setPort(orthancPort);
+    this.setUrl(orthancAddress);
     this.setUsername(orthancUsername);
     this.setPassword(orthancPassword);
     const url = new URL(this.configService.get('APP_URL'));
@@ -78,6 +76,56 @@ export default class OrthancClient extends HttpClient {
         reject();
       }
     });
+  };
+
+  getArchiveDicomAsBuffer = (
+    orthancIds: string[],
+    hierarchical: boolean = true,
+    transcoding: string | null = null,
+  ) => {
+    let payload;
+
+    if (transcoding) {
+      payload = {
+        Transcode: transcoding,
+        Resources: orthancIds,
+      };
+    } else {
+      payload = {
+        Resources: orthancIds,
+      };
+    }
+
+    const api = hierarchical
+      ? '/tools/create-archive'
+      : '/tools/create-media-extended';
+
+    return this.getResponseAsBuffer(api, 'POST', payload);
+  };
+
+  getArchiveDicomAsStream = (
+    orthancIds: string[],
+    hierarchical: boolean = true,
+    transcoding: string | null = null,
+  ) => {
+    let payload;
+
+    if (transcoding) {
+      payload = {
+        Transcode: transcoding,
+        Resources: orthancIds,
+      };
+    } else {
+      payload = {
+        Resources: orthancIds,
+      };
+    }
+
+    const api = hierarchical
+      ? '/tools/create-archive'
+      : '/tools/create-media-extended';
+
+    return this.getResponseAsStream(api, 'POST', payload);
   };
 
   findInOrthanc = (
@@ -628,4 +676,10 @@ export default class OrthancClient extends HttpClient {
 
     return answersObjects;
   };
+
+  sendToOrthanc(stream: any): Promise<object> {
+    return this.request('/instances', 'POST', stream).then(
+      (response) => response.data,
+    );
+  }
 }

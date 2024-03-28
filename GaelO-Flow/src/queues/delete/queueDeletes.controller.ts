@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -16,6 +17,7 @@ import { QueuesDeleteDto } from './queueDeletes.dto';
 import { randomUUID } from 'crypto';
 import {
   ApiBearerAuth,
+  ApiParam,
   ApiQuery,
   ApiResponse,
   ApiResponseProperty,
@@ -39,46 +41,55 @@ export class QueuesDeleteController {
   }
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: 'Get all jobs', type: Object })
+  @ApiResponse({ status: 200, description: 'Get all uuids', type: [String] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiQuery({ name: 'userId', required: false })
-  @ApiQuery({ name: 'uuid', required: false })
   @UseGuards(new OrGuard([new DeleteGuard(), new AdminGuard()]))
   @Get()
-  async getJobs(
+  async getUuid(
     @Query('userId') userId: number,
-    @Query('uuid') uuid: string,
     @Req() request: Request,
   ): Promise<object> {
     const user = request['user'];
 
-    if (!userId && !uuid) {
-      if (user.Role.Admin) {
-        return await this.QueuesDeleteService.getJobsForUuid(); // get all jobs;
-      } else {
-        throw new ForbiddenException("You don't have access to this resource");
-      }
+    if (!userId && user.role.Admin) {
+      return await this.QueuesDeleteService.getAllUuids();
+    } else if (userId && (user.userId == userId || user.role.Admin)) {
+      const uuid = await this.QueuesDeleteService.getUuidOfUser(userId);
+      return uuid ? [uuid] : [];
+    } else {
+      throw new ForbiddenException("You don't have access to this resource");
     }
+  }
 
-    if (userId && !uuid) {
-      if (user.Role.Admin || user.UserId == userId) {
-        const uuid = await this.QueuesDeleteService.getUuidOfUser(userId);
-        return { uuid: uuid };
-      } else {
-        throw new ForbiddenException("You don't have access to this resource");
-      }
-    }
+  @ApiBearerAuth('access-token')
+  @ApiResponse({
+    status: 200,
+    description: 'Get all jobs for the uuid',
+    type: Object,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({ status: 403, description: 'Forbidden' })
+  @ApiParam({ name: 'uuid', required: true })
+  @UseGuards(new OrGuard([new DeleteGuard(), new AdminGuard()]))
+  @Get(':uuid')
+  async getJobs(
+    @Param('uuid') uuid: string,
+    @Req() request: Request,
+  ): Promise<object> {
+    const user = request['user'];
 
-    if (uuid) {
-      if (
-        user.Role.Admin ||
-        (await this.QueuesDeleteService.getUuidOfUser(user.userId)) == uuid
-      ) {
-        return await this.QueuesDeleteService.getJobsForUuid(uuid);
-      } else {
-        throw new ForbiddenException("You don't have access to this resource");
-      }
+    if (!uuid) throw new BadRequestException('Uuid is required');
+
+    const uuidOfUser = await this.QueuesDeleteService.getUuidOfUser(
+      user.userId,
+    );
+
+    if (user.role.Admin || uuidOfUser == uuid) {
+      return await this.QueuesDeleteService.getJobsForUuid(uuid);
+    } else {
+      throw new ForbiddenException("You don't have access to this resource");
     }
   }
 

@@ -299,17 +299,47 @@ describe('QueuesService', () => {
     it('should return the jobs for a given uuid', async () => {
       const jobs = await service.getJobsForUuid('uuid1');
       expect(jobs).toStrictEqual({
-        '1': { Progress: 0, State: 'wait', Id: '1', Results: undefined },
-        '2': { Progress: 0, State: 'wait', Id: '2', Results: undefined },
+        '1': {
+          Progress: 0,
+          State: 'wait',
+          Id: '1',
+          Results: undefined,
+          UserId: 1,
+        },
+        '2': {
+          Progress: 0,
+          State: 'wait',
+          Id: '2',
+          Results: undefined,
+          UserId: 1,
+        },
       });
     });
 
     it('should return all jobs if no uuid is provided', async () => {
       const jobs = await service.getJobsForUuid();
       expect(jobs).toStrictEqual({
-        '1': { Progress: 0, State: 'wait', Id: '1', Results: undefined },
-        '2': { Progress: 0, State: 'wait', Id: '2', Results: undefined },
-        '3': { Progress: 0, State: 'wait', Id: '3', Results: undefined },
+        '1': {
+          Progress: 0,
+          State: 'wait',
+          Id: '1',
+          Results: undefined,
+          UserId: 1,
+        },
+        '2': {
+          Progress: 0,
+          State: 'wait',
+          Id: '2',
+          Results: undefined,
+          UserId: 1,
+        },
+        '3': {
+          Progress: 0,
+          State: 'wait',
+          Id: '3',
+          Results: undefined,
+          UserId: 2,
+        },
       });
     });
   });

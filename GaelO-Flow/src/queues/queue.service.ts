@@ -88,6 +88,13 @@ export abstract class AbstractQueueService {
     return uuid ? uuid : null;
   }
 
+  async getAllUuids(): Promise<string[]> {
+    const jobs: Job<any, any, string>[] = await this.queue.getJobs();
+    const uuids = jobs.map((job) => job.data.uuid);
+
+    return Array.from(new Set(uuids));
+  }
+
   async closeQueueConnection(): Promise<void> {
     await this.queue.close();
   }
@@ -109,6 +116,7 @@ export abstract class AbstractQueueService {
           State: job.data.state,
           Id: job.id,
           Results: job.data.results,
+          UserId: job.data.userId,
         };
         results[id] = progress;
       });
