@@ -39,6 +39,7 @@ describe('AuthController', () => {
             isRoleUsed: jest.fn(),
             findOneByUsername: jest.fn(),
             findOneByEmail: jest.fn(),
+            updateUserPAssword: jest.fn(),
           },
         },
         {
@@ -214,13 +215,11 @@ describe('AuthController', () => {
       };
 
       authService.verifyToken = jest.fn().mockResolvedValue(1);
-      authController.updateUserPassword = jest
-        .fn()
-        .mockResolvedValue(undefined);
+      usersService.updateUserPassword = jest.fn().mockResolvedValue(undefined);
 
       await authController.changePassword(dto);
 
-      expect(authController.updateUserPassword).toHaveBeenCalledWith(
+      expect(usersService.updateUserPassword).toHaveBeenCalledWith(
         1,
         'password',
       );

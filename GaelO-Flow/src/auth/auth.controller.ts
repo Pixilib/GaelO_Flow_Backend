@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import * as bcryptjs from 'bcryptjs';
 import { Public } from '../interceptors/Public';
 import { ApiBody, ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
@@ -132,14 +131,6 @@ export class AuthController {
       throw new BadRequestException('Invalid token');
     }
 
-    await this.updateUserPassword(userId, NewPassword);
-  }
-
-  async updateUserPassword(userId: number, newPassword: string): Promise<void> {
-    const salt = await bcryptjs.genSalt();
-    const hashedPassword = await bcryptjs.hash(newPassword, salt);
-    const findUser = await this.usersService.findOne(userId);
-    const userWithPasswordUpdated = { ...findUser, Password: hashedPassword };
-    await this.usersService.update(userId, userWithPasswordUpdated);
+    await this.usersService.updateUserPassword(userId, NewPassword);
   }
 }

@@ -73,6 +73,14 @@ export class UsersService {
     await this.usersRepository.update(id, user);
   }
 
+  async updateUserPassword(id: number, newPassword: string): Promise<void> {
+    const salt = await bcryptjs.genSalt();
+    const hashedPassword = await bcryptjs.hash(newPassword, salt);
+    const findUser = await this.findOne(id);
+    const userWithPasswordUpdated = { ...findUser, Password: hashedPassword };
+    await this.update(id, userWithPasswordUpdated);
+  }
+
   async create(user: User): Promise<number> {
     const newUser = await this.usersRepository.insert(user);
     return newUser.identifiers[0].Id;
