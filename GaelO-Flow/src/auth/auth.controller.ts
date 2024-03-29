@@ -10,19 +10,12 @@ import {
   Req,
   Request,
   UseGuards,
-  Get,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import * as bcryptjs from 'bcryptjs';
 import { Public } from '../interceptors/Public';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOAuth2,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '../mail/mail.service';
@@ -111,7 +104,6 @@ export class AuthController {
       registerDto.Email,
       false,
     );
-
     //generate a token for confirmation of user:
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
@@ -125,32 +117,30 @@ export class AuthController {
   @ApiResponse({ status: 201, description: 'Password changed' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiBody({ type: ChangePasswordDto })
-  @ApiBearerAuth('access-token')
+  @Public()
   @Post('change-password')
   async changePassword(
     @Body() changePasswordDto: ChangePasswordDto,
-    @Req() req: Request,
   ): Promise<undefined> {
-    console.log('Change Password Request Started');
-    console.log('Change Password DTO:', changePasswordDto);
-    const userId = req['user'].userId;
-    if (
-      changePasswordDto.NewPassword !== changePasswordDto.ConfirmationPassword
-    ) {
+    const { Token, NewPassword, ConfirmationPassword } = changePasswordDto;
+
+    if (NewPassword !== ConfirmationPassword) {
       throw new BadRequestException('Confirmation password not matching');
     }
 
-    const user = await this.usersService.findOne(userId);
-    console.log('User Found:', user);
+    const userId = await this.authService.verifyToken(Token);
+    if (!userId) {
+      throw new BadRequestException('Invalid token');
+    }
 
+    await this.updateUserPassword(userId, NewPassword);
+  }
+
+  async updateUserPassword(userId: number, newPassword: string): Promise<void> {
     const salt = await bcryptjs.genSalt();
-    const hashedPassword = await bcryptjs.hash(
-      changePasswordDto.NewPassword,
-      salt,
-    );
-
-    user.Password = hashedPassword;
-
-    await this.usersService.update(userId, user);
+    const hashedPassword = await bcryptjs.hash(newPassword, salt);
+    const findUser = await this.usersService.findOne(userId);
+    const userWithPasswordUpdated = { ...findUser, Password: hashedPassword };
+    await this.usersService.update(userId, userWithPasswordUpdated);
   }
 }
