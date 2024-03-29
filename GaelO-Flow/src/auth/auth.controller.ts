@@ -7,7 +7,6 @@ import {
   UnauthorizedException,
   BadRequestException,
   ConflictException,
-  Req,
   Request,
   UseGuards,
 } from '@nestjs/common';
