@@ -119,4 +119,14 @@ export class OrthancController {
   getWado(@Request() request: RequestType, @Response() response: ResponseType) {
     doReverseProxy(request, response, this.orthancClient);
   }
+
+  @ApiBearerAuth('access-token')
+  @Get('/modalities/*')
+  // @UseGuards() ???
+  getModalities(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
 }
