@@ -121,7 +121,7 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
-  @Get('/modalities/*')
+  @Get('/modalities*')
   // @UseGuards() ???
   getModalities(
     @Request() request: RequestType,
