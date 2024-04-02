@@ -10,7 +10,7 @@ import { MailService } from '../mail/mail.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersService } from '../users/users.service';
 import * as bcryptjs from 'bcryptjs';
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 
 describe('AuthService', () => {
   let authService: AuthService;

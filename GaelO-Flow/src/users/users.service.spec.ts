@@ -181,4 +181,36 @@ describe('UsersService', () => {
       expect(result).toBeNull();
     });
   });
+
+  describe('updateUserPassword', () => {
+    it('should update the user password', async () => {
+      const id = 1;
+      const newPassword = 'new_password';
+      const salt = 'salt';
+      const hashedPassword = 'hashed_password';
+      const findUser = {
+        ...firstUser,
+        Password: 'old_password',
+      };
+      const userWithPasswordUpdated = {
+        ...findUser,
+        Password: hashedPassword,
+      };
+
+      jest.spyOn(bcryptjs, 'genSalt').mockResolvedValue(salt as never);
+      jest.spyOn(bcryptjs, 'hash').mockResolvedValue(hashedPassword as never);
+      jest.spyOn(usersService, 'findOne').mockResolvedValue(findUser);
+      jest.spyOn(usersService, 'update').mockResolvedValue(undefined);
+
+      await usersService.updateUserPassword(id, newPassword);
+
+      expect(bcryptjs.genSalt).toHaveBeenCalled();
+      expect(bcryptjs.hash).toHaveBeenCalledWith(newPassword, salt);
+      expect(usersService.findOne).toHaveBeenCalledWith(id);
+      expect(usersService.update).toHaveBeenCalledWith(
+        id,
+        userWithPasswordUpdated,
+      );
+    });
+  });
 });

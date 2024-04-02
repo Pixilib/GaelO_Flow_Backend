@@ -6,6 +6,7 @@ import { User } from '../users/user.entity';
 import { MailService } from '../mail/mail.service';
 import { MailModule } from '../mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
+import { BadRequestException } from '@nestjs/common';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -38,6 +39,7 @@ describe('AuthController', () => {
             isRoleUsed: jest.fn(),
             findOneByUsername: jest.fn(),
             findOneByEmail: jest.fn(),
+            updateUserPAssword: jest.fn(),
           },
         },
         {
@@ -95,7 +97,6 @@ describe('AuthController', () => {
       });
     });
   });
-
   describe('register', () => {
     it('check if signIn is public', async () => {
       const isPublic = Reflect.getMetadata(
@@ -105,7 +106,6 @@ describe('AuthController', () => {
 
       expect(isPublic).toBe(true);
     });
-
     it('should create a new user and send confirmation email', async () => {
       const registerDto = {
         Email: 'test@example.com',
@@ -140,7 +140,8 @@ describe('AuthController', () => {
         .spyOn(mailService, 'sendChangePasswordEmail')
         .mockResolvedValue(null);
 
-      const result = await authController.register(registerDto);
+      await authController.register(registerDto);
+
       expect(usersService.findOneByEmail).toHaveBeenCalledWith(
         registerDto.Email,
         false,
@@ -148,6 +149,10 @@ describe('AuthController', () => {
       expect(usersService.create).toHaveBeenCalledWith(mockUser);
       expect(authService.createConfirmationToken).toHaveBeenCalledWith(
         mockUser,
+      );
+      expect(mailService.sendChangePasswordEmail).toHaveBeenCalledWith(
+        registerDto.Email,
+        'confirmation_token',
       );
     });
 
@@ -170,60 +175,54 @@ describe('AuthController', () => {
   });
 
   describe('changePassword', () => {
-    it('should change the password', async () => {
-      const mockUser = {
-        Id: 1,
-        Username: 'username',
-        Role: {
-          Name: 'User',
-        },
-      };
-      const mockReq = {
-        user: {
-          userId: 1,
-        },
-      };
-      const changePasswordDto = {
-        NewPassword: 'Password123!',
-        ConfirmationPassword: 'Password123!',
-      };
+    it('check if signIn is public', async () => {
+      const isPublic = Reflect.getMetadata(
+        'isPublic',
+        AuthController.prototype.changePassword,
+      );
 
-      jest
-        .spyOn(usersService, 'findOne')
-        .mockResolvedValueOnce(mockUser as User);
-      jest.spyOn(usersService, 'update').mockResolvedValueOnce(null);
-
-      await authController.changePassword(changePasswordDto, mockReq as any);
-      expect(usersService.findOne).toHaveBeenCalledWith(1);
-      expect(usersService.update).toHaveBeenCalledWith(1, mockUser);
+      expect(isPublic).toBe(true);
     });
-
     it('should throw a BadRequestException if passwords do not match', async () => {
-      const mockUser = {
-        Id: 1,
-        Username: 'username',
-        Role: {
-          Name: 'User',
-        },
-      };
-      const mockReq = {
-        user: {
-          userId: 1,
-        },
-      };
-      const changePasswordDto = {
-        NewPassword: 'Password123!',
-        ConfirmationPassword: 'Password1234!',
+      const dto = {
+        Token: 'token',
+        NewPassword: 'password1',
+        ConfirmationPassword: 'password2',
       };
 
-      jest
-        .spyOn(usersService, 'findOne')
-        .mockResolvedValueOnce(mockUser as User);
-      jest.spyOn(usersService, 'update').mockResolvedValueOnce(null);
+      await expect(authController.changePassword(dto)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+    it('should throw an error if token is invalid', async () => {
+      const dto = {
+        Token: 'token',
+        NewPassword: 'password',
+        ConfirmationPassword: 'password',
+      };
 
-      await expect(
-        authController.changePassword(changePasswordDto, mockReq as any),
-      ).rejects.toThrow('Confirmation password not matching');
+      authService.verifyToken = jest.fn().mockResolvedValue(null);
+
+      await expect(authController.changePassword(dto)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+    it('should update user password if token is valid and passwords match', async () => {
+      const dto = {
+        Token: 'token',
+        NewPassword: 'password',
+        ConfirmationPassword: 'password',
+      };
+
+      authService.verifyToken = jest.fn().mockResolvedValue(1);
+      usersService.updateUserPassword = jest.fn().mockResolvedValue(undefined);
+
+      await authController.changePassword(dto);
+
+      expect(usersService.updateUserPassword).toHaveBeenCalledWith(
+        1,
+        'password',
+      );
     });
   });
 });
