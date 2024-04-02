@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import ProcessingClient from './ProcessingClient';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { createWriteStream } from 'fs';
@@ -46,7 +46,7 @@ describe.skip('ProcessingClient', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
-          envFilePath: '.env.testing',
+          envFilePath: ['.env.testing', '.env'],
           isGlobal: true,
         }),
       ],

@@ -74,7 +74,7 @@ import { OauthConfig } from './oauth_configs/oauth_config.entity';
 import ProcessingClient from './processing/ProcessingClient';
 import { ProcessingController } from './processing/processing.controller';
 
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 import { logger } from './utils/logger.middleware';
 import { TmtvService } from './processing/tmtv.service';
 import { ProcessingQueueService } from './processing/processingQueue.service';
