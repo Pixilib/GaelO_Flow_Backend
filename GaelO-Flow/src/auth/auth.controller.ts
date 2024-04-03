@@ -9,6 +9,9 @@ import {
   ConflictException,
   Request,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
+  ValidationError,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -116,6 +119,16 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiBody({ type: ChangePasswordDto })
   @Public()
+  @UsePipes(
+    new ValidationPipe({
+      exceptionFactory: (errors: ValidationError[]) => {
+        const messages = errors.map((error) =>
+          Object.values(error.constraints).join(', '),
+        );
+        return new BadRequestException(messages);
+      },
+    }),
+  )
   @Post('change-password')
   async changePassword(
     @Body() changePasswordDto: ChangePasswordDto,
@@ -130,7 +143,6 @@ export class AuthController {
     if (!userId) {
       throw new BadRequestException('Invalid token');
     }
-
     await this.usersService.updateUserPassword(userId, NewPassword);
   }
 }
