@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 
 import Redis from 'ioredis';
 import ProcessingClient from './ProcessingClient';
-import { ProcessingJobTypeEnum, ProcessingMaskEnum } from './processing.enum';
+import { ProcessingJobType, ProcessingMask } from '../constants/enums';
 
 async function tmtvJob(
   job: Job,
@@ -15,7 +15,7 @@ async function tmtvJob(
   const tmtvService = new TmtvService(orthancClient, processingClient);
   const ctOrthancSeriesId: string = job.data.ctOrthancSeriesId;
   const ptOrthancSeriesId: string = job.data.ptOrthancSeriesId;
-  const sendMaskToOrthancAs: ProcessingMaskEnum = job.data.sendMaskToOrthancAs;
+  const sendMaskToOrthancAs: ProcessingMask = job.data.sendMaskToOrthancAs;
   const withFragmentedMask: boolean =
     job.data.withFragmentedMask == undefined
       ? false
@@ -35,9 +35,9 @@ async function tmtvJob(
   await tmtvService.runInference(withFragmentedMask);
   job.updateProgress(60);
 
-  if (sendMaskToOrthancAs == ProcessingMaskEnum.SEG) {
+  if (sendMaskToOrthancAs == ProcessingMask.SEG) {
     await tmtvService.sendMaskAsSegToOrthanc();
-  } else if (sendMaskToOrthancAs == ProcessingMaskEnum.RTSS) {
+  } else if (sendMaskToOrthancAs == ProcessingMask.RTSS) {
     await tmtvService.sendMaskAsRtssToOrthanc();
   } else {
     throw new Error('Invalid mask type');
@@ -60,10 +60,10 @@ async function setupProcessingWorker(
   const processingWorker = new Worker(
     'processing',
     async (job: Job) => {
-      const jobType = job.data.jobType;
+      const jobType = job.data.JobType;
 
       switch (jobType) {
-        case ProcessingJobTypeEnum.TMTV:
+        case ProcessingJobType.TMTV:
           await tmtvJob(job, orthancClient, processingClient);
           break;
         default:

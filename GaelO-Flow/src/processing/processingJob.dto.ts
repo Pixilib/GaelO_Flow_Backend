@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsInstance, IsString, Matches } from 'class-validator';
-import { ProcessingJobTypeEnum, ProcessingMaskEnum } from './processing.enum';
+import {
+  IsBoolean,
+  IsEnum,
+  IsObject,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { ProcessingJobType, ProcessingMask } from '../constants/enums';
+import { Type } from 'class-transformer';
 
 export class TmtvJobDto {
   @ApiProperty({ required: true })
@@ -12,11 +19,8 @@ export class TmtvJobDto {
   PtOrthancSeriesId: string;
 
   @ApiProperty({ required: true })
-  @IsString()
-  @Matches(/^(seg|rtss)$/, {
-    message: 'Invalid mask type, expected "seg" or "rtss"',
-  })
-  SendMaskToOrthancAs: ProcessingMaskEnum;
+  @IsEnum(ProcessingMask)
+  SendMaskToOrthancAs: ProcessingMask;
 
   @ApiProperty({ required: false, default: false })
   @IsBoolean()
@@ -24,14 +28,11 @@ export class TmtvJobDto {
 }
 
 export class ProcessingJobDto {
-  @ApiProperty({ required: true })
-  @IsString()
-  @Matches(/^(tmtv)$/, {
-    message: 'Invalid job type, expected "tmtv"',
-  }) // TODO: is instance of enum
-  JobType: ProcessingJobTypeEnum;
+  @ApiProperty({ required: true, enum: ProcessingJobType })
+  @IsEnum(ProcessingJobType)
+  JobType: ProcessingJobType;
 
   @ApiProperty({ required: false })
-  @IsInstance(TmtvJobDto)
+  @IsObject()
   TmtvJob: TmtvJobDto;
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ProcessingMaskEnum } from './processing.enum';
+import { ProcessingMask } from '../constants/enums';
 import ProcessingClient from './ProcessingClient';
 
 @Injectable()
@@ -24,17 +24,17 @@ export class MaskProcessingService {
   }
 
   async getMaskAs(
-    type: ProcessingMaskEnum,
+    type: ProcessingMask,
     orientation: string = null,
   ): Promise<any> {
     switch (type) {
-      case ProcessingMaskEnum.NIFTI:
+      case ProcessingMask.NIFTI:
         return await this.processingService.getMaskDicomOrientation(
           this.maskId,
           orientation,
           true,
         );
-      case ProcessingMaskEnum.RTSS:
+      case ProcessingMask.RTSS:
         const rtssId = await this.processingService.createRtssFromMask(
           this.petSeriesOrthancId,
           this.maskId,
@@ -42,7 +42,7 @@ export class MaskProcessingService {
         const rtssStream = await this.processingService.getRtss(rtssId);
         await this.processingService.deleteRessource('rtss', rtssId);
         return rtssStream;
-      case ProcessingMaskEnum.SEG:
+      case ProcessingMask.SEG:
         const segId = await this.processingService.createSegFromMask(
           this.petSeriesOrthancId,
           this.maskId,

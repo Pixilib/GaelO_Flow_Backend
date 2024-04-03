@@ -1,4 +1,5 @@
-import QueryAnswer, { QueryAnswerType } from './QueryAnswer';
+import { QueryAnswerType } from '../../constants/enums';
+import QueryAnswer from './QueryAnswer';
 
 export default class QuerySeriesAnswer extends QueryAnswer {
   StudyInstanceUID: string;

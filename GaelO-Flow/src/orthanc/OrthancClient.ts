@@ -2,10 +2,11 @@ import fs from 'fs';
 import { ConfigService } from '@nestjs/config';
 import { HttpClient } from '../utils/HttpClient';
 import { Injectable } from '@nestjs/common';
-import TagAnon, { TagPolicies } from './TagAnon';
+import TagAnon from './TagAnon';
 import { AxiosResponse } from 'axios';
 import QuerySeriesAnswer from './QueryAnswer/QuerySeriesAnswer';
 import QueryStudyAnswer from './QueryAnswer/QueryStudyAnswer';
+import { TagPolicies } from '../constants/enums';
 
 @Injectable()
 export default class OrthancClient extends HttpClient {

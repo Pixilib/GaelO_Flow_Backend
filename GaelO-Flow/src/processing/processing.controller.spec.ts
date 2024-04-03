@@ -4,7 +4,7 @@ import { ProcessingQueueService } from './processingQueue.service';
 import exp from 'constants';
 import { BadRequestException } from '@nestjs/common';
 import { ProcessingJobDto } from './processingJob.dto';
-import { ProcessingJobTypeEnum, ProcessingMaskEnum } from './processing.enum';
+import { ProcessingJobType, ProcessingMask } from '../constants/enums';
 
 describe('ProcessingController', () => {
   let processingController: ProcessingController;
@@ -208,11 +208,11 @@ describe('ProcessingController', () => {
       // MOCK
       const request = { user: { userId: 1 } };
       const processingJobDto: ProcessingJobDto = {
-        JobType: ProcessingJobTypeEnum.TMTV,
+        JobType: ProcessingJobType.TMTV,
         TmtvJob: {
           CtOrthancSeriesId: 'CtOrthancSeriesId',
           PtOrthancSeriesId: 'PtOrthancSeriesId',
-          SendMaskToOrthancAs: ProcessingMaskEnum.SEG,
+          SendMaskToOrthancAs: ProcessingMask.SEG,
           WithFragmentedMask: false,
         },
       };

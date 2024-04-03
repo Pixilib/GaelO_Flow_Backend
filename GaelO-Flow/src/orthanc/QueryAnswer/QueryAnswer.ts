@@ -1,7 +1,4 @@
-export enum QueryAnswerType {
-  LEVEL_SERIES = 'series',
-  LEVEL_STUDY = 'study',
-}
+import { QueryAnswerType } from '../../constants/enums';
 
 export default abstract class QueryAnswer {
   AnswerId: string;

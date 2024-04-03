@@ -1,8 +1,4 @@
-export enum TagPolicies {
-  KEEP = 'Keep',
-  REPLACE = 'Replace',
-  REMOVE = 'Remove',
-}
+import { TagPolicies } from '../constants/enums';
 
 export default class TagAnon {
   tagPolicy: TagPolicies;
