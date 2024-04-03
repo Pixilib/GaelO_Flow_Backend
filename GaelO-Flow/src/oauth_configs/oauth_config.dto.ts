@@ -9,4 +9,8 @@ export class OauthConfigDto {
   @ApiProperty()
   @IsString()
   AuthorizationUrl: string;
+
+  @ApiProperty()
+  @IsString()
+  ClientId: string;
 }

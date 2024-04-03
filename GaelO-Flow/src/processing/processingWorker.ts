@@ -5,7 +5,48 @@ import { ConfigService } from '@nestjs/config';
 
 import Redis from 'ioredis';
 import ProcessingClient from './ProcessingClient';
-import { ProcessingMaskEnum } from './processingMask.enum';
+import { ProcessingJobTypeEnum, ProcessingMaskEnum } from './processing.enum';
+
+async function tmtvJob(
+  job: Job,
+  orthancClient: OrthancClient,
+  processingClient: ProcessingClient,
+) {
+  const tmtvService = new TmtvService(orthancClient, processingClient);
+  const ctOrthancSeriesId: string = job.data.ctOrthancSeriesId;
+  const ptOrthancSeriesId: string = job.data.ptOrthancSeriesId;
+  const sendMaskToOrthancAs: ProcessingMaskEnum = job.data.sendMaskToOrthancAs;
+  const withFragmentedMask: boolean =
+    job.data.withFragmentedMask == undefined
+      ? false
+      : job.data.withFragmentedMask;
+
+  tmtvService.setCtOrthancSeriesId(ctOrthancSeriesId);
+  tmtvService.setPtOrthancSeriesId(ptOrthancSeriesId);
+
+  job.updateProgress(0);
+
+  await tmtvService.sendDicomToProcessing();
+  job.updateProgress(20);
+
+  await tmtvService.createSeries();
+  job.updateProgress(40);
+
+  await tmtvService.runInference(withFragmentedMask);
+  job.updateProgress(60);
+
+  if (sendMaskToOrthancAs == ProcessingMaskEnum.SEG) {
+    await tmtvService.sendMaskAsSegToOrthanc();
+  } else if (sendMaskToOrthancAs == ProcessingMaskEnum.RTSS) {
+    await tmtvService.sendMaskAsRtssToOrthanc();
+  } else {
+    throw new Error('Invalid mask type');
+  }
+  job.updateProgress(80);
+
+  await tmtvService.deleteAllRessources();
+  job.updateProgress(100);
+}
 
 async function setupProcessingWorker(
   orthancClient: OrthancClient,
@@ -19,43 +60,19 @@ async function setupProcessingWorker(
   const processingWorker = new Worker(
     'processing',
     async (job: Job) => {
-      const tmtvService = new TmtvService(orthancClient, processingClient);
-      const ctOrthancSeriesId: string = job.data.ctOrthancSeriesId;
-      const ptOrthancSeriesId: string = job.data.ptOrthancSeriesId;
-      const sendMaskToOrthancAs: ProcessingMaskEnum =
-        job.data.sendMaskToOrthancAs;
-      const withFragmentedMask: boolean =
-        job.data.withFragmentedMask == undefined
-          ? false
-          : job.data.withFragmentedMask;
+      const jobType = job.data.jobType;
 
-      tmtvService.setCtOrthancSeriesId(ctOrthancSeriesId);
-      tmtvService.setPtOrthancSeriesId(ptOrthancSeriesId);
-
-      job.updateProgress(0);
-
-      await tmtvService.sendDicomToProcessing();
-      job.updateProgress(20);
-
-      await tmtvService.createSeries();
-      job.updateProgress(40);
-
-      await tmtvService.runInference(withFragmentedMask);
-      job.updateProgress(60);
-
-      if (sendMaskToOrthancAs == ProcessingMaskEnum.SEG) {
-        await tmtvService.sendMaskAsSegToOrthanc();
-      } else if (sendMaskToOrthancAs == ProcessingMaskEnum.RTSS) {
-        await tmtvService.sendMaskAsRtssToOrthanc();
-      } else {
-        throw new Error('Invalid mask type');
+      switch (jobType) {
+        case ProcessingJobTypeEnum.TMTV:
+          await tmtvJob(job, orthancClient, processingClient);
+          break;
+        default:
+          throw new Error('Invalid job type');
       }
-      job.updateProgress(80);
-
-      await tmtvService.deleteAllRessources();
-      job.updateProgress(100);
     },
-    { connection: redis },
+    {
+      connection: redis,
+    },
   );
 
   processingWorker.on('failed', (job, err) => {

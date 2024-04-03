@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import ProcessingClient from './ProcessingClient';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { createWriteStream } from 'fs';

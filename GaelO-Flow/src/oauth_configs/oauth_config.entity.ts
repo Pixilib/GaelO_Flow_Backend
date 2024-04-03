@@ -16,4 +16,8 @@ export class OauthConfig {
   })
   @Column()
   AuthorizationUrl: string;
+
+  @ApiProperty({ example: 'back-end' })
+  @Column()
+  ClientId: string;
 }

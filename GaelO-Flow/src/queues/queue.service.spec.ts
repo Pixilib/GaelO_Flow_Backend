@@ -1,11 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Queue } from 'bullmq';
-import { BullModule, InjectQueue } from '@nestjs/bullmq';
 import { AbstractQueueService } from './queue.service';
 
 class QueuesTestService extends AbstractQueueService {
-  constructor(@InjectQueue('test') testQueue: Queue) {
-    super(testQueue);
+  constructor(queue: Queue) {
+    super(queue);
   }
 }
 
@@ -19,34 +18,15 @@ describe('QueuesService', () => {
       getJobs: jest.fn(),
       remove: jest.fn(),
       getJob: jest.fn(),
+      obliterate: jest.fn(),
     } as any;
 
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        BullModule.forRoot({
-          connection: {
-            host: 'localhost', // REDIS_ADDRESS
-            port: 6379, // REDIS_PORT
-          },
-        }),
-        BullModule.registerQueue({
-          name: 'test',
-        }),
-      ],
-      providers: [
-        QueuesTestService,
-        {
-          provide: 'BULLMQ_QUEUE_DELETE',
-          useValue: mockQueue,
-        },
-      ],
+      imports: [],
+      providers: [QueuesTestService, { provide: Queue, useValue: mockQueue }],
     }).compile();
 
-    service = module.get<QueuesTestService>(QueuesTestService);
-  });
-
-  afterEach(async () => {
-    await service.closeQueueConnection();
+    service = new QueuesTestService(mockQueue);
   });
 
   it('should be defined', () => {
@@ -54,100 +34,40 @@ describe('QueuesService', () => {
   });
 
   describe('addJob', () => {
-    afterEach(async () => {
-      // Clean up the queue after each test
-      const jobs = await service.getJobs();
-      await Promise.all(jobs.map((job) => job.remove()));
-    });
-
     it('should correctly add a job to the queue', async () => {
+      // MOCK
       const testData = {
         uuid: '123',
         orthancSeriesId: '456',
         userId: 1,
         state: 'wait',
       };
+      const mockAdd = jest.spyOn(mockQueue, 'add');
+
+      // ACT
       await service.addJob(testData);
 
-      const jobs = await service.getJobs();
-      const addedJob = jobs.find(
-        (job) =>
-          job.data.uuid === '123' &&
-          job.data.orthancSeriesId === '456' &&
-          job.data.userId === 1,
-      );
-
-      expect(addedJob).toBeDefined();
-      expect(addedJob.data).toEqual(testData);
-    });
-  });
-
-  describe('removeJob', () => {
-    beforeEach(async () => {
-      // Insert jobs with known properties
-      await service.addJob({
-        uuid: 'uuid1',
-        orthancSeriesId: '123',
-        userId: 1,
+      // ASSERT
+      expect(mockAdd).toHaveBeenCalledWith('123', testData, {
+        removeOnComplete: { age: 3600 },
+        removeOnFail: { age: 86400 },
       });
-      await service.addJob({
-        uuid: 'uuid1',
-        orthancSeriesId: '456',
-        userId: 1,
-      });
-      await service.addJob({
-        uuid: 'uuid2',
-        orthancSeriesId: '789',
-        userId: 2,
-      });
-    });
-
-    afterEach(async () => {
-      // Clean up the queue after each test
-      const jobs = await service.getJobs();
-      await Promise.all(jobs.map((job) => job.remove()));
-    });
-
-    it('should remove jobs with a specific uuid', async () => {
-      await service.removeJob({ uuid: 'uuid1' });
-
-      const remainingJobs = await service.getJobs();
-      expect(remainingJobs.length).toBe(1);
-      expect(remainingJobs[0].data.uuid).toBe('uuid2');
-    });
-
-    it('should remove all jobs when no data is provided', async () => {
-      await service.removeJob();
-
-      const remainingJobs = await service.getJobs();
-      expect(remainingJobs.length).toBe(0);
     });
   });
 
   describe('getJobs', () => {
-    beforeEach(async () => {
-      // Insert jobs
-      await service.addJob({
-        uuid: 'uuid1',
-        orthancSeriesId: '123',
-        userId: 1,
-      });
-      await service.addJob({
-        uuid: 'uuid1',
-        orthancSeriesId: '456',
-        userId: 1,
-      });
-      await service.addJob({
-        uuid: 'uuid2',
-        orthancSeriesId: '789',
-        userId: 2,
-      });
-    });
-
-    afterEach(async () => {
-      // Clean up the queue after each test
-      const jobs = await service.getJobs();
-      await Promise.all(jobs.map((job) => job.remove()));
+    beforeEach(() => {
+      jest
+        .spyOn(mockQueue, 'getJobs')
+        .mockReturnValueOnce([
+          { data: { uuid: 'uuid1' } },
+          { data: { uuid: 'uuid2' } },
+        ] as any)
+        .mockReturnValueOnce([
+          { data: { uuid: 'uuid1' } },
+          { data: { uuid: 'uuid2' } },
+        ] as any)
+        .mockReturnValue([] as any);
     });
 
     it('should retrieve jobs with a specific uuid', async () => {
@@ -160,34 +80,85 @@ describe('QueuesService', () => {
 
     it('should retrieve all jobs when uuid is undefined', async () => {
       const jobs = await service.getJobs();
-      expect(jobs.length).toBe(3);
+      expect(jobs.length).toBe(4);
+    });
+  });
+
+  describe('removeJob', () => {
+    beforeEach(() => {
+      jest.spyOn(mockQueue, 'getJobs').mockReturnValue([
+        { id: 'job1', data: { uuid: 'uuid1', userId: 1, jobId: 'job1' } },
+        { id: 'job2', data: { uuid: 'uuid1', userId: 2, jobId: 'job2' } },
+        { id: 'job3', data: { uuid: 'uuid2', userId: 2, jobId: 'job3' } },
+      ] as any);
+    });
+
+    it('should remove jobs with a specific uuid', async () => {
+      // MOCK
+      const mockRemove = jest.spyOn(mockQueue, 'remove');
+
+      // ACT
+      await service.removeJob({ uuid: 'uuid1' });
+
+      // ASSERT
+      expect(mockRemove).toHaveBeenCalledTimes(2);
+      expect(mockRemove.mock.calls).toEqual([
+        ['job1', { removeChildren: true }],
+        ['job2', { removeChildren: true }],
+      ]);
+    });
+
+    it('should remove jobs with a specific userId', async () => {
+      // MOCK
+      const mockRemove = jest.spyOn(mockQueue, 'remove');
+
+      // ACT
+      await service.removeJob({ userId: 2 });
+
+      // ASSERT
+      expect(mockRemove).toHaveBeenCalledTimes(2);
+      expect(mockRemove.mock.calls).toEqual([
+        ['job2', { removeChildren: true }],
+        ['job3', { removeChildren: true }],
+      ]);
+    });
+
+    it('should remove jobs with a specific jobId', async () => {
+      // MOCK
+      const mockRemove = jest.spyOn(mockQueue, 'remove');
+
+      // ACT
+      await service.removeJob({ jobId: 'job2' });
+
+      // ASSERT
+      expect(mockRemove).toHaveBeenCalledTimes(1);
+      expect(mockRemove).toHaveBeenCalledWith('job2', { removeChildren: true });
+    });
+
+    it('should remove all jobs when data is undefined', async () => {
+      // MOCK
+      const mockRemove = jest.spyOn(mockQueue, 'remove');
+
+      // ACT
+      await service.removeJob();
+
+      // ASSERT
+      expect(mockRemove).toHaveBeenCalledTimes(3);
+      expect(mockRemove.mock.calls).toEqual([
+        ['job1', { removeChildren: true }],
+        ['job2', { removeChildren: true }],
+        ['job3', { removeChildren: true }],
+      ]);
     });
   });
 
   describe('checkIfUserIdHasJobs', () => {
-    beforeEach(async () => {
-      // Insert jobs
-      await service.addJob({
-        uuid: 'uuid1',
-        orthancSeriesId: '123',
-        userId: 1,
-      });
-      await service.addJob({
-        uuid: 'uuid1',
-        orthancSeriesId: '456',
-        userId: 1,
-      });
-      await service.addJob({
-        uuid: 'uuid2',
-        orthancSeriesId: '789',
-        userId: 2,
-      });
-    });
-
-    afterEach(async () => {
-      // Clean up the queue after each test
-      const jobs = await service.getJobs();
-      await Promise.all(jobs.map((job) => job.remove()));
+    beforeEach(() => {
+      jest.spyOn(mockQueue, 'getJobs').mockReturnValue([
+        { id: 'job1', data: { uuid: 'uuid1', userId: 1, jobId: 'job1' } },
+        { id: 'job2', data: { uuid: 'uuid1', userId: 2, jobId: 'job2' } },
+        { id: 'job3', data: { uuid: 'uuid2', userId: 2, jobId: 'job3' } },
+      ] as any);
     });
 
     it('should return true if there are jobs for the given userId', async () => {
@@ -202,22 +173,17 @@ describe('QueuesService', () => {
   });
 
   describe('getUuidOfUser', () => {
-    beforeEach(async () => {
-      // Insert jobs
-      await service.addJob({ uuid: 'uuid1', userId: 1, data: 'data1' });
-      await service.addJob({ uuid: 'uuid2', userId: 2, data: 'data2' });
-      await service.addJob({ uuid: 'uuid3', userId: 1, data: 'data3' });
-    });
-
-    afterEach(async () => {
-      // Clean up the queue after each test
-      const jobs = await service.getJobs();
-      await Promise.all(jobs.map((job) => job.remove()));
+    beforeEach(() => {
+      jest.spyOn(mockQueue, 'getJobs').mockReturnValue([
+        { id: 'job1', data: { uuid: 'uuid1', userId: 1, jobId: 'job1' } },
+        { id: 'job2', data: { uuid: 'uuid1', userId: 2, jobId: 'job2' } },
+        { id: 'job3', data: { uuid: 'uuid2', userId: 2, jobId: 'job3' } },
+      ] as any);
     });
 
     it('should return the uuid for a given userId', async () => {
-      const uuid = await service.getUuidOfUser(1);
-      expect(['uuid1', 'uuid3']).toContain(uuid);
+      const uuid = await service.getUuidOfUser(2);
+      expect(['uuid1', 'uuid2']).toContain(uuid);
     });
 
     it('should return null if there are no jobs for the given userId', async () => {
@@ -226,90 +192,91 @@ describe('QueuesService', () => {
     });
   });
 
-  describe('closeQueueConnection', () => {
-    it('should close the queue connection', async () => {
-      await service.closeQueueConnection();
-
-      try {
-        await service.getJobs();
-        expect(true).toBe(false);
-      } catch (error) {
-        expect(error.message).toBe('Connection is closed.');
-      }
-    });
-  });
-
   describe('flush', () => {
-    beforeEach(async () => {
-      // Insert jobs
-      await service.addJob({
-        uuid: 'uuid1',
-        orthancSeriesId: '123',
-        userId: 1,
-      });
-      await service.addJob({
-        uuid: 'uuid1',
-        orthancSeriesId: '456',
-        userId: 1,
-      });
-      await service.addJob({
-        uuid: 'uuid2',
-        orthancSeriesId: '789',
-        userId: 2,
-      });
-    });
-
-    afterEach(async () => {
-      // Clean up the queue after each test
-      const jobs = await service.getJobs();
-      await Promise.all(jobs.map((job) => job.remove()));
-    });
-
     it('should flush the queue', async () => {
+      // MOCK
+      const mockObliterate = jest.spyOn(mockQueue, 'obliterate');
+
+      // ACT
       await service.flush();
-      const jobs = await service.getJobs();
-      expect(jobs.length).toBe(0);
+
+      // ASSERT
+      expect(mockObliterate).toHaveBeenCalledTimes(1);
+      expect(mockObliterate).toHaveBeenCalledWith({ force: true });
     });
   });
 
   describe('getJobsForUuid', () => {
-    beforeEach(async () => {
-      // Insert jobs
-      await service.addJob({
-        uuid: 'uuid1',
-        orthancSeriesId: '123',
-        userId: 1,
-      });
-      await service.addJob({
-        uuid: 'uuid1',
-        orthancSeriesId: '456',
-        userId: 1,
-      });
-      await service.addJob({
-        uuid: 'uuid2',
-        orthancSeriesId: '789',
-        userId: 2,
-      });
-    });
-
-    afterEach(async () => {
-      await service.flush();
+    beforeEach(() => {
+      jest
+        .spyOn(mockQueue, 'getJobs')
+        .mockReturnValueOnce([
+          {
+            progress: 0,
+            id: 'job1',
+            data: { uuid: 'uuid1', userId: 1, jobId: 'job1' },
+          },
+          {
+            progress: 0,
+            id: 'job2',
+            data: { uuid: 'uuid1', userId: 2, jobId: 'job2' },
+          },
+          {
+            progress: 0,
+            id: 'job3',
+            data: { uuid: 'uuid2', userId: 2, jobId: 'job3' },
+          },
+        ] as any)
+        .mockReturnValueOnce([
+          {
+            progress: 0,
+            id: 'job4',
+            data: { uuid: 'uuid1', userId: 1, jobId: 'job4' },
+          },
+          {
+            progress: 0,
+            id: 'job5',
+            data: { uuid: 'uuid2', userId: 2, jobId: 'job5' },
+          },
+        ] as any)
+        .mockReturnValueOnce([
+          {
+            progress: 0,
+            id: 'job6',
+            data: { uuid: 'uuid1', userId: 1, jobId: 'job6' },
+          },
+        ] as any)
+        .mockReturnValue([] as any);
     });
 
     it('should return the jobs for a given uuid', async () => {
       const jobs = await service.getJobsForUuid('uuid1');
       expect(jobs).toStrictEqual({
-        '1': {
+        job1: {
           Progress: 0,
-          State: 'wait',
-          Id: '1',
+          State: 'completed',
+          Id: 'job1',
           Results: undefined,
           UserId: 1,
         },
-        '2': {
+        job2: {
           Progress: 0,
-          State: 'wait',
-          Id: '2',
+          State: 'completed',
+          Id: 'job2',
+          Results: undefined,
+          UserId: 2,
+        },
+        job4: {
+          Progress: 0,
+          State: 'failed',
+          Id: 'job4',
+          Results: undefined,
+          UserId: 1,
+        },
+        job6: {
+          Progress: 0,
+          State: 'delayed',
+          Id: 'job6',
           Results: undefined,
           UserId: 1,
         },
@@ -319,26 +286,47 @@ describe('QueuesService', () => {
     it('should return all jobs if no uuid is provided', async () => {
       const jobs = await service.getJobsForUuid();
       expect(jobs).toStrictEqual({
-        '1': {
+        job1: {
           Progress: 0,
-          State: 'wait',
-          Id: '1',
+          State: 'completed',
+          Id: 'job1',
           Results: undefined,
           UserId: 1,
         },
-        '2': {
+        job2: {
           Progress: 0,
-          State: 'wait',
-          Id: '2',
-          Results: undefined,
-          UserId: 1,
-        },
-        '3': {
-          Progress: 0,
-          State: 'wait',
-          Id: '3',
+          State: 'completed',
+          Id: 'job2',
           Results: undefined,
           UserId: 2,
+        },
+        job3: {
+          Progress: 0,
+          State: 'completed',
+          Id: 'job3',
+          Results: undefined,
+          UserId: 2,
+        },
+        job4: {
+          Progress: 0,
+          State: 'failed',
+          Id: 'job4',
+          Results: undefined,
+          UserId: 1,
+        },
+        job5: {
+          Progress: 0,
+          State: 'failed',
+          Id: 'job5',
+          Results: undefined,
+          UserId: 2,
+        },
+        job6: {
+          Progress: 0,
+          State: 'delayed',
+          Id: 'job6',
+          Results: undefined,
+          UserId: 1,
         },
       });
     });
