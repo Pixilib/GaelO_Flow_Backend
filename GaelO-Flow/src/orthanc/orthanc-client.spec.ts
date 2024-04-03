@@ -10,6 +10,7 @@ describe('OrthancClient', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
+          envFilePath: ['.env.testing', '.env'],
           isGlobal: true,
         }),
       ],
