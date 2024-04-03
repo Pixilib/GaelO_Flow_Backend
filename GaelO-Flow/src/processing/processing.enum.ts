@@ -3,3 +3,7 @@ export enum ProcessingMaskEnum {
   SEG = 'seg',
   NIFTI = 'nifti',
 }
+
+export enum ProcessingJobTypeEnum {
+  TMTV = 'tmtv',
+}

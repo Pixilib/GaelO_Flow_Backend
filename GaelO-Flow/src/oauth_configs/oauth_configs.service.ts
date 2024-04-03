@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { OauthConfig } from './oauth_config.entity';
 import { Repository } from 'typeorm';
+import { OauthConfigDto } from './oauth_config.dto';
 
 @Injectable()
 export class OauthConfigService {
@@ -17,6 +18,15 @@ export class OauthConfigService {
     return config;
   }
 
+  public async findOneByAuthorizationUrl(
+    AuthorizationUrl: string,
+  ): Promise<OauthConfig> {
+    const config = await this.oauthConfigsRepository.findOne({
+      where: { AuthorizationUrl },
+    });
+    return config;
+  }
+
   public async getOauthConfig(): Promise<OauthConfig[]> {
     const oauthConfig = await this.oauthConfigsRepository.find();
     return oauthConfig;
@@ -26,11 +36,8 @@ export class OauthConfigService {
     await this.oauthConfigsRepository.delete({ Provider });
   }
 
-  public async addOauthConfig(Provider: string, AuthorizationUrl: string) {
-    const config = this.oauthConfigsRepository.create({
-      Provider,
-      AuthorizationUrl,
-    });
+  public async addOauthConfig(oauthConfigDto: OauthConfigDto) {
+    const config = this.oauthConfigsRepository.create(oauthConfigDto);
 
     await this.oauthConfigsRepository.insert(config);
   }
@@ -41,6 +48,7 @@ export class OauthConfigService {
       Provider: 'keycloak',
       AuthorizationUrl:
         'http://localhost:8080/realms/master/protocol/openid-connect/auth',
+      ClientId: 'back-end',
     });
     await this.oauthConfigsRepository.insert(option);
   }

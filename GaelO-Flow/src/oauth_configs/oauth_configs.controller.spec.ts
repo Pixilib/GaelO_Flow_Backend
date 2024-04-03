@@ -39,6 +39,7 @@ describe('OauthConfigController', () => {
           Id: 1,
           Provider: 'google',
           AuthorizationUrl: 'google.com',
+          ClientId: 'client-id',
         },
       ];
 
@@ -47,7 +48,7 @@ describe('OauthConfigController', () => {
 
       // ASSERT
       expect(await controller.getOauthConfig()).toStrictEqual({
-        google: { AuthorizationUrl: 'google.com' },
+        google: { AuthorizationUrl: 'google.com', ClientId: 'client-id' },
       });
       expect(service.getOauthConfig).toHaveBeenCalled();
     });
@@ -63,6 +64,7 @@ describe('OauthConfigController', () => {
         Id: 1,
         Provider: 'google',
         AuthorizationUrl: 'google.com',
+        ClientId: 'client-id',
       });
       jest.spyOn(service, 'deleteOauthConfig').mockResolvedValueOnce(undefined);
 
@@ -93,6 +95,7 @@ describe('OauthConfigController', () => {
       const oauthConfigDto = {
         Provider: 'google',
         AuthorizationUrl: 'google.com',
+        ClientId: 'client-id',
       };
 
       // ACT
@@ -107,6 +110,7 @@ describe('OauthConfigController', () => {
       const oauthConfigDto = {
         Provider: 'google',
         AuthorizationUrl: 'google.com',
+        ClientId: 'client-id',
       };
 
       // ACT
@@ -114,6 +118,7 @@ describe('OauthConfigController', () => {
         Id: 1,
         Provider: 'google',
         AuthorizationUrl: 'google.com',
+        ClientId: 'client-id',
       });
 
       // ASSERT

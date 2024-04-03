@@ -35,6 +35,7 @@ export class OauthConfigController {
     for (const config of oauthConfig) {
       oauthConfigDto[config.Provider] = {
         AuthorizationUrl: config.AuthorizationUrl,
+        ClientId: config.ClientId,
       };
     }
 
@@ -68,9 +69,6 @@ export class OauthConfigController {
     );
     if (exists) throw new ConflictException('Oauth config already exists');
 
-    return this.oauthConfigService.addOauthConfig(
-      oauthConfigDto.Provider,
-      oauthConfigDto.AuthorizationUrl,
-    );
+    return this.oauthConfigService.addOauthConfig(oauthConfigDto);
   }
 }

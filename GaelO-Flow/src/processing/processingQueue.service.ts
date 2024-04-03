@@ -2,6 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { Job, Queue } from 'bullmq';
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+import { ProcessingJobDto } from './processingJob.dto';
 
 @Injectable()
 export class ProcessingQueueService {
@@ -25,14 +26,14 @@ export class ProcessingQueueService {
     console.log(jobData);
   }
 
-  async addJob(jobData: object): Promise<string> {
+  async addJob(
+    userId: number,
+    processingJobDto: ProcessingJobDto,
+  ): Promise<string> {
     const jobId = randomUUID();
-    const user = jobData['user'];
-    const newProcessingJobDto = jobData['newProcessingJobDto'];
-
     const data = {
-      ...newProcessingJobDto,
-      userId: user.userId,
+      ...processingJobDto,
+      userId,
     };
 
     this.processingQueue.add(jobId, data, {

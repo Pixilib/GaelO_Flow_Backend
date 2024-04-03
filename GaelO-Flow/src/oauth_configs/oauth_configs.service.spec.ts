@@ -31,8 +31,16 @@ describe('OauthConfigService', () => {
       getRepositoryToken(OauthConfig),
     );
 
-    await service.addOauthConfig('google', 'google.com');
-    await service.addOauthConfig('facebook', 'facebook.com');
+    await service.addOauthConfig({
+      Provider: 'google',
+      AuthorizationUrl: 'google.com',
+      ClientId: 'client-id',
+    });
+    await service.addOauthConfig({
+      Provider: 'facebook',
+      AuthorizationUrl: 'facebook.com',
+      ClientId: 'client-id',
+    });
   });
 
   it('should be defined', () => {
@@ -49,6 +57,22 @@ describe('OauthConfigService', () => {
 
     it('should return null if the provider does not exist', async () => {
       const googleConfig = await service.findOneByProvider('twitter');
+      expect(googleConfig).toBeNull();
+    });
+  });
+
+  describe('findOneByAuthorizationUrl', () => {
+    it('should return an oauth config by authorization url', async () => {
+      const googleConfig =
+        await service.findOneByAuthorizationUrl('google.com');
+      expect(googleConfig).toBeDefined();
+      expect(googleConfig.Provider).toBe('google');
+      expect(googleConfig.AuthorizationUrl).toBe('google.com');
+    });
+
+    it('should return null if the authorization url does not exist', async () => {
+      const googleConfig =
+        await service.findOneByAuthorizationUrl('twitter.com');
       expect(googleConfig).toBeNull();
     });
   });
@@ -76,7 +100,11 @@ describe('OauthConfigService', () => {
 
   describe('addOauthConfig', () => {
     it('should add an oauth config', async () => {
-      await service.addOauthConfig('twitter', 'twitter.com');
+      await service.addOauthConfig({
+        Provider: 'twitter',
+        AuthorizationUrl: 'twitter.com',
+        ClientId: 'client-id',
+      });
       const twitterConfig = await service.findOneByProvider('twitter');
       expect(twitterConfig).toBeDefined();
       expect(twitterConfig.Provider).toBe('twitter');

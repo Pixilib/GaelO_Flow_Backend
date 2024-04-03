@@ -15,6 +15,7 @@ import { JwtAuthGuard } from './jwt.guard';
 import { OauthConfig } from '../oauth_configs/oauth_config.entity';
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { JwtOauthStrategy } from './jwt-oauth.strategy';
+import { OauthConfigService } from '../oauth_configs/oauth_configs.service';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { JwtOauthStrategy } from './jwt-oauth.strategy';
       useClass: JwtAuthGuard,
     },
     MailService,
+    OauthConfigService,
   ],
   controllers: [AuthController],
   exports: [AuthService],

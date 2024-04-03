@@ -35,7 +35,7 @@ async function buildSwagger(app: INestApplication<any>) {
         flows: {
           implicit: {
             authorizationUrl: config.AuthorizationUrl,
-            scopes: { openid: 'openid' },
+            scopes: { openid: 'openid', profile: 'profile', email: 'email' },
           },
         },
       },
