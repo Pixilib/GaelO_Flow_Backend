@@ -11,7 +11,7 @@ import { Option } from './option.entity';
 import { UpdateOptionDto } from './options.dto';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
-import { AdminGuard } from '../roles/roles.guard';
+import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 

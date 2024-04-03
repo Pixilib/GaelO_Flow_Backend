@@ -11,7 +11,7 @@ import {
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
 import { ApiBearerAuth, ApiTags, ApiParam } from '@nestjs/swagger';
-import { AdminGuard } from '../roles/roles.guard';
+import { AdminGuard } from '../guards/roles.guard';
 import { doReverseProxy } from './Utils';
 
 @ApiTags('orthanc')

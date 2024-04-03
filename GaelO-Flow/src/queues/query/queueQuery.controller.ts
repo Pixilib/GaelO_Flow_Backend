@@ -12,8 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { QueuesQueryService } from './queueQuery.service';
-import { AdminGuard, QueryGuard } from '../../roles/roles.guard';
-import { Job } from 'bullmq';
+import { AdminGuard, QueryGuard } from '../../guards/roles.guard';
 import {
   QueuesQueryDto,
   QueuesQueryStudyDto,
@@ -27,7 +26,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { OrGuard } from '../../utils/orGuards';
+import { OrGuard } from '../../guards/or.guard';
 
 @ApiTags('queues/query')
 @Controller('/queues/query')

@@ -20,7 +20,7 @@ import { RoleDto, WithLabels } from './roles.dto';
 import { UsersService } from '../users/users.service';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 
-import { AdminGuard } from './roles.guard';
+import { AdminGuard } from '../guards/roles.guard';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -28,8 +28,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { OrGuard } from '../utils/orGuards';
-import { CheckUserRole } from '../utils/CheckUserRole.guard';
+import { OrGuard } from '../guards/or.guard';
+import { CheckUserRole } from '../guards/CheckUserRole.guard';
 
 @ApiTags('roles')
 @Controller('/roles')

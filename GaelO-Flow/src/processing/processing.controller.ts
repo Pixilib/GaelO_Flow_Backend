@@ -19,11 +19,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminGuard } from '../roles/roles.guard';
+import { AdminGuard } from '../guards/roles.guard';
 import { ProcessingQueueService } from './processingQueue.service';
 import { ProcessingJobDto } from './processingJob.dto';
-import { OrGuard } from '../utils/orGuards';
-import { CheckUserId } from '../utils/CheckUserId.guard';
+import { OrGuard } from '../guards/or.guard';
+import { CheckUserId } from '../guards/CheckUserId.guard';
 
 @ApiTags('processing')
 @Controller('/processing')

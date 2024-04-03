@@ -19,10 +19,10 @@ import { User } from './user.entity';
 import { CreateUserDto, GetUserDto, UpdateUserDto } from './users.dto';
 import * as bcryptjs from 'bcryptjs';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
-import { AdminGuard } from '../roles/roles.guard';
+import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { OrGuard } from '../utils/orGuards';
-import { CheckUserId } from '../utils/CheckUserId.guard';
+import { OrGuard } from '../guards/or.guard';
+import { CheckUserId } from '../guards/CheckUserId.guard';
 
 @ApiTags('users')
 @Controller('/users')

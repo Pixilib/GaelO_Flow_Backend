@@ -11,13 +11,6 @@ import {
 import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from './OrthancClient';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { OrGuard } from '../utils/orGuards';
-import {
-  AdminGuard,
-  AutoQueryGuard,
-  ExportGuard,
-  QueryGuard,
-} from '../roles/roles.guard';
 import { doReverseProxy } from './Utils';
 
 @ApiTags('orthanc')
@@ -27,7 +20,7 @@ export class OrthancController {
 
   @ApiBearerAuth('access-token')
   @Post('/tools/find')
-  // @UseGuards() ???
+  // @UseGuards() ??? // TODO: ask salim about this
   find(@Request() request: RequestType, @Response() response: ResponseType) {
     doReverseProxy(request, response, this.orthancClient);
   }

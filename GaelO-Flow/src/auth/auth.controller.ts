@@ -21,8 +21,8 @@ import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
-import { LocalAuthGuard } from './local.guard';
-import { JwtOAuthGuard } from './jwt-oauth.guard';
+import { LocalAuthGuard } from '../guards/local.guard';
+import { JwtOAuthGuard } from '../guards/jwt-oauth.guard';
 
 @ApiTags('auth')
 @Controller('')

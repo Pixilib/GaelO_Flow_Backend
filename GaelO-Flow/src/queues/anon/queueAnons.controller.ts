@@ -12,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { QueuesAnonService } from './queueAnons.service';
-import { AdminGuard, AnonymizeGuard } from '../../roles/roles.guard';
+import { AdminGuard, AnonymizeGuard } from '../../guards/roles.guard';
 import { Job } from 'bullmq';
 import { QueuesAnonsDto } from './queueAnons.dto';
 import { randomUUID } from 'crypto';
@@ -24,7 +24,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { OrGuard } from '../../utils/orGuards';
+import { OrGuard } from '../../guards/or.guard';
 
 @ApiTags('queues/anon')
 @Controller('/queues/anon')

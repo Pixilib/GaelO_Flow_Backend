@@ -12,7 +12,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { QueuesDeleteService } from './queueDeletes.service';
-import { AdminGuard, DeleteGuard } from '../../roles/roles.guard';
+import { AdminGuard, DeleteGuard } from '../../guards/roles.guard';
 import { QueuesDeleteDto } from './queueDeletes.dto';
 import { randomUUID } from 'crypto';
 import {
@@ -24,7 +24,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Job } from 'bullmq';
-import { OrGuard } from '../../utils/orGuards';
+import { OrGuard } from '../../guards/or.guard';
 
 @ApiTags('queues/delete')
 @Controller('/queues/delete')
