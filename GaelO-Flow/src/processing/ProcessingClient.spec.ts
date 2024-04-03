@@ -46,7 +46,7 @@ describe.skip('ProcessingClient', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
-          envFilePath: '.env.testing',
+          envFilePath: ['.env.testing', '.env'],
           isGlobal: true,
         }),
       ],
