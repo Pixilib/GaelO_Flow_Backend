@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 import { TmtvService } from './tmtv.service';
-import OrthancClient from '../orthanc/OrthancClient';
-import ProcessingClient from './ProcessingClient';
+import OrthancClient from '../orthanc/orthanc-client';
+import ProcessingClient from './processing.client';
 
 describe.skip('TmtvService', () => {
   let tmtvService: TmtvService;
+  let orthancClient: OrthancClient;
+  let processingClient: ProcessingClient;
   const ctId: string = '5958d213-4a906ee4-28527d57-57d250fd-847acb3f';
   const ptId: string = 'e2d08f24-7a1c85a2-b5a747b9-59ee2cda-4f10abde';
 
@@ -20,7 +22,9 @@ describe.skip('TmtvService', () => {
       providers: [TmtvService, OrthancClient, ProcessingClient],
     }).compile();
 
-    tmtvService = module.get<TmtvService>(TmtvService);
+    orthancClient = module.get<OrthancClient>(OrthancClient);
+    processingClient = module.get<ProcessingClient>(ProcessingClient);
+    tmtvService = new TmtvService(orthancClient, processingClient);
     tmtvService.setCtOrthancSeriesId(ctId);
     tmtvService.setPtOrthancSeriesId(ptId);
   });

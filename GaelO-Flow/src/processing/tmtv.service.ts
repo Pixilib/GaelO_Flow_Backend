@@ -1,8 +1,8 @@
-import OrthancClient from '../orthanc/OrthancClient';
-import ProcessingClient from './ProcessingClient';
-import { ProcessingFile } from './ProcessingFile';
-import { MaskProcessingService } from './maskProcessing.service';
-import { ProcessingMaskEnum } from './processingMask.enum';
+import OrthancClient from '../orthanc/orthanc-client';
+import ProcessingClient from './processing.client';
+import { ProcessingFile } from './processing.file';
+import { MaskProcessingService } from './mask-processing.service';
+import { ProcessingMask } from '../constants/enums';
 
 export class TmtvService {
   private ptOrthancSeriesId: string;
@@ -95,16 +95,12 @@ export class TmtvService {
   }
 
   async sendMaskAsRtssToOrthanc(): Promise<object> {
-    const rtssStream = await this.fragmentedMask.getMaskAs(
-      ProcessingMaskEnum.RTSS,
-    );
+    const rtssStream = await this.fragmentedMask.getMaskAs(ProcessingMask.RTSS);
     return await this.orthancClient.sendToOrthanc(rtssStream);
   }
 
   async sendMaskAsSegToOrthanc(): Promise<object> {
-    const segStream = await this.fragmentedMask.getMaskAs(
-      ProcessingMaskEnum.SEG,
-    );
+    const segStream = await this.fragmentedMask.getMaskAs(ProcessingMask.SEG);
     return await this.orthancClient.sendToOrthanc(segStream);
   }
 

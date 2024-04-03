@@ -18,9 +18,9 @@ import { Role } from './role.entity';
 import { RoleDto, WithLabels } from './roles.dto';
 
 import { UsersService } from '../users/users.service';
-import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
+import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
 
-import { AdminGuard } from './roles.guard';
+import { AdminGuard } from '../guards/roles.guard';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -28,8 +28,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { OrGuard } from '../utils/orGuards';
-import { CheckUserRole } from '../utils/CheckUserRole.guard';
+import { OrGuard } from '../guards/or.guard';
+import { CheckUserRoleGuard } from '../guards/CheckUserRole.guard';
 
 @ApiTags('roles')
 @Controller('/roles')
@@ -155,7 +155,10 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'Add label to role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(
-    new OrGuard([new AdminGuard(), new CheckUserRole(['params', 'roleName'])]),
+    new OrGuard([
+      new AdminGuard(),
+      new CheckUserRoleGuard(['params', 'roleName']),
+    ]),
   )
   @Post('/:roleName/label')
   @ApiBody({ schema: { example: { label: 'label' } } })
@@ -181,7 +184,10 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'Get all labels from role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(
-    new OrGuard([new AdminGuard(), new CheckUserRole(['params', 'roleName'])]),
+    new OrGuard([
+      new AdminGuard(),
+      new CheckUserRoleGuard(['params', 'roleName']),
+    ]),
   )
   @Get('/:roleName/labels')
   async getRoleLabels(@Param('roleName') roleName: string): Promise<String[]> {
@@ -194,7 +200,10 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'Remove label from role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(
-    new OrGuard([new AdminGuard(), new CheckUserRole(['params', 'roleName'])]),
+    new OrGuard([
+      new AdminGuard(),
+      new CheckUserRoleGuard(['params', 'roleName']),
+    ]),
   )
   @Delete('/:roleName/label/:label')
   async removeLabelFromRole(

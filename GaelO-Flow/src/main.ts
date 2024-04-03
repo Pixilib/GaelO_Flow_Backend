@@ -8,14 +8,14 @@ import {
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
-import OrthancClient from './orthanc/OrthancClient';
-import setupDeleteWorker from './queues/delete/deleteWorker';
-import setupAnonWorker from './queues/anon/anonWorker';
-import setupQueryWorker from './queues/query/queryWorker';
+import OrthancClient from './orthanc/orthanc-client';
+import setupDeleteWorker from './queues/delete/delete.worker';
+import setupAnonWorker from './queues/anon/anon.worker';
+import setupQueryWorker from './queues/query/query.worker';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { OauthConfigService } from './oauth_configs/oauth_configs.service';
-import setupProcessingWorker from './processing/processingWorker';
-import ProcessingClient from './processing/ProcessingClient';
+import { OauthConfigService } from './oauth_configs/oauth-configs.service';
+import setupProcessingWorker from './processing/processing.worker';
+import ProcessingClient from './processing/processing.client';
 
 async function buildSwagger(app: INestApplication<any>) {
   const oauthConfigs = await app.get(OauthConfigService).getOauthConfig();
@@ -35,7 +35,7 @@ async function buildSwagger(app: INestApplication<any>) {
         flows: {
           implicit: {
             authorizationUrl: config.AuthorizationUrl,
-            scopes: { openid: 'openid' },
+            scopes: { openid: 'openid', profile: 'profile', email: 'email' },
           },
         },
       },

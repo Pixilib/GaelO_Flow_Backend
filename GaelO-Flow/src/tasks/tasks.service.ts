@@ -3,9 +3,9 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
 import { Option } from '../options/option.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { QueuesQueryService } from '../queues/query/queueQuery.service';
-import { isTimeBetween } from '../utils/dateIntervals';
-import OrthancClient from '../orthanc/OrthancClient';
+import { QueuesQueryService } from '../queues/query/queue-query.service';
+import { isTimeBetween } from '../utils/is-time-between';
+import OrthancClient from '../orthanc/orthanc-client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()

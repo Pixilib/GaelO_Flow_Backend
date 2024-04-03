@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { RolesService } from './roles/roles.service';
 import { UsersService } from './users/users.service';
 import { OptionsService } from './options/options.service';
-import { OauthConfigService } from './oauth_configs/oauth_configs.service';
+import { OauthConfigService } from './oauth_configs/oauth-configs.service';
 
 @Injectable()
 export class SeedService {

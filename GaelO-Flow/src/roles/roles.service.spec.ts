@@ -3,9 +3,9 @@ import { RolesService } from './roles.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Role } from './role.entity';
 import { Label } from '../labels/label.entity';
-import { RoleLabel } from '../role_label/role_label.entity';
+import { RoleLabel } from '../role_label/role-label.entity';
 import { LabelsService } from '../labels/labels.service';
-import { RoleLabelModule } from '../role_label/role_label.module';
+import { RoleLabelModule } from '../role_label/role-label.module';
 import { RolesModule } from './roles.module';
 
 describe('RolesService', () => {

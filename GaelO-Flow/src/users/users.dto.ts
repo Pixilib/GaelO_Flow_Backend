@@ -1,8 +1,6 @@
-import { ApiHideProperty, ApiOperation, ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 import { User } from './user.entity';
-import { Exclude } from 'class-transformer';
-import { Role } from '../roles/role.entity';
 
 export class UpdateUserDto {
   @ApiProperty({ example: 'John' })
