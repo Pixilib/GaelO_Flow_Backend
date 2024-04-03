@@ -33,31 +33,31 @@ import { LabelsService } from './labels/labels.service';
 // AUTH ROUTE
 import { AuthModule } from './auth/auth.module';
 
-import { OrthancController } from './orthanc/Orthanc.controller';
-import { OrthancDeleteController } from './orthanc/OrthancDelete.controller';
-import { OrthancExportController } from './orthanc/OrthancExport.controller';
-import { OrthancImportController } from './orthanc/OrthancImport.controller';
-import { OrthancModifyController } from './orthanc/OrthancModify.controller';
-import { OrthancQueryController } from './orthanc/OrthancQuery.controller';
-import { OrthancAdminController } from './orthanc/OrthancAdmin.controller';
+import { OrthancController } from './orthanc/orthanc.controller';
+import { OrthancDeleteController } from './orthanc/orthanc-delete.controller';
+import { OrthancExportController } from './orthanc/orthanc-export.controller';
+import { OrthancImportController } from './orthanc/orthanc-import.controller';
+import { OrthancModifyController } from './orthanc/orthanc-modify.controller';
+import { OrthancQueryController } from './orthanc/orthanc-query.controller';
+import { OrthancAdminController } from './orthanc/orthanc-admin.controller';
 
-import OrthancClient from './orthanc/OrthancClient';
+import OrthancClient from './orthanc/orthanc-client';
 
 // QUEUES
-import { QueuesDeleteController } from './queues/delete/queueDeletes.controller';
-import { QueuesDeleteService } from './queues/delete/queueDeletes.service';
+import { QueuesDeleteController } from './queues/delete/queue-deletes.controller';
+import { QueuesDeleteService } from './queues/delete/queue-deletes.service';
 
-import { QueuesAnonController } from './queues/anon/queueAnons.controller';
-import { QueuesAnonService } from './queues/anon/queueAnons.service';
+import { QueuesAnonController } from './queues/anon/queue-anons.controller';
+import { QueuesAnonService } from './queues/anon/queue-anons.service';
 
-import { QueuesQueryController } from './queues/query/queueQuery.controller';
-import { QueuesQueryService } from './queues/query/queueQuery.service';
+import { QueuesQueryController } from './queues/query/queue-query.controller';
+import { QueuesQueryService } from './queues/query/queue-query.service';
 import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 // ROLE LABEL ROUTE
-import { RoleLabel } from './role_label/role_label.entity';
-import { RoleLabelModule } from './role_label/role_label.module';
+import { RoleLabel } from './role_label/role-label.entity';
+import { RoleLabelModule } from './role_label/role-label.module';
 
 import { SeedService } from './seeder.service';
 import { MailService } from './mail/mail.service';
@@ -65,19 +65,19 @@ import { MailService } from './mail/mail.service';
 import { MailModule } from './mail/mail.module';
 
 // OAUTHCONFIG ROUTE
-import { OauthConfigController } from './oauth_configs/oauth_configs.controller';
-import { OauthConfigService } from './oauth_configs/oauth_configs.service';
-import { OauthConfigModule } from './oauth_configs/oauth_configs.module';
-import { OauthConfig } from './oauth_configs/oauth_config.entity';
+import { OauthConfigController } from './oauth_configs/oauth-configs.controller';
+import { OauthConfigService } from './oauth_configs/oauth-configs.service';
+import { OauthConfigModule } from './oauth_configs/oauth-configs.module';
+import { OauthConfig } from './oauth_configs/oauth-config.entity';
 
 // PROCESSING
-import ProcessingClient from './processing/ProcessingClient';
+import ProcessingClient from './processing/processing.client';
 import { ProcessingController } from './processing/processing.controller';
 
 import { HttpModule, HttpService } from '@nestjs/axios';
 import { logger } from './utils/logger.middleware';
 import { TmtvService } from './processing/tmtv.service';
-import { ProcessingQueueService } from './processing/processingQueue.service';
+import { ProcessingQueueService } from './processing/processing-queue.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({

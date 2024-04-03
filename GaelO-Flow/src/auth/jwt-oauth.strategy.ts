@@ -5,7 +5,7 @@ import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
-import { OauthConfigService } from '../oauth_configs/oauth_configs.service';
+import { OauthConfigService } from '../oauth_configs/oauth-configs.service';
 
 interface UserInfoResponse {
   sub: string;

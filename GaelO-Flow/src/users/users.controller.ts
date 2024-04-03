@@ -18,11 +18,11 @@ import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { CreateUserDto, GetUserDto, UpdateUserDto } from './users.dto';
 import * as bcryptjs from 'bcryptjs';
-import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
+import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
 import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrGuard } from '../guards/or.guard';
-import { CheckUserId } from '../guards/CheckUserId.guard';
+import { CheckUserIdGuard } from '../guards/CheckUserId.guard';
 
 @ApiTags('users')
 @Controller('/users')
@@ -47,7 +47,9 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Get user by id', type: GetUserDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(new OrGuard([new AdminGuard(), new CheckUserId(['params', 'id'])]))
+  @UseGuards(
+    new OrGuard([new AdminGuard(), new CheckUserIdGuard(['params', 'id'])]),
+  )
   @Get('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
@@ -58,7 +60,9 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Update user' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(new OrGuard([new AdminGuard(), new CheckUserId(['params', 'id'])]))
+  @UseGuards(
+    new OrGuard([new AdminGuard(), new CheckUserIdGuard(['params', 'id'])]),
+  )
   @Put('/:id')
   @UseInterceptors(NotFoundInterceptor)
   async update(
@@ -79,7 +83,9 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Delete user' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(new OrGuard([new AdminGuard(), new CheckUserId(['params', 'id'])]))
+  @UseGuards(
+    new OrGuard([new AdminGuard(), new CheckUserIdGuard(['params', 'id'])]),
+  )
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<void> {
     const existingUser = await this.UserService.isExistingUser(id);

@@ -81,7 +81,7 @@ describe('UsersController', () => {
       expect(guards[0].constructor.name).toBe('OrGuard');
       expect(guardNames.length).toBe(2);
       expect(guardNames).toContain('AdminGuard');
-      expect(guardNames).toContain('CheckUserId');
+      expect(guardNames).toContain('CheckUserIdGuard');
     });
 
     it('check if getUsersId calls service findOne', async () => {
@@ -111,7 +111,7 @@ describe('UsersController', () => {
       expect(guards[0].constructor.name).toBe('OrGuard');
       expect(guardNames.length).toBe(2);
       expect(guardNames).toContain('AdminGuard');
-      expect(guardNames).toContain('CheckUserId');
+      expect(guardNames).toContain('CheckUserIdGuard');
     });
 
     it('check if update calls service update', async () => {
@@ -141,7 +141,7 @@ describe('UsersController', () => {
       expect(guards[0].constructor.name).toBe('OrGuard');
       expect(guardNames.length).toBe(2);
       expect(guardNames).toContain('AdminGuard');
-      expect(guardNames).toContain('CheckUserId');
+      expect(guardNames).toContain('CheckUserIdGuard');
     });
 
     it('check if delete calls service remove', async () => {

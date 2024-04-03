@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { Label } from './label.entity';
 import { LabelDto } from './labels.dto';
-import { NotFoundInterceptor } from './../interceptors/NotFoundInterceptor';
+import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
 import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LabelsService } from './labels.service';

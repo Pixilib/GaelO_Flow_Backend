@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 @Injectable()
-export class CheckUserRole implements CanActivate {
+export class CheckUserRoleGuard implements CanActivate {
   constructor(private readonly valuePath: string[]) {}
 
   getNestedProperty = (obj: any, pathArray: string[]) => {

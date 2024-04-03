@@ -1,7 +1,7 @@
-import OrthancClient from '../orthanc/OrthancClient';
-import ProcessingClient from './ProcessingClient';
-import { ProcessingFile } from './ProcessingFile';
-import { MaskProcessingService } from './maskProcessing.service';
+import OrthancClient from '../orthanc/orthanc-client';
+import ProcessingClient from './processing.client';
+import { ProcessingFile } from './processing.file';
+import { MaskProcessingService } from './mask-processing.service';
 import { ProcessingMask } from '../constants/enums';
 
 export class TmtvService {

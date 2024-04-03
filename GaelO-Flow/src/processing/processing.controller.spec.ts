@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ProcessingController } from './processing.controller';
-import { ProcessingQueueService } from './processingQueue.service';
+import { ProcessingQueueService } from './processing-queue.service';
 import exp from 'constants';
 import { BadRequestException } from '@nestjs/common';
-import { ProcessingJobDto } from './processingJob.dto';
+import { ProcessingJobDto } from './processing-job.dto';
 import { ProcessingJobType, ProcessingMask } from '../constants/enums';
 
 describe('ProcessingController', () => {
@@ -67,7 +67,7 @@ describe('ProcessingController', () => {
       expect(guards[0].constructor.name).toBe('OrGuard');
       expect(guardNames.length).toBe(2);
       expect(guardNames).toContain('AdminGuard');
-      expect(guardNames).toContain('CheckUserId');
+      expect(guardNames).toContain('CheckUserIdGuard');
     });
 
     it('should call processingQueueService getAllUuids if no userId is provided and user is admin', async () => {

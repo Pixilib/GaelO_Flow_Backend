@@ -20,10 +20,10 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AdminGuard } from '../guards/roles.guard';
-import { ProcessingQueueService } from './processingQueue.service';
-import { ProcessingJobDto } from './processingJob.dto';
+import { ProcessingQueueService } from './processing-queue.service';
+import { ProcessingJobDto } from './processing-job.dto';
 import { OrGuard } from '../guards/or.guard';
-import { CheckUserId } from '../guards/CheckUserId.guard';
+import { CheckUserIdGuard } from '../guards/CheckUserId.guard';
 
 @ApiTags('processing')
 @Controller('/processing')
@@ -47,7 +47,7 @@ export class ProcessingController {
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiQuery({ name: 'userId', required: false })
   @UseGuards(
-    new OrGuard([new AdminGuard(), new CheckUserId(['query', 'userId'])]),
+    new OrGuard([new AdminGuard(), new CheckUserIdGuard(['query', 'userId'])]),
   )
   @Get()
   async getUuid(

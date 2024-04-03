@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 import { TmtvService } from './tmtv.service';
-import OrthancClient from '../orthanc/OrthancClient';
-import ProcessingClient from './ProcessingClient';
+import OrthancClient from '../orthanc/orthanc-client';
+import ProcessingClient from './processing.client';
 
 describe.skip('TmtvService', () => {
   let tmtvService: TmtvService;
