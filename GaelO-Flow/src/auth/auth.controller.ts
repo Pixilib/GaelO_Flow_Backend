@@ -105,7 +105,6 @@ export class AuthController {
       registerDto.Email,
       false,
     );
-    //generate a token for confirmation of user:
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
 
@@ -144,5 +143,21 @@ export class AuthController {
       throw new BadRequestException('Invalid token');
     }
     await this.usersService.updateUserPassword(userId, NewPassword);
+  }
+
+  @ApiResponse({ status: 200, description: 'Email sent' })
+  @ApiResponse({ status: 400, description: 'Bad request' })
+  @Public()
+  @Post('lost-password')
+  async lostPassword(@Body() body: { Email: string }) {
+    const { Email } = body;
+    const user = await this.usersService.findOneByEmail(Email, false);
+    console.log({ user });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    const token = await this.authService.createConfirmationToken(user);
+    console.log({ token });
+    await this.mailService.sendChangePasswordEmail(user.Email, token);
   }
 }

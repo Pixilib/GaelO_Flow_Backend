@@ -175,7 +175,7 @@ describe('AuthController', () => {
   });
 
   describe('changePassword', () => {
-    it('check if signIn is public', async () => {
+    it('check if changePassword is in public', async () => {
       const isPublic = Reflect.getMetadata(
         'isPublic',
         AuthController.prototype.changePassword,
@@ -223,6 +223,36 @@ describe('AuthController', () => {
         1,
         'password',
       );
+    });
+  });
+
+  //create a test for lostPassword API
+  describe('lostPassword', () => {
+    it('check if lostPassword is in public', async () => {
+      const isPublic = Reflect.getMetadata(
+        'isPublic',
+        AuthController.prototype.lostPassword,
+      );
+
+      expect(isPublic).toBe(true);
+    });
+    it('should send an email with a password reset link', async () => {
+      const email = 'hola@mail.com';
+      const user = {
+        Id: 1,
+        Email: email,
+      };
+
+      usersService.findOneByEmail = jest.fn().mockResolvedValue(user);
+      authService.createConfirmationToken = jest
+        .fn()
+        .mockResolvedValue('token');
+      mailService.sendChangePasswordEmail = jest
+        .fn()
+        .mockResolvedValue(undefined);
+    });
+    it('should throw an error if user is not found', async () => {
+      usersService.findOneByEmail = jest.fn().mockResolvedValue(undefined);
     });
   });
 });

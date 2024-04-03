@@ -20,12 +20,7 @@ import { CreateUserDto, GetUserDto, UpdateUserDto } from './users.dto';
 import * as bcryptjs from 'bcryptjs';
 import { NotFoundInterceptor } from '../interceptors/NotFoundInterceptor';
 import { AdminGuard } from '../roles/roles.guard';
-import {
-  ApiBearerAuth,
-  ApiHideProperty,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrGuard } from '../utils/orGuards';
 import { CheckUserId } from '../utils/CheckUserId.guard';
 
