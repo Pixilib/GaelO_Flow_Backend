@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { Response } from 'express';
-import { Stream } from 'stream';
 
 export class HttpClient {
   protected url: string;

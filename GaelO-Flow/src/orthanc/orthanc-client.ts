@@ -338,7 +338,6 @@ export default class OrthancClient extends HttpClient {
       newPatientName,
       newStudyDescription,
     );
-    console.log('/' + level + '/' + orthancID + '/anonymize', payload);
     const answer = this.request(
       '/' + level + '/' + orthancID + '/anonymize',
       'post',

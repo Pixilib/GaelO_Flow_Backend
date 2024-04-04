@@ -113,7 +113,7 @@ export class ProcessingController {
   async addJob(
     @Req() request: Request,
     @Body() processingJobDto: ProcessingJobDto,
-  ): Promise<Object> {
+  ): Promise<object> {
     const user = request['user'];
 
     return {

@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class QueuesAnonService extends AbstractQueueService {
-  constructor(private configService: ConfigService) {
+  constructor(configService: ConfigService) {
     const anonQueue = new Queue('anon', {
       connection: {
         host: configService.get<string>('REDIS_ADDRESS', 'localhost'), // REDIS_ADDRESS
