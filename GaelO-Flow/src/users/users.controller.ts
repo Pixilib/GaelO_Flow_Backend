@@ -54,6 +54,7 @@ export class UsersController {
   @UseInterceptors(NotFoundInterceptor)
   async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
     const user = await this.UserService.findOne(id);
+    console.log(user);
     return { ...user, Password: undefined };
   }
 
