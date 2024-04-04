@@ -21,22 +21,29 @@ import { UsersService } from '../users/users.service';
 import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
 
 import { AdminGuard } from '../guards/roles.guard';
-import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { OrGuard } from '../guards/or.guard';
 import { CheckUserRoleGuard } from '../guards/check-user-role.guard';
+import { LabelsService } from '../labels/labels.service';
 
 @ApiTags('roles')
 @Controller('/roles')
 export class RolesController {
   constructor(
     private readonly roleService: RolesService,
+    private readonly labelService: LabelsService,
     private readonly userService: UsersService,
   ) {}
 
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Get all roles', type: [Role] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  // @ApiQuery({ name: 'withLabels', required: false }) // CHECK WHY COMMENTED ?
   @UseGuards(AdminGuard)
   @Get()
   async findAll(@Query() withLabels: WithLabels): Promise<Role[]> {
@@ -60,7 +67,7 @@ export class RolesController {
   @Get('/:name')
   @UseInterceptors(NotFoundInterceptor)
   async findOne(@Param('name') name: string): Promise<Role> {
-    const role = await this.roleService.findOne(name);
+    const role = await this.roleService.findOneByOrFail(name);
     return role;
   }
 
@@ -76,7 +83,7 @@ export class RolesController {
     if (roleDto.Name == undefined)
       throw new BadRequestException("Missing Primary Key 'name'");
 
-    if ((await this.roleService.findOne(roleDto.Name)) != null)
+    if ((await this.roleService.isRoleExist(roleDto.Name)) != null)
       throw new ConflictException('Role with this name already exists');
 
     role.Name = roleDto.Name;
@@ -101,7 +108,7 @@ export class RolesController {
   @Delete('/:name')
   @UseInterceptors(NotFoundInterceptor)
   async delete(@Param('name') name: string): Promise<void> {
-    const role = await this.roleService.findOne(name);
+    const role = await this.roleService.findOneByOrFail(name);
 
     if (await this.userService.isRoleUsed(role.Name))
       throw new ForbiddenException('Role is used');
@@ -119,7 +126,7 @@ export class RolesController {
     @Param('name') name: string,
     @Body() roleDto: RoleDto,
   ): Promise<void> {
-    const role = await this.roleService.findOne(name);
+    const role = await this.roleService.findOneByOrFail(name);
 
     const requiredKeys = [
       'import',
@@ -148,31 +155,23 @@ export class RolesController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Add label to role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiBody({ schema: { example: { label: 'label' } } })
   @UseGuards(
     new OrGuard([
       new AdminGuard(),
       new CheckUserRoleGuard(['params', 'roleName']),
     ]),
   )
+  @UseInterceptors(NotFoundInterceptor)
   @Post('/:roleName/label')
-  @ApiBody({ schema: { example: { label: 'label' } } })
   async addLabelToRole(
     @Param('roleName') roleName: string,
     @Body() labelDto: { label: string },
   ): Promise<void> {
-    const role = await this.roleService.findOne(roleName);
-    const label = await this.roleService.findOne(labelDto.label);
+    await this.roleService.findOneByOrFail(roleName);
+    const label = await this.labelService.findOneByOrFail(labelDto.label);
 
     const roleLabel = await this.roleService.getRoleLabels(roleName);
-
-    if (role == undefined) {
-      throw new BadRequestException('Role does not exist');
-    }
-
-    if (label == undefined) {
-      throw new BadRequestException('Label does not exist');
-    }
-
     if (roleLabel.find((roleLabel) => roleLabel.Label.Name === label.Name))
       throw new ConflictException('Label already exists for this role');
 
@@ -197,6 +196,10 @@ export class RolesController {
 
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Remove label from role' })
+  @ApiResponse({
+    status: 400,
+    description: 'Label does not exist for this role',
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(
     new OrGuard([
@@ -209,6 +212,13 @@ export class RolesController {
     @Param('roleName') roleName: string,
     @Param('label') label: string,
   ): Promise<void> {
-    console.log(roleName, label);
+    await this.roleService.findOneByOrFail(roleName);
+    const labels = (await this.roleService.getRoleLabels(roleName)).map(
+      (roleLabel) => roleLabel.Label.Name,
+    );
+    if (!labels.includes(label))
+      throw new BadRequestException('Label does not exist for this role');
+
+    await this.roleService.removeRoleLabel(roleName, label);
   }
 }

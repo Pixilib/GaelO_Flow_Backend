@@ -21,7 +21,7 @@ describe('RolesController', () => {
           provide: RolesService,
           useValue: {
             findAll: jest.fn(),
-            findOne: jest.fn(),
+            findOneByOrFail: jest.fn(),
             update: jest.fn(),
             create: jest.fn(),
             remove: jest.fn(),
@@ -152,7 +152,7 @@ describe('RolesController', () => {
 
     it('check if findOne calls service findOne', async () => {
       const mock = jest
-        .spyOn(rolesService, 'findOne')
+        .spyOn(rolesService, 'findOneByOrFail')
         .mockResolvedValue(roleList[0]);
       const result = await rolesController.findOne('User');
       expect(result).toEqual(roleList[0]);
@@ -180,7 +180,7 @@ describe('RolesController', () => {
         anonymize: false,
       };
 
-      jest.spyOn(rolesService, 'findOne').mockResolvedValue(roleDto);
+      jest.spyOn(rolesService, 'findOneByOrFail').mockResolvedValue(roleDto);
       jest.spyOn(rolesService, 'update').mockResolvedValue(undefined);
 
       await expect(
@@ -205,7 +205,7 @@ describe('RolesController', () => {
 
     it('check if delete calls service remove', async () => {
       const mockFindOne = jest
-        .spyOn(rolesService, 'findOne')
+        .spyOn(rolesService, 'findOneByOrFail')
         .mockResolvedValue(roleList[0]);
       const mockRemove = jest.spyOn(rolesService, 'remove');
       const result = await rolesController.delete('User');
@@ -249,7 +249,9 @@ describe('RolesController', () => {
 
     it('check if error is thrown when role already exists', async () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
-      jest.spyOn(rolesService, 'findOne').mockResolvedValue(roleList[0]);
+      jest
+        .spyOn(rolesService, 'findOneByOrFail')
+        .mockResolvedValue(roleList[0]);
       await expect(
         rolesController.CreateRole({
           Name: 'User',
@@ -270,7 +272,7 @@ describe('RolesController', () => {
 
     it('check if error is thrown when role name is invalid', async () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
-      jest.spyOn(rolesService, 'findOne').mockResolvedValue(undefined);
+      jest.spyOn(rolesService, 'findOneByOrFail').mockResolvedValue(undefined);
       await expect(
         rolesController.CreateRole({
           Name: undefined,
