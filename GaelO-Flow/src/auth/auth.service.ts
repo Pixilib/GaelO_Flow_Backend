@@ -1,6 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
+import * as crypto from 'crypto';
 import * as bcryptjs from 'bcryptjs';
 import { User } from '../users/user.entity';
 
@@ -35,21 +40,44 @@ export class AuthService {
   }
 
   async createConfirmationToken(user: User): Promise<string> {
-    const payload = {
-      id: user.Id,
-      email: user.Email,
+    const findUserId = await this.usersService.findOne(user.Id);
+    const confirmationToken = crypto.randomBytes(32).toString('hex');
+    const hash = await bcryptjs.hash(confirmationToken, Number(bcryptjs));
+    const expireToken = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    console.log({ findUserId, confirmationToken, hash, expireToken });
+    const updatedUser: User = {
+      ...findUserId,
+      Token: hash,
+      TokenExpiration: expireToken,
+      Password: null,
     };
-    return this.jwtService.signAsync(payload, {
-      expiresIn: '24h', // Expiration en 24 heures
-    });
+    await this.usersService.update(user.Id, updatedUser);
+    return confirmationToken;
   }
 
-  async verifyToken(token: string): Promise<number | null> {
+  async verifyConfirmationToken(
+    token: string,
+    userId: number,
+  ): Promise<boolean> {
     try {
-      const decoded = await this.jwtService.verifyAsync(token);
-      return decoded.id;
+      const user = await this.usersService.findOne(userId);
+      if (!user) {
+        throw new NotFoundException('User not found');
+      }
+
+      if (new Date() > user.TokenExpiration) {
+        throw new BadRequestException('Token expired');
+      }
+
+      const isMatch = await bcryptjs.compare(token, user.Token);
+      if (!isMatch) {
+        throw new BadRequestException('Invalid token');
+      }
+
+      return true;
     } catch (error) {
-      return null;
+      console.log({ error });
+      return false;
     }
   }
 }

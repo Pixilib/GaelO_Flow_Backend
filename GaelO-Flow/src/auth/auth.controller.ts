@@ -9,9 +9,6 @@ import {
   ConflictException,
   Request,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
-  ValidationError,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -23,6 +20,7 @@ import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
 import { LocalAuthGuard } from './local.guard';
 import { JwtOAuthGuard } from './jwt-oauth.guard';
+import { LostPassworDto } from './dto/lostPassword.dto';
 
 @ApiTags('auth')
 @Controller('')
@@ -108,9 +106,11 @@ export class AuthController {
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
 
+    // console.log({ newUser, confirmationToken });
     await this.mailService.sendChangePasswordEmail(
       newUser.Email,
       confirmationToken,
+      newUser.Id,
     );
   }
 
@@ -118,38 +118,31 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiBody({ type: ChangePasswordDto })
   @Public()
-  @UsePipes(
-    new ValidationPipe({
-      exceptionFactory: (errors: ValidationError[]) => {
-        const messages = errors.map((error) =>
-          Object.values(error.constraints).join(', '),
-        );
-        return new BadRequestException(messages);
-      },
-    }),
-  )
   @Post('change-password')
   async changePassword(
     @Body() changePasswordDto: ChangePasswordDto,
   ): Promise<undefined> {
-    const { Token, NewPassword, ConfirmationPassword } = changePasswordDto;
-
+    const { Token, NewPassword, ConfirmationPassword, UserId } =
+      changePasswordDto;
     if (NewPassword !== ConfirmationPassword) {
       throw new BadRequestException('Confirmation password not matching');
     }
-
-    const userId = await this.authService.verifyToken(Token);
-    if (!userId) {
-      throw new BadRequestException('Invalid token');
-    }
-    await this.usersService.updateUserPassword(userId, NewPassword);
+    const userId = await this.usersService.findOne(UserId);
+    console.log({ userId });
+    const isTokenValid = await this.authService.verifyConfirmationToken(
+      Token,
+      userId.Id,
+    );
+    if (!isTokenValid) return;
+    await this.usersService.updateUserPassword(userId.Id, NewPassword);
   }
 
   @ApiResponse({ status: 200, description: 'Email sent' })
   @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiBody({ type: LostPassworDto })
   @Public()
   @Post('lost-password')
-  async lostPassword(@Body() body: { Email: string }) {
+  async lostPassword(@Body() body: LostPassworDto) {
     const { Email } = body;
     const user = await this.usersService.findOneByEmail(Email, false);
     console.log({ user });
@@ -157,7 +150,6 @@ export class AuthController {
       throw new BadRequestException('User not found');
     }
     const token = await this.authService.createConfirmationToken(user);
-    console.log({ token });
-    await this.mailService.sendChangePasswordEmail(user.Email, token);
+    await this.mailService.sendChangePasswordEmail(user.Email, token, user.Id);
   }
 }
