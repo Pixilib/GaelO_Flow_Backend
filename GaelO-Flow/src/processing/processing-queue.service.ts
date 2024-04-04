@@ -93,11 +93,9 @@ export class ProcessingQueueService {
 
   async getUuidsOfUser(userId: number): Promise<string[]> {
     const jobs: Job<any, any, string>[] = await this.getJobs();
-    console.log(jobs);
     const uuids = jobs
       .filter((job) => job.data.userId == userId)
       .map((job) => job.id);
-    console.log(uuids);
 
     return uuids;
   }
