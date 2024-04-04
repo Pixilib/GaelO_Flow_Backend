@@ -23,7 +23,7 @@ import { AdminGuard } from '../guards/roles.guard';
 import { ProcessingQueueService } from './processing-queue.service';
 import { ProcessingJobDto } from './processing-job.dto';
 import { OrGuard } from '../guards/or.guard';
-import { CheckUserIdGuard } from '../guards/CheckUserId.guard';
+import { CheckUserIdGuard } from '../guards/check-user-id.guard';
 
 @ApiTags('processing')
 @Controller('/processing')

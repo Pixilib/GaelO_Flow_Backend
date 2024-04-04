@@ -22,7 +22,7 @@ import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
 import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrGuard } from '../guards/or.guard';
-import { CheckUserIdGuard } from '../guards/CheckUserId.guard';
+import { CheckUserIdGuard } from '../guards/check-user-id.guard';
 
 @ApiTags('users')
 @Controller('/users')
