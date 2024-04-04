@@ -8,14 +8,14 @@ import {
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
-import OrthancClient from './orthanc/orthanc-client';
+import OrthancClient from './utils/orthanc-client';
 import setupDeleteWorker from './queues/delete/delete.worker';
 import setupAnonWorker from './queues/anon/anon.worker';
 import setupQueryWorker from './queues/query/query.worker';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { OauthConfigService } from './oauth_configs/oauth-configs.service';
 import setupProcessingWorker from './processing/processing.worker';
-import ProcessingClient from './processing/processing.client';
+import ProcessingClient from './utils/processing.client';
 
 async function buildSwagger(app: INestApplication<any>) {
   const oauthConfigs = await app.get(OauthConfigService).getOauthConfig();
