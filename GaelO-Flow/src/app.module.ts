@@ -105,6 +105,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
         database: configService.get<string>('TYPEORM_DATABASE', 'gaelo-flow'),
         entities: [User, Role, Option, Label, RoleLabel, OauthConfig],
         synchronize: true,
+        autoLoadEntities: true,
       }),
     }),
     TypeOrmModule.forFeature([

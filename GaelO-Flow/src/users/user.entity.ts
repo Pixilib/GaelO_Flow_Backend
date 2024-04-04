@@ -68,4 +68,16 @@ export class User {
   @ManyToOne(() => Role, (role) => role.Name)
   @JoinColumn({ name: 'role_name' })
   Role?: Role;
+
+  @ApiProperty()
+  @Column({
+    nullable: true,
+  })
+  Token?: string;
+
+  @ApiProperty()
+  @Column({
+    nullable: true,
+  })
+  TokenExpiration?: Date;
 }
