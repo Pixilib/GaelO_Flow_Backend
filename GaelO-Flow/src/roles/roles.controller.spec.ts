@@ -6,6 +6,8 @@ import { Role } from './role.entity';
 import { UsersService } from '../users/users.service';
 import { UsersController } from '../users/users.controller';
 import { RoleLabel } from '../role_label/role-label.entity';
+import { LabelsService } from '../labels/labels.service';
+import { EntityNotFoundError } from 'typeorm';
 
 describe('RolesController', () => {
   let rolesController: RolesController;
@@ -26,6 +28,7 @@ describe('RolesController', () => {
             create: jest.fn(),
             remove: jest.fn(),
             getAllRoleLabels: jest.fn(),
+            isRoleExist: jest.fn(),
           },
         },
         {
@@ -37,6 +40,16 @@ describe('RolesController', () => {
             create: jest.fn(),
             remove: jest.fn(),
             isRoleUsed: jest.fn(),
+          },
+        },
+        {
+          provide: LabelsService,
+          useValue: {
+            findAll: jest.fn(),
+            findOneByOrFail: jest.fn(),
+            isLabelExist: jest.fn(),
+            remove: jest.fn(),
+            create: jest.fn(),
           },
         },
       ],
@@ -249,9 +262,7 @@ describe('RolesController', () => {
 
     it('check if error is thrown when role already exists', async () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
-      jest
-        .spyOn(rolesService, 'findOneByOrFail')
-        .mockResolvedValue(roleList[0]);
+      jest.spyOn(rolesService, 'isRoleExist').mockResolvedValue(true);
       await expect(
         rolesController.CreateRole({
           Name: 'User',
