@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class QueuesDeleteService extends AbstractQueueService {
-  constructor(private configService: ConfigService) {
+  constructor(configService: ConfigService) {
     const deleteQueue = new Queue('delete', {
       connection: {
         host: configService.get<string>('REDIS_ADDRESS', 'localhost'), // REDIS_ADDRESS

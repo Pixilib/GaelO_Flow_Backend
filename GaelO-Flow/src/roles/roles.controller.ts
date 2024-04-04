@@ -21,13 +21,7 @@ import { UsersService } from '../users/users.service';
 import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
 
 import { AdminGuard } from '../guards/roles.guard';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrGuard } from '../guards/or.guard';
 import { CheckUserRoleGuard } from '../guards/CheckUserRole.guard';
 
@@ -171,9 +165,14 @@ export class RolesController {
 
     const roleLabel = await this.roleService.getRoleLabels(roleName);
 
-    if (role == undefined) throw new BadRequestException('Role does not exist');
-    if (label == undefined)
+    if (role == undefined) {
+      throw new BadRequestException('Role does not exist');
+    }
+
+    if (label == undefined) {
       throw new BadRequestException('Label does not exist');
+    }
+
     if (roleLabel.find((roleLabel) => roleLabel.Label.Name === label.Name))
       throw new ConflictException('Label already exists for this role');
 
@@ -190,7 +189,7 @@ export class RolesController {
     ]),
   )
   @Get('/:roleName/labels')
-  async getRoleLabels(@Param('roleName') roleName: string): Promise<String[]> {
+  async getRoleLabels(@Param('roleName') roleName: string): Promise<string[]> {
     const allRoleLabels = await this.roleService.getRoleLabels(roleName);
     const labels = allRoleLabels.map((roleLabel) => roleLabel.Label.Name);
     return labels;

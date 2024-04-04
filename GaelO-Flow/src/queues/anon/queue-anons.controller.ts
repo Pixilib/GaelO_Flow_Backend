@@ -1,3 +1,4 @@
+import { QueuesAnonService } from './queue-anons.service';
 import {
   BadRequestException,
   Body,
@@ -11,14 +12,11 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { QueuesAnonService } from './queue-anons.service';
 import { AdminGuard, AnonymizeGuard } from '../../guards/roles.guard';
-import { Job } from 'bullmq';
 import { QueuesAnonsDto } from './queue-anons.dto';
 import { randomUUID } from 'crypto';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiParam,
   ApiQuery,
   ApiResponse,

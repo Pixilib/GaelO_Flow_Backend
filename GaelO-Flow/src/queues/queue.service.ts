@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Worker, Job, Queue } from 'bullmq';
+import { Job, Queue } from 'bullmq';
 
 @Injectable()
 export abstract class AbstractQueueService {
@@ -10,7 +9,7 @@ export abstract class AbstractQueueService {
     this.queue = queue;
   }
 
-  async addJob(data: Object): Promise<void> {
+  async addJob(data: object): Promise<void> {
     await this.queue.add(data['uuid'], data, {
       removeOnComplete: {
         age: 3600,
@@ -21,7 +20,7 @@ export abstract class AbstractQueueService {
     });
   }
 
-  async removeJob(data: Object | undefined = undefined): Promise<void> {
+  async removeJob(data: object | undefined = undefined): Promise<void> {
     const jobs: Job<any, any, string>[] = await this.queue.getJobs();
 
     jobs.forEach((job) => {
@@ -75,7 +74,7 @@ export abstract class AbstractQueueService {
 
   async checkIfUserIdHasJobs(userId: number): Promise<boolean> {
     const jobs: Job<any, any, string>[] = await this.queue.getJobs();
-    let result: Job | null = jobs.find((job) => job.data.userId == userId);
+    const result: Job | null = jobs.find((job) => job.data.userId == userId);
 
     return result ? true : false;
   }
