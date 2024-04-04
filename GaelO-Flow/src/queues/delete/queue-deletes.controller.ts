@@ -20,10 +20,8 @@ import {
   ApiParam,
   ApiQuery,
   ApiResponse,
-  ApiResponseProperty,
   ApiTags,
 } from '@nestjs/swagger';
-import { Job } from 'bullmq';
 import { OrGuard } from '../../guards/or.guard';
 
 @ApiTags('queues/delete')

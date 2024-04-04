@@ -10,7 +10,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TasksService {
-  private lastChanges: Number = 0;
+  private lastChanges: number = 0;
 
   constructor(
     @InjectRepository(Option)
@@ -24,7 +24,7 @@ export class TasksService {
     })();
   }
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_MINUTE)
   async queryQueueCron() {
     const options: Option = (await this.optionRepository.find())[0];
     const currentHour = new Date().getHours();

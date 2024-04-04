@@ -1,6 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-import { JwtService } from '@nestjs/jwt';
-const jwtService = new JwtService();
 
 export function logger(req: Request, res: Response, next: NextFunction) {
   const { method, url, ip } = req;

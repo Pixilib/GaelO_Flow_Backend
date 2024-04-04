@@ -13,7 +13,7 @@ import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { JwtAuthGuard } from '../guards/jwt.guard';
 import { OauthConfig } from '../oauth_configs/oauth-config.entity';
-import { HttpModule, HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 import { JwtOauthStrategy } from './jwt-oauth.strategy';
 import { OauthConfigService } from '../oauth_configs/oauth-configs.service';
 
