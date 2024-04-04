@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { Public } from '../interceptors/Public';
+import { Public } from '../interceptors/public';
 import { ApiBody, ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';

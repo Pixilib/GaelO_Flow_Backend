@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Redirect, Req, Request } from '@nestjs/common';
-import { Public } from './interceptors/Public';
+import { Public } from './interceptors/public';
 import { ApiExcludeController, ApiExcludeEndpoint } from '@nestjs/swagger';
 
 @Controller()

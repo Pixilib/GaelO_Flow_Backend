@@ -7,7 +7,6 @@ import {
   Put,
   Delete,
   HttpException,
-  UseInterceptors,
   UseGuards,
   NotFoundException,
   BadRequestException,
@@ -18,7 +17,7 @@ import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { CreateUserDto, GetUserDto, UpdateUserDto } from './users.dto';
 import * as bcryptjs from 'bcryptjs';
-import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
+import { NotFoundInterceptor } from '../interceptors/not-found.interceptor';
 import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrGuard } from '../guards/or.guard';
@@ -38,7 +37,6 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get()
-  @UseInterceptors(ClassSerializerInterceptor)
   async getUsers(): Promise<GetUserDto[]> {
     const allUsers = await this.UserService.findAll();
     return allUsers;
@@ -51,7 +49,6 @@ export class UsersController {
     new OrGuard([new AdminGuard(), new CheckUserIdGuard(['params', 'id'])]),
   )
   @Get('/:id')
-  @UseInterceptors(NotFoundInterceptor)
   async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
     const user = await this.UserService.findOne(id);
     return { ...user, Password: undefined };
@@ -64,7 +61,6 @@ export class UsersController {
     new OrGuard([new AdminGuard(), new CheckUserIdGuard(['params', 'id'])]),
   )
   @Put('/:id')
-  @UseInterceptors(NotFoundInterceptor)
   async update(
     @Param('id') id: number,
     @Body() userDto: UpdateUserDto,
