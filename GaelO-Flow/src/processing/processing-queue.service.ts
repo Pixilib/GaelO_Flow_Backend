@@ -22,8 +22,8 @@ export class ProcessingQueueService {
     await this.processingQueue.obliterate({ force: true });
   }
 
-  async removeJob(jobData: object): Promise<void> {
-    console.log(jobData);
+  async removeJob(uuid: string): Promise<void> {
+    await this.processingQueue.remove(uuid);
   }
 
   async addJob(

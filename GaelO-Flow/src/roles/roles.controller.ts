@@ -36,7 +36,7 @@ export class RolesController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Get all roles', type: [Role] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  // @ApiQuery({ name: 'withLabels', required: false })
+  // @ApiQuery({ name: 'withLabels', required: false }) // CHECK WHY COMMENTED ?
   @UseGuards(AdminGuard)
   @Get()
   async findAll(@Query() withLabels: WithLabels): Promise<Role[]> {
