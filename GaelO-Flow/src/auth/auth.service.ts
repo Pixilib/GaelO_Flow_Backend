@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as crypto from 'crypto';
@@ -38,13 +34,19 @@ export class AuthService {
       UserId: user.Id,
     };
   }
+  async generateHashedToken(): Promise<{
+    token: string;
+    hash: string;
+  }> {
+    const token = crypto.randomBytes(32).toString('hex');
+    const hash = await bcryptjs.hash(token, 10);
+    return { token, hash };
+  }
 
   async createConfirmationToken(user: User): Promise<string> {
     const findUserId = await this.usersService.findOne(user.Id);
-    const confirmationToken = crypto.randomBytes(32).toString('hex');
-    const hash = await bcryptjs.hash(confirmationToken, Number(bcryptjs));
+    const { token: confirmationToken, hash } = await this.generateHashedToken();
     const expireToken = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    console.log({ findUserId, confirmationToken, hash, expireToken });
     const updatedUser: User = {
       ...findUserId,
       Token: hash,
@@ -59,25 +61,15 @@ export class AuthService {
     token: string,
     userId: number,
   ): Promise<boolean> {
-    try {
-      const user = await this.usersService.findOne(userId);
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
+    const user = await this.usersService.findOne(userId);
 
-      if (new Date() > user.TokenExpiration) {
-        throw new BadRequestException('Token expired');
-      }
-
-      const isMatch = await bcryptjs.compare(token, user.Token);
-      if (!isMatch) {
-        throw new BadRequestException('Invalid token');
-      }
-
-      return true;
-    } catch (error) {
-      console.log({ error });
-      return false;
+    if (new Date() > user.TokenExpiration) {
+      throw new BadRequestException('Token expired');
     }
+    const isMatch = await bcryptjs.compare(token, user.Token);
+    if (!isMatch) {
+      throw new BadRequestException('Invalid token');
+    }
+    return true;
   }
 }

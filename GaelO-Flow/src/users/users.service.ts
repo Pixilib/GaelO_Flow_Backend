@@ -49,12 +49,13 @@ export class UsersService {
     withRole: boolean = true,
   ): Promise<User> | undefined {
     if (email === undefined) return undefined;
-    return await this.usersRepository.findOne({
+    const user = await this.usersRepository.findOne({
       where: { Email: email },
       relations: {
         Role: withRole,
       },
     });
+    return user;
   }
 
   async findOneByUsername(
