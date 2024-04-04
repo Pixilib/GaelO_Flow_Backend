@@ -242,10 +242,10 @@ describe('ProcessingController', () => {
         .mockResolvedValueOnce();
 
       // ACT
-      await processingController.removeQueryJob(uuid);
+      await processingController.removeJob(uuid);
 
       // ASSERT
-      expect(mockRemoveJob).toHaveBeenCalledWith({ uuid });
+      expect(mockRemoveJob).toHaveBeenCalledWith(uuid);
     });
   });
 });

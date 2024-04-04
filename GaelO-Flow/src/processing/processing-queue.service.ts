@@ -22,8 +22,8 @@ export class ProcessingQueueService {
     await this.processingQueue.obliterate({ force: true });
   }
 
-  async removeJob(jobData: object): Promise<void> {
-    console.log(jobData);
+  async removeJob(uuid: string): Promise<void> {
+    await this.processingQueue.remove(uuid);
   }
 
   async addJob(
@@ -93,9 +93,11 @@ export class ProcessingQueueService {
 
   async getUuidsOfUser(userId: number): Promise<string[]> {
     const jobs: Job<any, any, string>[] = await this.getJobs();
+    console.log(jobs);
     const uuids = jobs
       .filter((job) => job.data.userId == userId)
       .map((job) => job.id);
+    console.log(uuids);
 
     return uuids;
   }
