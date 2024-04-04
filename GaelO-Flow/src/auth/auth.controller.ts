@@ -152,12 +152,10 @@ export class AuthController {
   async lostPassword(@Body() body: { Email: string }) {
     const { Email } = body;
     const user = await this.usersService.findOneByEmail(Email, false);
-    console.log({ user });
     if (!user) {
       throw new BadRequestException('User not found');
     }
     const token = await this.authService.createConfirmationToken(user);
-    console.log({ token });
     await this.mailService.sendChangePasswordEmail(user.Email, token);
   }
 }

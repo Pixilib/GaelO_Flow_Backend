@@ -1,7 +1,6 @@
 import { Strategy } from 'passport-http-bearer';
 import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
@@ -27,7 +26,7 @@ export class JwtOauthStrategy extends PassportStrategy(Strategy) {
     super();
   }
 
-  async getWellKnown(iss: string): Promise<Object> {
+  async getWellKnown(iss: string): Promise<object> {
     try {
       const wellKnown = await firstValueFrom(
         this.httpService.get(iss + '/.well-known/openid-configuration'),
@@ -38,14 +37,14 @@ export class JwtOauthStrategy extends PassportStrategy(Strategy) {
     }
   }
 
-  async validateIssuer(wellKnown: Object): Promise<boolean> {
+  async validateIssuer(wellKnown: object): Promise<boolean> {
     const authorizationUrl = wellKnown['authorization_endpoint'];
     const config =
       await this.oauthConfigService.findOneByAuthorizationUrl(authorizationUrl);
     return !!config;
   }
 
-  async getUserInfoUrl(wellKnown: Object): Promise<string> {
+  async getUserInfoUrl(wellKnown: object): Promise<string> {
     return wellKnown['userinfo_endpoint'];
   }
 
