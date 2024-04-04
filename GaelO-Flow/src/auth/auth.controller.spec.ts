@@ -133,16 +133,17 @@ describe('AuthController', () => {
       jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(
         Promise.resolve({
           ...expectedUser,
-          Id: 1,
         }),
       );
 
       jest
         .spyOn(authService, 'createConfirmationToken')
         .mockResolvedValue('confirmation_token');
+      const tokenCreated =
+        await authService.createConfirmationToken(expectedUser);
       const expectedUserWithToken = {
         ...expectedUser,
-        Token: 'confirmation_token',
+        Token: tokenCreated,
         TokenExpiration: new Date(Date.now() + 24 * 60 * 60 * 1000),
       } as User;
       console.log({ expectedUserWithToken });
@@ -162,7 +163,7 @@ describe('AuthController', () => {
       );
       expect(mailService.sendChangePasswordEmail).toHaveBeenCalledWith(
         expectedUserWithToken.Email,
-        'confirmation_token',
+        expectedUserWithToken.Token,
         expectedUserWithToken.Id,
       );
     });

@@ -75,20 +75,20 @@ export class AuthController {
 
   @ApiResponse({ status: 201, description: 'Register success' })
   @ApiResponse({ status: 409, description: 'Conflict' })
+  @ApiBody({ type: RegisterDto })
   @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
+    console.log('registerDto', registerDto);
     const userExists = await this.usersService.findOneByEmail(
       registerDto.Email,
       false,
     );
-
     if (userExists) {
       throw new ConflictException(
         'A user already exist with this username or email',
       );
     }
-
     await this.usersService.create({
       Email: registerDto.Email,
       Firstname: registerDto.Firstname,
@@ -106,7 +106,6 @@ export class AuthController {
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
 
-    // console.log({ newUser, confirmationToken });
     await this.mailService.sendChangePasswordEmail(
       newUser.Email,
       confirmationToken,
@@ -121,20 +120,16 @@ export class AuthController {
   @Post('change-password')
   async changePassword(
     @Body() changePasswordDto: ChangePasswordDto,
-  ): Promise<undefined> {
+  ): Promise<void> {
     const { Token, NewPassword, ConfirmationPassword, UserId } =
       changePasswordDto;
+
     if (NewPassword !== ConfirmationPassword) {
-      throw new BadRequestException('Confirmation password not matching');
+      throw new BadRequestException('Confirmation password does not match');
     }
-    const userId = await this.usersService.findOne(UserId);
-    console.log({ userId });
-    const isTokenValid = await this.authService.verifyConfirmationToken(
-      Token,
-      userId.Id,
-    );
-    if (!isTokenValid) return;
-    await this.usersService.updateUserPassword(userId.Id, NewPassword);
+    await this.usersService.findOne(UserId);
+    await this.authService.verifyConfirmationToken(Token, UserId);
+    await this.usersService.updateUserPassword(UserId, NewPassword);
   }
 
   @ApiResponse({ status: 200, description: 'Email sent' })
@@ -145,10 +140,6 @@ export class AuthController {
   async lostPassword(@Body() body: LostPassworDto) {
     const { Email } = body;
     const user = await this.usersService.findOneByEmail(Email, false);
-    console.log({ user });
-    if (!user) {
-      throw new BadRequestException('User not found');
-    }
     const token = await this.authService.createConfirmationToken(user);
     await this.mailService.sendChangePasswordEmail(user.Email, token, user.Id);
   }
