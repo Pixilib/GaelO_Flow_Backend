@@ -23,7 +23,7 @@ import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
 import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrGuard } from '../guards/or.guard';
-import { CheckUserRoleGuard } from '../guards/CheckUserRole.guard';
+import { CheckUserRoleGuard } from '../guards/check-user-role.guard';
 
 @ApiTags('roles')
 @Controller('/roles')
