@@ -120,15 +120,26 @@ export class AuthController {
   async changePassword(
     @Body() changePasswordDto: ChangePasswordDto,
   ): Promise<void> {
-    const { Token, NewPassword, ConfirmationPassword, UserId } =
-      changePasswordDto;
+    const {
+      Token: token,
+      NewPassword,
+      ConfirmationPassword,
+      UserId,
+    } = changePasswordDto;
 
     if (NewPassword !== ConfirmationPassword) {
       throw new BadRequestException('Confirmation password does not match');
     }
-    await this.usersService.findOne(UserId);
-    await this.authService.verifyConfirmationToken(Token, UserId);
-    await this.usersService.updateUserPassword(UserId, NewPassword);
+
+    const user = await this.usersService.findOne(UserId);
+    const checkToken = this.authService.isValidChangePasswordToken(token, user);
+
+    if (checkToken) {
+      await this.usersService.updateUserPassword(UserId, NewPassword);
+    } else {
+      throw new BadRequestException('Invalid token');
+    }
+
   }
 
   @ApiResponse({ status: 200, description: 'Email sent' })

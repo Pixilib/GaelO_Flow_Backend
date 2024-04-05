@@ -58,19 +58,14 @@ export class AuthService {
     return confirmationToken;
   }
 
-  async verifyConfirmationToken(
+  async isValidChangePasswordToken(
     token: string,
-    userId: number,
+    user: User,
   ): Promise<boolean> {
-    const user = await this.usersService.findOne(userId);
-
-    if (new Date() > user.TokenExpiration) {
-      throw new BadRequestException('Token expired');
+    const tokenValid = await bcryptjs.compare(token, user.Token);
+    if (tokenValid && new Date() < user.TokenExpiration) {
+      return true;
     }
-    const isMatch = await bcryptjs.compare(token, user.Token);
-    if (!isMatch) {
-      throw new BadRequestException('Invalid token');
-    }
-    return true;
+    return false;
   }
 }

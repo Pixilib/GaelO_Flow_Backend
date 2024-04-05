@@ -213,6 +213,7 @@ describe('AuthController', () => {
       usersService.findOneByEmail = jest.fn().mockResolvedValue(undefined);
     });
   });
+
   describe('changePassword', () => {
     it('check if changePassword is in public', async () => {
       const isPublic = Reflect.getMetadata(
@@ -245,6 +246,7 @@ describe('AuthController', () => {
 
       expect(errors).not.toHaveLength(0);
     });
+
     it('should throw a BadRequestException if passwords do not match', async () => {
       const dto = {
         Token: 'token',
@@ -263,12 +265,8 @@ describe('AuthController', () => {
         Token: 'token',
         NewPassword: 'password',
         ConfirmationPassword: 'password',
-        UserId: 1,
+        UserId: 55,
       };
-
-      jest
-        .spyOn(usersService, 'findOne')
-        .mockRejectedValueOnce(new NotFoundException());
 
       await expect(authController.changePassword(dto)).rejects.toThrow(
         NotFoundException,
@@ -298,7 +296,7 @@ describe('AuthController', () => {
 
       jest.spyOn(usersService, 'findOne').mockResolvedValueOnce(user);
       jest
-        .spyOn(authService, 'verifyConfirmationToken')
+        .spyOn(authService, 'isValidChangePasswordToken')
         .mockResolvedValueOnce(true);
       jest
         .spyOn(usersService, 'updateUserPassword')
@@ -307,10 +305,6 @@ describe('AuthController', () => {
       await authController.changePassword(dto);
 
       expect(usersService.findOne).toHaveBeenCalledWith(dto.UserId);
-      expect(authService.verifyConfirmationToken).toHaveBeenCalledWith(
-        dto.Token,
-        user.Id,
-      );
       expect(usersService.updateUserPassword).toHaveBeenCalledWith(
         user.Id,
         dto.NewPassword,
