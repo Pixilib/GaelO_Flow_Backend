@@ -58,6 +58,8 @@ describe('UsersService', () => {
       Password: hash,
       SuperAdmin: false,
       RoleName: userRole.Name,
+      Token: null,
+      TokenExpiration: null,
     };
 
     salt = await bcryptjs.genSalt();
@@ -70,6 +72,8 @@ describe('UsersService', () => {
       Password: hash,
       SuperAdmin: false,
       RoleName: userRole.Name,
+      Token: null,
+      TokenExpiration: null,
     };
 
     await rolesService.create(userRole);
@@ -146,6 +150,8 @@ describe('UsersService', () => {
         Password: 'create_<PASSWORD>',
         SuperAdmin: false,
         RoleName: 'User',
+        Token: null,
+        TokenExpiration: null,
       };
       const createResult = await usersService.create(createUser);
       const findOneResult = await usersService.findOne(createResult);

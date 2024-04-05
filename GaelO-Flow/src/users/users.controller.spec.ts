@@ -198,7 +198,7 @@ describe('UsersController', () => {
           SuperAdmin: true,
           RoleName: 'roleName',
         });
-
+        expect(mockCreate).toHaveBeenCalledTimes(1);
         expect(true).toBe(false);
       } catch (error) {
         expect(error).toBeInstanceOf(Error);
@@ -217,7 +217,7 @@ describe('UsersController', () => {
           SuperAdmin: true,
           RoleName: 'roleName',
         });
-
+        expect(mockCreate).toHaveBeenCalledTimes(1);
         expect(true).toBe(false);
       } catch (error) {
         expect(error).toBeInstanceOf(Error);

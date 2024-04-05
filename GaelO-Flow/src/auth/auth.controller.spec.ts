@@ -146,7 +146,6 @@ describe('AuthController', () => {
         Token: tokenCreated,
         TokenExpiration: new Date(Date.now() + 24 * 60 * 60 * 1000),
       } as User;
-      console.log({ expectedUserWithToken });
       jest
         .spyOn(mailService, 'sendChangePasswordEmail')
         .mockResolvedValue(null);
