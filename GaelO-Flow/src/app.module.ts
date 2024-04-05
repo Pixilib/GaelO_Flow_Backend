@@ -41,7 +41,7 @@ import { OrthancModifyController } from './orthanc/orthanc-modify.controller';
 import { OrthancQueryController } from './orthanc/orthanc-query.controller';
 import { OrthancAdminController } from './orthanc/orthanc-admin.controller';
 
-import OrthancClient from './orthanc/orthanc-client';
+import OrthancClient from './utils/orthanc-client';
 
 // QUEUES
 import { QueuesDeleteController } from './queues/delete/queue-deletes.controller';
@@ -71,7 +71,7 @@ import { OauthConfigModule } from './oauth_configs/oauth-configs.module';
 import { OauthConfig } from './oauth_configs/oauth-config.entity';
 
 // PROCESSING
-import ProcessingClient from './processing/processing.client';
+import ProcessingClient from './utils/processing.client';
 import { ProcessingController } from './processing/processing.controller';
 
 import { HttpModule } from '@nestjs/axios';

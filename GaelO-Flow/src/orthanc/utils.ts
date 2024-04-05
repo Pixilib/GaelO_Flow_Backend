@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import OrthancClient from './orthanc-client';
+import OrthancClient from '../utils/orthanc-client';
 
 export const doReverseProxy = (
   request: Request,

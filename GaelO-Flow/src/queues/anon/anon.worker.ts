@@ -1,5 +1,5 @@
 import { Worker, Job } from 'bullmq';
-import OrthancClient from '../../orthanc/orthanc-client';
+import OrthancClient from '../../utils/orthanc-client';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
 

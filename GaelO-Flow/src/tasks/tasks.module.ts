@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Option } from '../options/option.entity';
 import { TasksService } from './tasks.service';
 import { QueuesQueryService } from '../queues/query/queue-query.service';
-import OrthancClient from '../orthanc/orthanc-client';
+import OrthancClient from '../utils/orthanc-client';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Option])],

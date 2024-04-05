@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { HttpClient } from '../utils/http.client';
+import { HttpClient } from './http.client';
 
 @Injectable()
 class ProcessingClient extends HttpClient {

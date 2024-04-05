@@ -1,10 +1,10 @@
 import { Worker, Job } from 'bullmq';
-import OrthancClient from '../orthanc/orthanc-client';
+import OrthancClient from '../utils/orthanc-client';
 import { TmtvService } from './tmtv.service';
 import { ConfigService } from '@nestjs/config';
 
 import Redis from 'ioredis';
-import ProcessingClient from './processing.client';
+import ProcessingClient from '../utils/processing.client';
 import { ProcessingJobType, ProcessingMask } from '../constants/enums';
 
 async function tmtvJob(
