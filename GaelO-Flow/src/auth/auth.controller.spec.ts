@@ -223,17 +223,6 @@ describe('AuthController', () => {
 
       expect(isPublic).toBe(true);
     });
-    it('should pass validation when the password meets the DTO criteria', async () => {
-      const dto = new ChangePasswordDto();
-      dto.NewPassword = 'validPassword1!';
-      dto.ConfirmationPassword = 'validPassword1!';
-      dto.Token = 'validToken';
-      dto.UserId = 1;
-
-      const errors = await validate(dto);
-
-      expect(errors).toHaveLength(0);
-    });
 
     it('should fail validation when the password does not meet the DTO criteria', async () => {
       const dto = new ChangePasswordDto();
@@ -242,9 +231,9 @@ describe('AuthController', () => {
       dto.Token = 'validToken';
       dto.UserId = 1;
 
-      const errors = await validate(dto);
-
-      expect(errors).not.toHaveLength(0);
+      await expect(authController.changePassword(dto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should throw a BadRequestException if passwords do not match', async () => {

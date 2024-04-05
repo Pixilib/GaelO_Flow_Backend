@@ -73,11 +73,13 @@ export class User {
   @Column({
     nullable: true,
   })
+  @Exclude()
   Token?: string;
 
   @ApiProperty()
   @Column({
     nullable: true,
   })
+  @Exclude()
   TokenExpiration?: Date;
 }
