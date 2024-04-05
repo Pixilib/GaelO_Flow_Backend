@@ -6,12 +6,11 @@ import {
   Delete,
   Param,
   ConflictException,
-  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
 import { Label } from './label.entity';
 import { LabelDto } from './labels.dto';
-import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
+import { NotFoundInterceptor } from '../interceptors/not-found.interceptor';
 import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LabelsService } from './labels.service';
@@ -35,7 +34,6 @@ export class LabelsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Delete('/:labelName')
-  @UseInterceptors(NotFoundInterceptor)
   async remove(@Param('labelName') labelName: string): Promise<void> {
     await this.LabelsService.findOneByOrFail(labelName);
     return this.LabelsService.remove(labelName);

@@ -6,7 +6,6 @@ import {
   Param,
   Delete,
   Put,
-  UseInterceptors,
   ForbiddenException,
   ConflictException,
   BadRequestException,
@@ -18,7 +17,7 @@ import { Role } from './role.entity';
 import { RoleDto, WithLabels } from './roles.dto';
 
 import { UsersService } from '../users/users.service';
-import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
+import { NotFoundInterceptor } from '../interceptors/not-found.interceptor';
 
 import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -36,7 +35,6 @@ export class RolesController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Get all roles', type: [Role] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  // @ApiQuery({ name: 'withLabels', required: false }) // CHECK WHY COMMENTED ?
   @UseGuards(AdminGuard)
   @Get()
   async findAll(@Query() withLabels: WithLabels): Promise<Role[]> {
@@ -58,7 +56,6 @@ export class RolesController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get('/:name')
-  @UseInterceptors(NotFoundInterceptor)
   async findOne(@Param('name') name: string): Promise<Role> {
     const role = await this.roleService.findOne(name);
     return role;
@@ -99,7 +96,6 @@ export class RolesController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Delete('/:name')
-  @UseInterceptors(NotFoundInterceptor)
   async delete(@Param('name') name: string): Promise<void> {
     const role = await this.roleService.findOne(name);
 
@@ -114,7 +110,6 @@ export class RolesController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Put('/:name')
-  @UseInterceptors(NotFoundInterceptor)
   async update(
     @Param('name') name: string,
     @Body() roleDto: RoleDto,

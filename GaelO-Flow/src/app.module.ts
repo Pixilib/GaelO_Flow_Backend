@@ -73,12 +73,14 @@ import { OauthConfig } from './oauth_configs/oauth-config.entity';
 // PROCESSING
 import ProcessingClient from './utils/processing.client';
 import { ProcessingController } from './processing/processing.controller';
+import { TmtvService } from './processing/tmtv.service';
+import { ProcessingQueueService } from './processing/processing-queue.service';
 
 import { HttpModule } from '@nestjs/axios';
 import { logger } from './utils/logger.middleware';
-import { TmtvService } from './processing/tmtv.service';
-import { ProcessingQueueService } from './processing/processing-queue.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { NotFoundInterceptor } from './interceptors/not-found.interceptor';
 
 @Module({
   imports: [
@@ -156,6 +158,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ProcessingClient,
     TmtvService,
     ProcessingQueueService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: NotFoundInterceptor,
+    },
   ],
 })
 export class AppModule implements NestModule {
