@@ -32,7 +32,7 @@ describe('AuthController', () => {
             login: jest.fn(),
             validateUser: jest.fn(),
             createConfirmationToken: jest.fn(),
-            verifyConfirmationToken: jest.fn(),
+            isValidChangePasswordToken: jest.fn(),
           },
         },
         {
