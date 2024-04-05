@@ -94,7 +94,7 @@ describe('UsersService', () => {
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const role = await rolesService.findOne('User');
+      const role = await rolesService.findOneByOrFail('User');
       const result = await usersService.findAll();
       expect(result).toEqual([
         { ...firstUser, Role: role },
@@ -105,7 +105,7 @@ describe('UsersService', () => {
 
   describe('findOne', () => {
     it('should return the first user', async () => {
-      const role = await rolesService.findOne('User');
+      const role = await rolesService.findOneByOrFail('User');
       const result = await usersService.findOne(1);
       expect(result).toEqual({ ...firstUser, Role: role });
     });
@@ -125,7 +125,7 @@ describe('UsersService', () => {
 
   describe('update', () => {
     it('should update a user', async () => {
-      const role = await rolesService.findOne('User');
+      const role = await rolesService.findOneByOrFail('User');
       const user = { ...firstUser };
       user.Firstname = 'updateTest';
       const updateResult = await usersService.update(1, user);
@@ -137,7 +137,7 @@ describe('UsersService', () => {
 
   describe('create', () => {
     it('should create a user', async () => {
-      const role = await rolesService.findOne('User');
+      const role = await rolesService.findOneByOrFail('User');
       const createUser = {
         Username: 'create_testuser',
         Firstname: 'create_testfirstname',

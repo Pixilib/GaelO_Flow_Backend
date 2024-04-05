@@ -21,12 +21,13 @@ export class LabelsController {
   constructor(private readonly LabelsService: LabelsService) {}
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: 'Get all labels', type: [Label] })
+  @ApiResponse({ status: 200, description: 'Get all labels', type: [String] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get()
-  async findAll(): Promise<Label[]> {
-    return this.LabelsService.findAll();
+  async findAll(): Promise<string[]> {
+    const allLabels = await this.LabelsService.findAll();
+    return allLabels.map((label) => label.Name);
   }
 
   @ApiBearerAuth('access-token')
