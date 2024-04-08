@@ -26,7 +26,7 @@ import { CheckUserIdGuard } from '../guards/check-user-id.guard';
 @ApiTags('users')
 @Controller('/users')
 export class UsersController {
-  constructor(private readonly UserService: UsersService) {}
+  constructor(private readonly userService: UsersService) {}
 
   @ApiBearerAuth('access-token')
   @ApiResponse({
@@ -38,8 +38,18 @@ export class UsersController {
   @UseGuards(AdminGuard)
   @Get()
   async getUsers(): Promise<GetUserDto[]> {
-    const allUsers = await this.UserService.findAll();
-    return allUsers;
+    const allUsers = await this.userService.findAll();
+    return allUsers.map((user) => {
+      return {
+        Id: user.Id,
+        Firstname: user.Firstname,
+        Lastname: user.Lastname,
+        Username: user.Username,
+        Email: user.Email,
+        SuperAdmin: user.SuperAdmin,
+        RoleName: user.RoleName,
+      };
+    });
   }
 
   @ApiBearerAuth('access-token')
@@ -50,9 +60,22 @@ export class UsersController {
   )
   @Get('/:id')
   async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
+<<<<<<< Updated upstream
     const user = await this.UserService.findOne(id);
     console.log(user);
     return { ...user, Password: undefined };
+=======
+    const user = await this.userService.findOne(id);
+    return {
+      Id: user.Id,
+      Firstname: user.Firstname,
+      Lastname: user.Lastname,
+      Username: user.Username,
+      Email: user.Email,
+      SuperAdmin: user.SuperAdmin,
+      RoleName: user.RoleName,
+    };
+>>>>>>> Stashed changes
   }
 
   @ApiBearerAuth('access-token')
@@ -66,14 +89,14 @@ export class UsersController {
     @Param('id') id: number,
     @Body() userDto: UpdateUserDto,
   ): Promise<void> {
-    const user = await this.UserService.findOne(id);
+    const user = await this.userService.findOne(id);
 
     if (!user) throw new NotFoundException('User not found');
 
     if (userDto.Firstname) user.Firstname = userDto.Firstname;
     if (userDto.Lastname) user.Lastname = userDto.Lastname;
 
-    await this.UserService.update(id, user);
+    await this.userService.update(id, user);
   }
 
   @ApiBearerAuth('access-token')
@@ -85,9 +108,9 @@ export class UsersController {
   )
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<void> {
-    const existingUser = await this.UserService.isExistingUser(id);
+    const existingUser = await this.userService.isExistingUser(id);
     if (existingUser) {
-      return await this.UserService.remove(id);
+      return await this.userService.remove(id);
     } else {
       throw new BadRequestException('All the keys are required');
     }
@@ -102,11 +125,7 @@ export class UsersController {
   @Post()
   async createUser(@Body() userDto: CreateUserDto): Promise<number> {
     const user = new User();
-    const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-    const regexPassword =
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/g;
 
-    // check if all the keys are present
     if (
       !userDto.Firstname == undefined ||
       !userDto.Lastname == undefined ||
@@ -121,14 +140,7 @@ export class UsersController {
 
     const salt = await bcryptjs.genSalt();
     const hash = await bcryptjs.hash(userDto.Password, salt);
-
-    if (regexEmail.test(userDto.Email) === false)
-      throw new BadRequestException('Email is not valid');
-
-    if (regexPassword.test(userDto.Password) === false)
-      throw new BadRequestException('Password is not valid');
-
-    const existingUser = await this.UserService.findByUsernameOrEmail(
+    const existingUser = await this.userService.findByUsernameOrEmail(
       userDto.Username,
       userDto.Email,
     );
@@ -146,7 +158,7 @@ export class UsersController {
     user.RoleName = userDto.RoleName;
 
     try {
-      return await this.UserService.create(user);
+      return await this.userService.create(user);
     } catch (error) {
       throw new HttpException('Role not found', 400);
     }

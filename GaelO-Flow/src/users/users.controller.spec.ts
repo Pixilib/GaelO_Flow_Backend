@@ -58,7 +58,15 @@ describe('UsersController', () => {
     });
 
     it('check if getUsers calls service findAll', async () => {
-      const mockResult: GetUserDto[] = userList;
+      const mockResult: GetUserDto[] = userList.map((user) => ({
+        Id: user.Id,
+        Firstname: user.Firstname,
+        Lastname: user.Lastname,
+        Username: user.Username,
+        Email: user.Email,
+        SuperAdmin: user.SuperAdmin,
+        RoleName: user.RoleName,
+      }));
       const mock = jest
         .spyOn(usersService, 'findAll')
         .mockResolvedValue(userList);
