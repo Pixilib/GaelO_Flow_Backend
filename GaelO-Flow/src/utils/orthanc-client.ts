@@ -4,8 +4,8 @@ import { HttpClient } from './http.client';
 import { Injectable } from '@nestjs/common';
 import TagAnon from '../orthanc/tag-anon';
 import { AxiosResponse } from 'axios';
-import QuerySeriesAnswer from '../orthanc/QueryAnswer/query-series.answer';
-import QueryStudyAnswer from '../orthanc/QueryAnswer/query-study.answer';
+import QuerySeriesAnswer from '../orthanc/query-answer/query-series.answer';
+import QueryStudyAnswer from '../orthanc/query-answer/query-study.answer';
 import { TagPolicies } from '../constants/enums';
 
 @Injectable()
