@@ -9,7 +9,6 @@ import {
 import { Role } from '../roles/role.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { IsEmail } from 'class-validator';
 
 @Entity()
 export class User {
@@ -17,19 +16,19 @@ export class User {
   @PrimaryGeneratedColumn({ name: 'id' })
   Id?: number;
 
-  @ApiProperty({ example: 'John', required: true })
+  @ApiProperty({ example: 'John' })
   @Column({
     name: 'firstname',
   })
   Firstname: string;
 
-  @ApiProperty({ example: 'Doe', required: true })
+  @ApiProperty({ example: 'Doe' })
   @Column({
     name: 'lastname',
   })
   Lastname: string;
 
-  @ApiProperty({ example: 'johndoe', required: true })
+  @ApiProperty({ example: 'johndoe' })
   @Column({
     unique: true,
     name: 'username',
@@ -43,22 +42,21 @@ export class User {
   @Exclude()
   Password: string;
 
-  @ApiProperty({ example: 'john.doe@gmail.com', required: true })
+  @ApiProperty({ example: 'john.doe@gmail.com' })
   @Column({
     unique: true,
     name: 'email',
   })
-  @IsEmail()
   Email: string;
 
-  @ApiProperty({ example: true, required: true })
+  @ApiProperty({ example: true })
   @Column({
     default: false,
     name: 'super_admin',
   })
   SuperAdmin: boolean;
 
-  @ApiProperty({ example: 'admin', required: true })
+  @ApiProperty({ example: 'admin' })
   @Column({
     name: 'role_name',
     unique: false,
