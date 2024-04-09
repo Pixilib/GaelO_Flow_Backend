@@ -9,7 +9,7 @@ import { RolesService } from '../roles/roles.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
-import { RoleLabel } from '../role_label/role-label.entity';
+import { RoleLabel } from '../role-label/role-label.entity';
 import { LabelsService } from '../labels/labels.service';
 import { Label } from '../labels/label.entity';
 import { UsersModule } from './users.module';
