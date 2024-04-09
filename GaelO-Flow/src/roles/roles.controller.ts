@@ -11,6 +11,7 @@ import {
   BadRequestException,
   UseGuards,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { Role } from './role.entity';

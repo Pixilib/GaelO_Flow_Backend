@@ -7,11 +7,7 @@ import { RoleLabel } from '../role_label/role-label.entity';
 import { Label } from '../labels/label.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Role]),
-    TypeOrmModule.forFeature([Label]),
-    TypeOrmModule.forFeature([RoleLabel]),
-  ],
+  imports: [TypeOrmModule.forFeature([Role, Label, RoleLabel])],
   providers: [RolesService],
   controllers: [RolesController],
 })

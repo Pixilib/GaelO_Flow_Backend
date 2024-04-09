@@ -1,31 +1,7 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsEmail,
-  IsInstance,
-  IsNumber,
-  IsString,
-  Matches,
-} from 'class-validator';
-import { User } from './user.entity';
-import { Role } from 'src/roles/role.entity';
-import { OmitType, PickType } from '@nestjs/mapped-types';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsEmail, IsString, Matches } from 'class-validator';
 
-export class UpdateUserDto {
-  @ApiProperty({ example: 'John' })
-  @IsString()
-  Firstname: string;
-
-  @ApiProperty({ example: 'Doe' })
-  @IsString()
-  Lastname: string;
-}
-
-export class GetUserDto {
-  @ApiProperty()
-  @IsNumber()
-  Id: number;
-
+export class CreateUserDto {
   @ApiProperty({ example: 'John', required: true })
   @IsString()
   Firstname: string;
@@ -50,12 +26,6 @@ export class GetUserDto {
   @IsString()
   RoleName: string;
 
-  @ApiProperty()
-  @IsInstance(Role)
-  Role?: Role;
-}
-
-export class CreateUserDto extends OmitType(GetUserDto, ['Id', 'Role']) {
   @ApiProperty({ example: 'myPassw0rd' })
   @IsString()
   @Matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/, {
