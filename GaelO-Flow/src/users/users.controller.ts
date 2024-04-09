@@ -16,7 +16,6 @@ import {
 import { UsersService } from './users.service';
 import { User } from './user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
-import * as bcryptjs from 'bcryptjs';
 import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrGuard } from '../guards/or.guard';
@@ -24,6 +23,7 @@ import { CheckUserIdGuard } from '../guards/check-user-id.guard';
 import { GetUserDto } from './dto/get-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RolesService } from '../roles/roles.service';
+import { hashPassword } from '../utils/passwords';
 
 @ApiTags('users')
 @Controller('/users')
@@ -124,8 +124,6 @@ export class UsersController {
   @Post()
   async createUser(@Body() userDto: CreateUserDto): Promise<number> {
     let user = new User();
-    const salt = await bcryptjs.genSalt();
-    const hash = await bcryptjs.hash(userDto.Password, salt);
     const existingUser = await this.userService.findByUsernameOrEmail(
       userDto.Username,
       userDto.Email,
@@ -138,7 +136,7 @@ export class UsersController {
     if (existingUser) {
       throw new ConflictException('Username / Email already used');
     }
-    user = { ...userDto, Password: hash };
+    user = { ...userDto, Password: await hashPassword(userDto.Password) };
     return await this.userService.create(user);
   }
 }

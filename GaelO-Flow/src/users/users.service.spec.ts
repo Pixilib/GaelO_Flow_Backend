@@ -48,8 +48,7 @@ describe('UsersService', () => {
     const adminRole = new Role();
     adminRole.Name = 'Admin';
 
-    salt = await bcryptjs.genSalt();
-    hash = await bcryptjs.hash('first', salt);
+    hash = 'first';
     firstUser = {
       Username: 'first_username',
       Firstname: 'first_firstname',
@@ -60,8 +59,7 @@ describe('UsersService', () => {
       RoleName: userRole.Name,
     };
 
-    salt = await bcryptjs.genSalt();
-    hash = await bcryptjs.hash('second', salt);
+    hash = 'second';
     secondUser = {
       Username: 'second_username',
       Firstname: 'second_firstname',
