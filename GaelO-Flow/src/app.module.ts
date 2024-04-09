@@ -56,8 +56,8 @@ import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 // ROLE LABEL ROUTE
-import { RoleLabel } from './role_label/role-label.entity';
-import { RoleLabelModule } from './role_label/role-label.module';
+import { RoleLabel } from './role-label/role-label.entity';
+import { RoleLabelModule } from './role-label/role-label.module';
 
 import { SeedService } from './seeder.service';
 import { MailService } from './mail/mail.service';
@@ -65,10 +65,10 @@ import { MailService } from './mail/mail.service';
 import { MailModule } from './mail/mail.module';
 
 // OAUTHCONFIG ROUTE
-import { OauthConfigController } from './oauth_configs/oauth-configs.controller';
-import { OauthConfigService } from './oauth_configs/oauth-configs.service';
-import { OauthConfigModule } from './oauth_configs/oauth-configs.module';
-import { OauthConfig } from './oauth_configs/oauth-config.entity';
+import { OauthConfigController } from './oauth-configs/oauth-configs.controller';
+import { OauthConfigService } from './oauth-configs/oauth-configs.service';
+import { OauthConfigModule } from './oauth-configs/oauth-configs.module';
+import { OauthConfig } from './oauth-configs/oauth-config.entity';
 
 // PROCESSING
 import ProcessingClient from './utils/processing.client';

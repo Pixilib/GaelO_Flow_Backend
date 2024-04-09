@@ -13,7 +13,7 @@ import setupDeleteWorker from './queues/delete/delete.worker';
 import setupAnonWorker from './queues/anon/anon.worker';
 import setupQueryWorker from './queues/query/query.worker';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { OauthConfigService } from './oauth_configs/oauth-configs.service';
+import { OauthConfigService } from './oauth-configs/oauth-configs.service';
 import setupProcessingWorker from './processing/processing.worker';
 import ProcessingClient from './utils/processing.client';
 

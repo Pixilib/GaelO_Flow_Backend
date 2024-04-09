@@ -5,7 +5,7 @@ import { Role } from './role.entity';
 
 import { UsersService } from '../users/users.service';
 import { UsersController } from '../users/users.controller';
-import { RoleLabel } from '../role_label/role-label.entity';
+import { RoleLabel } from '../role-label/role-label.entity';
 import { LabelsService } from '../labels/labels.service';
 import { EntityNotFoundError } from 'typeorm';
 
