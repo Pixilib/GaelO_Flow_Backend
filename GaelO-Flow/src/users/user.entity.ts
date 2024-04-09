@@ -12,7 +12,7 @@ import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
-  @ApiProperty({ example: 1 })
+  @ApiProperty()
   @PrimaryGeneratedColumn({ name: 'id' })
   Id?: number;
 

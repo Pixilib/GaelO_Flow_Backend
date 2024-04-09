@@ -3,11 +3,14 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
-import { GetUserDto, UpdateUserDto } from './users.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { GetUserDto } from './dto/get-user.dto';
+import { RolesService } from '..//roles/roles.service';
 
 describe('UsersController', () => {
   let usersController: UsersController;
   let usersService: UsersService;
+  let rolesService: RolesService;
   let userList: User[];
 
   beforeEach(async () => {
@@ -24,6 +27,12 @@ describe('UsersController', () => {
             remove: jest.fn(),
             findByUsernameOrEmail: jest.fn(),
             isExistingUser: jest.fn(),
+          },
+        },
+        {
+          provide: RolesService,
+          useValue: {
+            isRoleExist: jest.fn(),
           },
         },
       ],
@@ -43,6 +52,7 @@ describe('UsersController', () => {
     ];
     usersController = module.get<UsersController>(UsersController);
     usersService = module.get<UsersService>(UsersService);
+    rolesService = module.get<RolesService>(RolesService);
   });
 
   describe('getUsers', () => {
@@ -58,7 +68,16 @@ describe('UsersController', () => {
     });
 
     it('check if getUsers calls service findAll', async () => {
-      const mockResult: GetUserDto[] = userList;
+      const mockResult: GetUserDto[] = userList.map((user) => ({
+        Id: user.Id,
+        Firstname: user.Firstname,
+        Lastname: user.Lastname,
+        Username: user.Username,
+        Email: user.Email,
+        SuperAdmin: user.SuperAdmin,
+        RoleName: user.RoleName,
+        Role: user.Role,
+      }));
       const mock = jest
         .spyOn(usersService, 'findAll')
         .mockResolvedValue(userList);
@@ -126,6 +145,18 @@ describe('UsersController', () => {
       expect(mockFindOne).toHaveBeenCalled();
       expect(mockUpdate).toHaveBeenCalled();
     });
+
+    it('check if update throws error if user does not exist', async () => {
+      const mockFindOne = jest
+        .spyOn(usersService, 'findOne')
+        .mockResolvedValue(undefined);
+      await expect(
+        usersController.update(1, {
+          Firstname: 'firstname',
+        } as UpdateUserDto),
+      ).rejects.toThrow();
+      expect(mockFindOne).toHaveBeenCalled();
+    });
   });
 
   describe('delete', () => {
@@ -154,6 +185,14 @@ describe('UsersController', () => {
       expect(mockIsExistingUser).toHaveBeenCalled();
       expect(mockRemove).toHaveBeenCalled();
     });
+
+    it('check if delete throws error if user does not exist', async () => {
+      const mockIsExistingUser = jest
+        .spyOn(usersService, 'isExistingUser')
+        .mockResolvedValue(false);
+      await expect(usersController.delete(1)).rejects.toThrow();
+      expect(mockIsExistingUser).toHaveBeenCalled();
+    });
   });
 
   describe('createUser', () => {
@@ -172,6 +211,9 @@ describe('UsersController', () => {
       const mockCreate = jest
         .spyOn(usersService, 'create')
         .mockResolvedValue(1);
+      const mockIsRoleExist = jest
+        .spyOn(rolesService, 'isRoleExist')
+        .mockResolvedValue(true);
       const result = await usersController.createUser({
         Firstname: 'firstname',
         Lastname: 'lastname',
@@ -186,42 +228,48 @@ describe('UsersController', () => {
       expect(mockCreate).toHaveBeenCalled();
     });
 
-    it('check if createUser throws with bad email', async () => {
-      const mockCreate = jest.spyOn(usersService, 'create');
-      try {
-        await usersController.createUser({
+    it('check if createUser throws error if role does not exist', async () => {
+      const mockIsRoleExist = jest
+        .spyOn(rolesService, 'isRoleExist')
+        .mockResolvedValue(false);
+
+      await expect(
+        usersController.createUser({
           Firstname: 'firstname',
           Lastname: 'lastname',
           Username: 'username',
           Password: 'Password123!',
-          Email: 'email',
-          SuperAdmin: true,
-          RoleName: 'roleName',
-        });
-
-        expect(true).toBe(false);
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-      }
-    });
-
-    it('check if createUser throws with bad password', async () => {
-      const mockCreate = jest.spyOn(usersService, 'create');
-      try {
-        await usersController.createUser({
-          Firstname: 'firstname',
-          Lastname: 'lastname',
-          Username: 'username',
-          Password: 'very_secured',
           Email: 'email@email.com',
           SuperAdmin: true,
           RoleName: 'roleName',
-        });
+        }),
+      ).rejects.toThrow();
 
-        expect(true).toBe(false);
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-      }
+      expect(mockIsRoleExist).toHaveBeenCalled();
+    });
+
+    it('check if createUser throws error if user already exists', async () => {
+      const mockIsRoleExist = jest
+        .spyOn(rolesService, 'isRoleExist')
+        .mockResolvedValue(true);
+      const mockIsExistingUser = jest
+        .spyOn(usersService, 'findByUsernameOrEmail')
+        .mockResolvedValue(userList[0]);
+
+      await expect(
+        usersController.createUser({
+          Firstname: 'firstname',
+          Lastname: 'lastname',
+          Username: 'username',
+          Password: 'Password123!',
+          Email: 'email@email.com',
+          SuperAdmin: true,
+          RoleName: 'roleName',
+        }),
+      ).rejects.toThrow();
+
+      expect(mockIsRoleExist).toHaveBeenCalled();
+      expect(mockIsExistingUser).toHaveBeenCalled();
     });
   });
 });

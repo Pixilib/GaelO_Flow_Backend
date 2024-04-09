@@ -15,18 +15,23 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { User } from './user.entity';
-import { CreateUserDto, GetUserDto, UpdateUserDto } from './users.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcryptjs from 'bcryptjs';
-import { NotFoundInterceptor } from '../interceptors/not-found.interceptor';
 import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { OrGuard } from '../guards/or.guard';
 import { CheckUserIdGuard } from '../guards/check-user-id.guard';
+import { GetUserDto } from './dto/get-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { RolesService } from '../roles/roles.service';
 
 @ApiTags('users')
 @Controller('/users')
 export class UsersController {
-  constructor(private readonly UserService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly roleService: RolesService,
+  ) {}
 
   @ApiBearerAuth('access-token')
   @ApiResponse({
@@ -38,8 +43,19 @@ export class UsersController {
   @UseGuards(AdminGuard)
   @Get()
   async getUsers(): Promise<GetUserDto[]> {
-    const allUsers = await this.UserService.findAll();
-    return allUsers;
+    const allUsers = await this.userService.findAll();
+    return allUsers.map((user) => {
+      return {
+        Id: user.Id,
+        Firstname: user.Firstname,
+        Lastname: user.Lastname,
+        Username: user.Username,
+        Email: user.Email,
+        SuperAdmin: user.SuperAdmin,
+        RoleName: user.RoleName,
+        Role: user.Role,
+      };
+    });
   }
 
   @ApiBearerAuth('access-token')
@@ -50,9 +66,17 @@ export class UsersController {
   )
   @Get('/:id')
   async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
-    const user = await this.UserService.findOne(id);
-    console.log(user);
-    return { ...user, Password: undefined };
+    const user = await this.userService.findOne(id);
+    return {
+      Id: user.Id,
+      Firstname: user.Firstname,
+      Lastname: user.Lastname,
+      Username: user.Username,
+      Email: user.Email,
+      SuperAdmin: user.SuperAdmin,
+      RoleName: user.RoleName,
+      Role: user.Role,
+    };
   }
 
   @ApiBearerAuth('access-token')
@@ -66,14 +90,14 @@ export class UsersController {
     @Param('id') id: number,
     @Body() userDto: UpdateUserDto,
   ): Promise<void> {
-    const user = await this.UserService.findOne(id);
+    const user = await this.userService.findOne(id);
 
     if (!user) throw new NotFoundException('User not found');
 
     if (userDto.Firstname) user.Firstname = userDto.Firstname;
     if (userDto.Lastname) user.Lastname = userDto.Lastname;
 
-    await this.UserService.update(id, user);
+    await this.userService.update(id, user);
   }
 
   @ApiBearerAuth('access-token')
@@ -85,12 +109,10 @@ export class UsersController {
   )
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<void> {
-    const existingUser = await this.UserService.isExistingUser(id);
-    if (existingUser) {
-      return await this.UserService.remove(id);
-    } else {
-      throw new BadRequestException('All the keys are required');
-    }
+    const existingUser = await this.userService.isExistingUser(id);
+
+    if (!existingUser) throw new NotFoundException('User not found');
+    return await this.userService.remove(id);
   }
 
   @ApiBearerAuth('access-token')
@@ -101,54 +123,22 @@ export class UsersController {
   @UseGuards(AdminGuard)
   @Post()
   async createUser(@Body() userDto: CreateUserDto): Promise<number> {
-    const user = new User();
-    const regexEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-    const regexPassword =
-      /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/g;
-
-    // check if all the keys are present
-    if (
-      !userDto.Firstname == undefined ||
-      !userDto.Lastname == undefined ||
-      !userDto.Username == undefined ||
-      !userDto.Email == undefined ||
-      !userDto.Password == undefined ||
-      !userDto.SuperAdmin == undefined ||
-      !userDto.RoleName == undefined
-    ) {
-      throw new BadRequestException('All the keys are required');
-    }
-
+    let user = new User();
     const salt = await bcryptjs.genSalt();
     const hash = await bcryptjs.hash(userDto.Password, salt);
-
-    if (regexEmail.test(userDto.Email) === false)
-      throw new BadRequestException('Email is not valid');
-
-    if (regexPassword.test(userDto.Password) === false)
-      throw new BadRequestException('Password is not valid');
-
-    const existingUser = await this.UserService.findByUsernameOrEmail(
+    const existingUser = await this.userService.findByUsernameOrEmail(
       userDto.Username,
       userDto.Email,
     );
+    const role = await this.roleService.isRoleExist(userDto.RoleName);
 
+    if (!role) {
+      throw new BadRequestException('Role not found');
+    }
     if (existingUser) {
-      throw new ConflictException('User with this username already exists');
+      throw new ConflictException('Username / Email already used');
     }
-
-    user.Firstname = userDto.Firstname;
-    user.Lastname = userDto.Lastname;
-    user.Username = userDto.Username;
-    user.Password = hash;
-    user.Email = userDto.Email;
-    user.SuperAdmin = userDto.SuperAdmin;
-    user.RoleName = userDto.RoleName;
-
-    try {
-      return await this.UserService.create(user);
-    } catch (error) {
-      throw new HttpException('Role not found', 400);
-    }
+    user = { ...userDto, Password: hash };
+    return await this.userService.create(user);
   }
 }
