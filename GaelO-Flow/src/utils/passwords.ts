@@ -8,7 +8,7 @@ export const hashPassword = async (password: string) => {
 };
 
 export const generateToken = async () => {
-  const token = await crypto.randomBytes(32).toString('hex');
+  const token = crypto.randomBytes(32).toString('hex');
   const hash = await hashPassword(token);
   return { token, hash };
 };
