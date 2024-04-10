@@ -6,7 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { QueuesQueryService } from '../queues/query/queue-query.service';
 import { isTimeBetween } from '../utils/is-time-between';
 import OrthancClient from '../utils/orthanc-client';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TasksService {
