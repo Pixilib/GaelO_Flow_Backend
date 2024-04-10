@@ -10,7 +10,7 @@ import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class TasksService {
-  private lastChanges: number = 0;
+  private lastChanges: number = null;
 
   constructor(
     @InjectRepository(Option)
@@ -18,11 +18,7 @@ export class TasksService {
     private queueQueryService: QueuesQueryService,
     private orthancClient: OrthancClient,
     private eventEmitter: EventEmitter2,
-  ) {
-    (async () => {
-      this.lastChanges = (await this.orthancClient.getLastChanges()).data.Last;
-    })();
-  }
+  ) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
   async queryQueueCron() {
@@ -48,6 +44,10 @@ export class TasksService {
 
   @Cron(CronExpression.EVERY_10_SECONDS)
   async orthancMonitoringCron() {
+    if (this.lastChanges === null) {
+      this.lastChanges = (await this.orthancClient.getLastChanges()).data.Last;
+    }
+
     const changes = (
       await this.orthancClient.getChangesSince(this.lastChanges.toString())
     ).data;
