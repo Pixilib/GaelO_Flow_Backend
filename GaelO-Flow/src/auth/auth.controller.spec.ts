@@ -117,8 +117,10 @@ describe('AuthController', () => {
       jest
         .spyOn(usersService, 'findOneByEmail')
         .mockResolvedValueOnce(undefined);
-      jest.spyOn(usersService, 'create').mockResolvedValueOnce(1);
-
+      jest.spyOn(usersService, 'create').mockResolvedValueOnce({
+        Id: 1,
+        ...registerDto,
+      } as User);
       const mockUser = {
         Firstname: registerDto.Firstname,
         Lastname: registerDto.Lastname,
@@ -126,7 +128,7 @@ describe('AuthController', () => {
         Email: registerDto.Email,
         SuperAdmin: false,
         RoleName: 'User',
-        Password: null,
+        Password: '<PASSWORD>',
       };
 
       jest
@@ -146,10 +148,17 @@ describe('AuthController', () => {
         registerDto.Email,
         false,
       );
-      expect(usersService.create).toHaveBeenCalledWith(mockUser);
-      expect(authService.createConfirmationToken).toHaveBeenCalledWith(
-        mockUser,
-      );
+      expect(usersService.create).toHaveBeenCalledWith({
+        ...mockUser,
+        Password: null,
+      });
+      expect(authService.createConfirmationToken).toHaveBeenCalledWith({
+        Email: registerDto.Email,
+        Firstname: registerDto.Firstname,
+        Id: 1,
+        Lastname: registerDto.Lastname,
+        Username: registerDto.Username,
+      });
       expect(mailService.sendChangePasswordEmail).toHaveBeenCalledWith(
         registerDto.Email,
         'confirmation_token',

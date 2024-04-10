@@ -146,10 +146,31 @@ describe('UsersService', () => {
         RoleName: 'User',
       };
       const createResult = await usersService.create(createUser);
-      const findOneResult = await usersService.findOne(createResult);
-      expect(typeof createResult).toBe('number');
-      expect(createResult).toBeGreaterThan(0);
-      expect(findOneResult).toEqual({ ...createUser, Role: role });
+      const findOneResult = await usersService.findOne(createResult.Id);
+      expect(createResult).toBeInstanceOf(Object);
+      expect(findOneResult).toEqual({
+        Email: 'create_testuser@example.com',
+        Firstname: 'create_testfirstname',
+        Id: 3,
+        Lastname: 'create_testlastname',
+        Password: 'create_<PASSWORD>',
+        Role: {
+          Admin: false,
+          Anonymize: false,
+          AutoQuery: false,
+          AutoRouting: false,
+          CdBurner: false,
+          Delete: false,
+          Export: false,
+          Import: false,
+          Modify: false,
+          Name: 'User',
+          Query: false,
+        },
+        RoleName: 'User',
+        SuperAdmin: false,
+        Username: 'create_testuser',
+      });
     });
   });
 
