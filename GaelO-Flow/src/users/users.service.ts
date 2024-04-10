@@ -80,9 +80,8 @@ export class UsersService {
     await this.update(id, userWithPasswordUpdated);
   }
 
-  async create(user: User): Promise<number> {
-    const newUser = await this.usersRepository.insert(user);
-    return newUser.identifiers[0].Id;
+  async create(user: User): Promise<User> {
+    return await this.usersRepository.save(user);
   }
 
   async remove(id: number): Promise<void> {

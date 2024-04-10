@@ -91,7 +91,7 @@ export class AuthController {
       );
     }
 
-    await this.usersService.create({
+    const newUser = await this.usersService.create({
       Email: registerDto.Email,
       Firstname: registerDto.Firstname,
       Lastname: registerDto.Lastname,
@@ -100,11 +100,6 @@ export class AuthController {
       RoleName: 'User',
       Password: null,
     });
-
-    const newUser = await this.usersService.findOneByEmail(
-      registerDto.Email,
-      false,
-    );
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
 

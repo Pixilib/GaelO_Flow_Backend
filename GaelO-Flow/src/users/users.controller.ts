@@ -137,6 +137,6 @@ export class UsersController {
       throw new ConflictException('Username / Email already used');
     }
     user = { ...userDto, Password: await hashPassword(userDto.Password) };
-    return await this.userService.create(user);
+    return (await this.userService.create(user)).Id;
   }
 }

@@ -208,9 +208,10 @@ describe('UsersController', () => {
     });
 
     it('check if createUser calls service create', async () => {
-      const mockCreate = jest
-        .spyOn(usersService, 'create')
-        .mockResolvedValue(1);
+      const mockCreate = jest.spyOn(usersService, 'create').mockResolvedValue({
+        ...userList[0],
+        Id: 1,
+      });
       const mockIsRoleExist = jest
         .spyOn(rolesService, 'isRoleExist')
         .mockResolvedValue(true);
