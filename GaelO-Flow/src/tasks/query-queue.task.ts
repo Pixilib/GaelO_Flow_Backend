@@ -9,15 +9,11 @@ import OrthancClient from '../utils/orthanc-client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
-export class TasksService {
-  private lastChanges: number = null;
-
+export class QueryQueueTask {
   constructor(
     @InjectRepository(Option)
     private optionRepository: Repository<Option>,
     private queueQueryService: QueuesQueryService,
-    private orthancClient: OrthancClient,
-    private eventEmitter: EventEmitter2,
   ) {}
 
   @Cron(CronExpression.EVERY_MINUTE)
@@ -40,21 +36,5 @@ export class TasksService {
     } else if (!queueState && !isBetween) {
       await this.queueQueryService.pause();
     }
-  }
-
-  @Cron(CronExpression.EVERY_10_SECONDS)
-  async orthancMonitoringCron() {
-    if (this.lastChanges === null) {
-      this.lastChanges = (await this.orthancClient.getLastChanges()).data.Last;
-    }
-
-    const changes = (
-      await this.orthancClient.getChangesSince(this.lastChanges.toString())
-    ).data;
-
-    this.lastChanges = changes.Last;
-    changes.Changes.forEach((element: any) => {
-      this.eventEmitter.emit('orthanc.' + element.ChangeType, element);
-    });
   }
 }
