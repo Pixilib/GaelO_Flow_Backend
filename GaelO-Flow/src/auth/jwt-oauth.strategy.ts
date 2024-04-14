@@ -4,7 +4,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
-import { OauthConfigService } from '../oauth_configs/oauth-configs.service';
+import { OauthConfigService } from '../oauth-configs/oauth-configs.service';
 
 interface UserInfoResponse {
   sub: string;

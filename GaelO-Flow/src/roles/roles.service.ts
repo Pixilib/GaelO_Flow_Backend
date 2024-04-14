@@ -6,7 +6,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from './role.entity';
-import { RoleLabel } from '../role_label/role-label.entity';
+import { RoleLabel } from '../role-label/role-label.entity';
 import { Label } from '../labels/label.entity';
 
 @Injectable()
@@ -24,8 +24,12 @@ export class RolesService {
     return await this.rolesRepository.find();
   }
 
-  async findOne(name: string): Promise<Role | null> {
+  async findOneByOrFail(name: string): Promise<Role | null> {
     return await this.rolesRepository.findOneByOrFail({ Name: name });
+  }
+
+  async isRoleExist(name: string): Promise<boolean> {
+    return (await this.rolesRepository.findOneBy({ Name: name })) != null;
   }
 
   async create(role: Role): Promise<void> {
@@ -65,6 +69,16 @@ export class RolesService {
       },
     });
     return allLabels;
+  }
+
+  async removeRoleLabel(roleName: string, labelName: string): Promise<void> {
+    const role = await this.rolesRepository.findOneBy({ Name: roleName });
+    const label = await this.labelsRepository.findOneBy({ Name: labelName });
+
+    await this.roleLabelRepository.delete({
+      Role: role,
+      Label: label,
+    });
   }
 
   /* istanbul ignore next */

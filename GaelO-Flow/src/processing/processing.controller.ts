@@ -23,7 +23,7 @@ import { AdminGuard } from '../guards/roles.guard';
 import { ProcessingQueueService } from './processing-queue.service';
 import { ProcessingJobDto } from './processing-job.dto';
 import { OrGuard } from '../guards/or.guard';
-import { CheckUserIdGuard } from '../guards/CheckUserId.guard';
+import { CheckUserIdGuard } from '../guards/check-user-id.guard';
 
 @ApiTags('processing')
 @Controller('/processing')
@@ -118,7 +118,7 @@ export class ProcessingController {
 
     return {
       JobId: await this.processingQueueService.addJob(
-        user.UserId,
+        user.userId,
         processingJobDto,
       ),
     };
@@ -128,8 +128,9 @@ export class ProcessingController {
   @ApiResponse({ status: 200, description: 'Remove job' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
+  @UseGuards(AdminGuard)
   @Delete(':uuid')
-  async removeQueryJob(@Param('uuid') uuid: string): Promise<void> {
-    this.processingQueueService.removeJob({ uuid: uuid });
+  async removeJob(@Param('uuid') uuid: string): Promise<void> {
+    this.processingQueueService.removeJob(uuid);
   }
 }

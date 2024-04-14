@@ -16,7 +16,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { Public } from '../interceptors/Public';
+import { Public } from '../interceptors/public';
 import { OauthConfigService } from './oauth-configs.service';
 import { AdminGuard } from '../guards/roles.guard';
 import { OauthConfigDto } from './oauth-config.dto';

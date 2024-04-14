@@ -41,7 +41,7 @@ import { OrthancModifyController } from './orthanc/orthanc-modify.controller';
 import { OrthancQueryController } from './orthanc/orthanc-query.controller';
 import { OrthancAdminController } from './orthanc/orthanc-admin.controller';
 
-import OrthancClient from './orthanc/orthanc-client';
+import OrthancClient from './utils/orthanc-client';
 
 // QUEUES
 import { QueuesDeleteController } from './queues/delete/queue-deletes.controller';
@@ -56,8 +56,8 @@ import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 // ROLE LABEL ROUTE
-import { RoleLabel } from './role_label/role-label.entity';
-import { RoleLabelModule } from './role_label/role-label.module';
+import { RoleLabel } from './role-label/role-label.entity';
+import { RoleLabelModule } from './role-label/role-label.module';
 
 import { SeedService } from './seeder.service';
 import { MailService } from './mail/mail.service';
@@ -65,20 +65,22 @@ import { MailService } from './mail/mail.service';
 import { MailModule } from './mail/mail.module';
 
 // OAUTHCONFIG ROUTE
-import { OauthConfigController } from './oauth_configs/oauth-configs.controller';
-import { OauthConfigService } from './oauth_configs/oauth-configs.service';
-import { OauthConfigModule } from './oauth_configs/oauth-configs.module';
-import { OauthConfig } from './oauth_configs/oauth-config.entity';
+import { OauthConfigController } from './oauth-configs/oauth-configs.controller';
+import { OauthConfigService } from './oauth-configs/oauth-configs.service';
+import { OauthConfigModule } from './oauth-configs/oauth-configs.module';
+import { OauthConfig } from './oauth-configs/oauth-config.entity';
 
 // PROCESSING
-import ProcessingClient from './processing/processing.client';
+import ProcessingClient from './utils/processing.client';
 import { ProcessingController } from './processing/processing.controller';
+import { TmtvService } from './processing/tmtv.service';
+import { ProcessingQueueService } from './processing/processing-queue.service';
 
 import { HttpModule } from '@nestjs/axios';
 import { logger } from './utils/logger.middleware';
-import { TmtvService } from './processing/tmtv.service';
-import { ProcessingQueueService } from './processing/processing-queue.service';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { APP_INTERCEPTOR } from '@nestjs/core';
+import { NotFoundInterceptor } from './interceptors/not-found.interceptor';
 
 @Module({
   imports: [
@@ -156,6 +158,10 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
     ProcessingClient,
     TmtvService,
     ProcessingQueueService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: NotFoundInterceptor,
+    },
   ],
 })
 export class AppModule implements NestModule {

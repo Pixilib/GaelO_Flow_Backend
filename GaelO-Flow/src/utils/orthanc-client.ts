@@ -1,11 +1,11 @@
 import fs from 'fs';
 import { ConfigService } from '@nestjs/config';
-import { HttpClient } from '../utils/http.client';
+import { HttpClient } from './http.client';
 import { Injectable } from '@nestjs/common';
-import TagAnon from './tag-anon';
+import TagAnon from '../orthanc/tag-anon';
 import { AxiosResponse } from 'axios';
-import QuerySeriesAnswer from './QueryAnswer/query-series.answer';
-import QueryStudyAnswer from './QueryAnswer/query-study.answer';
+import QuerySeriesAnswer from '../orthanc/query-answer/query-series.answer';
+import QueryStudyAnswer from '../orthanc/query-answer/query-study.answer';
 import { TagPolicies } from '../constants/enums';
 
 @Injectable()
