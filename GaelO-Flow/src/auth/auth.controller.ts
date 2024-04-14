@@ -13,16 +13,17 @@ import {
   ValidationPipe,
   ValidationError,
 } from '@nestjs/common';
+import { ApiBody, ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { LocalAuthGuard } from '../guards/local.guard';
+import { JwtOAuthGuard } from '../guards/jwt-oauth.guard';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { Public } from '../interceptors/public';
-import { ApiBody, ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
-import { LocalAuthGuard } from '../guards/local.guard';
-import { JwtOAuthGuard } from '../guards/jwt-oauth.guard';
 
 @ApiTags('auth')
 @Controller('')

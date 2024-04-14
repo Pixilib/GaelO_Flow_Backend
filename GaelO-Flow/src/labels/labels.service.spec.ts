@@ -1,9 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { LabelsService } from './labels.service';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { Label } from './label.entity';
+import { Test, TestingModule } from '@nestjs/testing';
 import { EntityNotFoundError, Repository } from 'typeorm';
+
 import { LabelsModule } from './labels.module';
+import { LabelsService } from './labels.service';
+import { Label } from './label.entity';
 
 describe('LabelsService', () => {
   let labelsService: LabelsService;

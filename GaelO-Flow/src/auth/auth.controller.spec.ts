@@ -1,12 +1,13 @@
+import { BadRequestException } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
 import { MailService } from '../mail/mail.service';
 import { MailModule } from '../mail/mail.module';
-import { ConfigModule } from '@nestjs/config';
-import { BadRequestException } from '@nestjs/common';
 
 describe('AuthController', () => {
   let authController: AuthController;

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { OauthConfigService } from './oauth-configs.service';
 import { OauthConfigController } from './oauth-configs.controller';
 import { OauthConfig } from './oauth-config.entity';

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import OrthancClient from '../utils/orthanc-client';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+
+import OrthancClient from '../utils/orthanc-client';
 
 @Injectable()
 export class OrthancMonitoringTask {

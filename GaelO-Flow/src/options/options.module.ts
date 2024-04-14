@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { OptionsService } from './options.service';
 import { OptionsController } from './options.controller';
 import { Option } from './option.entity';
-import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Option])],

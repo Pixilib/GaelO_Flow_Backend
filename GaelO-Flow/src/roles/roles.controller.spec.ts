@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RolesService } from './roles.service';
-import { RolesController } from './roles.controller';
-import { Role } from './role.entity';
 
+import { RolesService } from './roles.service';
 import { UsersService } from '../users/users.service';
-import { UsersController } from '../users/users.controller';
-import { RoleLabel } from '../role-label/role-label.entity';
 import { LabelsService } from '../labels/labels.service';
-import { EntityNotFoundError } from 'typeorm';
+
+import { RolesController } from './roles.controller';
+import { UsersController } from '../users/users.controller';
+import { Role } from './role.entity';
+import { RoleLabel } from '../role-label/role-label.entity';
 
 describe('RolesController', () => {
   let rolesController: RolesController;
@@ -128,11 +128,9 @@ describe('RolesController', () => {
     });
 
     it('check if getRoles calls service getAllRoleLabels', async () => {
-      const mockFindAll = jest
-        .spyOn(rolesService, 'findAll')
-        .mockResolvedValue(roleList);
+      jest.spyOn(rolesService, 'findAll').mockResolvedValue(roleList);
 
-      const mockGetAllRoleLabels = jest
+      jest
         .spyOn(rolesService, 'getAllRoleLabels')
         .mockResolvedValue(roleLabelList);
 
@@ -232,7 +230,7 @@ describe('RolesController', () => {
     it('check if createRole has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
-        RolesController.prototype.CreateRole,
+        RolesController.prototype.createRole,
       );
       const guardNames = guards.map((guard: any) => guard.name);
 
@@ -242,7 +240,7 @@ describe('RolesController', () => {
 
     it('check if createRole calls service create', async () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
-      const result = await rolesController.CreateRole({
+      const result = await rolesController.createRole({
         Name: 'Admin',
         Import: true,
         Anonymize: true,
@@ -264,7 +262,7 @@ describe('RolesController', () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
       jest.spyOn(rolesService, 'isRoleExist').mockResolvedValue(true);
       await expect(
-        rolesController.CreateRole({
+        rolesController.createRole({
           Name: 'User',
           Import: true,
           Anonymize: true,
@@ -285,7 +283,7 @@ describe('RolesController', () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
       jest.spyOn(rolesService, 'findOneByOrFail').mockResolvedValue(undefined);
       await expect(
-        rolesController.CreateRole({
+        rolesController.createRole({
           Name: undefined,
           Import: true,
           Anonymize: true,

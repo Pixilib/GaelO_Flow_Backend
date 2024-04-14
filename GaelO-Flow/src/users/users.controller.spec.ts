@@ -1,11 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { UsersService } from './users.service';
+import { RolesService } from '../roles/roles.service';
+
 import { UsersController } from './users.controller';
+
 import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
-import { RolesService } from '..//roles/roles.service';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -212,9 +215,7 @@ describe('UsersController', () => {
         ...userList[0],
         Id: 1,
       });
-      const mockIsRoleExist = jest
-        .spyOn(rolesService, 'isRoleExist')
-        .mockResolvedValue(true);
+      jest.spyOn(rolesService, 'isRoleExist').mockResolvedValue(true);
       const result = await usersController.createUser({
         Firstname: 'firstname',
         Lastname: 'lastname',

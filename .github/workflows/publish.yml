@@ -15,13 +15,13 @@ jobs:
     steps:
     
       - name: 'Build checkout'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/pixilib/gaelo-flow-backend
           tags: |
@@ -30,17 +30,17 @@ jobs:
             latest
             
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to github registery
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: 'salimkanoun'
           password: ${{ secrets.GITHUB_TOKEN }}
     
       - name: 'Install and Build'
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '20.x'
           registry-url: 'https://npm.pkg.github.com'
@@ -69,7 +69,7 @@ jobs:
         working-directory: ./GaelO-Flow
 
       - name: Build and push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v5
         with:
           context: .
           push: true

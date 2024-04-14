@@ -1,12 +1,14 @@
+import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AppModule } from '../app.module';
-import { User } from './user.entity';
 import * as request from 'supertest';
-import { INestApplication } from '@nestjs/common';
-import { Role } from '../roles/role.entity';
 import * as bcryptjs from 'bcryptjs';
+
+import { AppModule } from '../app.module';
+
+import { User } from './user.entity';
+import { Role } from '../roles/role.entity';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;

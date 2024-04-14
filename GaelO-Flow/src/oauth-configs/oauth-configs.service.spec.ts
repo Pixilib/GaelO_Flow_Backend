@@ -1,14 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OauthConfigService } from './oauth-configs.service';
-import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { OauthConfig } from './oauth-config.entity';
 import { OauthConfigModule } from './oauth-configs.module';
-import { OauthConfigDto } from './oauth-config.dto';
+import { OauthConfigService } from './oauth-configs.service';
 
 describe('OauthConfigService', () => {
   let service: OauthConfigService;
-  let oauthConfigRepository: Repository<OauthConfig>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,10 +24,6 @@ describe('OauthConfigService', () => {
     }).compile();
 
     service = module.get<OauthConfigService>(OauthConfigService);
-
-    oauthConfigRepository = module.get<Repository<OauthConfig>>(
-      getRepositoryToken(OauthConfig),
-    );
 
     await service.addOauthConfig({
       Provider: 'google',

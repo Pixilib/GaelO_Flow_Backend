@@ -1,13 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsEnum,
-  IsObject,
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsBoolean, IsEnum, IsObject, IsString } from 'class-validator';
 import { ProcessingJobType, ProcessingMask } from '../constants/enums';
-import { Type } from 'class-transformer';
 
 export class TmtvJobDto {
   @ApiProperty({ required: true })

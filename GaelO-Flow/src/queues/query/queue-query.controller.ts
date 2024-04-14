@@ -11,14 +11,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { QueuesQueryService } from './queue-query.service';
-import { AdminGuard, QueryGuard } from '../../guards/roles.guard';
-import {
-  QueuesQueryDto,
-  QueuesQueryStudyDto,
-  QueuesQuerySeriesDto,
-} from './queue-query.dto';
-import { randomUUID } from 'crypto';
 import {
   ApiBearerAuth,
   ApiParam,
@@ -26,6 +18,15 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { randomUUID } from 'crypto';
+
+import { QueuesQueryService } from './queue-query.service';
+import { AdminGuard, QueryGuard } from '../../guards/roles.guard';
+import {
+  QueuesQueryDto,
+  QueuesQueryStudyDto,
+  QueuesQuerySeriesDto,
+} from './queue-query.dto';
 import { OrGuard } from '../../guards/or.guard';
 
 @ApiTags('queues/query')
@@ -105,7 +106,7 @@ export class QueuesQueryController {
   async addQueryJob(
     @Body() queuesQueryDto: QueuesQueryDto,
     @Req() request: Request,
-  ): Promise<Object> {
+  ): Promise<object> {
     const user = request['user'];
 
     if (await this.QueuesQueryService.checkIfUserIdHasJobs(user.userId))

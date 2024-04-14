@@ -11,7 +11,7 @@ export default class QueryStudyAnswer extends QueryAnswer {
     answerId: string,
     answerNumber: number,
     originAET: string,
-    patientName: string,
+    patientName: string | null,
     patientID: string,
     studyInstanceUID: string,
     accessionNumber: string | null = null,

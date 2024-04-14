@@ -1,7 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import OrthancClient from './orthanc-client';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createWriteStream } from 'fs';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import OrthancClient from './orthanc-client';
 
 describe('OrthancClient', () => {
   let orthancClient: OrthancClient;

@@ -1,9 +1,10 @@
+import { BadRequestException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ProcessingController } from './processing.controller';
 import { ProcessingQueueService } from './processing-queue.service';
-import exp from 'constants';
-import { BadRequestException } from '@nestjs/common';
 import { ProcessingJobDto } from './processing-job.dto';
+
 import { ProcessingJobType, ProcessingMask } from '../constants/enums';
 
 describe('ProcessingController', () => {
