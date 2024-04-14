@@ -230,7 +230,7 @@ describe('RolesController', () => {
     it('check if createRole has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
-        RolesController.prototype.CreateRole,
+        RolesController.prototype.createRole,
       );
       const guardNames = guards.map((guard: any) => guard.name);
 
@@ -240,7 +240,7 @@ describe('RolesController', () => {
 
     it('check if createRole calls service create', async () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
-      const result = await rolesController.CreateRole({
+      const result = await rolesController.createRole({
         Name: 'Admin',
         Import: true,
         Anonymize: true,
@@ -262,7 +262,7 @@ describe('RolesController', () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
       jest.spyOn(rolesService, 'isRoleExist').mockResolvedValue(true);
       await expect(
-        rolesController.CreateRole({
+        rolesController.createRole({
           Name: 'User',
           Import: true,
           Anonymize: true,
@@ -283,7 +283,7 @@ describe('RolesController', () => {
       const mockCreate = jest.spyOn(rolesService, 'create');
       jest.spyOn(rolesService, 'findOneByOrFail').mockResolvedValue(undefined);
       await expect(
-        rolesController.CreateRole({
+        rolesController.createRole({
           Name: undefined,
           Import: true,
           Anonymize: true,

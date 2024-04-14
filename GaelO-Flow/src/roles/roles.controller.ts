@@ -72,7 +72,7 @@ export class RolesController {
   @UseGuards(AdminGuard)
   @ApiBody({ type: RoleDto })
   @Post()
-  async CreateRole(@Body() roleDto: RoleDto): Promise<void> {
+  async createRole(@Body() roleDto: RoleDto): Promise<void> {
     const role = new Role();
 
     if (roleDto.Name == undefined)
