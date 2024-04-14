@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RolesService } from './roles.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { RolesService } from './roles.service';
+import { LabelsService } from '../labels/labels.service';
+
 import { Role } from './role.entity';
 import { Label } from '../labels/label.entity';
 import { RoleLabel } from '../role-label/role-label.entity';
-import { LabelsService } from '../labels/labels.service';
-import { LabelsModule } from '../labels/labels.module';
 
 describe('RolesService', () => {
   let rolesService: RolesService;

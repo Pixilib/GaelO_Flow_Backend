@@ -1,8 +1,9 @@
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+
 import { QueuesQueryController } from './queue-query.controller';
 import { QueuesQueryService } from './queue-query.service';
 import { QueuesQueryDto } from './queue-query.dto';
-import { BadRequestException, ForbiddenException } from '@nestjs/common';
 
 describe('QueuesQueryController', () => {
   let controller: QueuesQueryController;

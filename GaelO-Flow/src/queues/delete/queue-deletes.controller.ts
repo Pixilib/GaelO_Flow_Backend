@@ -11,10 +11,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { QueuesDeleteService } from './queue-deletes.service';
-import { AdminGuard, DeleteGuard } from '../../guards/roles.guard';
-import { QueuesDeleteDto } from './queue-deletes.dto';
-import { randomUUID } from 'crypto';
 import {
   ApiBearerAuth,
   ApiParam,
@@ -22,6 +18,11 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { randomUUID } from 'crypto';
+
+import { QueuesDeleteService } from './queue-deletes.service';
+import { AdminGuard, DeleteGuard } from '../../guards/roles.guard';
+import { QueuesDeleteDto } from './queue-deletes.dto';
 import { OrGuard } from '../../guards/or.guard';
 
 @ApiTags('queues/delete')

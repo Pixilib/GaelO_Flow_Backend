@@ -1,7 +1,8 @@
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+
 import { OauthConfigController } from './oauth-configs.controller';
 import { OauthConfigService } from './oauth-configs.service';
-import { ConflictException, NotFoundException } from '@nestjs/common';
 
 describe('OauthConfigController', () => {
   let controller: OauthConfigController;

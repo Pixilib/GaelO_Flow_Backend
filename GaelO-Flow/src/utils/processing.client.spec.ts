@@ -1,9 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import ProcessingClient from './processing.client';
-import { ConfigModule } from '@nestjs/config';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { createWriteStream } from 'fs';
+
+import { ConfigModule } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import ProcessingClient from './processing.client';
 
 describe.skip('ProcessingClient', () => {
   let processingClient: ProcessingClient;

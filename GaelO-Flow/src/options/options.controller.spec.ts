@@ -1,9 +1,8 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { OptionsService } from './options.service';
 import { OptionsController } from './options.controller';
-import { Option } from './option.entity';
 import { OptionDto } from './options.dto';
-import { ConfigService } from '@nestjs/config';
 
 describe('OptionsController', () => {
   let optionsController: OptionsController;

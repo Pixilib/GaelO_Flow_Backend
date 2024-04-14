@@ -3,14 +3,14 @@ import {
   Get,
   Response,
   Request,
-  UseGuards,
   Post,
   Delete,
   Put,
 } from '@nestjs/common';
-import { Response as ResponseType, Request as RequestType } from 'express';
-import OrthancClient from '../utils/orthanc-client';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Response as ResponseType, Request as RequestType } from 'express';
+
+import OrthancClient from '../utils/orthanc-client';
 import { doReverseProxy } from './utils';
 
 @ApiTags('orthanc')

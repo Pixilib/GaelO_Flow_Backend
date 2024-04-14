@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { Option } from '../options/option.entity';
 import { QueuesQueryService } from '../queues/query/queue-query.service';
 import OrthancClient from '../utils/orthanc-client';

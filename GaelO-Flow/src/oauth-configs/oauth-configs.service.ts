@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { OauthConfig } from './oauth-config.entity';
 import { Repository } from 'typeorm';
+
+import { OauthConfig } from './oauth-config.entity';
 import { OauthConfigDto } from './oauth-config.dto';
 
 @Injectable()

@@ -1,28 +1,30 @@
 import {
-  Body,
   Controller,
   Get,
   Post,
   Param,
   Put,
   Delete,
-  HttpException,
   UseGuards,
   NotFoundException,
   BadRequestException,
   ConflictException,
-  ClassSerializerInterceptor,
+  Body,
 } from '@nestjs/common';
-import { UsersService } from './users.service';
-import { User } from './user.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { OrGuard } from '../guards/or.guard';
-import { CheckUserIdGuard } from '../guards/check-user-id.guard';
+
+import { UsersService } from './users.service';
+import { RolesService } from '../roles/roles.service';
+
+import { User } from './user.entity';
 import { GetUserDto } from './dto/get-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
-import { RolesService } from '../roles/roles.service';
+import { UpdateUserDto } from './dto/update-user.dto';
+
+import { AdminGuard } from '../guards/roles.guard';
+import { OrGuard } from '../guards/or.guard';
+import { CheckUserIdGuard } from '../guards/check-user-id.guard';
+
 import { hashPassword } from '../utils/passwords';
 
 @ApiTags('users')

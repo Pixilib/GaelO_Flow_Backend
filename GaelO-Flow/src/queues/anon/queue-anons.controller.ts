@@ -1,4 +1,3 @@
-import { QueuesAnonService } from './queue-anons.service';
 import {
   BadRequestException,
   Body,
@@ -12,9 +11,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard, AnonymizeGuard } from '../../guards/roles.guard';
-import { QueuesAnonsDto } from './queue-anons.dto';
-import { randomUUID } from 'crypto';
 import {
   ApiBearerAuth,
   ApiParam,
@@ -22,6 +18,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { randomUUID } from 'crypto';
+
+import { QueuesAnonService } from './queue-anons.service';
+import { QueuesAnonsDto } from './queue-anons.dto';
+
+import { AdminGuard, AnonymizeGuard } from '../../guards/roles.guard';
 import { OrGuard } from '../../guards/or.guard';
 
 @ApiTags('queues/anon')

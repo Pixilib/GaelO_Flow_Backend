@@ -1,16 +1,18 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
+import { HttpModule } from '@nestjs/axios';
+import { Test, TestingModule } from '@nestjs/testing';
 import { Repository } from 'typeorm';
-import { User } from '../users/user.entity';
-import { Role } from '../roles/role.entity';
+import * as bcryptjs from 'bcryptjs';
+
 import { MailModule } from '../mail/mail.module';
 import { MailService } from '../mail/mail.service';
-import { ConfigModule } from '@nestjs/config';
+import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import * as bcryptjs from 'bcryptjs';
-import { HttpModule } from '@nestjs/axios';
+
+import { User } from '../users/user.entity';
+import { Role } from '../roles/role.entity';
 
 describe('AuthService', () => {
   let authService: AuthService;

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, TransformationType } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class RoleDto {

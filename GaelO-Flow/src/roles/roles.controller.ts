@@ -13,24 +13,20 @@ import {
   Query,
   UseInterceptors,
 } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { UsersService } from '../users/users.service';
+import { LabelsService } from '../labels/labels.service';
 import { RolesService } from './roles.service';
+
 import { Role } from './role.entity';
 import { RoleDto, WithLabels } from './roles.dto';
 
-import { UsersService } from '../users/users.service';
 import { NotFoundInterceptor } from '../interceptors/not-found.interceptor';
 
 import { AdminGuard } from '../guards/roles.guard';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
 import { OrGuard } from '../guards/or.guard';
 import { CheckUserRoleGuard } from '../guards/check-user-role.guard';
-import { LabelsService } from '../labels/labels.service';
 
 @ApiTags('roles')
 @Controller('/roles')

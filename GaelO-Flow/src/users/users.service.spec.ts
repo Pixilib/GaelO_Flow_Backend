@@ -1,18 +1,19 @@
-// users.service.spec.ts
-
-import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { Role } from '../roles/role.entity';
-import { RolesService } from '../roles/roles.service';
+import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcryptjs from 'bcryptjs';
-import { RoleLabel } from '../role-label/role-label.entity';
-import { LabelsService } from '../labels/labels.service';
-import { Label } from '../labels/label.entity';
+
 import { UsersModule } from './users.module';
+
+import { UsersService } from './users.service';
+import { RolesService } from '../roles/roles.service';
+import { LabelsService } from '../labels/labels.service';
+
+import { User } from './user.entity';
+import { Role } from '../roles/role.entity';
+import { Label } from '../labels/label.entity';
+import { RoleLabel } from '../role-label/role-label.entity';
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -40,7 +41,6 @@ describe('UsersService', () => {
     rolesService = module.get<RolesService>(RolesService);
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
 
-    let salt: string;
     let hash: string;
     const userRole = new Role();
     userRole.Name = 'User';
@@ -135,7 +135,6 @@ describe('UsersService', () => {
 
   describe('create', () => {
     it('should create a user', async () => {
-      const role = await rolesService.findOneByOrFail('User');
       const createUser = {
         Username: 'create_testuser',
         Firstname: 'create_testfirstname',

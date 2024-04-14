@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Repository } from 'typeorm';
-import { Option } from '../options/option.entity';
-import { InjectRepository } from '@nestjs/typeorm';
+
 import { QueuesQueryService } from '../queues/query/queue-query.service';
+import { Option } from '../options/option.entity';
+
 import { isTimeBetween } from '../utils/is-time-between';
-import OrthancClient from '../utils/orthanc-client';
-import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class QueryQueueTask {

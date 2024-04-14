@@ -1,11 +1,13 @@
 import fs from 'fs';
+
 import { ConfigService } from '@nestjs/config';
-import { HttpClient } from './http.client';
 import { Injectable } from '@nestjs/common';
-import TagAnon from '../orthanc/tag-anon';
 import { AxiosResponse } from 'axios';
+
+import { HttpClient } from './http.client';
 import QuerySeriesAnswer from '../orthanc/query-answer/query-series.answer';
 import QueryStudyAnswer from '../orthanc/query-answer/query-study.answer';
+import TagAnon from '../orthanc/tag-anon';
 import { TagPolicies } from '../constants/enums';
 
 @Injectable()
@@ -22,9 +24,12 @@ export default class OrthancClient extends HttpClient {
     this.setUrl(orthancAddress);
     this.setUsername(orthancUsername);
     this.setPassword(orthancPassword);
-    const url = new URL(this.configService.get('APP_URL'));
-    this.setForwardedAdress(url.host);
-    this.setForwardedProtocol(url.protocol);
+    const appUrl = this.configService.get('APP_URL');
+    if (appUrl) {
+      const url = new URL(appUrl);
+      this.setForwardedAdress(url.host);
+      this.setForwardedProtocol(url.protocol);
+    }
   };
 
   getSystem = async () => {
@@ -222,9 +227,9 @@ export default class OrthancClient extends HttpClient {
     newPatientName: string,
     newStudyDescription: string,
   ): object => {
-    const tagObjectArray = [];
-    let date: TagPolicies;
-    let body: TagPolicies;
+    const tagObjectArray: TagAnon[] = [];
+    let date: TagPolicies = TagPolicies.REMOVE;
+    let body: TagPolicies = TagPolicies.REMOVE;
 
     if (profile === 'Default') {
       date = TagPolicies.KEEP;
@@ -301,7 +306,13 @@ export default class OrthancClient extends HttpClient {
     tagObjectArray.push(new TagAnon('0009,100D', TagPolicies.KEEP)); // GE
     tagObjectArray.push(new TagAnon('0011,1012', TagPolicies.KEEP)); // Other
 
-    const anonParameters = {
+    const anonParameters: {
+      RemovePrivateTags: boolean;
+      Force: boolean;
+      DicomVersion: string;
+      Keep: string[];
+      Replace: { [key: string]: any };
+    } = {
       RemovePrivateTags: true,
       Force: true,
       DicomVersion: '2021b',
@@ -309,12 +320,12 @@ export default class OrthancClient extends HttpClient {
       Replace: {},
     };
 
-    tagObjectArray.forEach((tag) => {
-      const tagNb = tag.tagNumber;
-      const tagNewValue = tag.newValue;
-      if (tag.choice === TagPolicies.KEEP) {
+    tagObjectArray.forEach((tag: TagAnon) => {
+      const tagNb = tag.tag;
+      const tagNewValue = tag.replaceValue;
+      if (tag.tagPolicy === TagPolicies.KEEP) {
         anonParameters.Keep.push(tagNb);
-      } else if (tag.choice === TagPolicies.REPLACE) {
+      } else if (tag.tagPolicy === TagPolicies.REPLACE) {
         anonParameters.Replace[tagNb] = tagNewValue;
       }
     });

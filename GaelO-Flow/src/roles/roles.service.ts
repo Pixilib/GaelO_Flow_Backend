@@ -1,10 +1,7 @@
-import {
-  BadRequestException,
-  ConflictException,
-  Injectable,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { Role } from './role.entity';
 import { RoleLabel } from '../role-label/role-label.entity';
 import { Label } from '../labels/label.entity';

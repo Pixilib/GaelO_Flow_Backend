@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RolesService } from './roles.service';
-import { RolesController } from './roles.controller';
-import { Role } from './role.entity';
 
+import { RolesService } from './roles.service';
 import { UsersService } from '../users/users.service';
-import { UsersController } from '../users/users.controller';
-import { RoleLabel } from '../role-label/role-label.entity';
 import { LabelsService } from '../labels/labels.service';
-import { EntityNotFoundError } from 'typeorm';
+
+import { RolesController } from './roles.controller';
+import { UsersController } from '../users/users.controller';
+import { Role } from './role.entity';
+import { RoleLabel } from '../role-label/role-label.entity';
 
 describe('RolesController', () => {
   let rolesController: RolesController;
@@ -128,11 +128,9 @@ describe('RolesController', () => {
     });
 
     it('check if getRoles calls service getAllRoleLabels', async () => {
-      const mockFindAll = jest
-        .spyOn(rolesService, 'findAll')
-        .mockResolvedValue(roleList);
+      jest.spyOn(rolesService, 'findAll').mockResolvedValue(roleList);
 
-      const mockGetAllRoleLabels = jest
+      jest
         .spyOn(rolesService, 'getAllRoleLabels')
         .mockResolvedValue(roleLabelList);
 
