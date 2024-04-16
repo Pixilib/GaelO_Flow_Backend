@@ -17,7 +17,7 @@ describe('OauthConfigController', () => {
             getOauthConfig: jest.fn(),
             deleteOauthConfig: jest.fn(),
             addOauthConfig: jest.fn(),
-            findOneByProvider: jest.fn(),
+            findOneByName: jest.fn(),
           },
         },
       ],
@@ -36,7 +36,7 @@ describe('OauthConfigController', () => {
       // MOCK
       const oauthConfig = [
         {
-          Id: 1,
+          Name: 'google',
           Provider: 'google',
           AuthorizationUrl: 'google.com',
           ClientId: 'client-id',
@@ -47,9 +47,14 @@ describe('OauthConfigController', () => {
       jest.spyOn(service, 'getOauthConfig').mockResolvedValueOnce(oauthConfig);
 
       // ASSERT
-      expect(await controller.getOauthConfig()).toStrictEqual({
-        google: { AuthorizationUrl: 'google.com', ClientId: 'client-id' },
-      });
+      expect(await controller.getOauthConfig()).toStrictEqual([
+        {
+          Name: 'google',
+          Provider: 'google',
+          AuthorizationUrl: 'google.com',
+          ClientId: 'client-id',
+        },
+      ]);
       expect(service.getOauthConfig).toHaveBeenCalled();
     });
   });
@@ -60,8 +65,8 @@ describe('OauthConfigController', () => {
       const provider = 'google';
 
       // ACT
-      jest.spyOn(service, 'findOneByProvider').mockResolvedValueOnce({
-        Id: 1,
+      jest.spyOn(service, 'findOneByName').mockResolvedValueOnce({
+        Name: 'google',
         Provider: 'google',
         AuthorizationUrl: 'google.com',
         ClientId: 'client-id',
@@ -70,7 +75,7 @@ describe('OauthConfigController', () => {
 
       // ASSERT
       expect(await controller.deleteOauthConfig(provider)).toBeUndefined();
-      expect(service.findOneByProvider).toHaveBeenCalledWith(provider);
+      expect(service.findOneByName).toHaveBeenCalledWith(provider);
       expect(service.deleteOauthConfig).toHaveBeenCalledWith(provider);
     });
 
@@ -79,13 +84,13 @@ describe('OauthConfigController', () => {
       const provider = 'google';
 
       // ACT
-      jest.spyOn(service, 'findOneByProvider').mockResolvedValueOnce(undefined);
+      jest.spyOn(service, 'findOneByName').mockResolvedValueOnce(undefined);
 
       // ASSERT
       await expect(controller.deleteOauthConfig(provider)).rejects.toThrow(
         NotFoundException,
       );
-      expect(service.findOneByProvider).toHaveBeenCalledWith(provider);
+      expect(service.findOneByName).toHaveBeenCalledWith(provider);
     });
   });
 
@@ -93,13 +98,14 @@ describe('OauthConfigController', () => {
     it('should add the oauth config', async () => {
       // MOCK
       const oauthConfigDto = {
+        Name: 'google',
         Provider: 'google',
         AuthorizationUrl: 'google.com',
         ClientId: 'client-id',
       };
 
       // ACT
-      jest.spyOn(service, 'findOneByProvider').mockResolvedValueOnce(undefined);
+      jest.spyOn(service, 'findOneByName').mockResolvedValueOnce(undefined);
 
       // ASSERT
       expect(await controller.addOauthConfig(oauthConfigDto)).toBeUndefined();
@@ -108,14 +114,15 @@ describe('OauthConfigController', () => {
     it('should throw a ForbiddenException if the oauth config already exists', async () => {
       // MOCK
       const oauthConfigDto = {
+        Name: 'google',
         Provider: 'google',
         AuthorizationUrl: 'google.com',
         ClientId: 'client-id',
       };
 
       // ACT
-      jest.spyOn(service, 'findOneByProvider').mockResolvedValueOnce({
-        Id: 1,
+      jest.spyOn(service, 'findOneByName').mockResolvedValueOnce({
+        Name: 'google',
         Provider: 'google',
         AuthorizationUrl: 'google.com',
         ClientId: 'client-id',

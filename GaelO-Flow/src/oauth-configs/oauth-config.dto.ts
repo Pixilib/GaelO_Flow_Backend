@@ -4,6 +4,10 @@ import { IsString } from 'class-validator';
 export class OauthConfigDto {
   @ApiProperty()
   @IsString()
+  Name: string;
+
+  @ApiProperty()
+  @IsString()
   Provider: string;
 
   @ApiProperty()
