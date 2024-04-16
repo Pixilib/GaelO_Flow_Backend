@@ -12,6 +12,7 @@ import {
   UseGuards,
   Query,
   UseInterceptors,
+  NotFoundException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -78,22 +79,10 @@ export class RolesController {
     if (roleDto.Name == undefined)
       throw new BadRequestException("Missing Primary Key 'name'");
 
-    if ((await this.roleService.isRoleExist(roleDto.Name)) != null)
+    if (await this.roleService.isRoleExist(roleDto.Name))
       throw new ConflictException('Role with this name already exists');
 
-    role.Name = roleDto.Name;
-    role.Import = roleDto.Import;
-    role.Anonymize = roleDto.Anonymize;
-    role.Export = roleDto.Export;
-    role.Query = roleDto.Query;
-    role.AutoQuery = roleDto.AutoQuery;
-    role.Delete = roleDto.Delete;
-    role.Admin = roleDto.Admin;
-    role.Modify = roleDto.Modify;
-    role.CdBurner = roleDto.CdBurner;
-    role.AutoRouting = roleDto.AutoRouting;
-
-    await this.roleService.create(role);
+    await this.roleService.create(roleDto);
   }
 
   @ApiBearerAuth('access-token')
@@ -119,30 +108,10 @@ export class RolesController {
     @Param('name') name: string,
     @Body() roleDto: RoleDto,
   ): Promise<void> {
-    const role = await this.roleService.findOneByOrFail(name);
+    if ((await this.roleService.isRoleExist(name)) == false)
+      throw new NotFoundException('Role not found');
 
-    const requiredKeys = [
-      'import',
-      'anonymize',
-      'export',
-      'query',
-      'autoQuery',
-      'delete',
-      'admin',
-      'modify',
-      'cdBurner',
-      'autoRouting',
-    ];
-
-    requiredKeys.forEach((key) => {
-      if (roleDto[key] === undefined) {
-        throw new BadRequestException(`Missing key '${key}' in roleDto`);
-      } else {
-        role[key] = roleDto[key];
-      }
-    });
-
-    await this.roleService.update(name, role);
+    await this.roleService.update(name, roleDto);
   }
 
   @ApiBearerAuth('access-token')
