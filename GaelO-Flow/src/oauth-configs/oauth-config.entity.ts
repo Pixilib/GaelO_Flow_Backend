@@ -1,11 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class OauthConfig {
-  @ApiProperty({ example: 1 })
-  @PrimaryGeneratedColumn({ name: 'id' })
-  Id: number;
+  @ApiProperty({ example: 'keycloak' })
+  @PrimaryColumn({ name: 'id' })
+  Name: string;
 
   @ApiProperty({ example: 'keycloak' })
   @Column()

@@ -51,17 +51,30 @@ describe('RolesService', () => {
     });
   });
 
-  describe('findOne', () => {
+  describe('findOneByOrFail', () => {
     it("should return the role name 'User'", async () => {
       const result = await rolesService.findOneByOrFail('User');
       expect(result).toEqual(role);
     });
+
     it('should throw an error when the role is not found', async () => {
       // Assuming the method throws an error when the role is not found
       const nonExistentRole = 'NonExistentRole';
       await expect(
         rolesService.findOneByOrFail(nonExistentRole),
       ).rejects.toThrow();
+    });
+  });
+
+  describe('isRoleExist', () => {
+    it('should return true when the role exists', async () => {
+      const result = await rolesService.isRoleExist('User');
+      expect(result).toEqual(true);
+    });
+
+    it('should return false when the role does not exist', async () => {
+      const result = await rolesService.isRoleExist('NonExistentRole');
+      expect(result).toEqual(false);
     });
   });
 
@@ -126,6 +139,16 @@ describe('RolesService', () => {
     it('should get role labels', async () => {
       const getRoleLabelsResult = await rolesService.getRoleLabels('User');
       expect(getRoleLabelsResult).toEqual([]);
+    });
+  });
+
+  describe('removeRoleLabel', () => {
+    it('should remove a role label', async () => {
+      const removeRoleLabelResult = await rolesService.removeRoleLabel(
+        'User',
+        'Label',
+      );
+      expect(removeRoleLabelResult).toEqual(undefined);
     });
   });
 });
