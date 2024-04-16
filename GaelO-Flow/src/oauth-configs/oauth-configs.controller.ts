@@ -27,34 +27,30 @@ import { OauthConfigDto } from './oauth-config.dto';
 export class OauthConfigController {
   constructor(private readonly oauthConfigService: OauthConfigService) {}
 
-  @ApiResponse({ status: 200, description: 'Oauth config returned' })
+  @ApiResponse({
+    status: 200,
+    description: 'Oauth config returned',
+    type: OauthConfigDto,
+    isArray: true,
+  })
   @Public()
   @Get()
-  async getOauthConfig() {
-    const oauthConfig = await this.oauthConfigService.getOauthConfig();
-    const oauthConfigDto = {};
-    for (const config of oauthConfig) {
-      oauthConfigDto[config.Provider] = {
-        AuthorizationUrl: config.AuthorizationUrl,
-        ClientId: config.ClientId,
-      };
-    }
-
-    return oauthConfigDto;
+  async getOauthConfig(): Promise<OauthConfigDto[]> {
+    return await this.oauthConfigService.getOauthConfig();
   }
 
   @ApiResponse({ status: 200, description: 'Oauth config deleted' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 404, description: 'Oauth config not found' })
   @ApiBearerAuth('access-token')
-  @ApiParam({ name: 'provider', required: true })
+  @ApiParam({ name: 'name', required: true })
   @UseGuards(AdminGuard)
-  @Delete(':provider')
-  async deleteOauthConfig(@Param('provider') provider: string) {
-    const config = await this.oauthConfigService.findOneByProvider(provider);
+  @Delete(':name')
+  async deleteOauthConfig(@Param('name') name: string) {
+    const config = await this.oauthConfigService.findOneByName(name);
     if (!config) throw new NotFoundException('Oauth config not found');
 
-    return this.oauthConfigService.deleteOauthConfig(provider);
+    return this.oauthConfigService.deleteOauthConfig(name);
   }
 
   @ApiResponse({ status: 201, description: 'Oauth config added' })
@@ -65,8 +61,8 @@ export class OauthConfigController {
   @UseGuards(AdminGuard)
   @Post()
   async addOauthConfig(@Body() oauthConfigDto: OauthConfigDto) {
-    const exists = await this.oauthConfigService.findOneByProvider(
-      oauthConfigDto.Provider,
+    const exists = await this.oauthConfigService.findOneByName(
+      oauthConfigDto.Name,
     );
     if (exists) throw new ConflictException('Oauth config already exists');
 
