@@ -4,7 +4,6 @@ import { ConfigModule } from '@nestjs/config';
 import { HttpModule } from '@nestjs/axios';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Repository } from 'typeorm';
-import * as bcryptjs from 'bcryptjs';
 
 import { MailModule } from '../mail/mail.module';
 import { MailService } from '../mail/mail.service';
@@ -13,6 +12,11 @@ import { UsersService } from '../users/users.service';
 
 import { User } from '../users/user.entity';
 import { Role } from '../roles/role.entity';
+import { comparePasswords } from '../utils/passwords';
+
+jest.mock('../utils/passwords', () => ({
+  comparePasswords: jest.fn(),
+}));
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -76,7 +80,7 @@ describe('AuthService', () => {
       jest
         .spyOn(UsersService.prototype, 'findOneByUsername')
         .mockResolvedValue(user);
-      jest.spyOn(bcryptjs, 'compare').mockResolvedValue(true as never);
+      (comparePasswords as jest.Mock).mockResolvedValue(true as never);
 
       const result = await authService.validateUser('username', 'password');
 
@@ -94,7 +98,7 @@ describe('AuthService', () => {
       jest
         .spyOn(UsersService.prototype, 'findOneByUsername')
         .mockResolvedValue(user);
-      jest.spyOn(bcryptjs, 'compare').mockResolvedValue(false as never);
+      (comparePasswords as jest.Mock).mockResolvedValue(false as never);
 
       const result = await authService.validateUser('username', 'invalid');
 
