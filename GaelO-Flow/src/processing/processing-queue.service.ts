@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Job, Queue } from 'bullmq';
-import { randomUUID } from 'crypto';
 
 import { ProcessingJobDto } from './processing-job.dto';
+import { generateRandomUUID } from 'src/utils/passwords';
 
 @Injectable()
 export class ProcessingQueueService {
@@ -31,7 +31,7 @@ export class ProcessingQueueService {
     userId: number,
     processingJobDto: ProcessingJobDto,
   ): Promise<string> {
-    const jobId = randomUUID();
+    const jobId = generateRandomUUID();
     const data = {
       ...processingJobDto,
       userId,

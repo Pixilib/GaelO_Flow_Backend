@@ -18,12 +18,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { randomUUID } from 'crypto';
 
 import { QueuesDeleteService } from './queue-deletes.service';
 import { AdminGuard, DeleteGuard } from '../../guards/roles.guard';
 import { QueuesDeleteDto } from './queue-deletes.dto';
 import { OrGuard } from '../../guards/or.guard';
+import { generateRandomUUID } from 'src/utils/passwords';
 
 @ApiTags('queues/delete')
 @Controller('/queues/delete')
@@ -111,7 +111,7 @@ export class QueuesDeleteController {
       throw new ForbiddenException('User already has jobs');
 
     const orthancSeriesIds = queuesDeleteDto.OrthancSeriesIds;
-    const uuid = randomUUID();
+    const uuid = generateRandomUUID();
     orthancSeriesIds.forEach((orthancSeriesId) => {
       this.QueuesDeleteService.addJob({
         uuid: uuid,
