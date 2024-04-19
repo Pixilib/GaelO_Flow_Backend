@@ -2,7 +2,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcryptjs from 'bcryptjs';
 
 import { UsersModule } from './users.module';
 
@@ -14,6 +13,11 @@ import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
 import { Label } from '../labels/label.entity';
 import { RoleLabel } from '../role-label/role-label.entity';
+import { hashPassword } from '../utils/passwords';
+
+jest.mock('../utils/passwords', () => ({
+  hashPassword: jest.fn(),
+}));
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -215,15 +219,13 @@ describe('UsersService', () => {
         Password: hashedPassword,
       };
 
-      jest.spyOn(bcryptjs, 'genSalt').mockResolvedValue(salt as never);
-      jest.spyOn(bcryptjs, 'hash').mockResolvedValue(hashedPassword as never);
+      (hashPassword as jest.Mock).mockResolvedValue(hashedPassword as never);
       jest.spyOn(usersService, 'findOne').mockResolvedValue(findUser);
       jest.spyOn(usersService, 'update').mockResolvedValue(undefined);
 
       await usersService.updateUserPassword(id, newPassword);
 
-      expect(bcryptjs.genSalt).toHaveBeenCalled();
-      expect(bcryptjs.hash).toHaveBeenCalledWith(newPassword, salt);
+      expect(hashPassword).toHaveBeenCalledWith(newPassword);
       expect(usersService.findOne).toHaveBeenCalledWith(id);
       expect(usersService.update).toHaveBeenCalledWith(
         id,
