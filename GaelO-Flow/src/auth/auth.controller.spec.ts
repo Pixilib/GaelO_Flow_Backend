@@ -1,17 +1,18 @@
-import {
-  BadRequestException,
-  ConflictException,
-  NotFoundException,
-} from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
 import { MailService } from '../mail/mail.service';
 import { MailModule } from '../mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
+import { validate } from 'class-validator';
+import { ChangePasswordDto } from './dto/changePassword.dto';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -123,28 +124,25 @@ describe('AuthController', () => {
         .spyOn(usersService, 'findOneByEmail')
         .mockResolvedValueOnce(undefined);
       jest.spyOn(usersService, 'create').mockResolvedValueOnce(1);
-
-      const mockUser = {
-        Firstname: registerDto.Firstname,
-        Lastname: registerDto.Lastname,
-        Username: registerDto.Username,
-        Email: registerDto.Email,
+      const expectedUser = {
+        ...registerDto,
         SuperAdmin: false,
         RoleName: 'User',
-        Password: '<PASSWORD>',
+        Password: null,
       };
       jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(
         Promise.resolve({
-          ...mockUser,
+          ...expectedUser,
         }),
       );
 
       jest
         .spyOn(authService, 'createConfirmationToken')
         .mockResolvedValue('confirmation_token');
-      const tokenCreated = await authService.createConfirmationToken(mockUser);
+      const tokenCreated =
+        await authService.createConfirmationToken(expectedUser);
       const expectedUserWithToken = {
-        ...mockUser,
+        ...expectedUser,
         Token: tokenCreated,
         TokenExpiration: new Date(Date.now() + 24 * 60 * 60 * 1000),
       } as User;
@@ -158,9 +156,9 @@ describe('AuthController', () => {
         registerDto.Email,
         false,
       );
-      expect(usersService.create).toHaveBeenCalledWith(mockUser);
+      expect(usersService.create).toHaveBeenCalledWith(expectedUser);
       expect(authService.createConfirmationToken).toHaveBeenCalledWith(
-        mockUser,
+        expectedUser,
       );
       expect(mailService.sendChangePasswordEmail).toHaveBeenCalledWith(
         expectedUserWithToken.Email,
@@ -223,6 +221,29 @@ describe('AuthController', () => {
       );
 
       expect(isPublic).toBe(true);
+    });
+    it('should pass validation when the password meets the DTO criteria', async () => {
+      const dto = new ChangePasswordDto();
+      dto.NewPassword = 'validPassword1!';
+      dto.ConfirmationPassword = 'validPassword1!';
+      dto.Token = 'validToken';
+      dto.UserId = 1;
+
+      const errors = await validate(dto);
+
+      expect(errors).toHaveLength(0);
+    });
+
+    it('should fail validation when the password does not meet the DTO criteria', async () => {
+      const dto = new ChangePasswordDto();
+      dto.NewPassword = 'invalidpassword';
+      dto.ConfirmationPassword = 'invalidpassword';
+      dto.Token = 'validToken';
+      dto.UserId = 1;
+
+      const errors = await validate(dto);
+
+      expect(errors).not.toHaveLength(0);
     });
     it('should throw a BadRequestException if passwords do not match', async () => {
       const dto = {

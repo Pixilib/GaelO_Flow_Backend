@@ -11,10 +11,10 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(username: string, password: string): Promise<any> {
+  async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findOneByUsername(username);
-
     if (user && (await comparePasswords(pass, user.Password))) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { Password, ...result } = user;
       return result;
     }
