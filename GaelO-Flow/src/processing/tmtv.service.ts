@@ -1,5 +1,5 @@
-import OrthancClient from '../orthanc/orthanc-client';
-import ProcessingClient from './processing.client';
+import OrthancClient from '../utils/orthanc-client';
+import ProcessingClient from '../utils/processing.client';
 import { ProcessingFile } from './processing.file';
 import { MaskProcessingService } from './mask-processing.service';
 import { ProcessingMask } from '../constants/enums';

@@ -1,4 +1,3 @@
-import { QueuesAnonService } from './queue-anons.service';
 import {
   BadRequestException,
   Body,
@@ -12,9 +11,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { AdminGuard, AnonymizeGuard } from '../../guards/roles.guard';
-import { QueuesAnonsDto } from './queue-anons.dto';
-import { randomUUID } from 'crypto';
 import {
   ApiBearerAuth,
   ApiParam,
@@ -22,7 +18,13 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
+import { QueuesAnonService } from './queue-anons.service';
+import { QueuesAnonsDto } from './queue-anons.dto';
+
+import { AdminGuard, AnonymizeGuard } from '../../guards/roles.guard';
 import { OrGuard } from '../../guards/or.guard';
+import { generateRandomUUID } from 'src/utils/passwords';
 
 @ApiTags('queues/anon')
 @Controller('/queues/anon')
@@ -108,7 +110,7 @@ export class QueuesAnonController {
       throw new ForbiddenException('User already has jobs');
 
     const anonymizes = queuesAnonsDto.Anonymizes;
-    const uuid = randomUUID();
+    const uuid = generateRandomUUID();
     anonymizes.forEach((anonymize) => {
       this.QueuesAnonService.addJob({
         uuid: uuid,

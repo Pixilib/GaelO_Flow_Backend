@@ -11,14 +11,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { QueuesQueryService } from './queue-query.service';
-import { AdminGuard, QueryGuard } from '../../guards/roles.guard';
-import {
-  QueuesQueryDto,
-  QueuesQueryStudyDto,
-  QueuesQuerySeriesDto,
-} from './queue-query.dto';
-import { randomUUID } from 'crypto';
 import {
   ApiBearerAuth,
   ApiParam,
@@ -26,7 +18,16 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+
+import { QueuesQueryService } from './queue-query.service';
+import { AdminGuard, QueryGuard } from '../../guards/roles.guard';
+import {
+  QueuesQueryDto,
+  QueuesQueryStudyDto,
+  QueuesQuerySeriesDto,
+} from './queue-query.dto';
 import { OrGuard } from '../../guards/or.guard';
+import { generateRandomUUID } from 'src/utils/passwords';
 
 @ApiTags('queues/query')
 @Controller('/queues/query')
@@ -105,7 +106,7 @@ export class QueuesQueryController {
   async addQueryJob(
     @Body() queuesQueryDto: QueuesQueryDto,
     @Req() request: Request,
-  ): Promise<Object> {
+  ): Promise<object> {
     const user = request['user'];
 
     if (await this.QueuesQueryService.checkIfUserIdHasJobs(user.userId))
@@ -117,7 +118,7 @@ export class QueuesQueryController {
     if (queuesQuerySeries.length === 0 && queuesQueryStudy.length === 0)
       throw new BadRequestException('No studies or series found');
 
-    const uuid = randomUUID();
+    const uuid = generateRandomUUID();
     queuesQueryStudy.forEach((study) => {
       this.QueuesQueryService.addJob({
         uuid: uuid,

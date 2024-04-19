@@ -1,19 +1,12 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Patch,
-  UseInterceptors,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Patch, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
+
 import { OptionsService } from './options.service';
 import { Option } from './option.entity';
 import { UpdateOptionDto } from './options.dto';
-import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
 
 import { AdminGuard } from '../guards/roles.guard';
-import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ConfigService } from '@nestjs/config';
 
 @ApiTags('options')
 @Controller('/options')
@@ -51,7 +44,6 @@ export class OptionsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Patch()
-  @UseInterceptors(NotFoundInterceptor)
   async update(@Body() options: UpdateOptionDto): Promise<void> {
     return await this.optionService.update(options);
   }

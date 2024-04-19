@@ -1,49 +1,49 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform, TransformationType } from 'class-transformer';
+import { Transform } from 'class-transformer';
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class RoleDto {
-  @ApiProperty({ example: 'admin' })
+  @ApiProperty({ example: 'admin', required: true })
   @IsString()
   Name: string;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: true })
   @IsBoolean()
   Import: boolean;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: true })
   @IsBoolean()
   Anonymize: boolean;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: true })
   @IsBoolean()
   Export: boolean;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: true })
   @IsBoolean()
   Query: boolean;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: true })
   @IsBoolean()
   AutoQuery: boolean;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: true })
   @IsBoolean()
   Delete: boolean;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: true })
   @IsBoolean()
   Admin: boolean;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: true })
   @IsBoolean()
   Modify: boolean;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: true })
   @IsBoolean()
   CdBurner: boolean;
 
-  @ApiProperty({ example: true })
+  @ApiProperty({ example: true, required: true })
   @IsBoolean()
   AutoRouting: boolean;
 }

@@ -1,21 +1,24 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
 import {
   BadRequestException,
   INestApplication,
   RequestMethod,
   ValidationPipe,
 } from '@nestjs/common';
-import { ValidationError } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
-import OrthancClient from './orthanc/orthanc-client';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationError } from 'class-validator';
+
+import { AppModule } from './app.module';
+import OrthancClient from './utils/orthanc-client';
+import ProcessingClient from './utils/processing.client';
+
+import { OauthConfigService } from './oauth-configs/oauth-configs.service';
+
 import setupDeleteWorker from './queues/delete/delete.worker';
 import setupAnonWorker from './queues/anon/anon.worker';
 import setupQueryWorker from './queues/query/query.worker';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import { OauthConfigService } from './oauth_configs/oauth-configs.service';
 import setupProcessingWorker from './processing/processing.worker';
-import ProcessingClient from './processing/processing.client';
 
 async function buildSwagger(app: INestApplication<any>) {
   const oauthConfigs = await app.get(OauthConfigService).getOauthConfig();

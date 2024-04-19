@@ -1,5 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { Queue } from 'bullmq';
+
 import { AbstractQueueService } from './queue.service';
 
 class QueuesTestService extends AbstractQueueService {
@@ -21,7 +22,7 @@ describe('QueuesService', () => {
       obliterate: jest.fn(),
     } as any;
 
-    const module: TestingModule = await Test.createTestingModule({
+    await Test.createTestingModule({
       imports: [],
       providers: [QueuesTestService, { provide: Queue, useValue: mockQueue }],
     }).compile();

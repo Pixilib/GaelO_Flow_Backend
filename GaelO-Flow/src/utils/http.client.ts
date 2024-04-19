@@ -60,7 +60,7 @@ export class HttpClient {
     url: string,
     method: string,
     body: object | string | null | any,
-    headers: object | undefined = undefined,
+    headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body);
     return axios.request(option).catch(function (error) {
@@ -72,7 +72,7 @@ export class HttpClient {
     url: string,
     method: string,
     body: object | string | null | any,
-    headers: object | undefined = undefined,
+    headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body, 'arraybuffer');
     return axios.request(option).catch(function (error) {
@@ -84,7 +84,7 @@ export class HttpClient {
     url: string,
     method: string,
     body: object | string | null,
-    headers: object | undefined = undefined,
+    headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body, 'stream');
     return axios.request(option).catch(function (error) {
@@ -97,7 +97,7 @@ export class HttpClient {
     method: string,
     body: object,
     res: Response,
-    headers: object | undefined = undefined,
+    headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body, 'stream');
     return axios

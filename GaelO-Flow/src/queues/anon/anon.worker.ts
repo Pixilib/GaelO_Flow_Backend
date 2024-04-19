@@ -1,7 +1,8 @@
-import { Worker, Job } from 'bullmq';
-import OrthancClient from '../../orthanc/orthanc-client';
 import { ConfigService } from '@nestjs/config';
+import { Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
+
+import OrthancClient from '../../utils/orthanc-client';
 
 function isSecondaryCapture(sopClassUid: string) {
   const secondaryCapturySopClass = [

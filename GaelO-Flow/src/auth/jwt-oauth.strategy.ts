@@ -1,10 +1,12 @@
-import { Strategy } from 'passport-http-bearer';
-import { PassportStrategy } from '@nestjs/passport';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
-import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
-import { OauthConfigService } from '../oauth_configs/oauth-configs.service';
+
+import { Strategy } from 'passport-http-bearer';
+import { firstValueFrom } from 'rxjs';
+
+import { OauthConfigService } from '../oauth-configs/oauth-configs.service';
 
 interface UserInfoResponse {
   sub: string;

@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { AbstractQueueService } from '../queue.service';
-import { Queue } from 'bullmq';
 import { ConfigService } from '@nestjs/config';
+import { Queue } from 'bullmq';
+
+import { AbstractQueueService } from '../queue.service';
 
 @Injectable()
 export class QueuesDeleteService extends AbstractQueueService {

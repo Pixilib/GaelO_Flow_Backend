@@ -1,8 +1,9 @@
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+
 import { QueuesDeleteController } from './queue-deletes.controller';
 import { QueuesDeleteService } from './queue-deletes.service';
 import { QueuesDeleteDto } from './queue-deletes.dto';
-import { BadRequestException, ForbiddenException } from '@nestjs/common';
 
 describe('QueuesDeleteController', () => {
   let controller: QueuesDeleteController;

@@ -1,9 +1,8 @@
+import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { OptionsService } from './options.service';
 import { OptionsController } from './options.controller';
-import { Option } from './option.entity';
 import { OptionDto } from './options.dto';
-import { ConfigService } from '@nestjs/config';
 
 describe('OptionsController', () => {
   let optionsController: OptionsController;
@@ -41,12 +40,54 @@ describe('OptionsController', () => {
     });
 
     it('check if getOptions of the controller calls getOptions of the service', async () => {
-      const mock = jest
-        .spyOn(optionsService, 'getOptions')
-        .mockResolvedValue({ Id: 1 } as Option);
+      const mock = jest.spyOn(optionsService, 'getOptions').mockResolvedValue({
+        Id: 1,
+        AutoQueryHourStart: 22,
+        AutoQueryMinuteStart: 0,
+        AutoQueryHourStop: 6,
+        AutoQueryMinuteStop: 0,
+        OrthancMonitoringRate: 10,
+        BurnerStarted: false,
+        BurnerLabelPath: '',
+        BurnerMonitoringLevel: 'Study',
+        BurnerManifacturer: 'Epson',
+        BurnerMonitoredPath: '',
+        BurnerDeleteStudyAfterSent: false,
+        BurnerSupportType: 'Auto',
+        BurnerViewerPath: '',
+        BurnerTransferSyntax: 'Auto',
+        BurnerDateFormat: 'uk',
+        BurnerTranscoding: 'None',
+        AutorouterStarted: false,
+      });
 
-      await optionsController.getOptions();
+      const result = await optionsController.getOptions();
       expect(mock).toHaveBeenCalled();
+      expect(result).toEqual({
+        AutoQueryHourStart: 22,
+        AutoQueryMinuteStart: 0,
+        AutoQueryHourStop: 6,
+        AutoQueryMinuteStop: 0,
+        OrthancMonitoringRate: 10,
+        BurnerStarted: false,
+        BurnerLabelPath: '',
+        BurnerMonitoringLevel: 'Study',
+        BurnerManifacturer: 'Epson',
+        BurnerMonitoredPath: '',
+        BurnerDeleteStudyAfterSent: false,
+        BurnerSupportType: 'Auto',
+        BurnerViewerPath: '',
+        BurnerTransferSyntax: 'Auto',
+        BurnerDateFormat: 'uk',
+        BurnerTranscoding: 'None',
+        AutorouterStarted: false,
+        OrthancAddress: undefined,
+        OrthancPort: undefined,
+        OrthancUsername: undefined,
+        OrthancPassword: undefined,
+        RedisAddress: undefined,
+        RedisPort: undefined,
+      });
     });
   });
 

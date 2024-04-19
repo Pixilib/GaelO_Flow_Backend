@@ -1,18 +1,23 @@
-// users.service.spec.ts
-
-import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { Role } from '../roles/role.entity';
-import { RolesService } from '../roles/roles.service';
+import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcryptjs from 'bcryptjs';
-import { RoleLabel } from '../role_label/role-label.entity';
-import { LabelsService } from '../labels/labels.service';
-import { Label } from '../labels/label.entity';
+
 import { UsersModule } from './users.module';
+
+import { UsersService } from './users.service';
+import { RolesService } from '../roles/roles.service';
+import { LabelsService } from '../labels/labels.service';
+
+import { User } from './user.entity';
+import { Role } from '../roles/role.entity';
+import { Label } from '../labels/label.entity';
+import { RoleLabel } from '../role-label/role-label.entity';
+import { hashPassword } from '../utils/passwords';
+
+jest.mock('../utils/passwords', () => ({
+  hashPassword: jest.fn(),
+}));
 
 describe('UsersService', () => {
   let usersService: UsersService;
@@ -40,7 +45,6 @@ describe('UsersService', () => {
     rolesService = module.get<RolesService>(RolesService);
     userRepository = module.get<Repository<User>>(getRepositoryToken(User));
 
-    let salt: string;
     let hash: string;
     const userRole = new Role();
     userRole.Name = 'User';
@@ -48,8 +52,7 @@ describe('UsersService', () => {
     const adminRole = new Role();
     adminRole.Name = 'Admin';
 
-    salt = await bcryptjs.genSalt();
-    hash = await bcryptjs.hash('first', salt);
+    hash = 'first';
     firstUser = {
       Username: 'first_username',
       Firstname: 'first_firstname',
@@ -62,8 +65,7 @@ describe('UsersService', () => {
       TokenExpiration: null,
     };
 
-    salt = await bcryptjs.genSalt();
-    hash = await bcryptjs.hash('second', salt);
+    hash = 'second';
     secondUser = {
       Username: 'second_username',
       Firstname: 'second_firstname',
@@ -98,7 +100,7 @@ describe('UsersService', () => {
 
   describe('findAll', () => {
     it('should return an array of users', async () => {
-      const role = await rolesService.findOne('User');
+      const role = await rolesService.findOneByOrFail('User');
       const result = await usersService.findAll();
       expect(result).toEqual([
         { ...firstUser, Role: role },
@@ -109,7 +111,7 @@ describe('UsersService', () => {
 
   describe('findOne', () => {
     it('should return the first user', async () => {
-      const role = await rolesService.findOne('User');
+      const role = await rolesService.findOneByOrFail('User');
       const result = await usersService.findOne(1);
       expect(result).toEqual({ ...firstUser, Role: role });
     });
@@ -129,7 +131,7 @@ describe('UsersService', () => {
 
   describe('update', () => {
     it('should update a user', async () => {
-      const role = await rolesService.findOne('User');
+      const role = await rolesService.findOneByOrFail('User');
       const user = { ...firstUser };
       user.Firstname = 'updateTest';
       const updateResult = await usersService.update(1, user);
@@ -141,7 +143,6 @@ describe('UsersService', () => {
 
   describe('create', () => {
     it('should create a user', async () => {
-      const role = await rolesService.findOne('User');
       const createUser = {
         Username: 'create_testuser',
         Firstname: 'create_testfirstname',
@@ -154,10 +155,31 @@ describe('UsersService', () => {
         TokenExpiration: null,
       };
       const createResult = await usersService.create(createUser);
-      const findOneResult = await usersService.findOne(createResult);
-      expect(typeof createResult).toBe('number');
-      expect(createResult).toBeGreaterThan(0);
-      expect(findOneResult).toEqual({ ...createUser, Role: role });
+      const findOneResult = await usersService.findOne(createResult.Id);
+      expect(createResult).toBeInstanceOf(Object);
+      expect(findOneResult).toEqual({
+        Email: 'create_testuser@example.com',
+        Firstname: 'create_testfirstname',
+        Id: 3,
+        Lastname: 'create_testlastname',
+        Password: 'create_<PASSWORD>',
+        Role: {
+          Admin: false,
+          Anonymize: false,
+          AutoQuery: false,
+          AutoRouting: false,
+          CdBurner: false,
+          Delete: false,
+          Export: false,
+          Import: false,
+          Modify: false,
+          Name: 'User',
+          Query: false,
+        },
+        RoleName: 'User',
+        SuperAdmin: false,
+        Username: 'create_testuser',
+      });
     });
   });
 
@@ -203,15 +225,13 @@ describe('UsersService', () => {
         Password: hashedPassword,
       };
 
-      jest.spyOn(bcryptjs, 'genSalt').mockResolvedValue(salt as never);
-      jest.spyOn(bcryptjs, 'hash').mockResolvedValue(hashedPassword as never);
+      (hashPassword as jest.Mock).mockResolvedValue(hashedPassword as never);
       jest.spyOn(usersService, 'findOne').mockResolvedValue(findUser);
       jest.spyOn(usersService, 'update').mockResolvedValue(undefined);
 
       await usersService.updateUserPassword(id, newPassword);
 
-      expect(bcryptjs.genSalt).toHaveBeenCalled();
-      expect(bcryptjs.hash).toHaveBeenCalledWith(newPassword, salt);
+      expect(hashPassword).toHaveBeenCalledWith(newPassword);
       expect(usersService.findOne).toHaveBeenCalledWith(id);
       expect(usersService.update).toHaveBeenCalledWith(
         id,

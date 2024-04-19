@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProcessingMask } from '../constants/enums';
-import ProcessingClient from './processing.client';
+import ProcessingClient from '../utils/processing.client';
 
 @Injectable()
 export class MaskProcessingService {

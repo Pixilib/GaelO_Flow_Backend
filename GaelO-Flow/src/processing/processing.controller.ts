@@ -11,7 +11,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { Job } from 'bullmq';
 import {
   ApiBearerAuth,
   ApiParam,
@@ -19,6 +18,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Job } from 'bullmq';
+
 import { AdminGuard } from '../guards/roles.guard';
 import { ProcessingQueueService } from './processing-queue.service';
 import { ProcessingJobDto } from './processing-job.dto';

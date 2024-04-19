@@ -6,15 +6,13 @@ import {
   Delete,
   Param,
   ConflictException,
-  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
-import { Label } from './label.entity';
-import { LabelDto } from './labels.dto';
-import { NotFoundInterceptor } from '../interceptors/NotFound.interceptor';
-import { AdminGuard } from '../guards/roles.guard';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { LabelsService } from './labels.service';
+import { AdminGuard } from '../guards/roles.guard';
+import { LabelDto } from './labels.dto';
 
 @ApiTags('labels')
 @Controller('/labels')
@@ -22,12 +20,13 @@ export class LabelsController {
   constructor(private readonly LabelsService: LabelsService) {}
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: 'Get all labels', type: [Label] })
+  @ApiResponse({ status: 200, description: 'Get all labels', type: [String] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get()
-  async findAll(): Promise<Label[]> {
-    return this.LabelsService.findAll();
+  async findAll(): Promise<string[]> {
+    const allLabels = await this.LabelsService.findAll();
+    return allLabels.map((label) => label.Name);
   }
 
   @ApiBearerAuth('access-token')
@@ -35,7 +34,6 @@ export class LabelsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Delete('/:labelName')
-  @UseInterceptors(NotFoundInterceptor)
   async remove(@Param('labelName') labelName: string): Promise<void> {
     await this.LabelsService.findOneByOrFail(labelName);
     return this.LabelsService.remove(labelName);

@@ -1,9 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OptionsService } from './options.service';
 import { TypeOrmModule, getRepositoryToken } from '@nestjs/typeorm';
-import { Option } from './option.entity';
 import { Repository } from 'typeorm';
+
 import { OptionsModule } from './options.module';
+import { OptionsService } from './options.service';
+import { Option } from './option.entity';
 
 describe('OptionsService', () => {
   let optionsService: OptionsService;

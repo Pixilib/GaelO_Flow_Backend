@@ -1,9 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UsersService } from '../users/users.service';
-import * as crypto from 'crypto';
-import * as bcryptjs from 'bcryptjs';
 import { User } from '../users/user.entity';
+import { UsersService } from '../users/users.service';
+import { comparePasswords, generateToken } from '../utils/passwords';
 
 @Injectable()
 export class AuthService {
@@ -15,9 +14,8 @@ export class AuthService {
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByUsername(username);
 
-    if (user && (await bcryptjs.compare(password, user.Password))) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { Password: _, ...result } = user;
+    if (user && (await comparePasswords(pass, user.Password))) {
+      const { Password, ...result } = user;
       return result;
     }
     return null;
@@ -35,18 +33,11 @@ export class AuthService {
       UserId: user.Id,
     };
   }
-  async generateHashedToken(): Promise<{
-    token: string;
-    hash: string;
-  }> {
-    const token = crypto.randomBytes(32).toString('hex');
-    const hash = await bcryptjs.hash(token, 10);
-    return { token, hash };
-  }
 
   async createConfirmationToken(user: User): Promise<string> {
     const findUserId = await this.usersService.findOne(user.Id);
-    const { token: confirmationToken, hash } = await this.generateHashedToken();
+    const { hash, token: confirmationToken } = await generateToken();
+    // const { token: confirmationToken, hash } = await this.generateHashedToken();
     const expireToken = new Date(Date.now() + 24 * 60 * 60 * 1000);
     const updatedUser: User = {
       ...findUserId,
@@ -67,7 +58,7 @@ export class AuthService {
     if (new Date() > user.TokenExpiration) {
       throw new BadRequestException('Token expired');
     }
-    const isMatch = await bcryptjs.compare(token, user.Token);
+    const isMatch = await comparePasswords(token, user.Token);
     if (!isMatch) {
       throw new BadRequestException('Invalid token');
     }

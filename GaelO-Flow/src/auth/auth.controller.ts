@@ -10,16 +10,17 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBody, ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
+
+import { LocalAuthGuard } from '../guards/local.guard';
+import { JwtOAuthGuard } from '../guards/jwt-oauth.guard';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
-import { Public } from '../interceptors/Public';
-import { ApiBody, ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from '../interceptors/public';
 import { LoginDto } from './dto/login.dto';
 import { ChangePasswordDto } from './dto/changePassword.dto';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
-import { LocalAuthGuard } from '../guards/local.guard';
-import { JwtOAuthGuard } from '../guards/jwt-oauth.guard';
 import { LostPassworDto } from './dto/lostPassword.dto';
 
 @ApiTags('auth')
@@ -88,7 +89,8 @@ export class AuthController {
         'A user already exist with this username or email',
       );
     }
-    await this.usersService.create({
+
+    const newUser = await this.usersService.create({
       Email: registerDto.Email,
       Firstname: registerDto.Firstname,
       Lastname: registerDto.Lastname,
@@ -97,11 +99,6 @@ export class AuthController {
       RoleName: 'User',
       Password: null,
     });
-
-    const newUser = await this.usersService.findOneByEmail(
-      registerDto.Email,
-      false,
-    );
     const confirmationToken =
       await this.authService.createConfirmationToken(newUser);
 

@@ -8,9 +8,10 @@ import {
   Delete,
   Put,
 } from '@nestjs/common';
-import { Response as ResponseType, Request as RequestType } from 'express';
-import OrthancClient from './orthanc-client';
 import { ApiBearerAuth, ApiTags, ApiParam } from '@nestjs/swagger';
+import { Response as ResponseType, Request as RequestType } from 'express';
+
+import OrthancClient from '../utils/orthanc-client';
 import { AdminGuard } from '../guards/roles.guard';
 import { doReverseProxy } from './utils';
 

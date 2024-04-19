@@ -5,14 +5,14 @@ import {
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
-
-import { Role } from '../roles/role.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 
+import { Role } from '../roles/role.entity';
+
 @Entity()
 export class User {
-  @ApiProperty({ example: 1 })
+  @ApiProperty()
   @PrimaryGeneratedColumn({ name: 'id' })
   Id?: number;
 

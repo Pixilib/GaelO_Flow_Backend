@@ -13,17 +13,14 @@ export default class QuerySeriesAnswer extends QueryAnswer {
     answerId: string,
     answerNumber: number,
     originAET: string,
-    patientName: string,
+    patientName: string|null,
     patientID: string,
-
     studyUID: string,
     seriesUID: string,
-
     accessionNumber: string | null = null,
     studyDescription: string | null = null,
     studyDate: string | null = null,
     requestedProcedureDescription: string | null = null,
-
     modality: string | null = null,
     seriesDescription: string | null = null,
     seriesNumber: number | null = null,

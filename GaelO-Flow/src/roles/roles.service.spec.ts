@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { RolesService } from './roles.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { RolesService } from './roles.service';
+import { LabelsService } from '../labels/labels.service';
+
 import { Role } from './role.entity';
 import { Label } from '../labels/label.entity';
-import { RoleLabel } from '../role_label/role-label.entity';
-import { LabelsService } from '../labels/labels.service';
-import { RoleLabelModule } from '../role_label/role-label.module';
-import { RolesModule } from './roles.module';
+import { RoleLabel } from '../role-label/role-label.entity';
 
 describe('RolesService', () => {
   let rolesService: RolesService;
@@ -51,15 +51,30 @@ describe('RolesService', () => {
     });
   });
 
-  describe('findOne', () => {
+  describe('findOneByOrFail', () => {
     it("should return the role name 'User'", async () => {
-      const result = await rolesService.findOne('User');
+      const result = await rolesService.findOneByOrFail('User');
       expect(result).toEqual(role);
     });
+
     it('should throw an error when the role is not found', async () => {
       // Assuming the method throws an error when the role is not found
       const nonExistentRole = 'NonExistentRole';
-      await expect(rolesService.findOne(nonExistentRole)).rejects.toThrow();
+      await expect(
+        rolesService.findOneByOrFail(nonExistentRole),
+      ).rejects.toThrow();
+    });
+  });
+
+  describe('isRoleExist', () => {
+    it('should return true when the role exists', async () => {
+      const result = await rolesService.isRoleExist('User');
+      expect(result).toEqual(true);
+    });
+
+    it('should return false when the role does not exist', async () => {
+      const result = await rolesService.isRoleExist('NonExistentRole');
+      expect(result).toEqual(false);
     });
   });
 
@@ -79,7 +94,7 @@ describe('RolesService', () => {
         AutoRouting: true,
       };
       const createResult = await rolesService.create(createRole);
-      const findOneResult = await rolesService.findOne('Admin');
+      const findOneResult = await rolesService.findOneByOrFail('Admin');
       expect(createResult).toBeUndefined();
       expect(findOneResult).toEqual(createRole);
     });
@@ -97,7 +112,7 @@ describe('RolesService', () => {
       const updateRole = { ...role };
       updateRole.Admin = true;
       const updateResult = await rolesService.update('User', updateRole);
-      const findOneResult = await rolesService.findOne('User');
+      const findOneResult = await rolesService.findOneByOrFail('User');
       expect(updateResult).toEqual(undefined);
       expect(findOneResult).toEqual(updateRole);
     });
@@ -124,6 +139,16 @@ describe('RolesService', () => {
     it('should get role labels', async () => {
       const getRoleLabelsResult = await rolesService.getRoleLabels('User');
       expect(getRoleLabelsResult).toEqual([]);
+    });
+  });
+
+  describe('removeRoleLabel', () => {
+    it('should remove a role label', async () => {
+      const removeRoleLabelResult = await rolesService.removeRoleLabel(
+        'User',
+        'Label',
+      );
+      expect(removeRoleLabelResult).toEqual(undefined);
     });
   });
 });

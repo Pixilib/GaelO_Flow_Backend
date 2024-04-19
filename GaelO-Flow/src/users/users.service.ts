@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+
 import { User } from './user.entity';
-import * as bcryptjs from 'bcryptjs';
+import { hashPassword } from '../utils/passwords';
 
 @Injectable()
 export class UsersService {
@@ -75,16 +76,14 @@ export class UsersService {
   }
 
   async updateUserPassword(id: number, newPassword: string): Promise<void> {
-    const salt = await bcryptjs.genSalt();
-    const hashedPassword = await bcryptjs.hash(newPassword, salt);
+    const hashedPassword = await hashPassword(newPassword);
     const findUser = await this.findOne(id);
     const userWithPasswordUpdated = { ...findUser, Password: hashedPassword };
     await this.update(id, userWithPasswordUpdated);
   }
 
-  async create(user: User): Promise<number> {
-    const newUser = await this.usersRepository.insert(user);
-    return newUser.identifiers[0].Id;
+  async create(user: User): Promise<User> {
+    return await this.usersRepository.save(user);
   }
 
   async remove(id: number): Promise<void> {
@@ -99,11 +98,9 @@ export class UsersService {
 
   /* istanbul ignore next */
   public async seed() {
-    const saltAdmin = await bcryptjs.genSalt();
-    const hashAdmin = await bcryptjs.hash('passwordadmin', saltAdmin);
+    const hashAdmin = await hashPassword('passwordadmin');
 
-    const saltUser = await bcryptjs.genSalt();
-    const hashUser = await bcryptjs.hash('passworduser', saltUser);
+    const hashUser = await hashPassword('passworduser');
 
     const admin = this.usersRepository.create({
       Username: 'admin',

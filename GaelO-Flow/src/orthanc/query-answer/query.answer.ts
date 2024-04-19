@@ -4,7 +4,7 @@ export default abstract class QueryAnswer {
   AnswerId: string;
   AnswerNumber: number;
   OriginAET: string;
-  PatientName: string;
+  PatientName: string | null;
   PatientID: string;
   AccessionNumber: string | null;
   StudyDescription: string | null;
@@ -18,7 +18,7 @@ export default abstract class QueryAnswer {
     answerId: string,
     answerNumber: number,
     originAET: string,
-    patientName: string,
+    patientName: string | null,
     patientID: string,
     accessionNumber: string | null,
     studyDescription: string | null,
@@ -37,7 +37,7 @@ export default abstract class QueryAnswer {
     this.RequestedProcedureDescription = requestedProcedureDescription;
   }
 
-  setAnswerId = (answerId: string | null): void => {
+  setAnswerId = (answerId: string): void => {
     this.AnswerId = answerId;
   };
 
