@@ -2,7 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '../users/user.entity';
 import { UsersService } from '../users/users.service';
-import { comparePasswords, generateToken } from '../utils/passwords';
+import {
+  comparePasswords,
+  generateToken,
+  getTokenExpiration,
+} from '../utils/passwords';
 
 @Injectable()
 export class AuthService {
@@ -37,12 +41,10 @@ export class AuthService {
   async createConfirmationToken(user: User): Promise<string> {
     const findUserId = await this.usersService.findOne(user.Id);
     const { hash, token: confirmationToken } = await generateToken();
-    // const { token: confirmationToken, hash } = await this.generateHashedToken();
-    const expireToken = new Date(Date.now() + 24 * 60 * 60 * 1000);
     const updatedUser: User = {
       ...findUserId,
       Token: hash,
-      TokenExpiration: expireToken,
+      TokenExpiration: getTokenExpiration(),
       Password: null,
     };
     await this.usersService.update(user.Id, updatedUser);

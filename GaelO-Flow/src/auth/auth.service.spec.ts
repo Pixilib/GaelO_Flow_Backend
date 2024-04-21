@@ -7,20 +7,12 @@ import { BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Test, TestingModule } from '@nestjs/testing';
 
-//utils to mock functions in password.ts
-jest.mock('../utils/passwords', () => ({
-  generateToken: jest
-    .fn()
-    .mockResolvedValue({ hash: 'hashed_token', token: 'non_hashed_token' }),
-  comparePasswords: jest.fn(),
-}));
 //constants for testing
 const VALID_TOKEN = 'valid_token';
 const INVALID_TOKEN = 'invalid_token';
 const USER_ID = 1;
 const USERNAME = 'username';
-
-//mock user function
+//mock a user with these function
 function createMockUser(): User {
   const user = new User();
   user.Id = USER_ID;
@@ -35,6 +27,17 @@ function createMockUser(): User {
   user.RoleName = 'User';
   return user;
 }
+
+//utils to mock functions in password.ts
+jest.mock('../utils/passwords', () => ({
+  generateToken: jest
+    .fn()
+    .mockResolvedValue({ hash: 'hashed_token', token: 'non_hashed_token' }),
+  comparePasswords: jest.fn(),
+  getTokenExpiration: jest
+    .fn()
+    .mockReturnValue(new Date(Date.now() + 24 * 60 * 60 * 24)),
+}));
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -57,7 +60,6 @@ describe('AuthService', () => {
     usersService = module.get<UsersService>(UsersService);
     jwtService = module.get<JwtService>(JwtService);
   });
-
   afterEach(() => {
     jest.restoreAllMocks();
   });
@@ -82,63 +84,91 @@ describe('AuthService', () => {
     });
   });
 
-  describe('validateUser', () => {
-    it('should return user without password when credentials are valid', async () => {
-      const userMock = createMockUser();
-      jest.spyOn(usersService, 'findOneByUsername').mockResolvedValue(userMock);
-      (passwordUtils.comparePasswords as jest.Mock).mockResolvedValue(true);
-      const result = await authService.validateUser('validUser', 'password');
-
-      const expectedUser = {
-        Id: userMock.Id,
-        Username: userMock.Username,
-        Role: userMock.Role,
-        Firstname: userMock.Firstname,
-        Lastname: userMock.Lastname,
-        Email: userMock.Email,
-        RoleName: userMock.RoleName,
-        SuperAdmin: userMock.SuperAdmin,
-      };
-
-      expect(result).toEqual(expectedUser);
-    });
-
-    it('should return null when password is invalid', async () => {
-      const user = createMockUser();
-      jest.spyOn(usersService, 'findOneByUsername').mockResolvedValue(user);
-      (passwordUtils.comparePasswords as jest.Mock).mockResolvedValue(false);
-
-      const result = await authService.validateUser(USERNAME, 'invalid');
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when user is not found', async () => {
-      jest.spyOn(usersService, 'findOneByUsername').mockResolvedValue(null);
-
-      const result = await authService.validateUser('invalid', 'password');
-      expect(result).toBeNull();
-    });
-  });
-
   describe('createConfirmationToken', () => {
-    it('should update the user with a hashed token and its expiration, then return the non-hashed token', async () => {
-      const mockUser = createMockUser();
-      jest.spyOn(usersService, 'findOne').mockResolvedValue(mockUser);
-      jest.spyOn(usersService, 'update').mockImplementation();
+    const mockUser = createMockUser();
 
+    beforeEach(() => {
+      jest.spyOn(usersService, 'findOne').mockResolvedValue(mockUser);
+      jest
+        .spyOn(usersService, 'update')
+        .mockImplementation(() => Promise.resolve());
+    });
+
+    it('should return the non-hashed token', async () => {
       const token = await authService.createConfirmationToken(mockUser);
       expect(token).toBe('non_hashed_token');
+    });
+
+    it('should update the user with a hashed token and its expiration', async () => {
+      await authService.createConfirmationToken(mockUser);
       expect(usersService.update).toHaveBeenCalledWith(
         mockUser.Id,
         expect.objectContaining({
           Token: 'hashed_token',
-          TokenExpiration: expect.any(Date),
+          TokenExpiration: passwordUtils.getTokenExpiration(),
         }),
       );
     });
-  });
 
+    it('should update the user with a null password', async () => {
+      await authService.createConfirmationToken(mockUser);
+      const updateCall = (usersService.update as jest.Mock).mock.calls[0][1];
+      expect(updateCall.Password).toBeNull();
+    });
+  });
+  //TODO: These tests are failed @AntoninLaudon, Can you fix it?
+  //? I don't understand these function !
+  describe('validateUser', () => {
+    it('should return the user when the credentials are valid', async () => {
+      const user = new User();
+      user.Id = 1;
+      user.Username = 'username';
+      user.Password = 'password';
+      user.Role = new Role();
+      user.Role.Name = 'User';
+
+      jest
+        .spyOn(UsersService.prototype, 'findOneByUsername')
+        .mockResolvedValue(user);
+      (passwordUtils.comparePasswords as jest.Mock).mockResolvedValue(
+        true as never,
+      );
+
+      const result = await authService.validateUser('username', 'password');
+
+      expect(result).toStrictEqual({
+        Id: user.Id,
+        Username: user.Username,
+        Role: user.Role,
+      });
+    });
+
+    it('should return null when the password is invalid', async () => {
+      const user = new User();
+      user.Password = 'password';
+
+      jest
+        .spyOn(UsersService.prototype, 'findOneByUsername')
+        .mockResolvedValue(user);
+      (passwordUtils.comparePasswords as jest.Mock).mockResolvedValue(
+        false as never,
+      );
+
+      const result = await authService.validateUser('username', 'invalid');
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null when the user is invalid', async () => {
+      jest
+        .spyOn(UsersService.prototype, 'findOneByUsername')
+        .mockResolvedValue(undefined);
+
+      const result = await authService.validateUser('invalid', 'password');
+
+      expect(result).toBeNull();
+    });
+  });
   describe('verifyConfirmationToken', () => {
     it('should return true if token matches and is not expired', async () => {
       const mockUser = {
@@ -153,7 +183,6 @@ describe('AuthService', () => {
         VALID_TOKEN,
         mockUser.Id,
       );
-
       expect(result).toBe(true);
     });
 
@@ -176,7 +205,6 @@ describe('AuthService', () => {
       };
       jest.spyOn(usersService, 'findOne').mockResolvedValue(mockUser);
       (passwordUtils.comparePasswords as jest.Mock).mockResolvedValue(false);
-
       await expect(
         authService.verifyConfirmationToken(INVALID_TOKEN, mockUser.Id),
       ).rejects.toThrow(BadRequestException);

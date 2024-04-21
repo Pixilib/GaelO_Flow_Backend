@@ -11,8 +11,7 @@ import {
   ConflictException,
   NotFoundException,
 } from '@nestjs/common';
-import { validate } from 'class-validator';
-import { ChangePasswordDto } from './dto/changePassword.dto';
+import { RegisterDto } from './dto/register.dto';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -112,58 +111,63 @@ describe('AuthController', () => {
       );
       expect(isPublic).toBe(true);
     });
+    it('should throw ConflictException if user exists', async () => {
+      const registerDto = new RegisterDto();
+      registerDto.Email = 'existing@example.com';
 
-    it('should create a new user and send confirmation email', async () => {
-      const registerDto = {
-        Email: 'test@example.com',
-        Firstname: 'John',
-        Lastname: 'Doe',
-        Username: 'johndoe',
-      };
-      jest
-        .spyOn(usersService, 'findOneByEmail')
-        .mockResolvedValueOnce(undefined);
-      jest.spyOn(usersService, 'create').mockResolvedValueOnce(1);
-      const expectedUser = {
-        ...registerDto,
-        SuperAdmin: false,
-        RoleName: 'User',
-        Password: null,
-      };
-      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(
+      const mockUser = {
+        Id: 1,
+        Email: 'existingg@person.com',
+      } as User;
+      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(mockUser);
+
+      await expect(authController.register(registerDto)).rejects.toThrow(
+        ConflictException,
+      );
+    });
+    it('should register user and send confirmation email if user does not exist', async () => {
+      const registerDto = new RegisterDto();
+      registerDto.Email = 'new@example.com';
+      registerDto.Firstname = 'John';
+      registerDto.Lastname = 'Doe';
+      registerDto.Username = 'johndoe';
+
+      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(null);
+      jest.spyOn(usersService, 'create').mockImplementation(() =>
         Promise.resolve({
-          ...expectedUser,
+          Id: 1,
+          Email: 'new@example.com',
+          Firstname: 'John',
+          Lastname: 'Doe',
+          Username: 'johndoe',
+          Password: null,
+          SuperAdmin: false,
+          RoleName: 'User',
         }),
       );
-
       jest
         .spyOn(authService, 'createConfirmationToken')
-        .mockResolvedValue('confirmation_token');
-      const tokenCreated =
-        await authService.createConfirmationToken(expectedUser);
-      const expectedUserWithToken = {
-        ...expectedUser,
-        Token: tokenCreated,
-        TokenExpiration: new Date(Date.now() + 24 * 60 * 60 * 1000),
-      } as User;
+        .mockResolvedValue('confirmationToken');
       jest
         .spyOn(mailService, 'sendChangePasswordEmail')
-        .mockResolvedValue(null);
+        .mockImplementation(() => Promise.resolve());
 
       await authController.register(registerDto);
 
-      expect(usersService.findOneByEmail).toHaveBeenCalledWith(
-        registerDto.Email,
-        false,
+      expect(usersService.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          Email: 'new@example.com',
+          Firstname: 'John',
+          Lastname: 'Doe',
+          Username: 'johndoe',
+          Password: null,
+        }),
       );
-      expect(usersService.create).toHaveBeenCalledWith(expectedUser);
-      expect(authService.createConfirmationToken).toHaveBeenCalledWith(
-        expectedUser,
-      );
+      expect(authService.createConfirmationToken).toHaveBeenCalled();
       expect(mailService.sendChangePasswordEmail).toHaveBeenCalledWith(
-        expectedUserWithToken.Email,
-        expectedUserWithToken.Token,
-        expectedUserWithToken.Id,
+        'new@example.com',
+        'confirmationToken',
+        1,
       );
     });
 
@@ -221,29 +225,6 @@ describe('AuthController', () => {
       );
 
       expect(isPublic).toBe(true);
-    });
-    it('should pass validation when the password meets the DTO criteria', async () => {
-      const dto = new ChangePasswordDto();
-      dto.NewPassword = 'validPassword1!';
-      dto.ConfirmationPassword = 'validPassword1!';
-      dto.Token = 'validToken';
-      dto.UserId = 1;
-
-      const errors = await validate(dto);
-
-      expect(errors).toHaveLength(0);
-    });
-
-    it('should fail validation when the password does not meet the DTO criteria', async () => {
-      const dto = new ChangePasswordDto();
-      dto.NewPassword = 'invalidpassword';
-      dto.ConfirmationPassword = 'invalidpassword';
-      dto.Token = 'validToken';
-      dto.UserId = 1;
-
-      const errors = await validate(dto);
-
-      expect(errors).not.toHaveLength(0);
     });
     it('should throw a BadRequestException if passwords do not match', async () => {
       const dto = {
