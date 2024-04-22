@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { Job, Queue } from 'bullmq';
 
 import { ProcessingJobDto } from './processing-job.dto';
-import { generateRandomUUID } from 'src/utils/passwords';
+import { generateRandomUUID } from '../utils/passwords';
 
 @Injectable()
 export class ProcessingQueueService {

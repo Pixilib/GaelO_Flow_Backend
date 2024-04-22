@@ -27,7 +27,7 @@ import {
   QueuesQuerySeriesDto,
 } from './queue-query.dto';
 import { OrGuard } from '../../guards/or.guard';
-import { generateRandomUUID } from 'src/utils/passwords';
+import { generateRandomUUID } from '../../utils/passwords';
 
 @ApiTags('queues/query')
 @Controller('/queues/query')

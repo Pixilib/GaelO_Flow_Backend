@@ -23,7 +23,7 @@ import { QueuesDeleteService } from './queue-deletes.service';
 import { AdminGuard, DeleteGuard } from '../../guards/roles.guard';
 import { QueuesDeleteDto } from './queue-deletes.dto';
 import { OrGuard } from '../../guards/or.guard';
-import { generateRandomUUID } from 'src/utils/passwords';
+import { generateRandomUUID } from '../../utils/passwords';
 
 @ApiTags('queues/delete')
 @Controller('/queues/delete')
