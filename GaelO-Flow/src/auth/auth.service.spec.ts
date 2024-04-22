@@ -127,6 +127,7 @@ describe('AuthService', () => {
       user.Role = new Role();
       user.Role.Name = 'User';
 
+      jest.spyOn(usersService, 'findOneByUsername').mockResolvedValue(user);
       jest
         .spyOn(UsersService.prototype, 'findOneByUsername')
         .mockResolvedValue(user);
