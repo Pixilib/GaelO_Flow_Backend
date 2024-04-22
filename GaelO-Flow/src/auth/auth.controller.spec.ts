@@ -1,13 +1,17 @@
-import { BadRequestException } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
-
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { User } from '../users/user.entity';
 import { MailService } from '../mail/mail.service';
 import { MailModule } from '../mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
+import { RegisterDto } from './dto/register.dto';
 
 describe('AuthController', () => {
   let authController: AuthController;
@@ -27,6 +31,7 @@ describe('AuthController', () => {
             login: jest.fn(),
             validateUser: jest.fn(),
             createConfirmationToken: jest.fn(),
+            verifyConfirmationToken: jest.fn(),
           },
         },
         {
@@ -40,7 +45,7 @@ describe('AuthController', () => {
             isRoleUsed: jest.fn(),
             findOneByUsername: jest.fn(),
             findOneByEmail: jest.fn(),
-            updateUserPAssword: jest.fn(),
+            updateUserPassword: jest.fn(),
           },
         },
         {
@@ -64,7 +69,6 @@ describe('AuthController', () => {
         'isPublic',
         AuthController.prototype.login,
       );
-
       expect(isPublic).toBe(true);
     });
 
@@ -98,145 +102,93 @@ describe('AuthController', () => {
       });
     });
   });
+
   describe('register', () => {
-    it('check if signIn is public', async () => {
+    it('check if signUp is public', async () => {
       const isPublic = Reflect.getMetadata(
         'isPublic',
         AuthController.prototype.register,
       );
-
       expect(isPublic).toBe(true);
     });
-    it('should create a new user and send confirmation email', async () => {
-      const registerDto = {
-        Email: 'test@example.com',
-        Firstname: 'John',
-        Lastname: 'Doe',
-        Username: 'johndoe',
-      };
+    it('should throw ConflictException if user exists', async () => {
+      const registerDto = new RegisterDto();
+      registerDto.Email = 'existing@example.com';
 
-      jest
-        .spyOn(usersService, 'findOneByEmail')
-        .mockResolvedValueOnce(undefined);
-      jest.spyOn(usersService, 'create').mockResolvedValueOnce({
-        Id: 1,
-        ...registerDto,
-      } as User);
       const mockUser = {
-        Firstname: registerDto.Firstname,
-        Lastname: registerDto.Lastname,
-        Username: registerDto.Username,
-        Email: registerDto.Email,
-        SuperAdmin: false,
-        RoleName: 'User',
-        Password: '<PASSWORD>',
-      };
+        Id: 1,
+        Email: 'existingg@person.com',
+      } as User;
+      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(mockUser);
 
-      jest
-        .spyOn(usersService, 'findOneByEmail')
-        .mockResolvedValueOnce(mockUser);
+      await expect(authController.register(registerDto)).rejects.toThrow(
+        ConflictException,
+      );
+    });
+    it('should register user and send confirmation email if user does not exist', async () => {
+      const registerDto = new RegisterDto();
+      registerDto.Email = 'new@example.com';
+      registerDto.Firstname = 'John';
+      registerDto.Lastname = 'Doe';
+      registerDto.Username = 'johndoe';
 
+      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(null);
+      jest.spyOn(usersService, 'create').mockImplementation(() =>
+        Promise.resolve({
+          Id: 1,
+          Email: 'new@example.com',
+          Firstname: 'John',
+          Lastname: 'Doe',
+          Username: 'johndoe',
+          Password: null,
+          SuperAdmin: false,
+          RoleName: 'User',
+        }),
+      );
       jest
         .spyOn(authService, 'createConfirmationToken')
-        .mockResolvedValueOnce('confirmation_token');
+        .mockResolvedValue('confirmationToken');
       jest
         .spyOn(mailService, 'sendChangePasswordEmail')
-        .mockResolvedValue(null);
+        .mockImplementation(() => Promise.resolve());
 
       await authController.register(registerDto);
 
-      expect(usersService.findOneByEmail).toHaveBeenCalledWith(
-        registerDto.Email,
-        false,
+      expect(usersService.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          Email: 'new@example.com',
+          Firstname: 'John',
+          Lastname: 'Doe',
+          Username: 'johndoe',
+          Password: null,
+        }),
       );
-      expect(usersService.create).toHaveBeenCalledWith({
-        ...mockUser,
-        Password: null,
-      });
-      expect(authService.createConfirmationToken).toHaveBeenCalledWith({
-        Email: registerDto.Email,
-        Firstname: registerDto.Firstname,
-        Id: 1,
-        Lastname: registerDto.Lastname,
-        Username: registerDto.Username,
-      });
+      expect(authService.createConfirmationToken).toHaveBeenCalled();
       expect(mailService.sendChangePasswordEmail).toHaveBeenCalledWith(
-        registerDto.Email,
-        'confirmation_token',
+        'new@example.com',
+        'confirmationToken',
+        1,
       );
     });
 
     it('should throw a ConflictException if user already exists', async () => {
       const registerDto = {
-        Email: 'test@example.com',
-        Firstname: 'John',
-        Lastname: 'Doe',
-        Username: 'johndoe',
+        Email: 'test@example2.com',
+        Firstname: 'John2',
+        Lastname: 'Doe2',
+        Username: 'johndoe2',
       };
 
       jest
         .spyOn(usersService, 'findOneByEmail')
-        .mockResolvedValueOnce({} as User);
+        .mockResolvedValueOnce(new User());
 
       await expect(authController.register(registerDto)).rejects.toThrow(
-        'A user already exist with this username or email',
+        ConflictException,
       );
     });
   });
 
-  describe('changePassword', () => {
-    it('check if changePassword is in public', async () => {
-      const isPublic = Reflect.getMetadata(
-        'isPublic',
-        AuthController.prototype.changePassword,
-      );
-
-      expect(isPublic).toBe(true);
-    });
-    it('should throw a BadRequestException if passwords do not match', async () => {
-      const dto = {
-        Token: 'token',
-        NewPassword: 'password1',
-        ConfirmationPassword: 'password2',
-      };
-
-      await expect(authController.changePassword(dto)).rejects.toThrow(
-        BadRequestException,
-      );
-    });
-    it('should throw an error if token is invalid', async () => {
-      const dto = {
-        Token: 'token',
-        NewPassword: 'password',
-        ConfirmationPassword: 'password',
-      };
-
-      authService.verifyToken = jest.fn().mockResolvedValue(null);
-
-      await expect(authController.changePassword(dto)).rejects.toThrow(
-        BadRequestException,
-      );
-    });
-    it('should update user password if token is valid and passwords match', async () => {
-      const dto = {
-        Token: 'token',
-        NewPassword: 'password',
-        ConfirmationPassword: 'password',
-      };
-
-      authService.verifyToken = jest.fn().mockResolvedValue(1);
-      usersService.updateUserPassword = jest.fn().mockResolvedValue(undefined);
-
-      await authController.changePassword(dto);
-
-      expect(usersService.updateUserPassword).toHaveBeenCalledWith(
-        1,
-        'password',
-      );
-    });
-  });
-
-  //create a test for lostPassword API
   describe('lostPassword', () => {
     it('check if lostPassword is in public', async () => {
       const isPublic = Reflect.getMetadata(
@@ -263,6 +215,87 @@ describe('AuthController', () => {
     });
     it('should throw an error if user is not found', async () => {
       usersService.findOneByEmail = jest.fn().mockResolvedValue(undefined);
+    });
+  });
+  describe('changePassword', () => {
+    it('check if changePassword is in public', async () => {
+      const isPublic = Reflect.getMetadata(
+        'isPublic',
+        AuthController.prototype.changePassword,
+      );
+
+      expect(isPublic).toBe(true);
+    });
+    it('should throw a BadRequestException if passwords do not match', async () => {
+      const dto = {
+        Token: 'token',
+        NewPassword: 'password1',
+        ConfirmationPassword: 'password2',
+        UserId: 1,
+      };
+
+      await expect(authController.changePassword(dto)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('should throw a Not found Exception if user is not found', async () => {
+      const dto = {
+        Token: 'token',
+        NewPassword: 'password',
+        ConfirmationPassword: 'password',
+        UserId: 1,
+      };
+
+      jest
+        .spyOn(usersService, 'findOne')
+        .mockRejectedValueOnce(new NotFoundException());
+
+      await expect(authController.changePassword(dto)).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+
+    it('should update user password if token is valid and passwords match', async () => {
+      const dto = {
+        Token: 'token',
+        NewPassword: 'password',
+        ConfirmationPassword: 'password',
+        UserId: 1,
+      };
+
+      const user = {
+        Id: 1,
+        Firstname: 'John',
+        Lastname: 'Doe',
+        Username: 'johndoe',
+        Password: 'password',
+        Email: 'johndoe@mail.com',
+        SuperAdmin: false,
+        RoleName: 'User',
+        Token: 'token',
+        TokenExpiration: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      };
+
+      jest.spyOn(usersService, 'findOne').mockResolvedValueOnce(user);
+      jest
+        .spyOn(authService, 'verifyConfirmationToken')
+        .mockResolvedValueOnce(true);
+      jest
+        .spyOn(usersService, 'updateUserPassword')
+        .mockResolvedValueOnce(undefined);
+
+      await authController.changePassword(dto);
+
+      expect(usersService.findOne).toHaveBeenCalledWith(dto.UserId);
+      expect(authService.verifyConfirmationToken).toHaveBeenCalledWith(
+        dto.Token,
+        user.Id,
+      );
+      expect(usersService.updateUserPassword).toHaveBeenCalledWith(
+        user.Id,
+        dto.NewPassword,
+      );
     });
   });
 });
