@@ -44,17 +44,9 @@ export class RolesController {
   @UseGuards(AdminGuard)
   @Get()
   async findAll(@Query() withLabels: WithLabels): Promise<Role[]> {
-    const allRoles = await this.roleService.findAll();
-    if (withLabels.WithLabels) {
-      const allRoleLabels = await this.roleService.getAllRoleLabels();
-      allRoles.forEach((role) => {
-        role['labels'] = allRoleLabels
-          .filter((roleLabel) => roleLabel.Role.Name === role.Name)
-          .map((roleLabel) => roleLabel.Label.Name);
-      });
-    }
-
-    return allRoles;
+    if (withLabels.WithLabels)
+      return await this.roleService.findAllWithLabels();
+    return await this.roleService.findAll();
   }
 
   @ApiBearerAuth('access-token')

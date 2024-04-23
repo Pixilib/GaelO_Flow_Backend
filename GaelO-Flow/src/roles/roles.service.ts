@@ -21,6 +21,17 @@ export class RolesService {
     return await this.rolesRepository.find();
   }
 
+  async findAllWithLabels(): Promise<Role[]> {
+    const allRoles = await this.rolesRepository.find();
+    const allRoleLabels = await this.roleLabelRepository.find();
+    allRoles.forEach((role) => {
+      role['labels'] = allRoleLabels
+        .filter((roleLabel) => roleLabel.Role.Name === role.Name)
+        .map((roleLabel) => roleLabel.Label.Name);
+    });
+    return allRoles;
+  }
+
   async findOneByOrFail(name: string): Promise<Role | null> {
     return await this.rolesRepository.findOneByOrFail({ Name: name });
   }

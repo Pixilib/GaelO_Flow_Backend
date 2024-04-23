@@ -25,6 +25,7 @@ describe('RolesController', () => {
           provide: RolesService,
           useValue: {
             findAll: jest.fn(),
+            findAllWithLabels: jest.fn(),
             findOneByOrFail: jest.fn(),
             update: jest.fn(),
             create: jest.fn(),
@@ -135,7 +136,16 @@ describe('RolesController', () => {
     });
 
     it('check if getRoles calls service getAllRoleLabels', async () => {
-      jest.spyOn(rolesService, 'findAll').mockResolvedValue(roleList);
+      const roleListWithLabels = roleList.map((role) => ({
+        ...role,
+        labels: roleLabelList
+          .filter((roleLabel) => roleLabel.Role.Name === role.Name)
+          .map((roleLabel) => roleLabel.Label.Name),
+      }));
+
+      jest
+        .spyOn(rolesService, 'findAllWithLabels')
+        .mockResolvedValue(roleListWithLabels);
 
       jest
         .spyOn(rolesService, 'getAllRoleLabels')
@@ -143,16 +153,7 @@ describe('RolesController', () => {
 
       const result = await rolesController.findAll({ WithLabels: true });
 
-      expect(result).toEqual(
-        roleList.map((role) => {
-          return {
-            ...role,
-            labels: roleLabelList
-              .filter((roleLabel) => roleLabel.Role.Name === role.Name)
-              .map((roleLabel) => roleLabel.Label.Name),
-          };
-        }),
-      );
+      expect(result).toEqual(roleListWithLabels);
     });
   });
 

@@ -51,6 +51,13 @@ describe('RolesService', () => {
     });
   });
 
+  describe('findAllWithLabels', () => {
+    it('should return an array of roles with labels', async () => {
+      const result = await rolesService.findAllWithLabels();
+      expect(result).toEqual([{ ...role, labels: [] }]);
+    });
+  });
+
   describe('findOneByOrFail', () => {
     it("should return the role name 'User'", async () => {
       const result = await rolesService.findOneByOrFail('User');
