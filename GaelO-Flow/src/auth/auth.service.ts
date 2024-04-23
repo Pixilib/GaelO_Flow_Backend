@@ -39,15 +39,11 @@ export class AuthService {
   }
 
   async createConfirmationToken(user: User): Promise<string> {
-    const findUserId = await this.usersService.findOne(user.Id);
     const { hash, token: confirmationToken } = await generateToken();
-    const updatedUser: User = {
-      ...findUserId,
-      Token: hash,
-      TokenExpiration: getTokenExpiration(),
-      Password: null,
-    };
-    await this.usersService.update(user.Id, updatedUser);
+    user.Token = hash;
+    user.TokenExpiration = getTokenExpiration();
+    user.Password = null;
+    await this.usersService.update(user.Id, user);
     return confirmationToken;
   }
 
