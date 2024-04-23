@@ -1,7 +1,7 @@
-import { ApiProperty, PartialType } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsBoolean, IsNumber } from 'class-validator';
 
-export class OptionDto {
+export class CreateOptionDto {
   @ApiProperty({ example: 22 })
   @IsNumber()
   AutoQueryHourStart: number;
@@ -70,5 +70,3 @@ export class OptionDto {
   @IsBoolean()
   AutorouterStarted: boolean;
 }
-
-export class UpdateOptionDto extends PartialType(OptionDto) {}

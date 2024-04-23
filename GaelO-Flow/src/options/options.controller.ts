@@ -4,9 +4,10 @@ import { ConfigService } from '@nestjs/config';
 
 import { OptionsService } from './options.service';
 import { Option } from './option.entity';
-import { UpdateOptionDto } from './options.dto';
+import { UpdateOptionDto } from './dto/update-option.dto';
 
 import { AdminGuard } from '../guards/roles.guard';
+import { GetOptionDto } from './dto/get-option.dto';
 
 @ApiTags('options')
 @Controller('/options')
@@ -17,22 +18,27 @@ export class OptionsController {
   ) {}
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: 'Get all options', type: Option })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all options',
+    type: GetOptionDto,
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get()
-  async getOptions(): Promise<Option> {
-    const options = await this.optionService.getOptions();
-    delete options.Id;
+  async getOptions(): Promise<GetOptionDto> {
+    const { Id, ...options } = await this.optionService.getOptions();
+    const getOptionDto: GetOptionDto = {
+      ...options,
+      OrthancAddress: this.configService.get('ORTHANC_ADDRESS'),
+      OrthancPort: this.configService.get('ORTHANC_PORT'),
+      OrthancUsername: this.configService.get('ORTHANC_USERNAME'),
+      OrthancPassword: this.configService.get('ORTHANC_PASSWORD'),
+      RedisAddress: this.configService.get('REDIS_ADDRESS'),
+      RedisPort: this.configService.get('REDIS_PORT'),
+    };
 
-    options['OrthancAddress'] = this.configService.get('ORTHANC_ADDRESS');
-    options['OrthancPort'] = this.configService.get('ORTHANC_PORT');
-    options['OrthancUsername'] = this.configService.get('ORTHANC_USERNAME');
-    options['OrthancPassword'] = this.configService.get('ORTHANC_PASSWORD');
-    options['RedisAddress'] = this.configService.get('REDIS_ADDRESS');
-    options['RedisPort'] = this.configService.get('REDIS_PORT');
-
-    return options;
+    return getOptionDto;
   }
 
   @ApiBearerAuth('access-token')
