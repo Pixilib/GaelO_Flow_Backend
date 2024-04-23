@@ -18,10 +18,10 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { Public } from '../interceptors/public';
 import { LoginDto } from './dto/login.dto';
-import { ChangePasswordDto } from './dto/changePassword.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
-import { LostPassworDto } from './dto/lostPassword.dto';
+import { LostPassworDto } from './dto/lost-password.dto';
 
 @ApiTags('auth')
 @Controller('')
