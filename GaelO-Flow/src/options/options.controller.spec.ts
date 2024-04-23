@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { OptionsService } from './options.service';
 import { OptionsController } from './options.controller';
-import { OptionDto } from './options.dto';
+import { CreateOptionDto } from './dto/create-option.dto';
 
 describe('OptionsController', () => {
   let optionsController: OptionsController;
@@ -108,7 +108,9 @@ describe('OptionsController', () => {
         .spyOn(optionsService, 'update')
         .mockResolvedValue(undefined);
 
-      await optionsController.update({ AutoQueryHourStart: 23 } as OptionDto);
+      await optionsController.update({
+        AutoQueryHourStart: 23,
+      } as CreateOptionDto);
       expect(mockUpdate).toHaveBeenCalled();
     });
   });

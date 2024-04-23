@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-
 import { User } from '../users/user.entity';
 import { UsersService } from '../users/users.service';
-import { comparePasswords } from '../utils/passwords';
+import {
+  comparePasswords,
+  generateToken,
+  getTokenExpiration,
+} from '../utils/passwords';
 
 @Injectable()
 export class AuthService {
@@ -14,8 +17,8 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findOneByUsername(username);
-
     if (user && (await comparePasswords(pass, user.Password))) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { Password, ...result } = user;
       return result;
     }
@@ -36,21 +39,27 @@ export class AuthService {
   }
 
   async createConfirmationToken(user: User): Promise<string> {
-    const payload = {
-      id: user.Id,
-      email: user.Email,
-    };
-    return this.jwtService.signAsync(payload, {
-      expiresIn: '24h', // Expiration en 24 heures
-    });
+    const { hash, token: confirmationToken } = await generateToken();
+    user.Token = hash;
+    user.TokenExpiration = getTokenExpiration();
+    user.Password = null;
+    await this.usersService.update(user.Id, user);
+    return confirmationToken;
   }
 
-  async verifyToken(token: string): Promise<number | null> {
-    try {
-      const decoded = await this.jwtService.verifyAsync(token);
-      return decoded.id;
-    } catch (error) {
-      return null;
+  async verifyConfirmationToken(
+    token: string,
+    userId: number,
+  ): Promise<boolean> {
+    const user = await this.usersService.findOne(userId);
+
+    if (new Date() > user.TokenExpiration) {
+      throw new BadRequestException('Token expired');
     }
+    const isMatch = await comparePasswords(token, user.Token);
+    if (!isMatch) {
+      throw new BadRequestException('Invalid token');
+    }
+    return true;
   }
 }

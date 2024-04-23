@@ -3,12 +3,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as request from 'supertest';
-import * as bcryptjs from 'bcryptjs';
 
 import { AppModule } from '../app.module';
 
 import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
+import { hashPassword } from 'src/utils/passwords';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
@@ -29,10 +29,8 @@ describe('UsersController (e2e)', () => {
       getRepositoryToken(User),
     );
 
-    const hash: string = await bcryptjs.hash(
-      'passwordadmin',
-      await bcryptjs.genSalt(),
-    );
+    const hash: string = await hashPassword('passwordadmin')
+
     const adminRole = new Role();
     adminRole.Name = 'Admin';
 

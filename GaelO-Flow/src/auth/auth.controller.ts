@@ -9,9 +9,6 @@ import {
   ConflictException,
   Request,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
-  ValidationError,
 } from '@nestjs/common';
 import { ApiBody, ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -21,9 +18,10 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { Public } from '../interceptors/public';
 import { LoginDto } from './dto/login.dto';
-import { ChangePasswordDto } from './dto/changePassword.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
+import { LostPassworDto } from './dto/lost-password.dto';
 
 @ApiTags('auth')
 @Controller('')
@@ -78,6 +76,7 @@ export class AuthController {
 
   @ApiResponse({ status: 201, description: 'Register success' })
   @ApiResponse({ status: 409, description: 'Conflict' })
+  @ApiBody({ type: RegisterDto })
   @Public()
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
@@ -85,7 +84,6 @@ export class AuthController {
       registerDto.Email,
       false,
     );
-
     if (userExists) {
       throw new ConflictException(
         'A user already exist with this username or email',
@@ -107,6 +105,7 @@ export class AuthController {
     await this.mailService.sendChangePasswordEmail(
       newUser.Email,
       confirmationToken,
+      newUser.Id,
     );
   }
 
@@ -114,44 +113,30 @@ export class AuthController {
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiBody({ type: ChangePasswordDto })
   @Public()
-  @UsePipes(
-    new ValidationPipe({
-      exceptionFactory: (errors: ValidationError[]) => {
-        const messages = errors.map((error) =>
-          Object.values(error.constraints).join(', '),
-        );
-        return new BadRequestException(messages);
-      },
-    }),
-  )
   @Post('change-password')
   async changePassword(
     @Body() changePasswordDto: ChangePasswordDto,
-  ): Promise<undefined> {
-    const { Token, NewPassword, ConfirmationPassword } = changePasswordDto;
+  ): Promise<void> {
+    const { Token, NewPassword, ConfirmationPassword, UserId } =
+      changePasswordDto;
 
     if (NewPassword !== ConfirmationPassword) {
-      throw new BadRequestException('Confirmation password not matching');
+      throw new BadRequestException('Confirmation password does not match');
     }
-
-    const userId = await this.authService.verifyToken(Token);
-    if (!userId) {
-      throw new BadRequestException('Invalid token');
-    }
-    await this.usersService.updateUserPassword(userId, NewPassword);
+    await this.usersService.findOne(UserId);
+    await this.authService.verifyConfirmationToken(Token, UserId);
+    await this.usersService.updateUserPassword(UserId, NewPassword);
   }
 
   @ApiResponse({ status: 200, description: 'Email sent' })
   @ApiResponse({ status: 400, description: 'Bad request' })
+  @ApiBody({ type: LostPassworDto })
   @Public()
   @Post('lost-password')
-  async lostPassword(@Body() body: { Email: string }) {
+  async lostPassword(@Body() body: LostPassworDto) {
     const { Email } = body;
     const user = await this.usersService.findOneByEmail(Email, false);
-    if (!user) {
-      throw new BadRequestException('User not found');
-    }
     const token = await this.authService.createConfirmationToken(user);
-    await this.mailService.sendChangePasswordEmail(user.Email, token);
+    await this.mailService.sendChangePasswordEmail(user.Email, token, user.Id);
   }
 }

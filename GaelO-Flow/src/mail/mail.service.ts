@@ -9,8 +9,12 @@ export class MailService {
     private configService: ConfigService,
   ) {}
 
-  async sendChangePasswordEmail(email: string, token: string): Promise<void> {
-    const changePasswordUrl = `${this.configService.get('APP_URL')}:${this.configService.get('PORT_CLIENT')}/change-password?token=${token}`;
+  async sendChangePasswordEmail(
+    email: string,
+    token: string,
+    userId: number,
+  ): Promise<void> {
+    const changePasswordUrl = `${this.configService.get('APP_URL')}:${this.configService.get('PORT_CLIENT')}/change-password?token=${token}&userId=${userId}`;
     await this.mailerService.sendMail({
       from: '"GaelO-Flow" <' + this.configService.get('MAIL_FROM') + '>',
       to: email,

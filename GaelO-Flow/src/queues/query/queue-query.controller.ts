@@ -18,7 +18,6 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { randomUUID } from 'crypto';
 
 import { QueuesQueryService } from './queue-query.service';
 import { AdminGuard, QueryGuard } from '../../guards/roles.guard';
@@ -28,6 +27,7 @@ import {
   QueuesQuerySeriesDto,
 } from './queue-query.dto';
 import { OrGuard } from '../../guards/or.guard';
+import { generateRandomUUID } from '../../utils/passwords';
 
 @ApiTags('queues/query')
 @Controller('/queues/query')
@@ -118,7 +118,7 @@ export class QueuesQueryController {
     if (queuesQuerySeries.length === 0 && queuesQueryStudy.length === 0)
       throw new BadRequestException('No studies or series found');
 
-    const uuid = randomUUID();
+    const uuid = generateRandomUUID();
     queuesQueryStudy.forEach((study) => {
       this.QueuesQueryService.addJob({
         uuid: uuid,

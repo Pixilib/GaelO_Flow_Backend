@@ -61,6 +61,8 @@ describe('UsersService', () => {
       Password: hash,
       SuperAdmin: false,
       RoleName: userRole.Name,
+      Token: null,
+      TokenExpiration: null,
     };
 
     hash = 'second';
@@ -72,6 +74,8 @@ describe('UsersService', () => {
       Password: hash,
       SuperAdmin: false,
       RoleName: userRole.Name,
+      Token: null,
+      TokenExpiration: null,
     };
 
     await rolesService.create(userRole);
@@ -147,6 +151,8 @@ describe('UsersService', () => {
         Password: 'create_<PASSWORD>',
         SuperAdmin: false,
         RoleName: 'User',
+        Token: null,
+        TokenExpiration: null,
       };
       const createResult = await usersService.create(createUser);
       const findOneResult = await usersService.findOne(createResult.Id);
@@ -169,7 +175,9 @@ describe('UsersService', () => {
           Modify: false,
           Name: 'User',
           Query: false,
-        },
+        } as Role,
+        Token: null,
+        TokenExpiration: null,
         RoleName: 'User',
         SuperAdmin: false,
         Username: 'create_testuser',
