@@ -1,8 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsString } from 'class-validator';
 
-export class RoleDto {
+export class CreateRoleDto {
   @ApiProperty({ example: 'admin', required: true })
   @IsString()
   Name: string;
@@ -46,17 +45,4 @@ export class RoleDto {
   @ApiProperty({ example: true, required: true })
   @IsBoolean()
   AutoRouting: boolean;
-}
-
-export class WithLabels {
-  @IsOptional()
-  @ApiProperty({ example: true })
-  @Transform(
-    ({ value }) => {
-      return value === 'true' || value === '';
-    },
-    { toClassOnly: true },
-  )
-  @IsBoolean()
-  WithLabels: boolean = false;
 }

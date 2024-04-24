@@ -8,7 +8,7 @@ import { AppModule } from '../app.module';
 
 import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
-import { hashPassword } from 'src/utils/passwords';
+import { hashPassword } from '../utils/passwords';
 
 describe('UsersController (e2e)', () => {
   let app: INestApplication;
@@ -29,7 +29,7 @@ describe('UsersController (e2e)', () => {
       getRepositoryToken(User),
     );
 
-    const hash: string = await hashPassword('passwordadmin')
+    const hash: string = await hashPassword('passwordadmin');
 
     const adminRole = new Role();
     adminRole.Name = 'Admin';

@@ -6,10 +6,10 @@ import { LabelsService } from '../labels/labels.service';
 
 import { Role } from './role.entity';
 import { Label } from '../labels/label.entity';
-import { RoleLabel } from '../role-label/role-label.entity';
 
 describe('RolesService', () => {
   let rolesService: RolesService;
+  let labelService: LabelsService;
   let role: Role;
 
   beforeEach(async () => {
@@ -18,15 +18,16 @@ describe('RolesService', () => {
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: ':memory:',
-          entities: [Role, Label, RoleLabel],
+          entities: [Role, Label],
           synchronize: true,
         }),
-        TypeOrmModule.forFeature([Role, Label, RoleLabel]),
+        TypeOrmModule.forFeature([Role, Label]),
       ],
       providers: [RolesService, LabelsService],
     }).compile();
 
     rolesService = module.get<RolesService>(RolesService);
+    labelService = module.get<LabelsService>(LabelsService);
     role = {
       Name: 'User',
       Import: true,
@@ -41,6 +42,8 @@ describe('RolesService', () => {
       AutoRouting: true,
     };
 
+    await labelService.create({ Name: 'Label' });
+
     await rolesService.create(role);
   });
 
@@ -51,6 +54,13 @@ describe('RolesService', () => {
     });
   });
 
+  describe('findAllWithLabels', () => {
+    it('should return an array of roles with labels', async () => {
+      const result = await rolesService.findAllWithLabels();
+      expect(result).toEqual([{ ...role, Labels: [] }]);
+    });
+  });
+
   describe('findOneByOrFail', () => {
     it("should return the role name 'User'", async () => {
       const result = await rolesService.findOneByOrFail('User');
@@ -58,7 +68,6 @@ describe('RolesService', () => {
     });
 
     it('should throw an error when the role is not found', async () => {
-      // Assuming the method throws an error when the role is not found
       const nonExistentRole = 'NonExistentRole';
       await expect(
         rolesService.findOneByOrFail(nonExistentRole),
@@ -126,12 +135,12 @@ describe('RolesService', () => {
       );
       expect(addRoleLabelResult).toEqual(undefined);
     });
-  });
 
-  describe('getAllRoleLabels', () => {
-    it('should get all role labels', async () => {
-      const getAllRoleLabelsResult = await rolesService.getAllRoleLabels();
-      expect(getAllRoleLabelsResult).toEqual([]);
+    it('should throw an error when the label already exists for the role', async () => {
+      await rolesService.addRoleLabel('User', 'Label');
+      await expect(
+        rolesService.addRoleLabel('User', 'Label'),
+      ).rejects.toThrow();
     });
   });
 
