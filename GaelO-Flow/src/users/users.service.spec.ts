@@ -12,7 +12,6 @@ import { LabelsService } from '../labels/labels.service';
 import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
 import { Label } from '../labels/label.entity';
-import { RoleLabel } from '../role-label/role-label.entity';
 import { hashPassword } from '../utils/passwords';
 
 jest.mock('../utils/passwords', () => ({
@@ -33,10 +32,10 @@ describe('UsersService', () => {
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: ':memory:',
-          entities: [User, Role, Label, RoleLabel],
+          entities: [User, Role, Label],
           synchronize: true,
         }),
-        TypeOrmModule.forFeature([User, Role, Label, RoleLabel]),
+        TypeOrmModule.forFeature([User, Role, Label]),
       ],
       providers: [UsersService, RolesService, LabelsService],
     }).compile();

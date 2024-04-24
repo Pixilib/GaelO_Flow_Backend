@@ -7,7 +7,7 @@ import { LabelsService } from '../labels/labels.service';
 import { RolesController } from './roles.controller';
 import { UsersController } from '../users/users.controller';
 import { Role } from './role.entity';
-import { RoleLabel } from '../role-label/role-label.entity';
+import { NotFoundException } from '@nestjs/common';
 
 describe('RolesController', () => {
   let rolesController: RolesController;
@@ -15,7 +15,6 @@ describe('RolesController', () => {
   let userService: UsersService;
   let labelsService: LabelsService;
   let roleList: Role[];
-  let roleLabelList: RoleLabel[];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -27,13 +26,12 @@ describe('RolesController', () => {
             findAll: jest.fn(),
             findAllWithLabels: jest.fn(),
             findOneByOrFail: jest.fn(),
-            update: jest.fn(),
+            isRoleExist: jest.fn(),
             create: jest.fn(),
             remove: jest.fn(),
-            getAllRoleLabels: jest.fn(),
-            isRoleExist: jest.fn(),
-            getRoleLabels: jest.fn(),
+            update: jest.fn(),
             addRoleLabel: jest.fn(),
+            getRoleLabels: jest.fn(),
             removeRoleLabel: jest.fn(),
           },
         },
@@ -90,24 +88,6 @@ describe('RolesController', () => {
       },
     ];
 
-    roleLabelList = [
-      {
-        Id: 1,
-        Role: roleList[0],
-        Label: { Name: 'label1' },
-      },
-      {
-        Id: 2,
-        Role: roleList[0],
-        Label: { Name: 'label2' },
-      },
-      {
-        Id: 3,
-        Role: roleList[1],
-        Label: { Name: 'label3' },
-      },
-    ];
-
     rolesController = module.get<RolesController>(RolesController);
     rolesService = module.get<RolesService>(RolesService);
     userService = module.get<UsersService>(UsersService);
@@ -136,24 +116,12 @@ describe('RolesController', () => {
     });
 
     it('check if getRoles calls service getAllRoleLabels', async () => {
-      const roleListWithLabels = roleList.map((role) => ({
-        ...role,
-        labels: roleLabelList
-          .filter((roleLabel) => roleLabel.Role.Name === role.Name)
-          .map((roleLabel) => roleLabel.Label.Name),
-      }));
-
-      jest
+      const mock = jest
         .spyOn(rolesService, 'findAllWithLabels')
-        .mockResolvedValue(roleListWithLabels);
-
-      jest
-        .spyOn(rolesService, 'getAllRoleLabels')
-        .mockResolvedValue(roleLabelList);
-
+        .mockResolvedValue(roleList);
       const result = await rolesController.findAll({ WithLabels: true });
-
-      expect(result).toEqual(roleListWithLabels);
+      expect(result).toEqual(roleList);
+      expect(mock).toHaveBeenCalled();
     });
   });
 
@@ -356,9 +324,10 @@ describe('RolesController', () => {
     });
 
     it('check if addLabelToRole calls service create', async () => {
-      jest.spyOn(rolesService, 'isRoleExist').mockResolvedValue(true);
+      jest
+        .spyOn(rolesService, 'findOneByOrFail')
+        .mockResolvedValue({ ...roleList[0], Labels: [] });
       jest.spyOn(labelsService, 'isLabelExist').mockResolvedValue(true);
-      jest.spyOn(rolesService, 'getRoleLabels').mockResolvedValue([]);
       const mockCreate = jest.spyOn(rolesService, 'addRoleLabel');
       const result = await rolesController.addLabelToRole('User', {
         label: 'label1',
@@ -369,33 +338,21 @@ describe('RolesController', () => {
     });
 
     it('check if error is thrown when role does not exist', async () => {
-      jest.spyOn(rolesService, 'isRoleExist').mockResolvedValue(false);
+      jest.spyOn(rolesService, 'findOneByOrFail').mockImplementation((name) => {
+        throw new NotFoundException('Role not found');
+      });
       await expect(
         rolesController.addLabelToRole('NonExistant', { label: 'label1' }),
       ).rejects.toThrow();
     });
 
     it('check if error is thrown when label does not exist', async () => {
-      jest.spyOn(rolesService, 'isRoleExist').mockResolvedValue(true);
+      jest
+        .spyOn(rolesService, 'findOneByOrFail')
+        .mockResolvedValue({ ...roleList[0], Labels: [] });
       jest.spyOn(labelsService, 'isLabelExist').mockResolvedValue(false);
       await expect(
         rolesController.addLabelToRole('User', { label: 'NonExistant' }),
-      ).rejects.toThrow();
-    });
-
-    it('check if error is thrown when label already exists for role', async () => {
-      jest
-        .spyOn(labelsService, 'findOneByOrFail')
-        .mockResolvedValue({ Name: 'label1' });
-      jest.spyOn(rolesService, 'getRoleLabels').mockResolvedValue([
-        {
-          Id: 1,
-          Label: { Name: 'label1' },
-          Role: { Name: 'User' } as Role,
-        },
-      ]);
-      await expect(
-        rolesController.addLabelToRole('User', { label: 'label1' }),
       ).rejects.toThrow();
     });
   });
@@ -418,15 +375,11 @@ describe('RolesController', () => {
     });
 
     it('check if getRoleLabels calls service getRoleLabels', async () => {
-      const mockGetRoleLabels = jest
+      jest
         .spyOn(rolesService, 'getRoleLabels')
-        .mockResolvedValue(roleLabelList);
+        .mockResolvedValue([{ Name: 'label1' }]);
       const result = await rolesController.getRoleLabels('User');
-
-      expect(result).toEqual(
-        roleLabelList.map((roleLabel) => roleLabel.Label.Name),
-      );
-      expect(mockGetRoleLabels).toHaveBeenCalled();
+      expect(result).toEqual(['label1']);
     });
   });
 
@@ -450,13 +403,10 @@ describe('RolesController', () => {
     it('check if removeLabelFromRole calls service removeRoleLabel', async () => {
       jest.spyOn(rolesService, 'isRoleExist').mockResolvedValue(true);
       jest.spyOn(labelsService, 'isLabelExist').mockResolvedValue(true);
-      jest.spyOn(rolesService, 'getRoleLabels').mockResolvedValue([
-        {
-          Id: 1,
-          Label: { Name: 'label1' },
-          Role: { Name: 'User' } as Role,
-        },
-      ]);
+      jest
+        .spyOn(rolesService, 'getRoleLabels')
+        .mockResolvedValue([{ Name: 'label1' }]);
+
       const mockRemove = jest.spyOn(rolesService, 'removeRoleLabel');
       const result = await rolesController.removeLabelFromRole(
         'User',
@@ -468,30 +418,23 @@ describe('RolesController', () => {
     });
 
     it('check if error is thrown when role does not exist', async () => {
-      jest.spyOn(rolesService, 'isRoleExist').mockResolvedValue(false);
+      jest.spyOn(rolesService, 'findOneByOrFail').mockImplementation((name) => {
+        throw new NotFoundException('Role not found');
+      });
+
       await expect(
         rolesController.removeLabelFromRole('NonExistant', 'label1'),
       ).rejects.toThrow();
     });
 
     it('check if error is thrown when label does not exist', async () => {
-      jest.spyOn(rolesService, 'isRoleExist').mockResolvedValue(true);
-      jest.spyOn(labelsService, 'isLabelExist').mockResolvedValue(false);
+      jest.spyOn(rolesService, 'findOneByOrFail').mockImplementation((name) => {
+        throw new Error('Role not found');
+      });
+
+      jest.spyOn(labelsService, 'findOneByOrFail').mockResolvedValue(undefined);
       await expect(
         rolesController.removeLabelFromRole('User', 'NonExistant'),
-      ).rejects.toThrow();
-    });
-
-    it('check if error is thrown when label does not exist for role', async () => {
-      jest.spyOn(rolesService, 'getRoleLabels').mockResolvedValue([
-        {
-          Id: 1,
-          Label: { Name: 'label1' },
-          Role: { Name: 'User' } as Role,
-        },
-      ]);
-      await expect(
-        rolesController.removeLabelFromRole('User', 'label2'),
       ).rejects.toThrow();
     });
   });

@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Role } from './role.entity';
-import { RoleLabel } from '../role-label/role-label.entity';
 import { Label } from '../labels/label.entity';
 
 @Injectable()
@@ -13,8 +16,6 @@ export class RolesService {
     private rolesRepository: Repository<Role>,
     @InjectRepository(Label)
     private labelsRepository: Repository<Label>,
-    @InjectRepository(RoleLabel)
-    private roleLabelRepository: Repository<RoleLabel>,
   ) {}
 
   async findAll(): Promise<Role[]> {
@@ -22,12 +23,8 @@ export class RolesService {
   }
 
   async findAllWithLabels(): Promise<Role[]> {
-    const allRoles = await this.rolesRepository.find();
-    const allRoleLabels = await this.roleLabelRepository.find();
-    allRoles.forEach((role) => {
-      role['labels'] = allRoleLabels
-        .filter((roleLabel) => roleLabel.Role.Name === role.Name)
-        .map((roleLabel) => roleLabel.Label.Name);
+    const allRoles = await this.rolesRepository.find({
+      relations: ['Labels'],
     });
     return allRoles;
   }
@@ -53,40 +50,36 @@ export class RolesService {
   }
 
   async addRoleLabel(roleName: string, labelName: string): Promise<void> {
-    const roleLabel = new RoleLabel();
-    const role = await this.rolesRepository.findOneBy({ Name: roleName });
-    const label = await this.labelsRepository.findOneBy({
-      Name: labelName,
+    const role = await this.rolesRepository.findOneOrFail({
+      where: { Name: roleName },
+      relations: ['Labels'],
     });
+    const label = await this.labelsRepository.findOneOrFail({
+      where: { Name: labelName },
+    });
+    if (role.Labels.find((label) => label.Name == labelName))
+      throw new ConflictException('Label already exists for role');
 
-    roleLabel.Role = role;
-    roleLabel.Label = label;
-    await this.roleLabelRepository.save(roleLabel);
+    role.Labels.push(label);
+    await this.rolesRepository.save(role);
   }
 
-  async getAllRoleLabels(): Promise<RoleLabel[]> {
-    return await this.roleLabelRepository.find();
-  }
-
-  async getRoleLabels(roleName: string): Promise<RoleLabel[]> {
-    const allLabels = await this.roleLabelRepository.find({
-      where: {
-        Role: {
-          Name: roleName,
-        },
-      },
+  async getRoleLabels(roleName: string): Promise<Label[]> {
+    const role = await this.rolesRepository.findOneOrFail({
+      where: { Name: roleName },
+      relations: ['Labels'],
     });
-    return allLabels;
+    return role.Labels;
   }
 
   async removeRoleLabel(roleName: string, labelName: string): Promise<void> {
-    const role = await this.rolesRepository.findOneBy({ Name: roleName });
-    const label = await this.labelsRepository.findOneBy({ Name: labelName });
-
-    await this.roleLabelRepository.delete({
-      Role: role,
-      Label: label,
+    const role = await this.rolesRepository.findOneOrFail({
+      where: { Name: roleName },
+      relations: ['Labels'],
     });
+
+    role.Labels = role.Labels.filter((label) => label.Name != labelName);
+    await this.rolesRepository.save(role);
   }
 
   /* istanbul ignore next */
@@ -103,6 +96,7 @@ export class RolesService {
       Modify: true,
       CdBurner: true,
       AutoRouting: true,
+      Labels: [],
     });
 
     const user = this.rolesRepository.create({
@@ -117,6 +111,7 @@ export class RolesService {
       Modify: true,
       CdBurner: true,
       AutoRouting: true,
+      Labels: [],
     });
 
     await this.rolesRepository.insert([admin, user]);

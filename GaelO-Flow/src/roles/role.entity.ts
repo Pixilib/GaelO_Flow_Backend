@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Entity, Column, PrimaryColumn } from 'typeorm';
+import { Label } from '../labels/label.entity';
+import { Entity, Column, PrimaryColumn, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
 export class Role {
@@ -46,4 +47,9 @@ export class Role {
   @ApiProperty({ example: true })
   @Column({ default: false, name: 'auto_routing' })
   AutoRouting: boolean;
+
+  @ApiProperty({ example: [], required: false, default: [] })
+  @ManyToMany(() => Label, (label) => label.Name)
+  @JoinTable({ name: 'role_label' })
+  Labels?: Label[];
 }
