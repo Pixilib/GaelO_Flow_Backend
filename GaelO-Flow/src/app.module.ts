@@ -55,9 +55,9 @@ import { QueuesQueryService } from './queues/query/queue-query.service';
 import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
-// ROLE LABEL ROUTE
-import { RoleLabel } from './role-label/role-label.entity';
-import { RoleLabelModule } from './role-label/role-label.module';
+// // ROLE LABEL ROUTE
+// import { RoleLabel } from './role-label/role-label.entity';
+// import { RoleLabelModule } from './role-label/role-label.module';
 
 import { SeedService } from './seeder.service';
 import { MailService } from './mail/mail.service';
@@ -105,23 +105,15 @@ import { NotFoundInterceptor } from './interceptors/not-found.interceptor';
         username: configService.get<string>('TYPEORM_USERNAME', 'postgres'),
         password: configService.get<string>('TYPEORM_PASSWORD', 'postgres'),
         database: configService.get<string>('TYPEORM_DATABASE', 'gaelo-flow'),
-        entities: [User, Role, Option, Label, RoleLabel, OauthConfig],
+        entities: [User, Role, Option, Label, OauthConfig],
         synchronize: true,
         autoLoadEntities: true,
       }),
     }),
-    TypeOrmModule.forFeature([
-      User,
-      Role,
-      Option,
-      Label,
-      RoleLabel,
-      OauthConfig,
-    ]),
+    TypeOrmModule.forFeature([User, Role, Option, Label, OauthConfig]),
     AuthModule,
     TasksModule,
     MailModule,
-    RoleLabelModule,
     OauthConfigModule,
     HttpModule,
   ],

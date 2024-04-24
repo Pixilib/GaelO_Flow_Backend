@@ -21,13 +21,15 @@ import { LabelsService } from '../labels/labels.service';
 import { RolesService } from './roles.service';
 
 import { Role } from './role.entity';
-import { RoleDto, WithLabels } from './roles.dto';
 
 import { NotFoundInterceptor } from '../interceptors/not-found.interceptor';
 
 import { AdminGuard } from '../guards/roles.guard';
 import { OrGuard } from '../guards/or.guard';
 import { CheckUserRoleGuard } from '../guards/check-user-role.guard';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { GetRoleDto } from './dto/get-role.dto';
+import { WithLabels } from './dto/with-labels.dto';
 
 @ApiTags('roles')
 @Controller('/roles')
@@ -39,22 +41,18 @@ export class RolesController {
   ) {}
 
   @ApiBearerAuth('access-token')
-  @ApiResponse({ status: 200, description: 'Get all roles', type: [Role] })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all roles',
+    type: [GetRoleDto],
+  })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
   @Get()
-  async findAll(@Query() withLabels: WithLabels): Promise<Role[]> {
-    const allRoles = await this.roleService.findAll();
-    if (withLabels.WithLabels) {
-      const allRoleLabels = await this.roleService.getAllRoleLabels();
-      allRoles.forEach((role) => {
-        role['labels'] = allRoleLabels
-          .filter((roleLabel) => roleLabel.Role.Name === role.Name)
-          .map((roleLabel) => roleLabel.Label.Name);
-      });
-    }
-
-    return allRoles;
+  async findAll(@Query() withLabels: WithLabels): Promise<GetRoleDto[]> {
+    if (withLabels.WithLabels)
+      return await this.roleService.findAllWithLabels();
+    return await this.roleService.findAll();
   }
 
   @ApiBearerAuth('access-token')
@@ -71,18 +69,16 @@ export class RolesController {
   @ApiResponse({ status: 201, description: 'Create role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)
-  @ApiBody({ type: RoleDto })
+  @ApiBody({ type: CreateRoleDto })
   @Post()
-  async createRole(@Body() roleDto: RoleDto): Promise<void> {
-    const role = new Role();
-
-    if (roleDto.Name == undefined)
+  async createRole(@Body() createRoleDto: CreateRoleDto): Promise<void> {
+    if (createRoleDto.Name == undefined)
       throw new BadRequestException("Missing Primary Key 'name'");
 
-    if (await this.roleService.isRoleExist(roleDto.Name))
+    if (await this.roleService.isRoleExist(createRoleDto.Name))
       throw new ConflictException('Role with this name already exists');
 
-    await this.roleService.create(roleDto);
+    await this.roleService.create(createRoleDto);
   }
 
   @ApiBearerAuth('access-token')
@@ -106,12 +102,12 @@ export class RolesController {
   @Put('/:name')
   async update(
     @Param('name') name: string,
-    @Body() roleDto: RoleDto,
+    @Body() createRoleDto: CreateRoleDto,
   ): Promise<void> {
     if ((await this.roleService.isRoleExist(name)) == false)
       throw new NotFoundException('Role not found');
 
-    await this.roleService.update(name, roleDto);
+    await this.roleService.update(name, createRoleDto);
   }
 
   @ApiBearerAuth('access-token')
@@ -130,12 +126,9 @@ export class RolesController {
     @Param('roleName') roleName: string,
     @Body() labelDto: { label: string },
   ): Promise<void> {
-    await this.roleService.findOneByOrFail(roleName);
-    const label = await this.labelService.findOneByOrFail(labelDto.label);
-
-    const roleLabel = await this.roleService.getRoleLabels(roleName);
-    if (roleLabel.find((roleLabel) => roleLabel.Label.Name === label.Name))
-      throw new ConflictException('Label already exists for this role');
+    const role = await this.roleService.findOneByOrFail(roleName);
+    if ((await this.labelService.isLabelExist(labelDto.label)) == false)
+      throw new NotFoundException('Label not found');
 
     await this.roleService.addRoleLabel(roleName, labelDto.label);
   }
@@ -151,9 +144,9 @@ export class RolesController {
   )
   @Get('/:roleName/labels')
   async getRoleLabels(@Param('roleName') roleName: string): Promise<string[]> {
-    const allRoleLabels = await this.roleService.getRoleLabels(roleName);
-    const labels = allRoleLabels.map((roleLabel) => roleLabel.Label.Name);
-    return labels;
+    return (await this.roleService.getRoleLabels(roleName)).map(
+      (label) => label.Name,
+    );
   }
 
   @ApiBearerAuth('access-token')
@@ -169,18 +162,15 @@ export class RolesController {
       new CheckUserRoleGuard(['params', 'roleName']),
     ]),
   )
+  @UseInterceptors(NotFoundInterceptor)
   @Delete('/:roleName/label/:label')
   async removeLabelFromRole(
     @Param('roleName') roleName: string,
     @Param('label') label: string,
   ): Promise<void> {
     await this.roleService.findOneByOrFail(roleName);
-    const labels = (await this.roleService.getRoleLabels(roleName)).map(
-      (roleLabel) => roleLabel.Label.Name,
-    );
-    if (!labels.includes(label))
-      throw new BadRequestException('Label does not exist for this role');
+    await this.labelService.findOneByOrFail(label);
 
-    await this.roleService.removeRoleLabel(roleName, label);
+    this.roleService.removeRoleLabel(roleName, label);
   }
 }
