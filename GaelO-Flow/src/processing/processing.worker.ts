@@ -6,20 +6,23 @@ import OrthancClient from '../utils/orthanc-client';
 import ProcessingClient from '../utils/processing.client';
 import { TmtvService } from './tmtv.service';
 import { ProcessingJobType, ProcessingMask } from '../constants/enums';
+import { ProcessingJobDto, TmtvJobDto } from './processing-job.dto';
 
 async function tmtvJob(
   job: Job,
   orthancClient: OrthancClient,
   processingClient: ProcessingClient,
 ) {
+  const jobData: TmtvJobDto = job.data.TmtvJob;
+
   const tmtvService = new TmtvService(orthancClient, processingClient);
-  const ctOrthancSeriesId: string = job.data.ctOrthancSeriesId;
-  const ptOrthancSeriesId: string = job.data.ptOrthancSeriesId;
-  const sendMaskToOrthancAs: ProcessingMask = job.data.sendMaskToOrthancAs;
+  const ctOrthancSeriesId: string = jobData.CtOrthancSeriesId;
+  const ptOrthancSeriesId: string = jobData.PtOrthancSeriesId;
+  const sendMaskToOrthancAs: ProcessingMask[] = jobData.SendMaskToOrthancAs;
   const withFragmentedMask: boolean =
-    job.data.withFragmentedMask == undefined
+    jobData.WithFragmentedMask == undefined
       ? false
-      : job.data.withFragmentedMask;
+      : jobData.WithFragmentedMask;
 
   tmtvService.setCtOrthancSeriesId(ctOrthancSeriesId);
   tmtvService.setPtOrthancSeriesId(ptOrthancSeriesId);
@@ -35,13 +38,10 @@ async function tmtvJob(
   await tmtvService.runInference(withFragmentedMask);
   job.updateProgress(60);
 
-  if (sendMaskToOrthancAs == ProcessingMask.SEG) {
+  if (sendMaskToOrthancAs.includes(ProcessingMask.SEG))
     await tmtvService.sendMaskAsSegToOrthanc();
-  } else if (sendMaskToOrthancAs == ProcessingMask.RTSS) {
+  if (sendMaskToOrthancAs.includes(ProcessingMask.RTSS))
     await tmtvService.sendMaskAsRtssToOrthanc();
-  } else {
-    throw new Error('Invalid mask type');
-  }
   job.updateProgress(80);
 
   await tmtvService.deleteAllRessources();
@@ -77,6 +77,10 @@ async function setupProcessingWorker(
 
   processingWorker.on('failed', (job, err) => {
     console.error(`Processing Job ${job.id} failed with error ${err.message}`);
+  });
+
+  processingWorker.on('progress', (job, progress) => {
+    console.log(`Processing Job ${job.id} is at ${progress}%`);
   });
 }
 

@@ -82,6 +82,11 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { NotFoundInterceptor } from './interceptors/not-found.interceptor';
 
+import { Autorouting } from './autorouting/autorouting.entity';
+import { AutoroutingsController } from './autorouting/autoroutings.controller';
+import { AutoroutingsService } from './autorouting/autoroutings.service';
+import { AutoroutingsModule } from './autorouting/autoroutings.module';
+
 @Module({
   imports: [
     EventEmitterModule.forRoot({
@@ -105,17 +110,25 @@ import { NotFoundInterceptor } from './interceptors/not-found.interceptor';
         username: configService.get<string>('TYPEORM_USERNAME', 'postgres'),
         password: configService.get<string>('TYPEORM_PASSWORD', 'postgres'),
         database: configService.get<string>('TYPEORM_DATABASE', 'gaelo-flow'),
-        entities: [User, Role, Option, Label, OauthConfig],
+        entities: [User, Role, Option, Label, OauthConfig, Autorouting],
         synchronize: true,
         autoLoadEntities: true,
       }),
     }),
-    TypeOrmModule.forFeature([User, Role, Option, Label, OauthConfig]),
+    TypeOrmModule.forFeature([
+      User,
+      Role,
+      Option,
+      Label,
+      OauthConfig,
+      Autorouting,
+    ]),
     AuthModule,
     TasksModule,
     MailModule,
     OauthConfigModule,
     HttpModule,
+    AutoroutingsModule,
   ],
   controllers: [
     AppController,
@@ -135,6 +148,7 @@ import { NotFoundInterceptor } from './interceptors/not-found.interceptor';
     QueuesQueryController,
     OauthConfigController,
     ProcessingController,
+    AutoroutingsController,
   ],
   providers: [
     SeedService,
@@ -151,6 +165,7 @@ import { NotFoundInterceptor } from './interceptors/not-found.interceptor';
     ProcessingClient,
     TmtvService,
     ProcessingQueueService,
+    AutoroutingsService,
     {
       provide: APP_INTERCEPTOR,
       useClass: NotFoundInterceptor,

@@ -13,7 +13,7 @@ export class OrthancMonitoringTask {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
+  @Cron(CronExpression.EVERY_5_SECONDS)
   async orthancMonitoringCron() {
     if (this.lastChanges === null) {
       this.lastChanges = (await this.orthancClient.getLastChanges()).data.Last;
