@@ -330,7 +330,7 @@ describe('RolesController', () => {
       jest.spyOn(labelsService, 'isLabelExist').mockResolvedValue(true);
       const mockCreate = jest.spyOn(rolesService, 'addRoleLabel');
       const result = await rolesController.addLabelToRole('User', {
-        label: 'label1',
+        Name: 'label1',
       });
 
       expect(result).toBeUndefined();
@@ -342,7 +342,7 @@ describe('RolesController', () => {
         throw new NotFoundException('Role not found');
       });
       await expect(
-        rolesController.addLabelToRole('NonExistant', { label: 'label1' }),
+        rolesController.addLabelToRole('NonExistant', { Name: 'label1' }),
       ).rejects.toThrow();
     });
 
@@ -352,7 +352,7 @@ describe('RolesController', () => {
         .mockResolvedValue({ ...roleList[0], Labels: [] });
       jest.spyOn(labelsService, 'isLabelExist').mockResolvedValue(false);
       await expect(
-        rolesController.addLabelToRole('User', { label: 'NonExistant' }),
+        rolesController.addLabelToRole('User', { Name: 'NonExistant' }),
       ).rejects.toThrow();
     });
   });

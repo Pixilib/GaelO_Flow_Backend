@@ -30,6 +30,7 @@ import { CheckUserRoleGuard } from '../guards/check-user-role.guard';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { GetRoleDto } from './dto/get-role.dto';
 import { WithLabels } from './dto/with-labels.dto';
+import { LabelDto } from '../labels/labels.dto';
 
 @ApiTags('roles')
 @Controller('/roles')
@@ -124,13 +125,13 @@ export class RolesController {
   @Post('/:roleName/label')
   async addLabelToRole(
     @Param('roleName') roleName: string,
-    @Body() labelDto: { label: string },
+    @Body() labelDto: LabelDto,
   ): Promise<void> {
     const role = await this.roleService.findOneByOrFail(roleName);
-    if ((await this.labelService.isLabelExist(labelDto.label)) == false)
+    if ((await this.labelService.isLabelExist(labelDto.Name)) == false)
       throw new NotFoundException('Label not found');
 
-    await this.roleService.addRoleLabel(roleName, labelDto.label);
+    await this.roleService.addRoleLabel(roleName, labelDto.Name);
   }
 
   @ApiBearerAuth('access-token')
@@ -171,6 +172,6 @@ export class RolesController {
     await this.roleService.findOneByOrFail(roleName);
     await this.labelService.findOneByOrFail(label);
 
-    this.roleService.removeRoleLabel(roleName, label);
+    await this.roleService.removeRoleLabel(roleName, label);
   }
 }
