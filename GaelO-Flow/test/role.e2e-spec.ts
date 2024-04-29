@@ -7,7 +7,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 
 import { Label } from '../src/labels/label.entity';
-import { loginAsAdmin, loginAsUser } from '../src/utils/login';
+import { loginAsAdmin, loginAsUser } from './login';
 
 describe('RolesController (e2e)', () => {
   let labelRepository: Repository<Label>;
