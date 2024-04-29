@@ -3,7 +3,6 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 
 import { OptionsService } from './options.service';
-import { Option } from './option.entity';
 import { UpdateOptionDto } from './dto/update-option.dto';
 
 import { AdminGuard } from '../guards/roles.guard';

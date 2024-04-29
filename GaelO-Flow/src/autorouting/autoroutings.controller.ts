@@ -5,7 +5,6 @@ import {
   Body,
   Post,
   Delete,
-  UseInterceptors,
   Param,
   UsePipes,
   ValidationPipe,

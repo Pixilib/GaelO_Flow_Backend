@@ -6,7 +6,7 @@ import OrthancClient from '../utils/orthanc-client';
 import ProcessingClient from '../utils/processing.client';
 import { TmtvService } from './tmtv.service';
 import { ProcessingJobType, ProcessingMask } from '../constants/enums';
-import { ProcessingJobDto, TmtvJobDto } from './processing-job.dto';
+import { TmtvJobDto } from './processing-job.dto';
 
 async function tmtvJob(
   job: Job,

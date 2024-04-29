@@ -151,7 +151,7 @@ export class AutoroutingHandler {
           .then((res) => {
             return res.data;
           })
-          .catch((e) => {
+          .catch(() => {
             return [];
           });
 
@@ -186,9 +186,7 @@ export class AutoroutingHandler {
           },
         });
 
-        console.log('ctSeriesID:', ctSeriesID);
-        console.log('ptSeriesID:', ptSeriesID);
-        console.log('jobId:', jobId);
+        console.log('TMTV jobId:', jobId);
 
         break;
       case DestinationType.PEER:
