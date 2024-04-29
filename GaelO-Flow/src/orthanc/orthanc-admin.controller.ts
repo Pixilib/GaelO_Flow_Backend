@@ -154,7 +154,7 @@ export class OrthancAdminController {
   }
 
   @ApiBearerAuth('access-token')
-  @Put('/peer/*/')
+  @Put('/peers/*/')
   @UseGuards(AdminGuard)
   editPeer(
     @Request() request: RequestType,
