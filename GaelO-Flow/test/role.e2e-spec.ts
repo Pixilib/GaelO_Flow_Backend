@@ -4,10 +4,10 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as request from 'supertest';
 
-import { AppModule } from '../app.module';
+import { AppModule } from '../src/app.module';
 
-import { Label } from '../labels/label.entity';
-import { loginAsAdmin, loginAsUser } from '../utils/login';
+import { Label } from '../src/labels/label.entity';
+import { loginAsAdmin, loginAsUser } from '../src/utils/login';
 
 describe('RolesController (e2e)', () => {
   let labelRepository: Repository<Label>;

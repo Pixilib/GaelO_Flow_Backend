@@ -15,7 +15,7 @@ export class CheckUserIdGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const value = this.getNestedProperty(request, this.valuePath);
-    const userId = request.user.UserId;
+    const userId = request.user.userId;
 
     return value == userId && value != undefined;
   }
