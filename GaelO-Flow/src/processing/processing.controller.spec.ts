@@ -213,7 +213,7 @@ describe('ProcessingController', () => {
         TmtvJob: {
           CtOrthancSeriesId: 'CtOrthancSeriesId',
           PtOrthancSeriesId: 'PtOrthancSeriesId',
-          SendMaskToOrthancAs: ProcessingMask.SEG,
+          SendMaskToOrthancAs: [ProcessingMask.SEG],
           WithFragmentedMask: false,
         },
       };

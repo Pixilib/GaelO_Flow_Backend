@@ -22,11 +22,11 @@ export class CreateUserDto {
   @IsBoolean()
   SuperAdmin: boolean;
 
-  @ApiProperty({ example: 'admin', required: true })
+  @ApiProperty({ example: 'Admin', required: true })
   @IsString()
   RoleName: string;
 
-  @ApiProperty({ example: 'myPassw0rd' })
+  @ApiProperty({ example: 'myPassw0rd1234!' })
   @IsString()
   @Matches(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{12,}$/, {
     message: 'Password too weak',

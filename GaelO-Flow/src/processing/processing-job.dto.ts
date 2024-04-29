@@ -13,7 +13,7 @@ export class TmtvJobDto {
 
   @ApiProperty({ required: true })
   @IsEnum(ProcessingMask)
-  SendMaskToOrthancAs: ProcessingMask;
+  SendMaskToOrthancAs: ProcessingMask[];
 
   @ApiProperty({ required: false, default: false })
   @IsBoolean()

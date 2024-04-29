@@ -427,6 +427,18 @@ export default class OrthancClient extends HttpClient {
     return this.request('/modalities/' + aet + '/store', 'POST', payload);
   };
 
+  sendToPeer = (peer: string, orthancIds: Array<string>) => {
+    const payload = {
+      Asynchronous: true,
+      // Compress: true,
+      // Permissive: true,
+      // Priority: 0,
+      Ressources: orthancIds,
+      // Synchronous: true,
+    };
+    return this.request('/peers/' + peer + '/store', 'POST', payload);
+  };
+
   queryStudiesInAet = async (
     patientName: string = '',
     patientID: string = '',

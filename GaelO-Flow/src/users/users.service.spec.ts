@@ -215,7 +215,6 @@ describe('UsersService', () => {
     it('should update the user password', async () => {
       const id = 1;
       const newPassword = 'new_password';
-      const salt = 'salt';
       const hashedPassword = 'hashed_password';
       const findUser = {
         ...firstUser,
