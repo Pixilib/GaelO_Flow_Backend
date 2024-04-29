@@ -14,7 +14,7 @@ import {
 import OrthancClient from '../utils/orthanc-client';
 import * as moment from 'moment';
 import { ProcessingQueueService } from '../processing/processing-queue.service';
-import { ProcessingJobType, ProcessingMask } from 'src/constants/enums';
+import { ProcessingJobType, ProcessingMask } from '../constants/enums';
 
 @Injectable()
 export class AutoroutingHandler {
