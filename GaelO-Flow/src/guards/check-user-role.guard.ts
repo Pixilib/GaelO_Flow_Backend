@@ -15,7 +15,7 @@ export class CheckUserRoleGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const request = context.switchToHttp().getRequest();
     const value = this.getNestedProperty(request, this.valuePath);
-    const userRole = request.user.role.name;
+    const userRole = request.user.role.Name;
 
     return value == userRole && value != undefined;
   }
