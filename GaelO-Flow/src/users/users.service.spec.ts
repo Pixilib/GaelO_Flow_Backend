@@ -174,6 +174,7 @@ describe('UsersService', () => {
           Modify: false,
           Name: 'User',
           Query: false,
+          ReadAll: false,
         } as Role,
         Token: null,
         TokenExpiration: null,

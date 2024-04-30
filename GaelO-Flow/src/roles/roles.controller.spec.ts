@@ -72,6 +72,7 @@ describe('RolesController', () => {
         Modify: true,
         CdBurner: true,
         AutoRouting: true,
+        ReadAll: true,
       },
       {
         Name: 'Admin',
@@ -85,6 +86,7 @@ describe('RolesController', () => {
         Modify: true,
         CdBurner: true,
         AutoRouting: true,
+        ReadAll: true,
       },
     ];
 
@@ -173,6 +175,7 @@ describe('RolesController', () => {
         Modify: true,
         CdBurner: true,
         AutoRouting: true,
+        ReadAll: true,
       });
 
       expect(result).toBeUndefined();
@@ -194,6 +197,7 @@ describe('RolesController', () => {
           Modify: true,
           CdBurner: true,
           AutoRouting: true,
+          ReadAll: true,
         }),
       ).rejects.toThrow();
     });
@@ -257,6 +261,7 @@ describe('RolesController', () => {
         Modify: true,
         CdBurner: true,
         AutoRouting: true,
+        ReadAll: true,
       });
 
       expect(result).toBeUndefined();
@@ -279,6 +284,7 @@ describe('RolesController', () => {
           Modify: true,
           CdBurner: true,
           AutoRouting: true,
+          ReadAll: true,
         }),
       ).rejects.toThrow();
       expect(mockCreate).not.toHaveBeenCalled();
@@ -300,6 +306,7 @@ describe('RolesController', () => {
           Modify: true,
           CdBurner: true,
           AutoRouting: true,
+          ReadAll: true,
         }),
       ).rejects.toThrow();
       expect(mockCreate).not.toHaveBeenCalled();

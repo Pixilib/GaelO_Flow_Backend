@@ -40,6 +40,7 @@ describe('RolesService', () => {
       Modify: true,
       CdBurner: true,
       AutoRouting: true,
+      ReadAll: true,
     };
 
     await labelService.create({ Name: 'Label' });
@@ -101,6 +102,7 @@ describe('RolesService', () => {
         Modify: true,
         CdBurner: true,
         AutoRouting: true,
+        ReadAll: true,
       };
       const createResult = await rolesService.create(createRole);
       const findOneResult = await rolesService.findOneByOrFail('Admin');
