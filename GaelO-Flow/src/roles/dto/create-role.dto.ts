@@ -45,4 +45,8 @@ export class CreateRoleDto {
   @ApiProperty({ example: true, required: true })
   @IsBoolean()
   AutoRouting: boolean;
+
+  @ApiProperty({ example: true, required: true })
+  @IsBoolean()
+  ReadAll: boolean;
 }

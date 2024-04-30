@@ -92,6 +92,7 @@ export class RolesService {
       Modify: true,
       CdBurner: true,
       AutoRouting: true,
+      ReadAll: true,
       Labels: [],
     });
 
@@ -107,6 +108,7 @@ export class RolesService {
       Modify: true,
       CdBurner: true,
       AutoRouting: true,
+      ReadAll: true,
       Labels: [],
     });
 

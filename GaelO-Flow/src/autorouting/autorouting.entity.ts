@@ -1,12 +1,10 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsArray,
   IsBoolean,
   IsEnum,
-  IsInstance,
-  IsObject,
   IsString,
+  Validate,
   ValidateNested,
 } from 'class-validator';
 import {
@@ -18,6 +16,7 @@ import {
   ValueRepresentation,
 } from './autorouting.enum';
 import { Type } from 'class-transformer';
+import { IsNumberOrString } from '../validators/string-or-number';
 
 export class Rule {
   @ApiProperty({ example: DicomTag.PATIENT_NAME })
@@ -32,8 +31,7 @@ export class Rule {
 
   @ApiProperty()
   @Column({ name: 'value' })
-  // TODO: VALIDATOR ?
-  @IsString()
+  @Validate(IsNumberOrString)
   Value: string | number;
 
   @ApiProperty({ example: Condition.EQUALS })

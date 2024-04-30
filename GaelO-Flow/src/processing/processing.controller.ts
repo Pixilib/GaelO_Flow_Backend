@@ -20,7 +20,7 @@ import {
 } from '@nestjs/swagger';
 import { Job } from 'bullmq';
 
-import { AdminGuard } from '../guards/roles.guard';
+import { AdminGuard, ReadAllGuard } from '../guards/roles.guard';
 import { ProcessingQueueService } from './processing-queue.service';
 import { ProcessingJobDto } from './processing-job.dto';
 import { OrGuard } from '../guards/or.guard';
@@ -110,6 +110,7 @@ export class ProcessingController {
     type: Object,
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @UseGuards(ReadAllGuard)
   @Post()
   async addJob(
     @Req() request: Request,
