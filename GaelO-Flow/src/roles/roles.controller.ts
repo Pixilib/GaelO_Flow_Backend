@@ -127,7 +127,7 @@ export class RolesController {
     @Param('roleName') roleName: string,
     @Body() labelDto: LabelDto,
   ): Promise<void> {
-    const role = await this.roleService.findOneByOrFail(roleName);
+    await this.roleService.findOneByOrFail(roleName);
     if ((await this.labelService.isLabelExist(labelDto.Name)) == false)
       throw new NotFoundException('Label not found');
 
