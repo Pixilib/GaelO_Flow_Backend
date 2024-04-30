@@ -205,6 +205,17 @@ describe('ProcessingController', () => {
   });
 
   describe('addJob', () => {
+    it('Check that flushQueue is ReadAllGuarded', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        ProcessingController.prototype.addJob,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('ReadAllGuard');
+    });
+
     it('should call processingQueueService addJob', async () => {
       // MOCK
       const request = { user: { userId: 1 } };

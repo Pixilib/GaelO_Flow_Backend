@@ -99,3 +99,13 @@ export class AutoRoutingGuard implements CanActivate {
     return user && user.role.AutoRouting;
   }
 }
+
+@Injectable()
+export class ReadAllGuard implements CanActivate {
+  canActivate(context: ExecutionContext): boolean {
+    const request = context.switchToHttp().getRequest();
+    const user = request.user;
+
+    return user && user.role.ReadAll;
+  }
+}

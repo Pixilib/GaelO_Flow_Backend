@@ -48,6 +48,10 @@ export class Role {
   @Column({ default: false, name: 'auto_routing' })
   AutoRouting: boolean;
 
+  @ApiProperty({ example: true })
+  @Column({ default: false, name: 'read_all' })
+  ReadAll: boolean;
+
   @ApiProperty({ example: [], required: false, default: [] })
   @ManyToMany(() => Label, (label) => label.Name)
   @JoinTable({ name: 'role_label' })
