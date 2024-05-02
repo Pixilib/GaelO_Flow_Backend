@@ -53,28 +53,26 @@ describe('UsersService', () => {
 
     hash = 'first';
     firstUser = {
-      Username: 'first_username',
       Firstname: 'first_firstname',
       Lastname: 'first_lastname',
       Email: 'first@example.com',
       Password: hash,
-      SuperAdmin: false,
       RoleName: userRole.Name,
       Token: null,
       TokenExpiration: null,
+      Role: userRole,
     };
 
     hash = 'second';
     secondUser = {
-      Username: 'second_username',
       Firstname: 'second_firstname',
       Lastname: 'second_lastname',
       Email: 'second@example.com',
       Password: hash,
-      SuperAdmin: false,
       RoleName: userRole.Name,
       Token: null,
       TokenExpiration: null,
+      Role: userRole,
     };
 
     await rolesService.create(userRole);
@@ -143,12 +141,10 @@ describe('UsersService', () => {
   describe('create', () => {
     it('should create a user', async () => {
       const createUser = {
-        Username: 'create_testuser',
         Firstname: 'create_testfirstname',
         Lastname: 'create_testlastname',
         Email: 'create_testuser@example.com',
         Password: 'create_<PASSWORD>',
-        SuperAdmin: false,
         RoleName: 'User',
         Token: null,
         TokenExpiration: null,
@@ -179,8 +175,6 @@ describe('UsersService', () => {
         Token: null,
         TokenExpiration: null,
         RoleName: 'User',
-        SuperAdmin: false,
-        Username: 'create_testuser',
       });
     });
   });
@@ -194,20 +188,14 @@ describe('UsersService', () => {
     });
   });
 
-  describe('findByUsernameOrEmail', () => {
+  describe('findOneByEmail', () => {
     it('should return a user', async () => {
-      const result = await usersService.findByUsernameOrEmail(
-        'first_username',
-        'first@example.com',
-      );
+      const result = await usersService.findOneByEmail('first@example.com');
       expect(result).toEqual(firstUser);
     });
 
     it('should return null if user not found', async () => {
-      const result = await usersService.findByUsernameOrEmail(
-        'no_username',
-        'no@example.com',
-      );
+      const result = await usersService.findOneByEmail('no@example.com');
       expect(result).toBeNull();
     });
   });

@@ -7,28 +7,23 @@ import { BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Test, TestingModule } from '@nestjs/testing';
 
-//constants for testing
 const VALID_TOKEN = 'valid_token';
 const INVALID_TOKEN = 'invalid_token';
 const USER_ID = 1;
-const USERNAME = 'username';
-//mock a user with these function
+
 function createMockUser(): User {
   const user = new User();
   user.Id = USER_ID;
-  user.Username = USERNAME;
   user.Password = 'password';
   user.Role = new Role();
   user.Role.Name = 'User';
   user.Firstname = 'John';
   user.Lastname = 'Doe';
   user.Email = 'john.doe@example.com';
-  user.SuperAdmin = false;
   user.RoleName = 'User';
   return user;
 }
 
-//utils to mock functions in password.ts
 jest.mock('../utils/passwords', () => ({
   generateToken: jest
     .fn()
@@ -51,7 +46,7 @@ describe('AuthService', () => {
       .overrideProvider(UsersService)
       .useValue({
         findOne: jest.fn(),
-        findOneByUsername: jest.fn(),
+        findOneByEmail: jest.fn(),
         update: jest.fn(),
       })
       .compile();
@@ -78,7 +73,7 @@ describe('AuthService', () => {
       expect(jwtService.signAsync).toHaveBeenCalledWith({
         userId: user.Id,
         sub: user.Id,
-        username: user.Username,
+        email: user.Email,
         role: { Name: user.Role.Name },
       });
     });
@@ -122,24 +117,24 @@ describe('AuthService', () => {
     it('should return the user when the credentials are valid', async () => {
       const user = new User();
       user.Id = 1;
-      user.Username = 'username';
+      user.Email = 'email';
       user.Password = 'password';
       user.Role = new Role();
       user.Role.Name = 'User';
 
-      jest.spyOn(usersService, 'findOneByUsername').mockResolvedValue(user);
+      jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(user);
       jest
-        .spyOn(UsersService.prototype, 'findOneByUsername')
+        .spyOn(UsersService.prototype, 'findOneByEmail')
         .mockResolvedValue(user);
       (passwordUtils.comparePasswords as jest.Mock).mockResolvedValue(
         true as never,
       );
 
-      const result = await authService.validateUser('username', 'password');
+      const result = await authService.validateUser('email', 'password');
 
-      expect(result).toStrictEqual({
+      expect(result).toEqual({
         Id: user.Id,
-        Username: user.Username,
+        Email: user.Email,
         Role: user.Role,
       });
     });
@@ -149,20 +144,20 @@ describe('AuthService', () => {
       user.Password = 'password';
 
       jest
-        .spyOn(UsersService.prototype, 'findOneByUsername')
+        .spyOn(UsersService.prototype, 'findOneByEmail')
         .mockResolvedValue(user);
       (passwordUtils.comparePasswords as jest.Mock).mockResolvedValue(
         false as never,
       );
 
-      const result = await authService.validateUser('username', 'invalid');
+      const result = await authService.validateUser('email', 'invalid');
 
       expect(result).toBeNull();
     });
 
     it('should return null when the user is invalid', async () => {
       jest
-        .spyOn(UsersService.prototype, 'findOneByUsername')
+        .spyOn(UsersService.prototype, 'findOneByEmail')
         .mockResolvedValue(undefined);
 
       const result = await authService.validateUser('invalid', 'password');

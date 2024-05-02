@@ -28,13 +28,6 @@ export class User {
   })
   Lastname: string;
 
-  @ApiProperty({ example: 'johndoe' })
-  @Column({
-    unique: true,
-    name: 'username',
-  })
-  Username: string;
-
   @Column({
     nullable: true,
     name: 'password',
@@ -48,13 +41,6 @@ export class User {
     name: 'email',
   })
   Email: string;
-
-  @ApiProperty({ example: true })
-  @Column({
-    default: false,
-    name: 'super_admin',
-  })
-  SuperAdmin: boolean;
 
   @ApiProperty({ example: 'admin' })
   @Column({
