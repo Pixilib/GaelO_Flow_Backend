@@ -10,17 +10,9 @@ export class CreateUserDto {
   @IsString()
   Lastname: string;
 
-  @ApiProperty({ example: 'johndoe', required: true })
-  @IsString()
-  Username: string;
-
   @ApiProperty({ example: 'john.doe@gmail.com', required: true })
   @IsEmail()
   Email: string;
-
-  @ApiProperty({ example: true, required: true })
-  @IsBoolean()
-  SuperAdmin: boolean;
 
   @ApiProperty({ example: 'Admin', required: true })
   @IsString()

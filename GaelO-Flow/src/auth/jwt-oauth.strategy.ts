@@ -68,7 +68,6 @@ export class JwtOauthStrategy extends PassportStrategy(Strategy) {
         }),
       );
       return {
-        username: response.data.preferred_username,
         email: response.data.email,
         firstname: response.data.given_name,
         lastname: response.data.family_name,

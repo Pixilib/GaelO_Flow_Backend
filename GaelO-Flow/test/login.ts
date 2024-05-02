@@ -2,7 +2,7 @@ import * as request from 'supertest';
 
 async function loginAsAdmin(server: any) {
   const response = await request(server).post('/login').send({
-    Username: 'admin',
+    Email: 'admin@gaelo.com',
     Password: 'passwordadmin',
   });
 
@@ -11,7 +11,7 @@ async function loginAsAdmin(server: any) {
 
 async function loginAsUser(server: any) {
   const response = await request(server).post('/login').send({
-    Username: 'user',
+    Email: 'user@gaelo.com',
     Password: 'passworduser',
   });
 

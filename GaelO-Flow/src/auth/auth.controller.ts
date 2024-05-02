@@ -63,8 +63,6 @@ export class AuthController {
         Email: userData.email,
         Firstname: userData.firstname,
         Lastname: userData.lastname,
-        Username: userData.username,
-        SuperAdmin: false,
         RoleName: 'User',
         Password: null,
       });
@@ -85,17 +83,13 @@ export class AuthController {
       false,
     );
     if (userExists) {
-      throw new ConflictException(
-        'A user already exist with this username or email',
-      );
+      throw new ConflictException('A user already exist with this email');
     }
 
     const newUser = await this.usersService.create({
       Email: registerDto.Email,
       Firstname: registerDto.Firstname,
       Lastname: registerDto.Lastname,
-      Username: registerDto.Username,
-      SuperAdmin: false,
       RoleName: 'User',
       Password: null,
     });
