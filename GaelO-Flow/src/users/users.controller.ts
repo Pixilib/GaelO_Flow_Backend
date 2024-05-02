@@ -51,9 +51,7 @@ export class UsersController {
         Id: user.Id,
         Firstname: user.Firstname,
         Lastname: user.Lastname,
-        Username: user.Username,
         Email: user.Email,
-        SuperAdmin: user.SuperAdmin,
         RoleName: user.RoleName,
         Role: user.Role,
       };
@@ -73,9 +71,7 @@ export class UsersController {
       Id: user.Id,
       Firstname: user.Firstname,
       Lastname: user.Lastname,
-      Username: user.Username,
       Email: user.Email,
-      SuperAdmin: user.SuperAdmin,
       RoleName: user.RoleName,
       Role: user.Role,
     };
@@ -96,8 +92,14 @@ export class UsersController {
 
     if (!user) throw new NotFoundException('User not found');
 
-    if (userDto.Firstname) user.Firstname = userDto.Firstname;
-    if (userDto.Lastname) user.Lastname = userDto.Lastname;
+    user.Firstname = userDto.Firstname;
+    user.Lastname = userDto.Lastname;
+    user.Role = await this.roleService.findOneByOrFail(userDto.RoleName);
+
+    const existingUser = await this.userService.findOneByEmail(userDto.Email);
+    if (existingUser && existingUser.Id != id)
+      throw new ConflictException('Email already used');
+    user.Email = userDto.Email;
 
     await this.userService.update(id, user);
   }
@@ -126,17 +128,14 @@ export class UsersController {
   @Post()
   async createUser(@Body() userDto: CreateUserDto): Promise<number> {
     let user = new User();
-    const existingUser = await this.userService.findByUsernameOrEmail(
-      userDto.Username,
-      userDto.Email,
-    );
+    const existingUser = await this.userService.findOneByEmail(userDto.Email);
     const role = await this.roleService.isRoleExist(userDto.RoleName);
 
     if (!role) {
       throw new BadRequestException('Role not found');
     }
     if (existingUser) {
-      throw new ConflictException('Username / Email already used');
+      throw new ConflictException('Email already used');
     }
     user = { ...userDto, Password: await hashPassword(userDto.Password) };
     return (await this.userService.create(user)).Id;

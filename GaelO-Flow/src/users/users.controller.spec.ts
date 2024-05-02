@@ -28,7 +28,7 @@ describe('UsersController', () => {
             update: jest.fn(),
             create: jest.fn(),
             remove: jest.fn(),
-            findByUsernameOrEmail: jest.fn(),
+            findOneByEmail: jest.fn(),
             isExistingUser: jest.fn(),
           },
         },
@@ -36,6 +36,7 @@ describe('UsersController', () => {
           provide: RolesService,
           useValue: {
             isRoleExist: jest.fn(),
+            findOneByOrFail: jest.fn(),
           },
         },
       ],
@@ -45,10 +46,8 @@ describe('UsersController', () => {
       {
         Firstname: 'firstname',
         Lastname: 'lastname',
-        Username: 'username',
         Password: 'password',
         Email: 'email',
-        SuperAdmin: true,
         RoleName: 'roleName',
         Role: new Role(),
       },
@@ -75,9 +74,7 @@ describe('UsersController', () => {
         Id: user.Id,
         Firstname: user.Firstname,
         Lastname: user.Lastname,
-        Username: user.Username,
         Email: user.Email,
-        SuperAdmin: user.SuperAdmin,
         RoleName: user.RoleName,
         Role: user.Role,
       }));
@@ -219,10 +216,8 @@ describe('UsersController', () => {
       const result = await usersController.createUser({
         Firstname: 'firstname',
         Lastname: 'lastname',
-        Username: 'username',
         Password: 'Password123!',
         Email: 'email@email.com',
-        SuperAdmin: true,
         RoleName: 'roleName',
       });
 
@@ -239,10 +234,8 @@ describe('UsersController', () => {
         usersController.createUser({
           Firstname: 'firstname',
           Lastname: 'lastname',
-          Username: 'username',
           Password: 'Password123!',
           Email: 'email@email.com',
-          SuperAdmin: true,
           RoleName: 'roleName',
         }),
       ).rejects.toThrow();
@@ -255,17 +248,15 @@ describe('UsersController', () => {
         .spyOn(rolesService, 'isRoleExist')
         .mockResolvedValue(true);
       const mockIsExistingUser = jest
-        .spyOn(usersService, 'findByUsernameOrEmail')
+        .spyOn(usersService, 'findOneByEmail')
         .mockResolvedValue(userList[0]);
 
       await expect(
         usersController.createUser({
           Firstname: 'firstname',
           Lastname: 'lastname',
-          Username: 'username',
           Password: 'Password123!',
           Email: 'email@email.com',
-          SuperAdmin: true,
           RoleName: 'roleName',
         }),
       ).rejects.toThrow();

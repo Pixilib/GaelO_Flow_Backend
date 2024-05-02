@@ -43,7 +43,6 @@ describe('AuthController', () => {
             create: jest.fn(),
             remove: jest.fn(),
             isRoleUsed: jest.fn(),
-            findOneByUsername: jest.fn(),
             findOneByEmail: jest.fn(),
             updateUserPassword: jest.fn(),
           },
@@ -82,7 +81,7 @@ describe('AuthController', () => {
       jest.spyOn(authService, 'validateUser').mockReturnValue(
         Promise.resolve({
           Id: 1,
-          Username: 'username',
+          Email: 'email',
           Role: {
             Name: 'User',
           },
@@ -130,7 +129,6 @@ describe('AuthController', () => {
       registerDto.Email = 'new@example.com';
       registerDto.Firstname = 'John';
       registerDto.Lastname = 'Doe';
-      registerDto.Username = 'johndoe';
 
       jest.spyOn(usersService, 'findOneByEmail').mockResolvedValue(null);
       jest.spyOn(usersService, 'create').mockImplementation(() =>
@@ -139,9 +137,7 @@ describe('AuthController', () => {
           Email: 'new@example.com',
           Firstname: 'John',
           Lastname: 'Doe',
-          Username: 'johndoe',
           Password: null,
-          SuperAdmin: false,
           RoleName: 'User',
         }),
       );
@@ -159,7 +155,6 @@ describe('AuthController', () => {
           Email: 'new@example.com',
           Firstname: 'John',
           Lastname: 'Doe',
-          Username: 'johndoe',
           Password: null,
         }),
       );
@@ -176,7 +171,6 @@ describe('AuthController', () => {
         Email: 'test@example2.com',
         Firstname: 'John2',
         Lastname: 'Doe2',
-        Username: 'johndoe2',
       };
 
       jest

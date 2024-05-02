@@ -59,18 +59,6 @@ export class UsersService {
     return user;
   }
 
-  async findOneByUsername(
-    username: string,
-    withRole: boolean = true,
-  ): Promise<User> | undefined {
-    return await this.usersRepository.findOne({
-      where: { Username: username },
-      relations: {
-        Role: withRole,
-      },
-    });
-  }
-
   async update(id: number, user: User): Promise<void> {
     await this.usersRepository.update(id, user);
   }
@@ -90,12 +78,6 @@ export class UsersService {
     await this.usersRepository.delete(id);
   }
 
-  async findByUsernameOrEmail(username: string, email: string): Promise<User> {
-    return await this.usersRepository.findOne({
-      where: [{ Username: username }, { Email: email }],
-    });
-  }
-
   /* istanbul ignore next */
   public async seed() {
     const hashAdmin = await hashPassword('passwordadmin');
@@ -103,22 +85,18 @@ export class UsersService {
     const hashUser = await hashPassword('passworduser');
 
     const admin = this.usersRepository.create({
-      Username: 'admin',
       Firstname: 'Admin',
       Lastname: 'Admin',
-      Email: 'admin@localhost.com',
+      Email: 'admin@gaelo.com',
       Password: hashAdmin,
-      SuperAdmin: true,
       RoleName: 'Admin',
     });
 
     const user = this.usersRepository.create({
-      Username: 'user',
       Firstname: 'User',
       Lastname: 'User',
-      Email: 'user@localhost.com',
+      Email: 'user@gaelo.com',
       Password: hashUser,
-      SuperAdmin: true,
       RoleName: 'User',
     });
 
