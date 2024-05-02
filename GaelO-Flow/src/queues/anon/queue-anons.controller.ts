@@ -45,7 +45,7 @@ export class QueuesAnonController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiQuery({ name: 'userId', required: false })
-  @UseGuards(new OrGuard([new AnonymizeGuard(), new AdminGuard()]))
+  @UseGuards(OrGuard([AnonymizeGuard, AdminGuard]))
   @Get()
   async getUuid(
     @Query('userId') userId: number,
@@ -72,7 +72,7 @@ export class QueuesAnonController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiParam({ name: 'uuid', required: true })
-  @UseGuards(new OrGuard([new AnonymizeGuard(), new AdminGuard()]))
+  @UseGuards(OrGuard([AnonymizeGuard, AdminGuard]))
   @Get(':uuid')
   async getJobs(
     @Param('uuid') uuid: string,

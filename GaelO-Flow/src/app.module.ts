@@ -32,6 +32,10 @@ import { QueueModule } from './queues/queue.module';
 import { AppController } from './app.controller';
 
 import { SeederModule } from './seeder/seeder.module';
+import { OrthancReadAllController } from './orthanc/orthanc-read-all.controller';
+import { InstanceGuard } from './guards/instance.guard';
+import { SeriesGuard } from './guards/series.guard';
+import { StudyGuard } from './guards/study.guard';
 
 @Module({
   imports: [

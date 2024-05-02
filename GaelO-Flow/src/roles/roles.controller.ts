@@ -113,12 +113,7 @@ export class RolesController {
   @ApiResponse({ status: 200, description: 'Add label to role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiBody({ schema: { example: { label: 'label' } } })
-  @UseGuards(
-    new OrGuard([
-      new AdminGuard(),
-      new CheckUserRoleGuard(['params', 'roleName']),
-    ]),
-  )
+  @UseGuards(OrGuard([AdminGuard, CheckUserRoleGuard]))
   @Post('/:roleName/label')
   async addLabelToRole(
     @Param('roleName') roleName: string,
@@ -134,12 +129,7 @@ export class RolesController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Get all labels from role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(
-    new OrGuard([
-      new AdminGuard(),
-      new CheckUserRoleGuard(['params', 'roleName']),
-    ]),
-  )
+  @UseGuards(OrGuard([AdminGuard, CheckUserRoleGuard]))
   @Get('/:roleName/labels')
   async getRoleLabels(@Param('roleName') roleName: string): Promise<string[]> {
     return (await this.roleService.getRoleLabels(roleName)).map(
@@ -154,12 +144,7 @@ export class RolesController {
     description: 'Label does not exist for this role',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(
-    new OrGuard([
-      new AdminGuard(),
-      new CheckUserRoleGuard(['params', 'roleName']),
-    ]),
-  )
+  @UseGuards(OrGuard([AdminGuard, CheckUserRoleGuard]))
   @Delete('/:roleName/label/:label')
   async removeLabelFromRole(
     @Param('roleName') roleName: string,

@@ -705,4 +705,20 @@ export default class OrthancClient extends HttpClient {
       (response) => response.data,
     );
   }
+
+  listLabels(level: string, orthancID: string) {
+    return this.request(
+      '/' + level + '/' + orthancID + '/labels',
+      'get',
+      null,
+    ).then((response) => response.data);
+  }
+
+  getParentStudy(level: string, orthancID: string) {
+    return this.request(
+      '/' + level + '/' + orthancID + '/study',
+      'get',
+      null,
+    ).then((response) => response.data);
+  }
 }

@@ -23,7 +23,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 
 import { AdminGuard } from '../guards/roles.guard';
 import { OrGuard } from '../guards/or.guard';
-import { CheckUserIdGuard } from '../guards/check-user-id.guard';
+import { CheckUserIdParamsGuard } from '../guards/check-user-id-params.guard';
 
 import { hashPassword } from '../utils/passwords';
 
@@ -61,9 +61,7 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Get user by id', type: GetUserDto })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(
-    new OrGuard([new AdminGuard(), new CheckUserIdGuard(['params', 'id'])]),
-  )
+  @UseGuards(OrGuard([AdminGuard, CheckUserIdParamsGuard]))
   @Get('/:id')
   async getUsersId(@Param('id') id: number): Promise<GetUserDto> {
     const user = await this.userService.findOne(id);
@@ -80,9 +78,7 @@ export class UsersController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Update user' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(
-    new OrGuard([new AdminGuard(), new CheckUserIdGuard(['params', 'id'])]),
-  )
+  @UseGuards(OrGuard([AdminGuard, CheckUserIdParamsGuard]))
   @Put('/:id')
   async update(
     @Param('id') id: number,
@@ -108,9 +104,7 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'Delete user' })
   @ApiResponse({ status: 400, description: 'Bad Request' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(
-    new OrGuard([new AdminGuard(), new CheckUserIdGuard(['params', 'id'])]),
-  )
+  @UseGuards(OrGuard([AdminGuard, CheckUserIdParamsGuard]))
   @Delete('/:id')
   async delete(@Param('id') id: number): Promise<void> {
     const existingUser = await this.userService.isExistingUser(id);
