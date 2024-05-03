@@ -20,7 +20,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./jest-e2e.json",
     "test:e2e:detectOpenHandles": "jest --detectOpenHandles --config ./jest-e2e.json",
-    "seed": "ts-node src/seed.ts",
+    "seed": "ts-node src/seeder/seed.ts",
     "build-docs": "ts-node src/build_docs.ts"
   },
   "dependencies": {
