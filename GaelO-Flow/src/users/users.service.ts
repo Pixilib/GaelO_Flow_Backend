@@ -49,7 +49,6 @@ export class UsersService {
     email: string,
     withRole: boolean = true,
   ): Promise<User> | undefined {
-    console.log('email', email);
     if (email === undefined) return undefined;
     const user = await this.usersRepository.findOne({
       where: { Email: email },
