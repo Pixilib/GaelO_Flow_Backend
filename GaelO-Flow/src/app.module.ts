@@ -18,7 +18,6 @@ import { TasksModule } from './tasks/tasks.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { MailModule } from './mail/mail.module';
 import { OauthConfigModule } from './oauth-configs/oauth-configs.module';
-import { HttpModule } from '@nestjs/axios';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AutoroutingsModule } from './autorouting/autoroutings.module';
 import { UsersModule } from './users/users.module';
@@ -32,20 +31,6 @@ import { QueueModule } from './queues/queue.module';
 // CONTROLLERS
 import { AppController } from './app.controller';
 
-// ENTITIES
-import { User } from './users/user.entity';
-import { Role } from './roles/role.entity';
-import { Option } from './options/option.entity';
-import { Label } from './labels/label.entity';
-import { OauthConfig } from './oauth-configs/oauth-config.entity';
-import { Autorouting } from './autorouting/autorouting.entity';
-
-// SERVICES
-import { UsersService } from './users/users.service';
-import { RolesService } from './roles/roles.service';
-import { OptionsService } from './options/options.service';
-import { MailService } from './mail/mail.service';
-import { OauthConfigService } from './oauth-configs/oauth-configs.service';
 import { SeederModule } from './seeder/seeder.module';
 
 @Module({
