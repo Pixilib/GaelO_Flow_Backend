@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
-import { RolesService } from './roles/roles.service';
-import { UsersService } from './users/users.service';
-import { OptionsService } from './options/options.service';
-import { OauthConfigService } from './oauth-configs/oauth-configs.service';
+import { RolesService } from '../roles/roles.service';
+import { UsersService } from '../users/users.service';
+import { OptionsService } from '../options/options.service';
+import { OauthConfigService } from '../oauth-configs/oauth-configs.service';
 
 @Injectable()
-export class SeedService {
+export class SeederService {
   public constructor(
     private readonly rolesService: RolesService,
     private readonly usersService: UsersService,

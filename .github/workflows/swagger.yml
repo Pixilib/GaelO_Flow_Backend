@@ -55,7 +55,7 @@ jobs:
       - run: yarn install --frozen-lockfile
         working-directory: ./GaelO-Flow
 
-      - run : yarn build-docs
+      - run : yarn build-api-docs
         working-directory: ./GaelO-Flow
 
       - name: Generate Swagger UI

@@ -22,8 +22,6 @@ import { RolesService } from './roles.service';
 
 import { Role } from './role.entity';
 
-import { NotFoundInterceptor } from '../interceptors/not-found.interceptor';
-
 import { AdminGuard } from '../guards/roles.guard';
 import { OrGuard } from '../guards/or.guard';
 import { CheckUserRoleGuard } from '../guards/check-user-role.guard';
@@ -121,7 +119,6 @@ export class RolesController {
       new CheckUserRoleGuard(['params', 'roleName']),
     ]),
   )
-  @UseInterceptors(NotFoundInterceptor)
   @Post('/:roleName/label')
   async addLabelToRole(
     @Param('roleName') roleName: string,
@@ -163,7 +160,6 @@ export class RolesController {
       new CheckUserRoleGuard(['params', 'roleName']),
     ]),
   )
-  @UseInterceptors(NotFoundInterceptor)
   @Delete('/:roleName/label/:label')
   async removeLabelFromRole(
     @Param('roleName') roleName: string,

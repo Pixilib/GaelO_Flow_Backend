@@ -20,8 +20,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./jest-e2e.json",
     "test:e2e:detectOpenHandles": "jest --detectOpenHandles --config ./jest-e2e.json",
-    "seed": "ts-node src/seed.ts",
-    "build-docs": "ts-node src/build_docs.ts"
+    "seed": "ts-node src/seeder/seed.ts",
+    "build-api-docs": "ts-node src/build_docs.ts",
+    "build-compodoc": "npx compodoc -p tsconfig.doc.json",
+    "compodoc-dev": "npx compodoc -p tsconfig.doc.json -ws"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.11.0",
@@ -62,6 +64,7 @@
     "typeorm": "^0.3.17"
   },
   "devDependencies": {
+    "@compodoc/compodoc": "^1.1.24",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/schematics": "^10.0.0",
     "@nestjs/testing": "^10.3.7",
@@ -109,6 +112,7 @@
     "testEnvironment": "node"
   },
   "resolutions": {
-    "@types/mime": "3.0.4"
+    "@types/mime": "3.0.4",
+    "string-width": "4.2.3"
   }
 }
