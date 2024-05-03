@@ -1,0 +1,36 @@
+name: 'build swagger'
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:  
+  swagger:
+    name: 'Compodoc build and publish'
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: 'Build checkout'
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+    
+      - name: 'Install and Build'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          registry-url: 'https://npm.pkg.github.com'
+          
+      - run: yarn install --frozen-lockfile
+        working-directory: ./GaelO-Flow
+
+      - run : yarn build-compodoc
+        working-directory: ./GaelO-Flow
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./documentation
+          destination_dir: compodoc
