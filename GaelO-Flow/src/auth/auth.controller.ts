@@ -23,6 +23,9 @@ import { MailService } from '../mail/mail.service';
 import { RegisterDto } from './dto/register.dto';
 import { LostPassworDto } from './dto/lost-password.dto';
 
+/**
+ * Controller for all authentication related APIs
+ */
 @ApiTags('auth')
 @Controller('')
 export class AuthController {
@@ -32,6 +35,9 @@ export class AuthController {
     private mailService: MailService,
   ) {}
 
+  /**
+   * login controller
+   */
   @ApiResponse({ status: 200, description: 'Login success' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiBody({ type: LoginDto })

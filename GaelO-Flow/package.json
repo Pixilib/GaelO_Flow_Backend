@@ -21,8 +21,9 @@
     "test:e2e": "jest --config ./jest-e2e.json",
     "test:e2e:detectOpenHandles": "jest --detectOpenHandles --config ./jest-e2e.json",
     "seed": "ts-node src/seeder/seed.ts",
-    "build-docs": "ts-node src/build_docs.ts",
-    "compodoc": "npx compodoc -p tsconfig.doc.json"
+    "build-api-docs": "ts-node src/build_docs.ts",
+    "build-compodoc": "npx compodoc -p tsconfig.doc.json",
+    "compodoc-dev": "npx compodoc -p tsconfig.doc.json -ws"
   },
   "dependencies": {
     "@nestjs-modules/mailer": "^1.11.0",
