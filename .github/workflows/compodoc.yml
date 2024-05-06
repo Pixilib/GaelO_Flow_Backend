@@ -3,7 +3,8 @@ name: 'build compodoc'
 on:
   push:
     branches:
-      - '*'
+      - 'dev'
+      - 'main'
 
 jobs:  
   swagger:

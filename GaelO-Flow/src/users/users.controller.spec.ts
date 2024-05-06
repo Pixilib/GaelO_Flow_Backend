@@ -9,6 +9,8 @@ import { User } from './user.entity';
 import { Role } from '../roles/role.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { GetUserDto } from './dto/get-user.dto';
+import { AdminGuard } from '../guards/roles.guard';
+import { CheckUserIdParamsGuard } from '../guards/check-user-id-params.guard';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -93,14 +95,11 @@ describe('UsersController', () => {
         '__guards__',
         UsersController.prototype.getUsersId,
       );
-      const guardNames = guards[0].guards.map(
-        (guard: any) => guard.constructor.name,
-      );
-      expect(guards.length).toBe(1);
-      expect(guards[0].constructor.name).toBe('OrGuard');
-      expect(guardNames.length).toBe(2);
-      expect(guardNames).toContain('AdminGuard');
-      expect(guardNames).toContain('CheckUserIdGuard');
+
+      const orGuards = new guards[0]().__getGuards();
+      expect(orGuards.length).toBe(2);
+      expect(orGuards[0]).toBe(AdminGuard);
+      expect(orGuards[1]).toBe(CheckUserIdParamsGuard);
     });
 
     it('check if getUsersId calls service findOne', async () => {
@@ -123,14 +122,11 @@ describe('UsersController', () => {
         '__guards__',
         UsersController.prototype.update,
       );
-      const guardNames = guards[0].guards.map(
-        (guard: any) => guard.constructor.name,
-      );
-      expect(guards.length).toBe(1);
-      expect(guards[0].constructor.name).toBe('OrGuard');
-      expect(guardNames.length).toBe(2);
-      expect(guardNames).toContain('AdminGuard');
-      expect(guardNames).toContain('CheckUserIdGuard');
+
+      const orGuards = new guards[0]().__getGuards();
+      expect(orGuards.length).toBe(2);
+      expect(orGuards[0]).toBe(AdminGuard);
+      expect(orGuards[1]).toBe(CheckUserIdParamsGuard);
     });
 
     it('check if update calls service update', async () => {
@@ -165,14 +161,11 @@ describe('UsersController', () => {
         '__guards__',
         UsersController.prototype.delete,
       );
-      const guardNames = guards[0].guards.map(
-        (guard: any) => guard.constructor.name,
-      );
-      expect(guards.length).toBe(1);
-      expect(guards[0].constructor.name).toBe('OrGuard');
-      expect(guardNames.length).toBe(2);
-      expect(guardNames).toContain('AdminGuard');
-      expect(guardNames).toContain('CheckUserIdGuard');
+
+      const orGuards = new guards[0]().__getGuards();
+      expect(orGuards.length).toBe(2);
+      expect(orGuards[0]).toBe(AdminGuard);
+      expect(orGuards[1]).toBe(CheckUserIdParamsGuard);
     });
 
     it('check if delete calls service remove', async () => {

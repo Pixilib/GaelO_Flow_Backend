@@ -24,7 +24,7 @@ import { AdminGuard, ReadAllGuard } from '../guards/roles.guard';
 import { ProcessingQueueService } from './processing-queue.service';
 import { ProcessingJobDto } from './processing-job.dto';
 import { OrGuard } from '../guards/or.guard';
-import { CheckUserIdGuard } from '../guards/check-user-id.guard';
+import { CheckUserIdQueryGuard } from '../guards/check-user-id-query.guard';
 
 @ApiTags('processing')
 @Controller('/processing')
@@ -47,9 +47,7 @@ export class ProcessingController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiQuery({ name: 'userId', required: false })
-  @UseGuards(
-    new OrGuard([new AdminGuard(), new CheckUserIdGuard(['query', 'userId'])]),
-  )
+  @UseGuards(OrGuard([AdminGuard, CheckUserIdQueryGuard]))
   @Get()
   async getUuid(
     @Query('userId') userId: number,
