@@ -721,4 +721,8 @@ export default class OrthancClient extends HttpClient {
       null,
     ).then((response) => response.data);
   }
+
+  lookup(instanceUID: string) {
+    return this.request('/tools/lookup', 'POST', instanceUID);
+  }
 }

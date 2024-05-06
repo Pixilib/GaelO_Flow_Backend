@@ -2,14 +2,15 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DicomWebGuard implements CanActivate {
-  private level: string;
+  const private level: string;
+  const private pathname: string;
+  const private query : Record<string, any> = {};
+
   constructor() {}
 
-  private setLevel(url: any): void {
-    const path: string = url['path'];
-    const query = url['query'];
+  private setLevel(): void {
 
-    if (query) {
+    if (Object.keys(this.query).length > 0) {
       const params = [];
       //parse_str($url['query'], $params);
 
@@ -24,34 +25,28 @@ export class DicomWebGuard implements CanActivate {
       }
     }
 
-    if (path.endsWith('/studies')) this.level = 'patients';
-    else if (path.endsWith('/series')) this.level = 'studies';
+    if (this.pathname.endsWith('/studies')) this.level = 'patients';
+    else if (this.pathname.endsWith('/series')) this.level = 'studies';
     else this.level = 'series';
   }
 
-  private getPatientID(url): string {
-    const params = [];
-    //parse_str($url['query'], $params);
-    // Filter wild card beacause OHIF add wildcard
-    if (params['00100020']) return params['00100020'].replace('*', '');
+  private getPatientID(): string {
+    if (this.query['00100020']) return this.query['00100020'].replace('*', '');
     else {
       throw new Error('No Patient ID Found');
     }
   }
 
   private getStudyInstanceUID(url): string {
-    const query = url['query'];
-    if (query) {
-      const params = [];
-      //parse_str($url['query'], $params);
-      if (params['0020000D']) return params['0020000D'];
-      if (params['StudyInstanceUID']) return params['StudyInstanceUID'];
+    if (Object.keys(this.query).length > 0) {
+      if (this.query?.['0020000D']) return this.query?.['0020000D'];
+      if (this.query?.params['StudyInstanceUID']) return this.query?.params['StudyInstanceUID'];
     }
-    return this.getUID(url['path'], 'studies');
+    return this.getUID(this.pathname, 'studies');
   }
 
-  private getSeriesInstanceUID(url): string {
-    return this.getUID(url['path'], 'series');
+  private getSeriesInstanceUID(): string {
+    return this.getUID(this.pathname, 'series');
   }
 
   /**
@@ -75,12 +70,25 @@ export class DicomWebGuard implements CanActivate {
   }
 
   canActivate(context: ExecutionContext): boolean {
-    //$url = parse_url($requestedURI);
-    //$this->setLevel($url);
+    const url = new URL(context.)
+    const params = Object.fromEntries(url.searchParams.entries())
 
-    // si series => recup study
-    // Get label de la study
-    // Verif que user à acces au label de la study parent ou a acces à toute les data
+    this.pathname = url.pathname;
+    this.query = params;
+    this.setLevel()
+
+    const orthancStudyId;
+    if(this.level === 'series') {
+      const getSeriesInstanceUID = this.getUID(this.pathname, 'series');
+      //Apeller lookup pour avoir la series ID orthanc et appeler la study parente
+
+
+    }else if(this.level === 'studies') {
+      const getStudyInstanceUID = this.getUID(this.pathname, 'studies');
+      //Apeller lookup pour avoir la study ID orthanc
+    }
+
+    //Check que la ressource Orthanc ID study a bien un des label du role de l'utilisateur
 
     return false;
   }
