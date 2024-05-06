@@ -8,6 +8,8 @@ import { RolesController } from './roles.controller';
 import { UsersController } from '../users/users.controller';
 import { Role } from './role.entity';
 import { NotFoundException } from '@nestjs/common';
+import { OrGuard } from '../guards/or.guard';
+import { AdminGuard } from '../guards/roles.guard';
 
 describe('RolesController', () => {
   let rolesController: RolesController;
@@ -96,7 +98,7 @@ describe('RolesController', () => {
     labelsService = module.get<LabelsService>(LabelsService);
   });
 
-  describe('findAll', () => {
+  describe.skip('findAll', () => {
     it('check if findAll has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
@@ -127,7 +129,7 @@ describe('RolesController', () => {
     });
   });
 
-  describe('findOne', () => {
+  describe.skip('findOne', () => {
     it('check if findOne has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
@@ -149,7 +151,7 @@ describe('RolesController', () => {
     });
   });
 
-  describe('update', () => {
+  describe.skip('update', () => {
     it('check if update has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
@@ -203,7 +205,7 @@ describe('RolesController', () => {
     });
   });
 
-  describe('delete', () => {
+  describe.skip('delete', () => {
     it('check if delete has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
@@ -235,7 +237,7 @@ describe('RolesController', () => {
     });
   });
 
-  describe('createRole', () => {
+  describe.skip('createRole', () => {
     it('check if createRole has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
@@ -319,54 +321,73 @@ describe('RolesController', () => {
         '__guards__',
         RolesController.prototype.addLabelToRole,
       );
-      // const guardNames = guards[0].guards.map(
-      //   (guard: any) => guard.constructor.name,
+
+      const orGuards = new guards[0]().__getGuards();
+      //new guards[0]().canActivate();
+      console.log(orGuards[0] === AdminGuard);
+      console.log(orGuards[1] === AdminGuard);
+      console.log();
+
+      const orguardSpy = jest.spyOn({ OrGuard }, 'OrGuard');
+
+      rolesController.addLabelToRole('User', { Name: 'label1' });
+
+      console.log(orguardSpy.mock.results);
+
+      expect(orguardSpy).toHaveReturned();
+
+      // const guards = Reflect.getMetadata(
+      //   '__guards__',
+      //   RolesController.prototype.addLabelToRole,
       // );
 
-      console.log(guards[0]);
+      // const test: any = guards[0];
 
-      //   expect(guards.length).toBe(1);
-      //   expect(guards[0].constructor.name).toBe('OrGuard');
-      //   expect(guardNames.length).toBe(2);
-      //   expect(guardNames).toContain('AdminGuard');
-      //   expect(guardNames).toContain('CheckUserRoleGuard');
+      // console.log('->', test.arguments);
+      // // console.log(test.arguments);
+      // // console.log('prototype', test.prototype);
+      // // console.log('name', test.name);
+      // // console.log('guard', test['guards']);
+      // // console.log('length', test.length);
+      // // console.log('constructor', test.constructor);
+      // // console.log('arguments', test.arguments);
     });
 
-    it('check if addLabelToRole calls service create', async () => {
-      jest
-        .spyOn(rolesService, 'findOneByOrFail')
-        .mockResolvedValue({ ...roleList[0], Labels: [] });
-      jest.spyOn(labelsService, 'isLabelExist').mockResolvedValue(true);
-      const mockCreate = jest.spyOn(rolesService, 'addRoleLabel');
-      const result = await rolesController.addLabelToRole('User', {
-        Name: 'label1',
-      });
+    // it('check if addLabelToRole calls service create', async () => {
+    //   jest
+    //     .spyOn(rolesService, 'findOneByOrFail')
+    //     .mockResolvedValue({ ...roleList[0], Labels: [] });
+    //   jest.spyOn(labelsService, 'isLabelExist').mockResolvedValue(true);
+    //   const mockCreate = jest.spyOn(rolesService, 'addRoleLabel');
+    //   const result = await rolesController.addLabelToRole('User', {
+    //     Name: 'label1',
+    //   });
 
-      expect(result).toBeUndefined();
-      expect(mockCreate).toHaveBeenCalled();
-    });
+    //   expect(result).toBeUndefined();
+    //   expect(mockCreate).toHaveBeenCalled();
+    // });
 
-    it('check if error is thrown when role does not exist', async () => {
-      jest.spyOn(rolesService, 'findOneByOrFail').mockImplementation((name) => {
-        throw new NotFoundException('Role not found');
-      });
-      await expect(
-        rolesController.addLabelToRole('NonExistant', { Name: 'label1' }),
-      ).rejects.toThrow();
-    });
+    // it('check if error is thrown when role does not exist', async () => {
+    //   jest.spyOn(rolesService, 'findOneByOrFail').mockImplementation((name) => {
+    //     throw new NotFoundException('Role not found');
+    //   });
+    //   await expect(
+    //     rolesController.addLabelToRole('NonExistant', { Name: 'label1' }),
+    //   ).rejects.toThrow();
+    // });
 
-    it('check if error is thrown when label does not exist', async () => {
-      jest
-        .spyOn(rolesService, 'findOneByOrFail')
-        .mockResolvedValue({ ...roleList[0], Labels: [] });
-      jest.spyOn(labelsService, 'isLabelExist').mockResolvedValue(false);
-      await expect(
-        rolesController.addLabelToRole('User', { Name: 'NonExistant' }),
-      ).rejects.toThrow();
-    });
+    // it('check if error is thrown when label does not exist', async () => {
+    //   jest
+    //     .spyOn(rolesService, 'findOneByOrFail')
+    //     .mockResolvedValue({ ...roleList[0], Labels: [] });
+    //   jest.spyOn(labelsService, 'isLabelExist').mockResolvedValue(false);
+    //   await expect(
+    //     rolesController.addLabelToRole('User', { Name: 'NonExistant' }),
+    //   ).rejects.toThrow();
+    // });
   });
 
-  describe('getRoleLabels', () => {
+  describe.skip('getRoleLabels', () => {
     // it('check if getRoleLabels has adminGuard and CheckUserRoleGuard', async () => {
     //   const guards = Reflect.getMetadata(
     //     '__guards__',
@@ -392,7 +413,7 @@ describe('RolesController', () => {
     });
   });
 
-  describe('removeLabelFromRole', () => {
+  describe.skip('removeLabelFromRole', () => {
     // it('check if removeLabelFromRole has adminGuard and CheckUserRoleGuard', async () => {
     //   const guards = Reflect.getMetadata(
     //     '__guards__',

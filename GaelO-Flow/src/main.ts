@@ -85,6 +85,7 @@ async function main() {
   const port = app.get(ConfigService).get<number>('API_PORT', 3000);
 
   await buildSwagger(app);
+  app.enableCors();
   await app.listen(port);
   const address = (await app.getUrl()).replace('[::1]', 'localhost');
   console.log(`Swagger on: ${address}/docs`);
