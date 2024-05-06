@@ -7,9 +7,11 @@ import { OrthancImportController } from './orthanc-import.controller';
 import { OrthancModifyController } from './orthanc-modify.controller';
 import { OrthancQueryController } from './orthanc-query.controller';
 import OrthancClient from '../utils/orthanc-client';
+import { RolesModule } from '../roles/roles.module';
+import { OrthancReadAllController } from './orthanc-read-all.controller';
 
 @Module({
-  imports: [],
+  imports: [RolesModule],
   providers: [OrthancClient],
   controllers: [
     OrthancController,
@@ -19,6 +21,7 @@ import OrthancClient from '../utils/orthanc-client';
     OrthancImportController,
     OrthancModifyController,
     OrthancQueryController,
+    OrthancReadAllController,
   ],
 })
 export class OrthancModule {}

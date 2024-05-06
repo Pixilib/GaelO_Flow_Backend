@@ -6,6 +6,8 @@ import { ProcessingQueueService } from './processing-queue.service';
 import { ProcessingJobDto } from './processing-job.dto';
 
 import { ProcessingJobType, ProcessingMask } from '../constants/enums';
+import { CheckUserIdQueryGuard } from '../guards/check-user-id-query.guard';
+import { AdminGuard } from '../guards/roles.guard';
 
 describe('ProcessingController', () => {
   let processingController: ProcessingController;
@@ -60,15 +62,11 @@ describe('ProcessingController', () => {
         '__guards__',
         ProcessingController.prototype.getUuid,
       );
-      const guardNames = guards[0].guards.map(
-        (guard: any) => guard.constructor.name,
-      );
 
-      expect(guards.length).toBe(1);
-      expect(guards[0].constructor.name).toBe('OrGuard');
-      expect(guardNames.length).toBe(2);
-      expect(guardNames).toContain('AdminGuard');
-      expect(guardNames).toContain('CheckUserIdGuard');
+      const orGuards = new guards[0]().__getGuards();
+      expect(orGuards.length).toBe(2);
+      expect(orGuards[0]).toBe(AdminGuard);
+      expect(orGuards[1]).toBe(CheckUserIdQueryGuard);
     });
 
     it('should call processingQueueService getAllUuids if no userId is provided and user is admin', async () => {

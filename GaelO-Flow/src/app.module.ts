@@ -32,6 +32,8 @@ import { QueueModule } from './queues/queue.module';
 import { AppController } from './app.controller';
 
 import { SeederModule } from './seeder/seeder.module';
+import { CheckUserIdParamsGuard } from './guards/check-user-id-params.guard';
+import { CheckUserRoleGuard } from './guards/check-user-role.guard';
 
 @Module({
   imports: [
@@ -76,6 +78,8 @@ import { SeederModule } from './seeder/seeder.module';
   ],
   controllers: [AppController],
   providers: [
+    CheckUserIdParamsGuard,
+    CheckUserRoleGuard,
     ProcessingClient,
     {
       provide: APP_INTERCEPTOR,
