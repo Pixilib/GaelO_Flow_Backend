@@ -227,8 +227,12 @@ export function OrGuard(
   orGuardOptions?: OrGuardOptions,
 ) {
   class OrMixinGuard implements CanActivate {
-    private guards: CanActivate[] &#x3D; [];
+    public guards: CanActivate[] &#x3D; [];
     constructor(@Inject(ModuleRef) private readonly modRef: ModuleRef) {}
+
+    //For testing purposes only
+    __getGuards &#x3D; () &#x3D;&gt; guards;
+
     canActivate(context: ExecutionContext): Observable&lt;boolean&gt; {
       this.guards &#x3D; guards.map((guard) &#x3D;&gt;
         this.modRef.get(guard, { strict: false }),

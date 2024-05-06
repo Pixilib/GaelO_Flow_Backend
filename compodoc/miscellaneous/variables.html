@@ -328,7 +328,9 @@
   const orthancCalledApi &#x3D; url.replace(&#x27;/api&#x27;, &#x27;&#x27;);
   const method &#x3D; request.method;
   const body &#x3D; request.body;
-  orthancClient.streamAnswerToRes(orthancCalledApi, method, body, response);
+  orthancClient.streamAnswerToRes(orthancCalledApi, method, body, response, {
+    accept: request.headers.accept,
+  });
 }</code>
                     </td>
                 </tr>
