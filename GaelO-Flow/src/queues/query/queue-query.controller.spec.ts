@@ -4,6 +4,7 @@ import { Test } from '@nestjs/testing';
 import { QueuesQueryController } from './queue-query.controller';
 import { QueuesQueryService } from './queue-query.service';
 import { QueuesQueryDto } from './queue-query.dto';
+import { AdminGuard, QueryGuard } from '../../guards/roles.guard';
 
 describe('QueuesQueryController', () => {
   let controller: QueuesQueryController;
@@ -65,15 +66,11 @@ describe('QueuesQueryController', () => {
         '__guards__',
         QueuesQueryController.prototype.getUuid,
       );
-      const guardNames = guards[0].guards.map(
-        (guard: any) => guard.constructor.name,
-      );
 
-      expect(guards.length).toBe(1);
-      expect(guards[0].constructor.name).toBe('OrGuard');
-      expect(guardNames.length).toBe(2);
-      expect(guardNames).toContain('AdminGuard');
-      expect(guardNames).toContain('QueryGuard');
+      const orGuards = new guards[0]().__getGuards();
+      expect(orGuards.length).toBe(2);
+      expect(orGuards[0]).toBe(AdminGuard);
+      expect(orGuards[1]).toBe(QueryGuard);
     });
 
     it('should return all uuids if no userId is provided and user is admin', async () => {
@@ -185,15 +182,11 @@ describe('QueuesQueryController', () => {
         '__guards__',
         QueuesQueryController.prototype.getJobs,
       );
-      const guardNames = guards[0].guards.map(
-        (guard: any) => guard.constructor.name,
-      );
 
-      expect(guards.length).toBe(1);
-      expect(guards[0].constructor.name).toBe('OrGuard');
-      expect(guardNames.length).toBe(2);
-      expect(guardNames).toContain('AdminGuard');
-      expect(guardNames).toContain('QueryGuard');
+      const orGuards = new guards[0]().__getGuards();
+      expect(orGuards.length).toBe(2);
+      expect(orGuards[0]).toBe(AdminGuard);
+      expect(orGuards[1]).toBe(QueryGuard);
     });
 
     it('Should throw BadRequestException if uuid is not provided', async () => {

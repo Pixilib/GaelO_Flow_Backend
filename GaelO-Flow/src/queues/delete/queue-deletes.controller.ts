@@ -44,7 +44,7 @@ export class QueuesDeleteController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiQuery({ name: 'userId', required: false })
-  @UseGuards(OrGuard([DeleteGuard, AdminGuard]))
+  @UseGuards(OrGuard([AdminGuard, DeleteGuard]))
   @Get()
   async getUuid(
     @Query('userId') userId: number,
@@ -71,7 +71,7 @@ export class QueuesDeleteController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiResponse({ status: 403, description: 'Forbidden' })
   @ApiParam({ name: 'uuid', required: true })
-  @UseGuards(OrGuard([DeleteGuard, AdminGuard]))
+  @UseGuards(OrGuard([AdminGuard, DeleteGuard]))
   @Get(':uuid')
   async getJobs(
     @Param('uuid') uuid: string,
