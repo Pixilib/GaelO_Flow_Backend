@@ -675,7 +675,7 @@ export class QueuesQueryController {
   @ApiResponse({ status: 401, description: &#x27;Unauthorized&#x27; })
   @ApiResponse({ status: 403, description: &#x27;Forbidden&#x27; })
   @ApiQuery({ name: &#x27;userId&#x27;, required: false })
-  @UseGuards(OrGuard([QueryGuard, AdminGuard]))
+  @UseGuards(OrGuard([AdminGuard, QueryGuard]))
   @Get()
   async getUuid(
     @Query(&#x27;userId&#x27;) userId: number,
@@ -702,7 +702,7 @@ export class QueuesQueryController {
   @ApiResponse({ status: 401, description: &#x27;Unauthorized&#x27; })
   @ApiResponse({ status: 403, description: &#x27;Forbidden&#x27; })
   @ApiParam({ name: &#x27;uuid&#x27;, required: true })
-  @UseGuards(OrGuard([QueryGuard, AdminGuard]))
+  @UseGuards(OrGuard([AdminGuard, QueryGuard]))
   @Get(&#x27;:uuid&#x27;)
   async getJobs(
     @Param(&#x27;uuid&#x27;) uuid: string,
