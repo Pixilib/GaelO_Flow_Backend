@@ -2,14 +2,13 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DicomWebGuard implements CanActivate {
-  const private level: string;
-  const private pathname: string;
-  const private query : Record<string, any> = {};
+  private level: string;
+  private pathname: string;
+  private query: Record<string, any> = {};
 
   constructor() {}
 
   private setLevel(): void {
-
     if (Object.keys(this.query).length > 0) {
       const params = [];
       //parse_str($url['query'], $params);
@@ -40,7 +39,8 @@ export class DicomWebGuard implements CanActivate {
   private getStudyInstanceUID(url): string {
     if (Object.keys(this.query).length > 0) {
       if (this.query?.['0020000D']) return this.query?.['0020000D'];
-      if (this.query?.params['StudyInstanceUID']) return this.query?.params['StudyInstanceUID'];
+      if (this.query?.params['StudyInstanceUID'])
+        return this.query?.params['StudyInstanceUID'];
     }
     return this.getUID(this.pathname, 'studies');
   }
@@ -59,7 +59,7 @@ export class DicomWebGuard implements CanActivate {
 
     const endStudyUIDPosition = studySubString.indexOf('/');
 
-    let studyUID;
+    let studyUID: string;
     if (endStudyUIDPosition) {
       studyUID = studySubString.substr(0, endStudyUIDPosition);
     } else {
@@ -70,20 +70,22 @@ export class DicomWebGuard implements CanActivate {
   }
 
   canActivate(context: ExecutionContext): boolean {
-    const url = new URL(context.)
-    const params = Object.fromEntries(url.searchParams.entries())
+    const url = new URL(context.switchToHttp().getRequest().url);
+    const params = Object.fromEntries(url.searchParams.entries());
 
     this.pathname = url.pathname;
     this.query = params;
-    this.setLevel()
+    this.setLevel();
 
-    const orthancStudyId;
-    if(this.level === 'series') {
+    console.log('Level:', this.level);
+    console.log('Pathname:', this.pathname);
+    console.log('Query:', this.query);
+
+    const orthancStudyId = ''; // Orthanc ID study
+    if (this.level === 'series') {
       const getSeriesInstanceUID = this.getUID(this.pathname, 'series');
       //Apeller lookup pour avoir la series ID orthanc et appeler la study parente
-
-
-    }else if(this.level === 'studies') {
+    } else if (this.level === 'studies') {
       const getStudyInstanceUID = this.getUID(this.pathname, 'studies');
       //Apeller lookup pour avoir la study ID orthanc
     }
