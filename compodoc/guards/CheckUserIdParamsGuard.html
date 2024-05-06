@@ -157,7 +157,7 @@
             <tbody>
                 <tr>
                     <td class="col-md-4">
-<code>constructor(valuePath: string[])</code>
+<code>constructor()</code>
                     </td>
                 </tr>
                         <tr>
@@ -166,36 +166,6 @@
                             </td>
                         </tr>
 
-                <tr>
-                    <td class="col-md-4">
-                            <div>
-                                    <b>Parameters :</b>
-                                    <table class="params">
-                                        <thead>
-                                            <tr>
-                                                <td>Name</td>
-                                                    <td>Type</td>
-                                                <td>Optional</td>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                                <tr>
-                                                        <td>valuePath</td>
-                                                  
-                                                        <td>
-                                                                    <code>string[]</code>
-                                                        </td>
-                                                  
-                                                    <td>
-                                                            No
-                                                    </td>
-                                                    
-                                                </tr>
-                                        </tbody>
-                                    </table>
-                            </div>
-                    </td>
-                </tr>
             </tbody>
         </table>
 </section>
@@ -281,7 +251,7 @@
 
 @Injectable()
 export class CheckUserIdParamsGuard implements CanActivate {
-  constructor(private readonly valuePath: string[]) {}
+  constructor() {}
 
   canActivate(context: ExecutionContext): boolean {
     const request &#x3D; context.switchToHttp().getRequest();

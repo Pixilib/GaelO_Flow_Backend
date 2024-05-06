@@ -460,8 +460,8 @@
   Inject,
   Injectable,
 } from &#x27;@nestjs/common&#x27;;
-import { RolesService } from &#x27;src/roles/roles.service&#x27;;
-import OrthancClient from &#x27;src/utils/orthanc-client&#x27;;
+import { RolesService } from &#x27;../roles/roles.service&#x27;;
+import OrthancClient from &#x27;../utils/orthanc-client&#x27;;
 
 @Injectable()
 export class StudyGuard implements CanActivate {

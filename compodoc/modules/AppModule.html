@@ -521,10 +521,8 @@ import { QueueModule } from &#x27;./queues/queue.module&#x27;;
 import { AppController } from &#x27;./app.controller&#x27;;
 
 import { SeederModule } from &#x27;./seeder/seeder.module&#x27;;
-import { OrthancReadAllController } from &#x27;./orthanc/orthanc-read-all.controller&#x27;;
-import { InstanceGuard } from &#x27;./guards/instance.guard&#x27;;
-import { SeriesGuard } from &#x27;./guards/series.guard&#x27;;
-import { StudyGuard } from &#x27;./guards/study.guard&#x27;;
+import { CheckUserIdParamsGuard } from &#x27;./guards/check-user-id-params.guard&#x27;;
+import { CheckUserRoleGuard } from &#x27;./guards/check-user-role.guard&#x27;;
 
 @Module({
   imports: [
@@ -569,6 +567,8 @@ import { StudyGuard } from &#x27;./guards/study.guard&#x27;;
   ],
   controllers: [AppController],
   providers: [
+    CheckUserIdParamsGuard,
+    CheckUserRoleGuard,
     ProcessingClient,
     {
       provide: APP_INTERCEPTOR,

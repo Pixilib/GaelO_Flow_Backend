@@ -233,6 +233,9 @@
                         <li class="list-group-item">
                             <a href="../controllers/OrthancQueryController.html">OrthancQueryController</a>
                         </li>
+                        <li class="list-group-item">
+                            <a href="../controllers/OrthancReadAllController.html">OrthancReadAllController</a>
+                        </li>
                     </ul>
                 </div>
                 <div class="col-sm-3">
@@ -263,6 +266,7 @@ import { OrthancModifyController } from &#x27;./orthanc-modify.controller&#x27;;
 import { OrthancQueryController } from &#x27;./orthanc-query.controller&#x27;;
 import OrthancClient from &#x27;../utils/orthanc-client&#x27;;
 import { RolesModule } from &#x27;../roles/roles.module&#x27;;
+import { OrthancReadAllController } from &#x27;./orthanc-read-all.controller&#x27;;
 
 @Module({
   imports: [RolesModule],
@@ -275,6 +279,7 @@ import { RolesModule } from &#x27;../roles/roles.module&#x27;;
     OrthancImportController,
     OrthancModifyController,
     OrthancQueryController,
+    OrthancReadAllController,
   ],
 })
 export class OrthancModule {}
