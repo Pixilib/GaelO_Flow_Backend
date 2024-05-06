@@ -21,8 +21,8 @@ import {
   ExportGuard,
   QueryGuard,
   ReadAllGuard,
-} from 'src/guards/roles.guard';
-import { StudyGuard } from 'src/guards/study.guard';
+} from '../guards/roles.guard';
+import { StudyGuard } from '../guards/study.guard';
 
 @ApiTags('orthanc')
 @Controller()
