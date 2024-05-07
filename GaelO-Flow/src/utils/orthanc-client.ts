@@ -739,7 +739,6 @@ export default class OrthancClient extends HttpClient {
       'get',
       null,
     ).then((response) => {
-      // console.log('getParentStudy -> Response:', response.data);
       return response.data;
     });
   }
