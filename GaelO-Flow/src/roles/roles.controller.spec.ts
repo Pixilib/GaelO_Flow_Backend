@@ -98,7 +98,7 @@ describe('RolesController', () => {
     labelsService = module.get<LabelsService>(LabelsService);
   });
 
-  describe.skip('findAll', () => {
+  describe('findAll', () => {
     it('check if findAll has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
@@ -129,7 +129,7 @@ describe('RolesController', () => {
     });
   });
 
-  describe.skip('findOne', () => {
+  describe('findOne', () => {
     it('check if findOne has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
@@ -151,7 +151,7 @@ describe('RolesController', () => {
     });
   });
 
-  describe.skip('update', () => {
+  describe('update', () => {
     it('check if update has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
@@ -205,7 +205,7 @@ describe('RolesController', () => {
     });
   });
 
-  describe.skip('delete', () => {
+  describe('delete', () => {
     it('check if delete has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
@@ -237,7 +237,7 @@ describe('RolesController', () => {
     });
   });
 
-  describe.skip('createRole', () => {
+  describe('createRole', () => {
     it('check if createRole has adminGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',
@@ -384,7 +384,7 @@ describe('RolesController', () => {
     });
   });
 
-  describe.skip('removeLabelFromRole', () => {
+  describe('removeLabelFromRole', () => {
     it('check if removeLabelFromRole has adminGuard and CheckUserRoleGuard', async () => {
       const guards = Reflect.getMetadata(
         '__guards__',

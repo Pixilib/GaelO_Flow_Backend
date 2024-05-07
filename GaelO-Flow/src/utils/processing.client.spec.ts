@@ -7,7 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import ProcessingClient from './processing.client';
 
-describe.skip('ProcessingClient', () => {
+describe('ProcessingClient', () => {
   let processingClient: ProcessingClient;
   const PATH = process.cwd() + '/tmp/';
 
@@ -134,15 +134,13 @@ describe.skip('ProcessingClient', () => {
     it(
       'should create a MIP for GK series',
       async () => {
-        const response = await processingClient.createMIPForSeries(GK.seriesId);
-        expect(response).toBeDefined();
-
         const file = createWriteStream(GK.gifPath);
-        response.pipe(file);
-
-        file.on('finish', () => {
-          file.close();
-        });
+        await processingClient
+          .createMIPForSeries(GK.seriesId)
+          .then(async (res) => {
+            res.pipe(file);
+            await new Promise((resolve) => file.on('finish', resolve));
+          });
       },
       2 * 60 * 1000,
     );
@@ -150,17 +148,13 @@ describe.skip('ProcessingClient', () => {
     it(
       'should create a MIP for PET series',
       async () => {
-        const response = await processingClient.createMIPForSeries(
-          PET.seriesId,
-        );
-        expect(response).toBeDefined();
-
         const file = createWriteStream(PET.gifPath);
-        response.pipe(file);
-
-        file.on('finish', () => {
-          file.close();
-        });
+        await processingClient
+          .createMIPForSeries(PET.seriesId)
+          .then(async (res) => {
+            res.pipe(file);
+            await new Promise((resolve) => file.on('finish', resolve));
+          });
       },
       2 * 60 * 1000,
     );
@@ -176,94 +170,71 @@ describe.skip('ProcessingClient', () => {
           inverted: true,
           orientation: 'LPI',
         };
-        const response = await processingClient.createMIPForSeries(
-          PET.seriesId,
-          mipFragmentedPayload,
-        );
-        expect(response).toBeDefined();
-
         const file = createWriteStream(PET.gifWMaskPath);
-        response.pipe(file);
-
-        file.on('finish', () => {
-          file.close();
-        });
+        await processingClient
+          .createMIPForSeries(PET.seriesId, mipFragmentedPayload)
+          .then(async (res) => {
+            res.pipe(file);
+            await new Promise((resolve) => file.on('finish', resolve));
+          });
       },
       2 * 60 * 1000,
     );
   });
 
-  describe('createMosaicForSeries', () => {
+  describe.skip('createMosaicForSeries', () => {
     it('should create a mosaic for GK series', async () => {
-      const response = await processingClient.createMosaicForSeries(
-        GK.seriesId,
-      );
-      expect(response).toBeDefined();
-
       const file = createWriteStream(GK.pngPath);
-      response.pipe(file);
-
-      file.on('finish', () => {
-        file.close();
-      });
+      await processingClient
+        .createMosaicForSeries(GK.seriesId)
+        .then(async (res) => {
+          res.pipe(file);
+          await new Promise((resolve) => file.on('finish', resolve));
+        });
     });
 
     it('should create a mosaic for PET series', async () => {
-      const response = await processingClient.createMosaicForSeries(
-        PET.seriesId,
-      );
-      expect(response).toBeDefined();
-
       const file = createWriteStream(PET.pngPath);
-      response.pipe(file);
-
-      file.on('finish', () => {
-        file.close();
-      });
+      await processingClient
+        .createMosaicForSeries(PET.seriesId)
+        .then(async (res) => {
+          res.pipe(file);
+          await new Promise((resolve) => file.on('finish', resolve));
+        });
     });
   });
 
-  describe('getNiftiMask', () => {
+  describe.skip('getNiftiMask', () => {
     it('should execute getNiftiMask', async () => {
-      const response = await processingClient.getNiftiMask(mask.inferenceID);
-      expect(response).toBeDefined();
-
       const file = createWriteStream(mask.maskGzip);
-      response.pipe(file);
-
-      file.on('finish', () => {
-        file.close();
-      });
+      await processingClient
+        .getNiftiMask(mask.inferenceID)
+        .then(async (res) => {
+          res.pipe(file);
+          await new Promise((resolve) => file.on('finish', resolve));
+        });
     });
   });
 
-  describe('getNiftiSeries', () => {
+  describe.skip('getNiftiSeries', () => {
     it('should get the GK nifti series', async () => {
-      const response = await processingClient.getNiftiSeries(GK.seriesId);
-      expect(response).toBeDefined();
-
       const file = createWriteStream(GK.gzipPath);
-      response.pipe(file);
-
-      file.on('finish', () => {
-        file.close();
+      await processingClient.getNiftiSeries(GK.seriesId).then(async (res) => {
+        res.pipe(file);
+        await new Promise((resolve) => file.on('finish', resolve));
       });
     });
 
     it('should get the PET nifti series', async () => {
-      const response = await processingClient.getNiftiSeries(PET.seriesId);
-      expect(response).toBeDefined();
-
       const file = createWriteStream(PET.gzipPath);
-      response.pipe(file);
-
-      file.on('finish', () => {
-        file.close();
+      await processingClient.getNiftiSeries(PET.seriesId).then(async (res) => {
+        res.pipe(file);
+        await new Promise((resolve) => file.on('finish', resolve));
       });
     });
   });
 
-  describe('createRtssFromMask', () => {
+  describe.skip('createRtssFromMask', () => {
     it('should create a RTSS from the mask', async () => {
       mask.rtssID = await processingClient.createRtssFromMask(
         PET.dicomUuid,
@@ -273,21 +244,17 @@ describe.skip('ProcessingClient', () => {
     });
   });
 
-  describe('getRtss', () => {
+  describe.skip('getRtss', () => {
     it('should get the RTSS', async () => {
-      const response = await processingClient.getRtss(mask.rtssID);
-      expect(response).toBeDefined();
-
       const file = createWriteStream(mask.rtssPath);
-      response.pipe(file);
-
-      file.on('finish', () => {
-        file.close();
+      await processingClient.getRtss(mask.rtssID).then(async (res) => {
+        res.pipe(file);
+        await new Promise((resolve) => file.on('finish', resolve));
       });
     });
   });
 
-  describe('createSegFromMask', () => {
+  describe.skip('createSegFromMask', () => {
     it('should create a SEG from the mask', async () => {
       mask.segID = await processingClient.createSegFromMask(
         PET.dicomUuid,
@@ -297,21 +264,17 @@ describe.skip('ProcessingClient', () => {
     });
   });
 
-  describe('getSeg', () => {
+  describe.skip('getSeg', () => {
     it('should get the SEG', async () => {
-      const response = await processingClient.getSeg(mask.segID);
-      expect(response).toBeDefined();
-
       const file = createWriteStream(mask.segPath);
-      response.pipe(file);
-
-      file.on('finish', () => {
-        file.close();
+      await processingClient.getSeg(mask.segID).then(async (res) => {
+        res.pipe(file);
+        await new Promise((resolve) => file.on('finish', resolve));
       });
     });
   });
 
-  describe('thresholdMask', () => {
+  describe.skip('thresholdMask', () => {
     it('should give a new mask id', async () => {
       mask.thresholdedMaskId = await processingClient.thresholdMask(
         mask.inferenceID,
@@ -322,7 +285,7 @@ describe.skip('ProcessingClient', () => {
     });
   });
 
-  describe('fragmentMask', () => {
+  describe.skip('fragmentMask', () => {
     it('should give a new mask id', async () => {
       mask.fragmentMaskId = await processingClient.fragmentMask(
         PET.seriesId,
@@ -333,25 +296,19 @@ describe.skip('ProcessingClient', () => {
     });
   });
 
-  describe('getMaskDicomOrientation', () => {
+  describe.skip('getMaskDicomOrientation', () => {
     it('should get the mask dicom orientation', async () => {
-      const response = await processingClient.getMaskDicomOrientation(
-        mask.inferenceID,
-        'LPI',
-        true,
-      );
-      expect(response).toBeDefined();
-
       const file = createWriteStream(mask.maskDicomOrientation);
-      response.pipe(file);
-
-      file.on('finish', () => {
-        file.close();
-      });
+      await processingClient
+        .getMaskDicomOrientation(mask.inferenceID, 'LPI', true)
+        .then(async (res) => {
+          res.pipe(file);
+          await new Promise((resolve) => file.on('finish', resolve));
+        });
     });
   });
 
-  describe('getStatMask', () => {
+  describe.skip('getStatMask', () => {
     it('should get the stats for the mask', async () => {
       mask.stat = await processingClient.getStatsMask(mask.inferenceID);
       expect(mask.stat).toBeDefined();
@@ -361,7 +318,7 @@ describe.skip('ProcessingClient', () => {
     });
   });
 
-  describe('getStatsMaskSeries', () => {
+  describe.skip('getStatsMaskSeries', () => {
     it('should get the stat for the mask and series', async () => {
       const stats = await processingClient.getStatsMaskSeries(
         mask.inferenceID,
@@ -380,7 +337,7 @@ describe.skip('ProcessingClient', () => {
     });
   });
 
-  describe('deleteRessource', () => {
+  describe.skip('deleteRessource', () => {
     describe('delete GK', () => {
       it('should delete the GK series', async () => {
         const response = await processingClient.deleteRessource(
@@ -399,7 +356,7 @@ describe.skip('ProcessingClient', () => {
       });
     });
 
-    describe('delete PET', () => {
+    describe.skip('delete PET', () => {
       it('should delete the PET series', async () => {
         const response = await processingClient.deleteRessource(
           'series',
@@ -417,7 +374,7 @@ describe.skip('ProcessingClient', () => {
       });
     });
 
-    describe('delete mask', () => {
+    describe.skip('delete mask', () => {
       it('should delete the mask inference ID', async () => {
         const response = await processingClient.deleteRessource(
           'masks',
