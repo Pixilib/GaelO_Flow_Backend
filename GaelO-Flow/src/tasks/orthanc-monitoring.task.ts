@@ -16,12 +16,12 @@ export class OrthancMonitoringTask {
   @Cron(CronExpression.EVERY_5_SECONDS)
   async orthancMonitoringCron() {
     if (this.lastChanges === null) {
-      this.lastChanges = (await this.orthancClient.getLastChanges()).data.Last;
+      this.lastChanges = (await this.orthancClient.getLastChanges()).Last;
     }
 
-    const changes = (
-      await this.orthancClient.getChangesSince(this.lastChanges.toString())
-    ).data;
+    const changes = await this.orthancClient.getChangesSince(
+      this.lastChanges.toString(),
+    );
 
     this.lastChanges = changes.Last;
     changes.Changes.forEach((element: any) => {

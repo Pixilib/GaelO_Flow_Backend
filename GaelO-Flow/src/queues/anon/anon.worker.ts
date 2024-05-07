@@ -49,19 +49,19 @@ function setupAnonWorker(
       job.updateProgress(50);
       const studyDetails = await orthancClient.getOrthancDetails(
         'studies',
-        anonAnswer.data.ID,
+        anonAnswer.ID,
       );
-      job.updateData({ ...job.data, results: studyDetails.data });
-      for (const seriesOrthancID of studyDetails.data.Series) {
+      job.updateData({ ...job.data, results: studyDetails });
+      for (const seriesOrthancID of studyDetails.Series) {
         const seriesDetails = await orthancClient.getOrthancDetails(
           'series',
           seriesOrthancID,
         );
-        const firstInstanceID = seriesDetails.data.Instances[0];
+        const firstInstanceID = seriesDetails.Instances[0];
         try {
           const sopClassUID =
             await orthancClient.getSopClassUID(firstInstanceID);
-          if (isSecondaryCapture(sopClassUID.data)) {
+          if (isSecondaryCapture(sopClassUID)) {
             await orthancClient.deleteFromOrthanc('series', seriesOrthancID);
           }
         } catch (error) {
