@@ -49,8 +49,7 @@ export class OrthancController {
       undefined,
       [labelName],
     );
-    console.log('Answer', answer);
-    return answer.data;
+    return answer;
   }
 
   @ApiBearerAuth('access-token')

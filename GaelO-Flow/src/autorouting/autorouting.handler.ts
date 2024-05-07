@@ -146,14 +146,8 @@ export class AutoroutingHandler {
           return;
         }
 
-        const seriesDetails = await this.orthancClient
-          .getSeriesDetailsOfStudy(orthancID)
-          .then((res) => {
-            return res.data;
-          })
-          .catch(() => {
-            return [];
-          });
+        const seriesDetails =
+          await this.orthancClient.getSeriesDetailsOfStudy(orthancID);
 
         const allModalities = seriesDetails.map(
           (series: any) => series.MainDicomTags.Modality,
@@ -205,8 +199,7 @@ export class AutoroutingHandler {
     payload: OrthancEventPayloadDto,
   ) {
     const level = this.levelMapping[payload.ChangeType];
-    const data = (await this.orthancClient.getOrthancDetails(level, payload.ID))
-      .data;
+    const data = await this.orthancClient.getOrthancDetails(level, payload.ID);
     const isSendable = this.isSendable(autorouting.Router, data);
 
     if (isSendable) {

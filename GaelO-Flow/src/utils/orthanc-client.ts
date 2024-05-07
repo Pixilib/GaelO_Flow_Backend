@@ -163,11 +163,15 @@ export default class OrthancClient extends HttpClient {
       Labels: labels,
     };
 
-    return this.request('/tools/find', 'post', payload);
+    return this.request('/tools/find', 'post', payload)
+      .then((response) => response.data)
+      .catch(() => null);
   };
 
   findInOrthancByStudyInstanceUID = (studyUID: string) => {
-    return this.findInOrthanc('Study', '', '', '', '', '', '', studyUID);
+    return this.findInOrthanc('Study', '', '', '', '', '', '', studyUID)
+      .then((response) => response.data)
+      .catch(() => []);
   };
 
   findInOrthancBySeriesInstanceUID = (seriesInstanceUID: string) => {
@@ -181,7 +185,9 @@ export default class OrthancClient extends HttpClient {
       '',
       '',
       seriesInstanceUID,
-    );
+    )
+      .then((response) => response.data)
+      .catch(() => []);
   };
 
   getOrthancDetails = (level: string, orthancID: string) => {
@@ -190,7 +196,9 @@ export default class OrthancClient extends HttpClient {
       'get',
       undefined,
       undefined,
-    );
+    )
+      .then((response) => response.data)
+      .catch(() => undefined);
   };
 
   getStudiesDetailsOfPatient = (orthancID: string) => {
@@ -202,13 +210,15 @@ export default class OrthancClient extends HttpClient {
     );
   };
 
-  getSeriesDetailsOfStudy = (orthancID: string) => {
+  getSeriesDetailsOfStudy = (orthancID: string): Promise<Array<any>> => {
     return this.request(
       '/studies/' + orthancID + '/series?expand',
       'get',
       undefined,
       undefined,
-    );
+    )
+      .then((response) => response.data)
+      .catch(() => []);
   };
 
   deleteFromOrthanc = async (level: string, orthancID: string) => {
@@ -349,22 +359,27 @@ export default class OrthancClient extends HttpClient {
       newPatientName,
       newStudyDescription,
     );
-    const answer = this.request(
+    return this.request(
       '/' + level + '/' + orthancID + '/anonymize',
       'post',
       payload,
-    );
-    return answer;
+    )
+      .then((response) => response.data)
+      .catch(() => null);
   };
 
   getChangesSince = (since: string) => {
     const outPutStream = '/changes?since=' + since;
-    return this.request(outPutStream, 'get', undefined, undefined);
+    return this.request(outPutStream, 'get', undefined, undefined)
+      .then((response) => response.data)
+      .catch(() => null);
   };
 
   getLastChanges = () => {
     const outPutStream = '/changes?last';
-    return this.request(outPutStream, 'get', undefined, undefined);
+    return this.request(outPutStream, 'get', undefined, undefined)
+      .then((response) => response.data)
+      .catch(() => null);
   };
 
   getSopClassUID = (instanceID: string) => {
@@ -373,7 +388,9 @@ export default class OrthancClient extends HttpClient {
       'get',
       undefined,
       undefined,
-    );
+    )
+      .then((response) => response.data)
+      .catch(() => null);
   };
 
   monitorJob = (
@@ -416,7 +433,9 @@ export default class OrthancClient extends HttpClient {
       '/queries/' + queryID + '/answers/' + answerNumber + '/retrieve',
       'post',
       postData,
-    );
+    )
+      .then((response) => response.data)
+      .catch(() => null);
   };
 
   sendToAET = (aet: string, orthancIds: Array<string>) => {
@@ -720,7 +739,6 @@ export default class OrthancClient extends HttpClient {
       'get',
       null,
     ).then((response) => {
-      // console.log('getParentStudy -> Response:', response.data);
       return response.data;
     });
   }

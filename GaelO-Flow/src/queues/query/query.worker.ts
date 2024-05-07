@@ -22,17 +22,16 @@ async function processStudy(orthancClient: OrthancClient, job: Job) {
   }
   const studyDetails = queryDetails[0];
   job.updateProgress(10);
-  const request = await orthancClient.makeRetrieve(
+  const data = await orthancClient.makeRetrieve(
     studyDetails.AnswerId,
     studyDetails.AnswerNumber,
     studyDetails.OriginAET,
     true,
   );
   const orthancResults = await orthancClient.findInOrthancByStudyInstanceUID(
-    request.data.Query[0]['0020,000d'],
+    data.Query[0]['0020,000d'],
   );
-  const orthancResult = orthancResults.data[0];
-  job.updateData({ ...job.data, results: orthancResult });
+  job.updateData({ ...job.data, results: orthancResults[0] });
   job.updateProgress(100);
 }
 
@@ -53,17 +52,16 @@ async function processSeries(orthancClient: OrthancClient, job: Job) {
   }
   const serieDetails = seriesDetails[0];
   job.updateProgress(10);
-  const request = await orthancClient.makeRetrieve(
+  const data = await orthancClient.makeRetrieve(
     serieDetails.AnswerId,
     serieDetails.AnswerNumber,
     serieDetails.OriginAET,
     true,
   );
   const orthancResults = await orthancClient.findInOrthancBySeriesInstanceUID(
-    request.data.Query[0]['0020,000e'],
+    data.Query[0]['0020,000e'],
   );
-  const orthancResult = orthancResults.data[0];
-  job.updateData({ ...job.data, results: orthancResult });
+  job.updateData({ ...job.data, results: orthancResults[0] });
   job.updateProgress(100);
 }
 
