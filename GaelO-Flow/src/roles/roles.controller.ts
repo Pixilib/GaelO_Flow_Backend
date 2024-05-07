@@ -11,7 +11,6 @@ import {
   BadRequestException,
   UseGuards,
   Query,
-  UseInterceptors,
   NotFoundException,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiResponse, ApiTags } from '@nestjs/swagger';

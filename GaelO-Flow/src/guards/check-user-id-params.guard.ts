@@ -1,5 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-
+/**
+ * Guard checking requested Id in param is the same as userId calling
+ */
 @Injectable()
 export class CheckUserIdParamsGuard implements CanActivate {
   constructor() {}

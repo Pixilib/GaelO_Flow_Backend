@@ -6,6 +6,9 @@ import { Autorouting } from './autorouting.entity';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { AutoroutingEventType } from './autorouting.enum';
 
+/**
+ * Database access to autorouting data
+ */
 @Injectable()
 export class AutoroutingsService {
   constructor(

@@ -1,13 +1,10 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Inject,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { RolesService } from '../roles/roles.service';
 import OrthancClient from '../utils/orthanc-client';
 import { checkLabelRoleStudy } from '../utils/check-label-role-study';
-
+/**
+ * Guard a dicomstudy has a label belonging to the user calling role
+ */
 @Injectable()
 export class StudyGuard implements CanActivate {
   constructor(

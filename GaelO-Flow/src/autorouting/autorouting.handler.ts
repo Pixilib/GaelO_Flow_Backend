@@ -16,6 +16,9 @@ import * as moment from 'moment';
 import { ProcessingQueueService } from '../processing/processing-queue.service';
 import { ProcessingJobType, ProcessingMask } from '../constants/enums';
 
+/**
+ * Handler service to execute autorouting rules
+ */
 @Injectable()
 export class AutoroutingHandler {
   autoroutingConfigs: Array<Autorouting> = [];

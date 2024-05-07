@@ -1,5 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-
+/**
+ * Guard checking role name in param is the same as user calling role
+ */
 @Injectable()
 export class CheckUserRoleGuard implements CanActivate {
   constructor() {}
