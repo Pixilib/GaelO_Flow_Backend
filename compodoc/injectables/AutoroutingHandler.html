@@ -364,8 +364,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="220"
-                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:220</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="213"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:213</a></div>
                         </td>
                     </tr>
 
@@ -919,8 +919,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="203"
-                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:203</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="197"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:197</a></div>
                         </td>
                     </tr>
 
@@ -1383,14 +1383,8 @@ export class AutoroutingHandler {
           return;
         }
 
-        const seriesDetails &#x3D; await this.orthancClient
-          .getSeriesDetailsOfStudy(orthancID)
-          .then((res) &#x3D;&gt; {
-            return res.data;
-          })
-          .catch(() &#x3D;&gt; {
-            return [];
-          });
+        const seriesDetails &#x3D;
+          await this.orthancClient.getSeriesDetailsOfStudy(orthancID);
 
         const allModalities &#x3D; seriesDetails.map(
           (series: any) &#x3D;&gt; series.MainDicomTags.Modality,
@@ -1442,8 +1436,7 @@ export class AutoroutingHandler {
     payload: OrthancEventPayloadDto,
   ) {
     const level &#x3D; this.levelMapping[payload.ChangeType];
-    const data &#x3D; (await this.orthancClient.getOrthancDetails(level, payload.ID))
-      .data;
+    const data &#x3D; await this.orthancClient.getOrthancDetails(level, payload.ID);
     const isSendable &#x3D; this.isSendable(autorouting.Router, data);
 
     if (isSendable) {

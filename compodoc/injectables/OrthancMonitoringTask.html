@@ -340,12 +340,12 @@ export class OrthancMonitoringTask {
   @Cron(CronExpression.EVERY_5_SECONDS)
   async orthancMonitoringCron() {
     if (this.lastChanges &#x3D;&#x3D;&#x3D; null) {
-      this.lastChanges &#x3D; (await this.orthancClient.getLastChanges()).data.Last;
+      this.lastChanges &#x3D; (await this.orthancClient.getLastChanges()).Last;
     }
 
-    const changes &#x3D; (
-      await this.orthancClient.getChangesSince(this.lastChanges.toString())
-    ).data;
+    const changes &#x3D; await this.orthancClient.getChangesSince(
+      this.lastChanges.toString(),
+    );
 
     this.lastChanges &#x3D; changes.Last;
     changes.Changes.forEach((element: any) &#x3D;&gt; {
