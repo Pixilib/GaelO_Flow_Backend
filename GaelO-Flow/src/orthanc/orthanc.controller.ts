@@ -24,16 +24,20 @@ import {
 } from '../guards/roles.guard';
 import { StudyGuard } from '../guards/study.guard';
 import { DicomWebGuard } from '../guards/dicom-web.guard';
+import { SeriesGuard } from '../guards/series.guard';
+import { InstanceGuard } from '../guards/instance.guard';
+import { CheckLabelInRole } from '../guards/check-label-in-role.guard';
 
 @ApiTags('orthanc')
 @Controller()
 export class OrthancController {
   constructor(private orthancClient: OrthancClient) {}
 
-  @Get('/labels/:name/studies') // TODO check if name label is part of the labels associated to te user role -> create guard
-  // @UseGuards() ???
-  getStudiesWithLabel(@Param('name') labelName: string) {
-    return this.orthancClient.findInOrthanc(
+  @ApiBearerAuth('access-token')
+  @Get('/labels/:labelName/studies')
+  @UseGuards(CheckLabelInRole)
+  async getStudiesWithLabel(@Param('labelName') labelName: string) {
+    const answer = await this.orthancClient.findInOrthanc(
       'Study',
       undefined,
       undefined,
@@ -45,11 +49,13 @@ export class OrthancController {
       undefined,
       [labelName],
     );
+    console.log('Answer', answer);
+    return answer.data;
   }
 
   @ApiBearerAuth('access-token')
   @Get('/studies/*')
-  @UseGuards(StudyGuard)
+  @UseGuards(OrGuard([ReadAllGuard, StudyGuard]))
   getStudies(
     @Request() request: RequestType,
     @Response() response: ResponseType,
@@ -59,7 +65,7 @@ export class OrthancController {
 
   @ApiBearerAuth('access-token')
   @Get('/series/*')
-  // @UseGuards() ???
+  @UseGuards(OrGuard([ReadAllGuard, SeriesGuard]))
   getSeries(
     @Request() request: RequestType,
     @Response() response: ResponseType,
@@ -69,7 +75,7 @@ export class OrthancController {
 
   @ApiBearerAuth('access-token')
   @Get('/instances/*')
-  // @UseGuards() ???
+  @UseGuards(OrGuard([ReadAllGuard, InstanceGuard]))
   getInstances(
     @Request() request: RequestType,
     @Response() response: ResponseType,
@@ -84,13 +90,6 @@ export class OrthancController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    doReverseProxy(request, response, this.orthancClient);
-  }
-
-  @ApiBearerAuth('access-token')
-  @Get('/wado/*')
-  // @UseGuards() ???
-  getWado(@Request() request: RequestType, @Response() response: ResponseType) {
     doReverseProxy(request, response, this.orthancClient);
   }
 
