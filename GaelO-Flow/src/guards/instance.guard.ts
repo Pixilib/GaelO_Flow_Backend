@@ -1,5 +1,6 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { StudyGuard } from './study.guard';
+import { checkLabelRoleStudy } from '../utils/check-label-role-study';
 
 @Injectable()
 export class InstanceGuard extends StudyGuard {
@@ -13,6 +14,11 @@ export class InstanceGuard extends StudyGuard {
       .catch(() => null);
 
     if (!parentStudy) return false;
-    return this.isStudyLabelInRole(userRole, parentStudy.ID);
+    return checkLabelRoleStudy(
+      parentStudy.ID,
+      userRole,
+      this.rolesService,
+      this.orthancClient,
+    );
   }
 }
