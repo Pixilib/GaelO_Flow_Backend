@@ -23,6 +23,7 @@ import {
   ReadAllGuard,
 } from '../guards/roles.guard';
 import { StudyGuard } from '../guards/study.guard';
+import { DicomWebGuard } from '../guards/dicom-web.guard';
 
 @ApiTags('orthanc')
 @Controller()
@@ -78,7 +79,7 @@ export class OrthancController {
 
   @ApiBearerAuth('access-token')
   @Get('/dicom-web/*')
-  // @UseGuards() ???
+  @UseGuards(OrGuard([ReadAllGuard, DicomWebGuard]))
   getDicomWeb(
     @Request() request: RequestType,
     @Response() response: ResponseType,

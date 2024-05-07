@@ -719,10 +719,15 @@ export default class OrthancClient extends HttpClient {
       '/' + level + '/' + orthancID + '/study',
       'get',
       null,
-    ).then((response) => response.data);
+    ).then((response) => {
+      // console.log('getParentStudy -> Response:', response.data);
+      return response.data;
+    });
   }
 
   lookup(instanceUID: string) {
-    return this.request('/tools/lookup', 'POST', instanceUID);
+    return this.request('/tools/lookup', 'POST', instanceUID).then(
+      (response) => response.data,
+    );
   }
 }

@@ -112,7 +112,7 @@ export class RolesController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Add label to role' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiBody({ schema: { example: { label: 'label' } } })
+  @ApiBody({ schema: { example: { Name: 'label' } } })
   @UseGuards(OrGuard([AdminGuard, CheckUserRoleGuard]))
   @Post('/:roleName/label')
   async addLabelToRole(
