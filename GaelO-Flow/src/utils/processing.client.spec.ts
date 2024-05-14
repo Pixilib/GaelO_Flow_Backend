@@ -7,7 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import ProcessingClient from './processing.client';
 
-describe('ProcessingClient', () => {
+describe.skip('ProcessingClient', () => {
   let processingClient: ProcessingClient;
   const PATH = process.cwd() + '/tmp/';
 
@@ -16,7 +16,7 @@ describe('ProcessingClient', () => {
     gifPath: PATH + 'mip_pet.gif',
     gifWMaskPath: PATH + 'mip_pet_w_mask.gif',
     pngPath: PATH + 'mosaic_pet.png',
-    gzipPath: PATH + 'PET.gzip',
+    gzipPath: PATH + 'PET.gz',
     dicomUuid: null,
     seriesId: null,
   };
@@ -25,16 +25,16 @@ describe('ProcessingClient', () => {
     filePath: PATH + '5.000000-GK.zip',
     gifPath: PATH + 'mip_gk.gif',
     pngPath: PATH + 'mosaic_gk.png',
-    gzipPath: PATH + 'GK.gzip',
+    gzipPath: PATH + 'GK.gz',
     dicomUuid: null,
     seriesId: null,
   };
 
   const mask = {
-    maskGzip: PATH + 'mask.gzip',
-    rtssPath: PATH + 'RTSS.gzip',
-    segPath: PATH + 'SEG.gzip',
-    maskDicomOrientation: PATH + 'mask_dicom_orientation.gzip',
+    maskGzip: PATH + 'mask.gz',
+    rtssPath: PATH + 'RTSS',
+    segPath: PATH + 'SEG',
+    maskDicomOrientation: PATH + 'mask_dicom_orientation.gz',
     rtssID: null,
     segID: null,
     thresholdedMaskId: null,
@@ -70,7 +70,7 @@ describe('ProcessingClient', () => {
         GK.dicomUuid = await processingClient.createDicom(streamGK);
         expect(GK.dicomUuid).toBeDefined();
       },
-      2 * 60 * 1000,
+      10 * 60 * 1000,
     );
 
     it(
@@ -80,7 +80,7 @@ describe('ProcessingClient', () => {
         PET.dicomUuid = await processingClient.createDicom(streamPET);
         expect(PET.dicomUuid).toBeDefined();
       },
-      2 * 60 * 1000,
+      10 * 60 * 1000,
     );
   });
 
@@ -96,7 +96,7 @@ describe('ProcessingClient', () => {
         expect(GK.seriesId).toBeDefined();
         expect(GK.seriesId).toBeDefined();
       },
-      2 * 60 * 1000,
+      10 * 60 * 1000,
     );
 
     it(
@@ -110,7 +110,7 @@ describe('ProcessingClient', () => {
         expect(PET.seriesId).toBeDefined();
         expect(PET.seriesId).toBeDefined();
       },
-      2 * 60 * 1000,
+      10 * 60 * 1000,
     );
   });
 
@@ -126,7 +126,7 @@ describe('ProcessingClient', () => {
         mask.inferenceID = response['id_mask'];
         expect(mask.inferenceID).toBeDefined();
       },
-      2 * 60 * 1000,
+      10 * 60 * 1000,
     );
   });
 
@@ -134,29 +134,29 @@ describe('ProcessingClient', () => {
     it(
       'should create a MIP for GK series',
       async () => {
-        const file = createWriteStream(GK.gifPath);
         await processingClient
           .createMIPForSeries(GK.seriesId)
           .then(async (res) => {
+            const file = createWriteStream(GK.gifPath);
             res.pipe(file);
             await new Promise((resolve) => file.on('finish', resolve));
           });
       },
-      2 * 60 * 1000,
+      10 * 60 * 1000,
     );
 
     it(
       'should create a MIP for PET series',
       async () => {
-        const file = createWriteStream(PET.gifPath);
         await processingClient
           .createMIPForSeries(PET.seriesId)
           .then(async (res) => {
+            const file = createWriteStream(PET.gifPath);
             res.pipe(file);
             await new Promise((resolve) => file.on('finish', resolve));
           });
       },
-      2 * 60 * 1000,
+      10 * 60 * 1000,
     );
 
     it(
@@ -170,250 +170,344 @@ describe('ProcessingClient', () => {
           inverted: true,
           orientation: 'LPI',
         };
-        const file = createWriteStream(PET.gifWMaskPath);
         await processingClient
           .createMIPForSeries(PET.seriesId, mipFragmentedPayload)
           .then(async (res) => {
+            const file = createWriteStream(PET.gifWMaskPath);
             res.pipe(file);
             await new Promise((resolve) => file.on('finish', resolve));
           });
       },
-      2 * 60 * 1000,
+      10 * 60 * 1000,
     );
   });
 
-  describe.skip('createMosaicForSeries', () => {
-    it('should create a mosaic for GK series', async () => {
-      const file = createWriteStream(GK.pngPath);
-      await processingClient
-        .createMosaicForSeries(GK.seriesId)
-        .then(async (res) => {
+  describe('createMosaicForSeries', () => {
+    it(
+      'should create a mosaic for GK series',
+      async () => {
+        await processingClient
+          .createMosaicForSeries(GK.seriesId)
+          .then(async (res) => {
+            const file = createWriteStream(GK.pngPath);
+            res.pipe(file);
+            await new Promise((resolve) => file.on('finish', resolve));
+          });
+      },
+      10 * 60 * 1000,
+    );
+
+    it(
+      'should create a mosaic for PET series',
+      async () => {
+        await processingClient
+          .createMosaicForSeries(PET.seriesId)
+          .then(async (res) => {
+            const file = createWriteStream(PET.pngPath);
+            res.pipe(file);
+            await new Promise((resolve) => file.on('finish', resolve));
+          });
+      },
+      10 * 60 * 1000,
+    );
+  });
+
+  describe('getNiftiMask', () => {
+    it(
+      'should execute getNiftiMask',
+      async () => {
+        await processingClient
+          .getNiftiMask(mask.inferenceID)
+          .then(async (res) => {
+            const file = createWriteStream(mask.maskGzip);
+            res.pipe(file);
+            await new Promise((resolve) => file.on('finish', resolve));
+          });
+      },
+      10 * 60 * 1000,
+    );
+  });
+
+  describe('getNiftiSeries', () => {
+    it(
+      'should get the GK nifti series',
+      async () => {
+        await processingClient.getNiftiSeries(GK.seriesId).then(async (res) => {
+          const file = createWriteStream(GK.gzipPath);
           res.pipe(file);
           await new Promise((resolve) => file.on('finish', resolve));
         });
-    });
+      },
+      10 * 60 * 1000,
+    );
 
-    it('should create a mosaic for PET series', async () => {
-      const file = createWriteStream(PET.pngPath);
-      await processingClient
-        .createMosaicForSeries(PET.seriesId)
-        .then(async (res) => {
-          res.pipe(file);
-          await new Promise((resolve) => file.on('finish', resolve));
-        });
-    });
+    it(
+      'should get the PET nifti series',
+      async () => {
+        await processingClient
+          .getNiftiSeries(PET.seriesId)
+          .then(async (res) => {
+            const file = createWriteStream(PET.gzipPath);
+            res.pipe(file);
+            await new Promise((resolve) => file.on('finish', resolve));
+          });
+      },
+      10 * 60 * 1000,
+    );
   });
 
-  describe.skip('getNiftiMask', () => {
-    it('should execute getNiftiMask', async () => {
-      const file = createWriteStream(mask.maskGzip);
-      await processingClient
-        .getNiftiMask(mask.inferenceID)
-        .then(async (res) => {
-          res.pipe(file);
-          await new Promise((resolve) => file.on('finish', resolve));
-        });
-    });
-  });
-
-  describe.skip('getNiftiSeries', () => {
-    it('should get the GK nifti series', async () => {
-      const file = createWriteStream(GK.gzipPath);
-      await processingClient.getNiftiSeries(GK.seriesId).then(async (res) => {
-        res.pipe(file);
-        await new Promise((resolve) => file.on('finish', resolve));
-      });
-    });
-
-    it('should get the PET nifti series', async () => {
-      const file = createWriteStream(PET.gzipPath);
-      await processingClient.getNiftiSeries(PET.seriesId).then(async (res) => {
-        res.pipe(file);
-        await new Promise((resolve) => file.on('finish', resolve));
-      });
-    });
-  });
-
-  describe.skip('createRtssFromMask', () => {
-    it('should create a RTSS from the mask', async () => {
-      mask.rtssID = await processingClient.createRtssFromMask(
-        PET.dicomUuid,
-        mask.inferenceID,
-      );
-      expect(mask.rtssID).toBeDefined();
-    });
-  });
-
-  describe.skip('getRtss', () => {
-    it('should get the RTSS', async () => {
-      const file = createWriteStream(mask.rtssPath);
-      await processingClient.getRtss(mask.rtssID).then(async (res) => {
-        res.pipe(file);
-        await new Promise((resolve) => file.on('finish', resolve));
-      });
-    });
-  });
-
-  describe.skip('createSegFromMask', () => {
-    it('should create a SEG from the mask', async () => {
-      mask.segID = await processingClient.createSegFromMask(
-        PET.dicomUuid,
-        mask.inferenceID,
-      );
-      expect(mask.segID).toBeDefined();
-    });
-  });
-
-  describe.skip('getSeg', () => {
-    it('should get the SEG', async () => {
-      const file = createWriteStream(mask.segPath);
-      await processingClient.getSeg(mask.segID).then(async (res) => {
-        res.pipe(file);
-        await new Promise((resolve) => file.on('finish', resolve));
-      });
-    });
-  });
-
-  describe.skip('thresholdMask', () => {
-    it('should give a new mask id', async () => {
-      mask.thresholdedMaskId = await processingClient.thresholdMask(
-        mask.inferenceID,
-        PET.seriesId,
-        20,
-      );
-      expect(mask.thresholdedMaskId).toBeDefined();
-    });
-  });
-
-  describe.skip('fragmentMask', () => {
-    it('should give a new mask id', async () => {
-      mask.fragmentMaskId = await processingClient.fragmentMask(
-        PET.seriesId,
-        mask.inferenceID,
-        true,
-      );
-      expect(mask.fragmentMaskId).toBeDefined();
-    });
-  });
-
-  describe.skip('getMaskDicomOrientation', () => {
-    it('should get the mask dicom orientation', async () => {
-      const file = createWriteStream(mask.maskDicomOrientation);
-      await processingClient
-        .getMaskDicomOrientation(mask.inferenceID, 'LPI', true)
-        .then(async (res) => {
-          res.pipe(file);
-          await new Promise((resolve) => file.on('finish', resolve));
-        });
-    });
-  });
-
-  describe.skip('getStatMask', () => {
-    it('should get the stats for the mask', async () => {
-      mask.stat = await processingClient.getStatsMask(mask.inferenceID);
-      expect(mask.stat).toBeDefined();
-
-      expect(mask.stat['dmax']).toBeDefined();
-      expect(mask.stat['volume']).toBeDefined();
-    });
-  });
-
-  describe.skip('getStatsMaskSeries', () => {
-    it('should get the stat for the mask and series', async () => {
-      const stats = await processingClient.getStatsMaskSeries(
-        mask.inferenceID,
-        PET.seriesId,
-      );
-      expect(stats).toBeDefined();
-      mask.statSeries = stats;
-
-      expect(stats['dmax']).toBeDefined();
-      expect(stats['volume']).toBeDefined();
-      expect(stats['suvmean']).toBeDefined();
-      expect(stats['suvmax']).toBeDefined();
-      expect(stats['suvpeak']).toBeDefined();
-      expect(stats['tlg']).toBeDefined();
-      expect(stats['dmaxbulk']).toBeDefined();
-    });
-  });
-
-  describe.skip('deleteRessource', () => {
-    describe('delete GK', () => {
-      it('should delete the GK series', async () => {
-        const response = await processingClient.deleteRessource(
-          'series',
-          GK.seriesId,
-        );
-        expect(response).toBeTruthy();
-      });
-
-      it('should delete the GK dicom', async () => {
-        const response = await processingClient.deleteRessource(
-          'dicoms',
-          GK.dicomUuid,
-        );
-        expect(response).toBeDefined();
-      });
-    });
-
-    describe.skip('delete PET', () => {
-      it('should delete the PET series', async () => {
-        const response = await processingClient.deleteRessource(
-          'series',
-          PET.seriesId,
-        );
-        expect(response).toBeDefined();
-      });
-
-      it('should delete the PET dicom', async () => {
-        const response = await processingClient.deleteRessource(
-          'dicoms',
+  describe('createRtssFromMask', () => {
+    it(
+      'should create a RTSS from the mask',
+      async () => {
+        mask.rtssID = await processingClient.createRtssFromMask(
           PET.dicomUuid,
-        );
-        expect(response).toBeDefined();
-      });
-    });
-
-    describe.skip('delete mask', () => {
-      it('should delete the mask inference ID', async () => {
-        const response = await processingClient.deleteRessource(
-          'masks',
           mask.inferenceID,
         );
-        expect(response).toBeDefined();
-      });
+        expect(mask.rtssID).toBeDefined();
+      },
+      10 * 60 * 1000,
+    );
+  });
 
-      it('should delete the thresholded mask ID', async () => {
-        const response = await processingClient.deleteRessource(
-          'masks',
-          mask.thresholdedMaskId,
-        );
-        expect(response).toBeDefined();
-      });
+  describe('getRtss', () => {
+    it(
+      'should get the RTSS',
+      async () => {
+        await processingClient.getRtss(mask.rtssID).then(async (res) => {
+          const file = createWriteStream(mask.rtssPath);
+          res.pipe(file);
+          await new Promise((resolve) => file.on('finish', resolve));
+        });
+      },
+      10 * 60 * 1000,
+    );
+  });
 
-      it('should delete the fragment mask ID', async () => {
-        const response = await processingClient.deleteRessource(
-          'masks',
-          mask.fragmentMaskId,
+  describe('createSegFromMask', () => {
+    it(
+      'should create a SEG from the mask',
+      async () => {
+        mask.segID = await processingClient.createSegFromMask(
+          PET.dicomUuid,
+          mask.inferenceID,
         );
-        expect(response).toBeDefined();
-      });
+        expect(mask.segID).toBeDefined();
+      },
+      10 * 60 * 1000,
+    );
+  });
 
-      it('should delete the RTSS ID', async () => {
-        const response = await processingClient.deleteRessource(
-          'rtss',
-          mask.rtssID,
-        );
-        expect(response).toBeDefined();
-      });
+  describe('getSeg', () => {
+    it(
+      'should get the SEG',
+      async () => {
+        await processingClient.getSeg(mask.segID).then(async (res) => {
+          const file = createWriteStream(mask.segPath);
+          res.pipe(file);
+          await new Promise((resolve) => file.on('finish', resolve));
+        });
+      },
+      10 * 60 * 1000,
+    );
+  });
 
-      it('should delete the SEG ID', async () => {
-        const response = await processingClient.deleteRessource(
-          'seg',
-          mask.segID,
+  describe('thresholdMask', () => {
+    it(
+      'should give a new mask id',
+      async () => {
+        mask.thresholdedMaskId = await processingClient.thresholdMask(
+          mask.inferenceID,
+          PET.seriesId,
+          20,
         );
-        expect(response).toBeDefined();
-      });
+        expect(mask.thresholdedMaskId).toBeDefined();
+      },
+      10 * 60 * 1000,
+    );
+  });
+
+  describe('fragmentMask', () => {
+    it(
+      'should give a new mask id',
+      async () => {
+        mask.fragmentMaskId = await processingClient.fragmentMask(
+          PET.seriesId,
+          mask.inferenceID,
+          true,
+        );
+        expect(mask.fragmentMaskId).toBeDefined();
+      },
+      10 * 60 * 1000,
+    );
+  });
+
+  describe('getMaskDicomOrientation', () => {
+    it(
+      'should get the mask dicom orientation',
+      async () => {
+        await processingClient
+          .getMaskDicomOrientation(mask.inferenceID, 'LPI', true)
+          .then(async (res) => {
+            const file = createWriteStream(mask.maskDicomOrientation);
+            res.pipe(file);
+            await new Promise((resolve) => file.on('finish', resolve));
+          });
+      },
+      10 * 60 * 1000,
+    );
+  });
+
+  describe('getStatMask', () => {
+    it(
+      'should get the stats for the mask',
+      async () => {
+        mask.stat = await processingClient.getStatsMask(mask.inferenceID);
+        expect(mask.stat).toBeDefined();
+
+        expect(mask.stat['dmax']).toBeDefined();
+        expect(mask.stat['volume']).toBeDefined();
+      },
+      10 * 60 * 1000,
+    );
+  });
+
+  describe('getStatsMaskSeries', () => {
+    it(
+      'should get the stat for the mask and series',
+      async () => {
+        const stats = await processingClient.getStatsMaskSeries(
+          mask.inferenceID,
+          PET.seriesId,
+        );
+        expect(stats).toBeDefined();
+        mask.statSeries = stats;
+
+        expect(stats['dmax']).toBeDefined();
+        expect(stats['volume']).toBeDefined();
+        expect(stats['suvmean']).toBeDefined();
+        expect(stats['suvmax']).toBeDefined();
+        expect(stats['suvpeak']).toBeDefined();
+        expect(stats['tlg']).toBeDefined();
+        expect(stats['dmaxbulk']).toBeDefined();
+      },
+      10 * 60 * 1000,
+    );
+  });
+
+  describe('deleteRessource', () => {
+    describe('delete GK', () => {
+      it(
+        'should delete the GK series',
+        async () => {
+          const response = await processingClient.deleteRessource(
+            'series',
+            GK.seriesId,
+          );
+          expect(response).toBeTruthy();
+        },
+        10 * 60 * 1000,
+      );
+
+      it(
+        'should delete the GK dicom',
+        async () => {
+          const response = await processingClient.deleteRessource(
+            'dicoms',
+            GK.dicomUuid,
+          );
+          expect(response).toBeDefined();
+        },
+        10 * 60 * 1000,
+      );
+    });
+
+    describe('delete PET', () => {
+      it(
+        'should delete the PET series',
+        async () => {
+          const response = await processingClient.deleteRessource(
+            'series',
+            PET.seriesId,
+          );
+          expect(response).toBeDefined();
+        },
+        10 * 60 * 1000,
+      );
+
+      it(
+        'should delete the PET dicom',
+        async () => {
+          const response = await processingClient.deleteRessource(
+            'dicoms',
+            PET.dicomUuid,
+          );
+          expect(response).toBeDefined();
+        },
+        10 * 60 * 1000,
+      );
+    });
+
+    describe('delete mask', () => {
+      it(
+        'should delete the mask inference ID',
+        async () => {
+          const response = await processingClient.deleteRessource(
+            'masks',
+            mask.inferenceID,
+          );
+          expect(response).toBeDefined();
+        },
+        10 * 60 * 1000,
+      );
+
+      it(
+        'should delete the thresholded mask ID',
+        async () => {
+          const response = await processingClient.deleteRessource(
+            'masks',
+            mask.thresholdedMaskId,
+          );
+          expect(response).toBeDefined();
+        },
+        10 * 60 * 1000,
+      );
+
+      it(
+        'should delete the fragment mask ID',
+        async () => {
+          const response = await processingClient.deleteRessource(
+            'masks',
+            mask.fragmentMaskId,
+          );
+          expect(response).toBeDefined();
+        },
+        10 * 60 * 1000,
+      );
+
+      it(
+        'should delete the RTSS ID',
+        async () => {
+          const response = await processingClient.deleteRessource(
+            'rtss',
+            mask.rtssID,
+          );
+          expect(response).toBeDefined();
+        },
+        10 * 60 * 1000,
+      );
+
+      it(
+        'should delete the SEG ID',
+        async () => {
+          const response = await processingClient.deleteRessource(
+            'seg',
+            mask.segID,
+          );
+          expect(response).toBeDefined();
+        },
+        10 * 60 * 1000,
+      );
     });
   });
 

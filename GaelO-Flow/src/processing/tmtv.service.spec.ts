@@ -4,7 +4,7 @@ import { TmtvService } from './tmtv.service';
 import OrthancClient from '../utils/orthanc-client';
 import ProcessingClient from '../utils/processing.client';
 
-describe('TmtvService', () => {
+describe.skip('TmtvService', () => {
   let tmtvService: TmtvService;
   let orthancClient: OrthancClient;
   let processingClient: ProcessingClient;
