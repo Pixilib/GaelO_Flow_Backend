@@ -27,7 +27,7 @@ describe('OrthancClient', () => {
     });
   });
 
-  describe.skip('get archive dicom as stream', () => {
+  describe('get archive dicom as stream', () => {
     it(
       'downloads archive from orthanc',
       async () => {
@@ -39,7 +39,7 @@ describe('OrthancClient', () => {
           .then(async (result) => {
             result.pipe(file);
 
-            await new Promise((resolve) => result.on('finish', resolve));
+            await new Promise((resolve) => file.on('finish', resolve));
           });
       },
       2 * 60 * 1000,

@@ -63,7 +63,7 @@ export class HttpClient {
     headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body);
-    return axios.request(option).catch(function (error) {
+    return axios.request(option).catch((error) => {
       throw error;
     });
   };
@@ -75,7 +75,7 @@ export class HttpClient {
     headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body, 'arraybuffer');
-    return axios.request(option).catch(function (error) {
+    return axios.request(option).catch((error) => {
       throw error;
     });
   };
@@ -87,7 +87,7 @@ export class HttpClient {
     headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body, 'stream');
-    return axios.request(option).catch(function (error) {
+    return axios.request(option).catch((error) => {
       throw error;
     });
   };
