@@ -31,10 +31,12 @@ class ProcessingClient extends HttpClient {
     }).then((response) => response.data);
   }
 
-  executeInference(modelName: string, payload: any): Promise<string> {
-    return this.request(`/models/${modelName}/inference`, 'POST', payload).then(
-      (response) => response.data,
-    );
+  executeInference(modelName: string, payload: any): Promise<object> {
+    return this.request(`/models/${modelName}/inference`, 'POST', payload)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
   }
 
   createMIPForSeries(
