@@ -7,7 +7,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import ProcessingClient from './processing.client';
 
-describe.skip('ProcessingClient', () => {
+describe('ProcessingClient', () => {
   let processingClient: ProcessingClient;
   const PATH = process.cwd() + '/tmp/';
 
@@ -107,7 +107,7 @@ describe.skip('ProcessingClient', () => {
           true,
           true,
         );
-        expect(PET.seriesId).toBeDefined();
+        console.log(PET.seriesId);
         expect(PET.seriesId).toBeDefined();
       },
       10 * 60 * 1000,
@@ -148,6 +148,7 @@ describe.skip('ProcessingClient', () => {
     it(
       'should create a MIP for PET series',
       async () => {
+        console.log(PET.seriesId);
         await processingClient
           .createMIPForSeries(PET.seriesId)
           .then(async (res) => {

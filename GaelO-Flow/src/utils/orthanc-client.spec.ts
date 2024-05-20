@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import OrthancClient from './orthanc-client';
 
-describe.skip('OrthancClient', () => {
+describe('OrthancClient', () => {
   let orthancClient: OrthancClient;
 
   beforeEach(async () => {

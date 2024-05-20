@@ -35,7 +35,7 @@ class ProcessingClient extends HttpClient {
     return this.request(`/models/${modelName}/inference`, 'POST', payload)
       .then((response) => response.data)
       .catch((error) => {
-        throw error;
+        throw new Error(error);
       });
   }
 
