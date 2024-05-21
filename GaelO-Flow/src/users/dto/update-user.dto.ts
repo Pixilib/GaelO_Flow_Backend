@@ -10,7 +10,7 @@ export class UpdateUserDto {
   @IsString()
   Lastname: string;
 
-  @ApiProperty({ example: 'john.doe@gaelo.fr', required: true })
+  @ApiProperty({ example: 'john.doe@gaelo.com', required: true })
   @IsString()
   Email: string;
 

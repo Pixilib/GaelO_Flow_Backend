@@ -30,7 +30,6 @@ export class OptionsController {
     const getOptionDto: GetOptionDto = {
       ...options,
       OrthancAddress: this.configService.get('ORTHANC_ADDRESS'),
-      OrthancPort: this.configService.get('ORTHANC_PORT'),
       OrthancUsername: this.configService.get('ORTHANC_USERNAME'),
       OrthancPassword: this.configService.get('ORTHANC_PASSWORD'),
       RedisAddress: this.configService.get('REDIS_ADDRESS'),

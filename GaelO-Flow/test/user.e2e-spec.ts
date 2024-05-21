@@ -5,7 +5,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { loginAsAdmin, loginAsUser } from './login';
 
-describe('UsersController (e2e)', () => {
+describe('User (e2e)', () => {
   let app: INestApplication;
   let server: any = null;
 
@@ -15,9 +15,9 @@ describe('UsersController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    await app.init();
-
     server = app.getHttpServer();
+
+    await app.init();
   });
 
   afterAll(async () => {
@@ -31,7 +31,7 @@ describe('UsersController (e2e)', () => {
 
     let newUserId: number = 0;
 
-    it('/auth/login (POST)', async () => {
+    it('/login (POST)', async () => {
       const body = await loginAsAdmin(server);
       adminToken = body.AccessToken;
       adminId = body.UserId;
@@ -64,7 +64,6 @@ describe('UsersController (e2e)', () => {
         .send({
           Firstname: 'test',
           Lastname: 'test',
-          Username: 'test',
           Email: 'test@test.com',
           Password: 'test',
           Role: 'user',
@@ -99,7 +98,7 @@ describe('UsersController (e2e)', () => {
     let userToken: string = '';
     let userId: number = 0;
 
-    it('/auth/login (POST)', async () => {
+    it('/login (POST)', async () => {
       const body = await loginAsUser(server);
       userToken = body.AccessToken;
       userId = body.UserId;
@@ -139,7 +138,6 @@ describe('UsersController (e2e)', () => {
         .send({
           Firstname: 'test',
           Lastname: 'test',
-          Username: 'test',
           Email: 'test@test.com',
           Password: 'test',
           Role: 'user',
