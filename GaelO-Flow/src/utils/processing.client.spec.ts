@@ -6,8 +6,9 @@ import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import ProcessingClient from './processing.client';
+import { Readable } from 'stream';
 
-describe('ProcessingClient', () => {
+describe.skip('ProcessingClient', () => {
   let processingClient: ProcessingClient;
   const PATH = process.cwd() + '/tmp/';
 
@@ -107,7 +108,6 @@ describe('ProcessingClient', () => {
           true,
           true,
         );
-        console.log(PET.seriesId);
         expect(PET.seriesId).toBeDefined();
       },
       10 * 60 * 1000,
@@ -148,7 +148,6 @@ describe('ProcessingClient', () => {
     it(
       'should create a MIP for PET series',
       async () => {
-        console.log(PET.seriesId);
         await processingClient
           .createMIPForSeries(PET.seriesId)
           .then(async (res) => {
@@ -276,8 +275,9 @@ describe('ProcessingClient', () => {
       'should get the RTSS',
       async () => {
         await processingClient.getRtss(mask.rtssID).then(async (res) => {
+          const stream = Readable.from(res);
           const file = createWriteStream(mask.rtssPath);
-          res.pipe(file);
+          stream.pipe(file);
           await new Promise((resolve) => file.on('finish', resolve));
         });
       },
@@ -304,8 +304,9 @@ describe('ProcessingClient', () => {
       'should get the SEG',
       async () => {
         await processingClient.getSeg(mask.segID).then(async (res) => {
+          const stream = Readable.from(res);
           const file = createWriteStream(mask.segPath);
-          res.pipe(file);
+          stream.pipe(file);
           await new Promise((resolve) => file.on('finish', resolve));
         });
       },

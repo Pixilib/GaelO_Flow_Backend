@@ -52,6 +52,7 @@ export class JwtOauthStrategy extends PassportStrategy(Strategy) {
 
   async verifyToken(token: string): Promise<any> {
     const decoded = await this.jwtService.decode(token);
+    console.log(decoded.iss);
     const wellKnown = await this.getWellKnown(decoded.iss);
     const url = await this.getUserInfoUrl(wellKnown);
 

@@ -71,7 +71,7 @@ export class HttpClient {
   requestBuffer = (
     url: string,
     method: string,
-    body: object | string | null | any,
+    body: object | string | null | any = {},
     headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body, 'arraybuffer');
@@ -83,13 +83,11 @@ export class HttpClient {
   requestStream = (
     url: string,
     method: string,
-    body: object | string | null,
+    body: object | string | null = {},
     headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body, 'stream');
     return axios.request(option).catch((error) => {
-      console.log(option);
-      console.error(error);
       throw new Error(error);
     });
   };
