@@ -1,6 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { RolesService } from '../roles/roles.service';
-
+/**
+ * Guard checking requested label belongs to user's role
+ */
 @Injectable()
 export class CheckLabelInRole implements CanActivate {
   constructor(private rolesService: RolesService) {}

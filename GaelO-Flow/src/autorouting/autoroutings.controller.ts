@@ -15,6 +15,9 @@ import { CreateAutoroutingDto } from './dto/create-autorouting.dto';
 import { Autorouting } from './autorouting.entity';
 import { AutoroutingsService } from './autoroutings.service';
 
+/**
+ * API controllers for autorouting related routes
+ */
 @ApiTags('autorouting')
 @Controller('/autorouting')
 export class AutoroutingsController {

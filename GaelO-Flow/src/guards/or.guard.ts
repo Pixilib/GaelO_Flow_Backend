@@ -23,6 +23,12 @@ interface OrGuardOptions {
   throwOnFirstError?: boolean;
 }
 
+/**
+ * Guard testing an array of guards, activate at the first guard activation granted
+ * @param guards Array of guards to be tested
+ * @param orGuardOptions {throwOnFirstError : optional}
+ * @returns Guard
+ */
 export function OrGuard(
   guards: Array<Type<CanActivate> | InjectionToken>,
   orGuardOptions?: OrGuardOptions,

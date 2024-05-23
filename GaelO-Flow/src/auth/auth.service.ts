@@ -8,6 +8,9 @@ import {
   getTokenExpiration,
 } from '../utils/passwords';
 
+/**
+ * Database access for users
+ */
 @Injectable()
 export class AuthService {
   constructor(
