@@ -20,7 +20,7 @@ import {
   QueryStudyDto,
 } from './dto/query-parsed-answer.dto';
 import { QueryAnswerType } from '../constants/enums';
-import { OrGuard } from 'src/guards/or.guard';
+import { OrGuard } from '../guards/or.guard';
 
 @ApiTags('orthanc')
 @Controller()
