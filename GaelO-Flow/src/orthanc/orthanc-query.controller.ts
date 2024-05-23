@@ -12,7 +12,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response as ResponseType, Request as RequestType } from 'express';
 
 import OrthancClient from '../utils/orthanc-client';
-import { QueryGuard } from '../guards/roles.guard';
+import { AutoQueryGuard, QueryGuard } from '../guards/roles.guard';
 import { doReverseProxy } from './utils';
 import {
   QueryParsedAnswerDto,
@@ -20,6 +20,7 @@ import {
   QueryStudyDto,
 } from './dto/query-parsed-answer.dto';
 import { QueryAnswerType } from '../constants/enums';
+import { OrGuard } from 'src/guards/or.guard';
 
 @ApiTags('orthanc')
 @Controller()
@@ -28,7 +29,7 @@ export class OrthancQueryController {
 
   @ApiBearerAuth('access-token')
   @Post('/modalities/*/query')
-  @UseGuards(QueryGuard)
+  @UseGuards(OrGuard([QueryGuard, AutoQueryGuard]))
   createModalitiesQuery(
     @Request() request: RequestType,
     @Response() response: ResponseType,
@@ -38,7 +39,7 @@ export class OrthancQueryController {
 
   @ApiBearerAuth('access-token')
   @Get('/queries/*/answers*')
-  @UseGuards(QueryGuard)
+  @UseGuards(OrGuard([QueryGuard, AutoQueryGuard]))
   getQueryAnswers(
     @Request() request: RequestType,
     @Response() response: ResponseType,
@@ -47,7 +48,7 @@ export class OrthancQueryController {
   }
 
   @Post('/queries/:id/answers/:index/retrieve')
-  @UseGuards(QueryGuard)
+  @UseGuards(OrGuard([QueryGuard, AutoQueryGuard]))
   retrieve(
     @Request() request: RequestType,
     @Response() response: ResponseType,
@@ -57,7 +58,7 @@ export class OrthancQueryController {
 
   @ApiBearerAuth('access-token')
   @Post('/modalities/:id/parsed-query')
-  @UseGuards(QueryGuard)
+  @UseGuards(OrGuard([QueryGuard, AutoQueryGuard]))
   async getQueryParsedAnswer(
     @Param('id') id: string,
     @Body() queryParsedAnswer: QueryParsedAnswerDto,
