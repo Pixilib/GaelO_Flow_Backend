@@ -1,5 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
-
+/**
+ * Guard cheking user has import permission
+ */
 @Injectable()
 export class ImportGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -10,6 +12,9 @@ export class ImportGuard implements CanActivate {
   }
 }
 
+/**
+ * Guard cheking user has anonymize permission
+ */
 @Injectable()
 export class AnonymizeGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -20,6 +25,9 @@ export class AnonymizeGuard implements CanActivate {
   }
 }
 
+/**
+ * Guard cheking user has export permission
+ */
 @Injectable()
 export class ExportGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -30,6 +38,9 @@ export class ExportGuard implements CanActivate {
   }
 }
 
+/**
+ * Guard cheking user has query permission
+ */
 @Injectable()
 export class QueryGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -40,6 +51,9 @@ export class QueryGuard implements CanActivate {
   }
 }
 
+/**
+ * Guard cheking user has autoquery permission
+ */
 @Injectable()
 export class AutoQueryGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -50,6 +64,9 @@ export class AutoQueryGuard implements CanActivate {
   }
 }
 
+/**
+ * Guard cheking user has delete permission
+ */
 @Injectable()
 export class DeleteGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -60,6 +77,9 @@ export class DeleteGuard implements CanActivate {
   }
 }
 
+/**
+ * Guard cheking user has admin permission
+ */
 @Injectable()
 export class AdminGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -70,6 +90,9 @@ export class AdminGuard implements CanActivate {
   }
 }
 
+/**
+ * Guard cheking user has modify permission
+ */
 @Injectable()
 export class ModifyGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -80,6 +103,9 @@ export class ModifyGuard implements CanActivate {
   }
 }
 
+/**
+ * Guard cheking user has cdBurner permission
+ */
 @Injectable()
 export class CdBurnerGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -90,6 +116,9 @@ export class CdBurnerGuard implements CanActivate {
   }
 }
 
+/**
+ * Guard cheking user has autorouting permission
+ */
 @Injectable()
 export class AutoRoutingGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -100,6 +129,9 @@ export class AutoRoutingGuard implements CanActivate {
   }
 }
 
+/**
+ * Guard cheking user has readall permission
+ */
 @Injectable()
 export class ReadAllGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {

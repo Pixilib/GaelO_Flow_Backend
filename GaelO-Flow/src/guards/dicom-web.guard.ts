@@ -2,7 +2,9 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { RolesService } from '../roles/roles.service';
 import { checkLabelRoleStudy } from '../utils/check-label-role-study';
 import OrthancClient from '../utils/orthanc-client';
-
+/**
+ * Guarding parsing Dicom-web routes and cheking called ressource has a label belonging to user's calling role
+ */
 @Injectable()
 export class DicomWebGuard implements CanActivate {
   private level: string;
