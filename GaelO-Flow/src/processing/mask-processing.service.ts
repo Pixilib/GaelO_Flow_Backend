@@ -40,7 +40,7 @@ export class MaskProcessingService {
           this.maskId,
         );
         const rtssBuffer = await this.processingService.getRtss(rtssId);
-        // await this.processingService.deleteRessource('rtss', rtssId);
+        await this.processingService.deleteRessource('rtss', rtssId);
         return rtssBuffer;
       case ProcessingMask.SEG:
         const segId = await this.processingService.createSegFromMask(
@@ -48,7 +48,7 @@ export class MaskProcessingService {
           this.maskId,
         );
         const segBuffer = await this.processingService.getSeg(segId);
-        // await this.processingService.deleteRessource('seg', segId);
+        await this.processingService.deleteRessource('seg', segId);
         return segBuffer;
       default:
         throw new Error('Invalid mask type');
