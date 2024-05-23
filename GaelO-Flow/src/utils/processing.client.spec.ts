@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import ProcessingClient from './processing.client';
+import { Readable } from 'stream';
 
 describe.skip('ProcessingClient', () => {
   let processingClient: ProcessingClient;
@@ -107,7 +108,6 @@ describe.skip('ProcessingClient', () => {
           true,
           true,
         );
-        expect(PET.seriesId).toBeDefined();
         expect(PET.seriesId).toBeDefined();
       },
       10 * 60 * 1000,
@@ -275,8 +275,9 @@ describe.skip('ProcessingClient', () => {
       'should get the RTSS',
       async () => {
         await processingClient.getRtss(mask.rtssID).then(async (res) => {
+          const stream = Readable.from(res);
           const file = createWriteStream(mask.rtssPath);
-          res.pipe(file);
+          stream.pipe(file);
           await new Promise((resolve) => file.on('finish', resolve));
         });
       },
@@ -303,8 +304,9 @@ describe.skip('ProcessingClient', () => {
       'should get the SEG',
       async () => {
         await processingClient.getSeg(mask.segID).then(async (res) => {
+          const stream = Readable.from(res);
           const file = createWriteStream(mask.segPath);
-          res.pipe(file);
+          stream.pipe(file);
           await new Promise((resolve) => file.on('finish', resolve));
         });
       },

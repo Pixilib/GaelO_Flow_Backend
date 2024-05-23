@@ -3,6 +3,8 @@ import ProcessingClient from '../utils/processing.client';
 import { ProcessingFile } from './processing.file';
 import { MaskProcessingService } from './mask-processing.service';
 import { ProcessingMask } from '../constants/enums';
+import { ReadableStream } from 'node:stream/web';
+import { createWriteStream } from 'node:fs';
 
 export class TmtvService {
   private ptOrthancSeriesId: string;
@@ -10,7 +12,6 @@ export class TmtvService {
   private ptSeriesId: string;
   private ctSeriesId: string;
 
-  private mask: MaskProcessingService;
   private fragmentedMask: MaskProcessingService;
 
   private createdFiles: ProcessingFile[] = [];
@@ -76,7 +77,6 @@ export class TmtvService {
 
     mask.setMaskId(maskId);
     mask.setPetId(this.ptSeriesId, this.ptOrthancSeriesId);
-    this.mask = mask;
     this.createdFiles.push(new ProcessingFile(maskId, 'masks'));
 
     if (fragmented) {
@@ -95,13 +95,15 @@ export class TmtvService {
   }
 
   async sendMaskAsRtssToOrthanc(): Promise<object> {
-    const rtssStream = await this.fragmentedMask.getMaskAs(ProcessingMask.RTSS);
-    return await this.orthancClient.sendToOrthanc(rtssStream);
+    const rtssData = await this.fragmentedMask.getMaskAs(ProcessingMask.RTSS);
+
+    return await this.orthancClient.sendDicomToOrthanc(rtssData);
   }
 
   async sendMaskAsSegToOrthanc(): Promise<object> {
-    const segStream = await this.fragmentedMask.getMaskAs(ProcessingMask.SEG);
-    return await this.orthancClient.sendToOrthanc(segStream);
+    const segData = await this.fragmentedMask.getMaskAs(ProcessingMask.SEG);
+
+    return await this.orthancClient.sendDicomToOrthanc(segData);
   }
 
   async deleteAllRessources() {

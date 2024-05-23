@@ -15,9 +15,6 @@ export class CheckLabelInRole implements CanActivate {
       (label) => label.Name,
     );
 
-    console.log('labelsOfRole', labelsOfRole);
-    console.log('labelName', labelName);
-
     return labelsOfRole.includes(labelName);
   }
 }

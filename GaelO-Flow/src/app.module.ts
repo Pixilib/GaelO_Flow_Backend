@@ -32,8 +32,7 @@ import { QueueModule } from './queues/queue.module';
 import { AppController } from './app.controller';
 
 import { SeederModule } from './seeder/seeder.module';
-import { CheckUserIdParamsGuard } from './guards/check-user-id-params.guard';
-import { CheckUserRoleGuard } from './guards/check-user-role.guard';
+import { GuardsModule } from './guards/guards.module';
 
 @Module({
   imports: [
@@ -75,11 +74,10 @@ import { CheckUserRoleGuard } from './guards/check-user-role.guard';
     OrthancModule,
     MailModule,
     SeederModule,
+    GuardsModule,
   ],
   controllers: [AppController],
   providers: [
-    CheckUserIdParamsGuard,
-    CheckUserRoleGuard,
     ProcessingClient,
     {
       provide: APP_INTERCEPTOR,

@@ -182,12 +182,8 @@ export class AutoroutingHandler {
             WithFragmentedMask: true,
           },
         });
-
-        console.log('TMTV jobId:', jobId);
-
         break;
       case DestinationType.PEER:
-        console.log('Sending to Peer', destination, orthancID);
         this.orthancClient
           .sendToPeer(destination.Name, [orthancID])
           .catch((e) => {

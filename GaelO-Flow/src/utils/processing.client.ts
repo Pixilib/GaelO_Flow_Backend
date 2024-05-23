@@ -20,8 +20,8 @@ class ProcessingClient extends HttpClient {
   ): Promise<string> {
     return this.request('/tools/create-series-from-orthanc', 'POST', {
       seriesId: orthancSeriesId,
-      pet,
-      convertToSuv,
+      PET: pet,
+      convertToSuv: convertToSuv,
     }).then((response) => response.data);
   }
 
@@ -35,7 +35,7 @@ class ProcessingClient extends HttpClient {
     return this.request(`/models/${modelName}/inference`, 'POST', payload)
       .then((response) => response.data)
       .catch((error) => {
-        throw error;
+        throw new Error(error);
       });
   }
 
@@ -74,7 +74,7 @@ class ProcessingClient extends HttpClient {
   }
 
   getNiftiSeries(imageId: string): Promise<any> {
-    return this.requestStream(`/series/${imageId}/file`, 'GET', {}).then(
+    return this.requestStream(`/series/${imageId}/file`, 'GET').then(
       (response) => response.data,
     );
   }
@@ -87,7 +87,7 @@ class ProcessingClient extends HttpClient {
   }
 
   getRtss(rtss: string): Promise<any> {
-    return this.requestStream(`/rtss/${rtss}/file`, 'GET', {}).then(
+    return this.requestStream(`/rtss/${rtss}/file`, 'GET', null).then(
       (response) => response.data,
     );
   }
@@ -100,7 +100,7 @@ class ProcessingClient extends HttpClient {
   }
 
   getSeg(seg: string): Promise<any> {
-    return this.requestStream(`/seg/${seg}/file`, 'GET', {}).then(
+    return this.requestStream(`/seg/${seg}/file`, 'GET', null).then(
       (response) => response.data,
     );
   }
