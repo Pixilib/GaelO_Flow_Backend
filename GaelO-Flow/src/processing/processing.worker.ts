@@ -78,10 +78,6 @@ async function setupProcessingWorker(
   processingWorker.on('failed', (job, err) => {
     console.error(`Processing Job ${job.id} failed with error ${err.message}`);
   });
-
-  processingWorker.on('progress', (job, progress) => {
-    console.log(`Processing Job ${job.id} is at ${progress}%`);
-  });
 }
 
 export default setupProcessingWorker;

@@ -719,10 +719,10 @@ export default class OrthancClient extends HttpClient {
     return answersObjects;
   };
 
-  sendToOrthanc(stream: any): Promise<object> {
-    return this.request('/instances', 'POST', stream).then(
-      (response) => response.data,
-    );
+  sendDicomToOrthanc(data: any): Promise<object> {
+    return this.request('/instances', 'POST', data, {
+      'Content-Type': 'application/octet-stream',
+    }).then((response) => response.data);
   }
 
   listLabels(level: string, orthancID: string) {

@@ -8,8 +8,8 @@ describe.skip('TmtvService', () => {
   let tmtvService: TmtvService;
   let orthancClient: OrthancClient;
   let processingClient: ProcessingClient;
-  const ctId: string = '5958d213-4a906ee4-28527d57-57d250fd-847acb3f';
-  const ptId: string = 'e2d08f24-7a1c85a2-b5a747b9-59ee2cda-4f10abde';
+  const ctId: string = '5a8ba2db-8135be1f-1a3cb132-7d0a5e5d-9080e7a2';
+  const ptId: string = 'a3cdfd1f-941dc8eb-806e242f-cc299eef-19ca52b1';
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -41,7 +41,7 @@ describe.skip('TmtvService', () => {
 
         expect(tmtvService.getCreatedFiles().length).toBe(2);
       },
-      2 * 60 * 1000,
+      5 * 60 * 1000,
     );
   });
 
@@ -68,29 +68,30 @@ describe.skip('TmtvService', () => {
       2 * 60 * 1000,
     );
   });
+  describe('send', () => {
+    describe('sendMaskAsRtssToOrthanc', () => {
+      it(
+        'should call ProcessingClient sendMaskAsRtssToOrthanc',
+        async () => {
+          const results = await tmtvService.sendMaskAsRtssToOrthanc();
 
-  describe('sendMaskAsRtssToOrthanc', () => {
-    it(
-      'should call ProcessingClient sendMaskAsRtssToOrthanc',
-      async () => {
-        const results = await tmtvService.sendMaskAsRtssToOrthanc();
+          expect(results).toBeDefined();
+        },
+        2 * 60 * 1000,
+      );
+    });
 
-        expect(results).toBeDefined();
-      },
-      2 * 60 * 1000,
-    );
-  });
+    describe('sendMaskAsSegToOrthanc', () => {
+      it(
+        'should call ProcessingClient sendMaskAsSegToOrthanc',
+        async () => {
+          const results = await tmtvService.sendMaskAsSegToOrthanc();
 
-  describe('sendMaskAsSegToOrthanc', () => {
-    it(
-      'should call ProcessingClient sendMaskAsSegToOrthanc',
-      async () => {
-        const results = await tmtvService.sendMaskAsSegToOrthanc();
-
-        expect(results).toBeDefined();
-      },
-      2 * 60 * 1000,
-    );
+          expect(results).toBeDefined();
+        },
+        2 * 60 * 1000,
+      );
+    });
   });
 
   describe('deleteAllRessources', () => {

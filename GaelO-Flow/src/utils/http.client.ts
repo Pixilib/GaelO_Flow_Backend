@@ -64,31 +64,31 @@ export class HttpClient {
   ) => {
     const option = this.getOptions(url, method, headers, body);
     return axios.request(option).catch((error) => {
-      throw error;
+      throw new Error(error);
     });
   };
 
   requestBuffer = (
     url: string,
     method: string,
-    body: object | string | null | any,
+    body: object | string | null | any = {},
     headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body, 'arraybuffer');
     return axios.request(option).catch((error) => {
-      throw error;
+      throw new Error(error);
     });
   };
 
   requestStream = (
     url: string,
     method: string,
-    body: object | string | null,
+    body: object | string | null = {},
     headers: object = {},
   ) => {
     const option = this.getOptions(url, method, headers, body, 'stream');
     return axios.request(option).catch((error) => {
-      throw error;
+      throw new Error(error);
     });
   };
 
@@ -136,7 +136,7 @@ export class HttpClient {
         });
       })
       .catch(function (error) {
-        throw error;
+        throw new Error(error);
       });
   }
 
