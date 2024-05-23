@@ -190,7 +190,7 @@
                         <b>Decorators : </b>
                         <br />
                         <code>
-                            @ApiProperty({example: &#x27;email@gaelo.com&#x27;})<br />@IsNotEmpty()<br />
+                            @ApiProperty({example: &#x27;admin@gaelo.com&#x27;})<br />@IsNotEmpty()<br />
                         </code>
                     </td>
                 </tr>
@@ -227,7 +227,7 @@
                         <b>Decorators : </b>
                         <br />
                         <code>
-                            @ApiProperty({example: &#x27;myPassw0rd&#x27;})<br />@IsNotEmpty()<br />
+                            @ApiProperty({example: &#x27;passwordadmin&#x27;})<br />@IsNotEmpty()<br />
                         </code>
                     </td>
                 </tr>
@@ -256,11 +256,11 @@
 import { IsNotEmpty } from &#x27;class-validator&#x27;;
 
 export class LoginDto {
-  @ApiProperty({ example: &#x27;email@gaelo.com&#x27; })
+  @ApiProperty({ example: &#x27;admin@gaelo.com&#x27; })
   @IsNotEmpty()
   Email: string;
 
-  @ApiProperty({ example: &#x27;myPassw0rd&#x27; })
+  @ApiProperty({ example: &#x27;passwordadmin&#x27; })
   @IsNotEmpty()
   Password: string;
 }

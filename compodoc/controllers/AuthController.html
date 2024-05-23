@@ -176,6 +176,7 @@
                                     <span class="modifier"></span>
                                     <span class="modifier"></span>
                                     <span class="modifier"></span>
+                                    <span class="modifier"></span>
                                     <span class="modifier">Async</span>
                                 <a href="#oauth2Login" >oauth2Login</a>
                             </li>
@@ -239,8 +240,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="117"
-                                    class="link-to-prism">src/auth/auth.controller.ts:117</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="130"
+                                    class="link-to-prism">src/auth/auth.controller.ts:130</a></div>
                         </td>
                     </tr>
 
@@ -322,8 +323,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="48"
-                                    class="link-to-prism">src/auth/auth.controller.ts:48</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="54"
+                                    class="link-to-prism">src/auth/auth.controller.ts:54</a></div>
                         </td>
                     </tr>
 
@@ -405,8 +406,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="136"
-                                    class="link-to-prism">src/auth/auth.controller.ts:136</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="149"
+                                    class="link-to-prism">src/auth/auth.controller.ts:149</a></div>
                         </td>
                     </tr>
 
@@ -465,6 +466,7 @@
                             <span class="modifier"></span>
                             <span class="modifier"></span>
                             <span class="modifier"></span>
+                            <span class="modifier"></span>
                             <span class="modifier">Async</span>
                         <span ><b>oauth2Login</b></span>
                         <a href="#oauth2Login"><span class="icon ion-ios-link"></span></a>
@@ -482,20 +484,22 @@
                 <td class="col-md-4">
                     <b>Decorators : </b>
                     <br />
-                    <code>@ApiResponse({status: 200, description: &#x27;Login success&#x27;})<br />@ApiResponse({status: 401, description: &#x27;Unauthorized&#x27;})<br />@ApiOAuth2([&#x27;openid&#x27;], &#x27;oauth2&#x27;)<br />@Public()<br />@UseGuards(JwtOAuthGuard)<br />@HttpCode(HttpStatus.OK)<br />@Post(&#x27;oauth2&#x27;)<br /></code>
+                    <code>@ApiOperation({description: &#x27;Send a oauth2 JWT token as bearer in the headers, the controller will validate / deny it&#x27;})<br />@ApiResponse({status: 200, description: &#x27;Login success&#x27;})<br />@ApiResponse({status: 401, description: &#x27;Unauthorized&#x27;})<br />@ApiOAuth2([&#x27;openid&#x27;], &#x27;oauth2&#x27;)<br />@Public()<br />@UseGuards(JwtOAuthGuard)<br />@HttpCode(HttpStatus.OK)<br />@Post(&#x27;oauth2&#x27;)<br /></code>
                 </td>
             </tr>
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="59"
-                                    class="link-to-prism">src/auth/auth.controller.ts:59</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="72"
+                                    class="link-to-prism">src/auth/auth.controller.ts:72</a></div>
                         </td>
                     </tr>
 
 
             <tr>
                 <td class="col-md-4">
+                        <div class="io-description"><p>OAuth2 login controller</p>
+</div>
 
                             <div class="io-description">
                                 <b>Parameters :</b>
@@ -569,8 +573,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="86"
-                                    class="link-to-prism">src/auth/auth.controller.ts:86</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="99"
+                                    class="link-to-prism">src/auth/auth.controller.ts:99</a></div>
                         </td>
                     </tr>
 
@@ -632,7 +636,13 @@
   Request,
   UseGuards,
 } from &#x27;@nestjs/common&#x27;;
-import { ApiBody, ApiOAuth2, ApiResponse, ApiTags } from &#x27;@nestjs/swagger&#x27;;
+import {
+  ApiBody,
+  ApiOAuth2,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from &#x27;@nestjs/swagger&#x27;;
 
 import { LocalAuthGuard } from &#x27;../guards/local.guard&#x27;;
 import { JwtOAuthGuard } from &#x27;../guards/jwt-oauth.guard&#x27;;
@@ -671,6 +681,13 @@ export class AuthController {
     return await this.authService.login(req[&#x27;user&#x27;]);
   }
 
+  /**
+   * OAuth2 login controller
+   */
+  @ApiOperation({
+    description:
+      &#x27;Send a oauth2 JWT token as bearer in the headers, the controller will validate / deny it&#x27;,
+  })
   @ApiResponse({ status: 200, description: &#x27;Login success&#x27; })
   @ApiResponse({ status: 401, description: &#x27;Unauthorized&#x27; })
   @ApiOAuth2([&#x27;openid&#x27;], &#x27;oauth2&#x27;)
