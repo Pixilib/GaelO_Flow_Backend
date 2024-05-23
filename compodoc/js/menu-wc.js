@@ -179,13 +179,13 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="modules/GuardsModule.html" data-type="entity-link" >GuardsModule</a>
                                 <li class="chapter inner">
                                     <div class="simple menu-toggler" data-bs-toggle="collapse" ${ isNormalMode ?
-                                        'data-bs-target="#injectables-links-module-GuardsModule-8a3e5ebfa6103b9b017a89bc31ff6a4feffe1fb4af1b5802798cb60c11a2ee4098dd9c6047db72c5f6fcdf49ffdc7e401b1a5f2e80814ceb4cac3071ff29c438"' : 'data-bs-target="#xs-injectables-links-module-GuardsModule-8a3e5ebfa6103b9b017a89bc31ff6a4feffe1fb4af1b5802798cb60c11a2ee4098dd9c6047db72c5f6fcdf49ffdc7e401b1a5f2e80814ceb4cac3071ff29c438"' }>
+                                        'data-bs-target="#injectables-links-module-GuardsModule-faae000f1fcfcf264b2351807735b0ec50dcf14a11688f4ef5b88c29f685287d32c1c2456d47f6a7d50f8109131b4272e7a50735a25a423408f51124defc50bb"' : 'data-bs-target="#xs-injectables-links-module-GuardsModule-faae000f1fcfcf264b2351807735b0ec50dcf14a11688f4ef5b88c29f685287d32c1c2456d47f6a7d50f8109131b4272e7a50735a25a423408f51124defc50bb"' }>
                                         <span class="icon ion-md-arrow-round-down"></span>
                                         <span>Injectables</span>
                                         <span class="icon ion-ios-arrow-down"></span>
                                     </div>
-                                    <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-module-GuardsModule-8a3e5ebfa6103b9b017a89bc31ff6a4feffe1fb4af1b5802798cb60c11a2ee4098dd9c6047db72c5f6fcdf49ffdc7e401b1a5f2e80814ceb4cac3071ff29c438"' :
-                                        'id="xs-injectables-links-module-GuardsModule-8a3e5ebfa6103b9b017a89bc31ff6a4feffe1fb4af1b5802798cb60c11a2ee4098dd9c6047db72c5f6fcdf49ffdc7e401b1a5f2e80814ceb4cac3071ff29c438"' }>
+                                    <ul class="links collapse" ${ isNormalMode ? 'id="injectables-links-module-GuardsModule-faae000f1fcfcf264b2351807735b0ec50dcf14a11688f4ef5b88c29f685287d32c1c2456d47f6a7d50f8109131b4272e7a50735a25a423408f51124defc50bb"' :
+                                        'id="xs-injectables-links-module-GuardsModule-faae000f1fcfcf264b2351807735b0ec50dcf14a11688f4ef5b88c29f685287d32c1c2456d47f6a7d50f8109131b4272e7a50735a25a423408f51124defc50bb"' }>
                                         <li class="link">
                                             <a href="injectables/InstanceGuard.html" data-type="entity-link" data-context="sub-entity" data-context-id="modules" >InstanceGuard</a>
                                         </li>
