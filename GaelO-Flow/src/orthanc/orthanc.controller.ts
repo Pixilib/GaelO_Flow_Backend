@@ -3,9 +3,6 @@ import {
   Get,
   Response,
   Request,
-  Post,
-  Delete,
-  Put,
   Param,
   UseGuards,
 } from '@nestjs/common';

@@ -1,5 +1,8 @@
-// from: https://github.com/jmcdo29/nest-lab/blob/main/packages/or-guard/src/lib/or.guard.ts
+// code taken from: https://github.com/jmcdo29/nest-lab/blob/main/packages/or-guard/src/lib/or.guard.ts
 
+/**
+ * Or guard check that one of the guards provided in the array is passing, stop testing guards when met the first guard passing
+ */
 import {
   CanActivate,
   ExecutionContext,
