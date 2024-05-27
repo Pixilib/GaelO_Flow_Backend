@@ -10,7 +10,13 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiOAuth2, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOAuth2,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { LocalAuthGuard } from '../guards/local.guard';
 import { JwtOAuthGuard } from '../guards/jwt-oauth.guard';
@@ -49,6 +55,13 @@ export class AuthController {
     return await this.authService.login(req['user']);
   }
 
+  /**
+   * OAuth2 login controller
+   */
+  @ApiOperation({
+    description:
+      'Send a oauth2 JWT token as bearer in the headers, the controller will validate / deny it',
+  })
   @ApiResponse({ status: 200, description: 'Login success' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiOAuth2(['openid'], 'oauth2')

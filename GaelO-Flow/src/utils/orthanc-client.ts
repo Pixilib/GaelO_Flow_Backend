@@ -490,6 +490,8 @@ export default class OrthancClient extends HttpClient {
       },
     };
 
+    console.log('payload', payload);
+
     const answer = await this.request(
       '/modalities/' + aet + '/query',
       'post',

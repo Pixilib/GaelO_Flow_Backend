@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
 
-describe('AppController (e2e)', () => {
+describe('App (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
@@ -14,7 +14,15 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('should be defined', () => {
+  afterAll(async () => {
+    await app.close();
+  });
+
+  it('should be defined', async () => {
+    await new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+
     expect(app).toBeDefined();
   });
 });

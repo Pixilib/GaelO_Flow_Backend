@@ -22,8 +22,8 @@ import {
 } from './roles.guard';
 import { SeriesGuard } from './series.guard';
 import { StudyGuard } from './study.guard';
-import { RolesModule } from 'src/roles/roles.module';
-import OrthancClient from 'src/utils/orthanc-client';
+import { RolesModule } from '../roles/roles.module';
+import OrthancClient from '../utils/orthanc-client';
 
 @Module({
   imports: [RolesModule],

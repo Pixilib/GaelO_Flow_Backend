@@ -20,7 +20,7 @@ import {
   QueryStudyDto,
 } from './dto/query-parsed-answer.dto';
 import { QueryAnswerType } from '../constants/enums';
-import { OrGuard } from 'src/guards/or.guard';
+import { OrGuard } from '../guards/or.guard';
 
 @ApiTags('orthanc')
 @Controller()
@@ -63,6 +63,7 @@ export class OrthancQueryController {
     @Param('id') id: string,
     @Body() queryParsedAnswer: QueryParsedAnswerDto,
   ) {
+    console.log(queryParsedAnswer);
     if (queryParsedAnswer.Level == QueryAnswerType.LEVEL_SERIES) {
       const seriesDto = queryParsedAnswer.Query as QuerySeriesDto;
       const seriesDetails = await this.orthancClient.querySeriesInAet(
