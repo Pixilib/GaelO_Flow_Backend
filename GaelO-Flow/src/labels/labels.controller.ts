@@ -30,6 +30,23 @@ export class LabelsController {
   }
 
   @ApiBearerAuth('access-token')
+  @ApiResponse({
+    status: 200,
+    description: 'Get all labels for a specific role',
+    type: [String],
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @UseGuards(AdminGuard)
+  @Get(':labelName/roles')
+  async findAllLAbelForRole(
+    @Param('labelName') labelName: string,
+  ): Promise<string[]> {
+    return (await this.LabelsService.findAllRolesForLabel(labelName)).map(
+      (role) => role.Name,
+    );
+  }
+
+  @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'remove label' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(AdminGuard)

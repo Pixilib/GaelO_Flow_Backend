@@ -5,6 +5,8 @@ import { EntityNotFoundError, Repository } from 'typeorm';
 import { LabelsModule } from './labels.module';
 import { LabelsService } from './labels.service';
 import { Label } from './label.entity';
+import { Role } from '../roles/role.entity';
+import { RolesModule } from '../roles/roles.module';
 
 describe('LabelsService', () => {
   let labelsService: LabelsService;
@@ -14,14 +16,15 @@ describe('LabelsService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
-        LabelsModule,
         TypeOrmModule.forRoot({
           type: 'sqlite',
           database: ':memory:',
-          entities: [Label],
+          entities: [Label, Role],
           synchronize: true,
         }),
-        TypeOrmModule.forFeature([Label]),
+        LabelsModule,
+        RolesModule,
+        TypeOrmModule.forFeature([Label, Role]),
       ],
       providers: [LabelsService],
     }).compile();

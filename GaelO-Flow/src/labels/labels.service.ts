@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { Label } from './label.entity';
+import { Role } from '../roles/role.entity';
 
 @Injectable()
 export class LabelsService {
@@ -13,6 +14,15 @@ export class LabelsService {
 
   async findAll(): Promise<Label[]> {
     return this.labelsRepository.find();
+  }
+
+  async findAllRolesForLabel(labelName: string): Promise<Role[]> {
+    return (
+      await this.labelsRepository.findOneOrFail({
+        where: { Name: labelName },
+        relations: ['Roles'],
+      })
+    ).Roles;
   }
 
   async findOneByOrFail(labelName: string): Promise<Label> {
