@@ -53,7 +53,7 @@ export class Role {
   ReadAll: boolean;
 
   @ApiProperty({ example: [], required: false, default: [] })
-  @ManyToMany(() => Label, (label) => label.Name)
+  @ManyToMany(() => Label, (label) => label.Roles)
   @JoinTable({ name: 'role_label' })
   Labels?: Label[];
 }

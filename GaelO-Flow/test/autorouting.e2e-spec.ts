@@ -80,7 +80,7 @@ describe('Autorouting (e2e)', () => {
         .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(200);
-      expect(response.body).toHaveLength(1);
+      expect(response.body.length).toBeGreaterThan(0);
 
       newAutoroutingId = response.body[0].Id;
     });

@@ -20,6 +20,7 @@ describe('LabelsController', () => {
             create: jest.fn(),
             findOneByOrFail: jest.fn(),
             isLabelExist: jest.fn(),
+            findAllRolesForLabel: jest.fn(),
           },
         },
       ],
@@ -45,6 +46,45 @@ describe('LabelsController', () => {
       const mock = jest.spyOn(labelsService, 'findAll').mockResolvedValue([]);
 
       await labelsController.findAll();
+      expect(mock).toHaveBeenCalled();
+    });
+  });
+
+  describe('findAllLAbelForRole', () => {
+    it('check if findAllLAbelForRole has adminGuard', async () => {
+      const guards = Reflect.getMetadata(
+        '__guards__',
+        LabelsController.prototype.findAllLAbelForRole,
+      );
+      const guardNames = guards.map((guard: any) => guard.name);
+
+      expect(guardNames.length).toBe(1);
+      expect(guardNames).toContain('AdminGuard');
+    });
+
+    it('checks if findAllLAbelForRole of the controller calls findAllRolesForLabel of the service', async () => {
+      const mock = jest
+        .spyOn(labelsService, 'findAllRolesForLabel')
+        .mockResolvedValue([
+          {
+            Name: 'firstRole',
+            Import: true,
+            Export: true,
+            Admin: true,
+            Anonymize: true,
+            AutoQuery: true,
+            Query: true,
+            Delete: true,
+            Modify: true,
+            CdBurner: true,
+            AutoRouting: true,
+            ReadAll: true,
+          },
+        ]);
+
+      expect(await labelsController.findAllLAbelForRole('first')).toStrictEqual(
+        ['firstRole'],
+      );
       expect(mock).toHaveBeenCalled();
     });
   });
