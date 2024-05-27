@@ -1,6 +1,13 @@
 import { RolesService } from '../roles/roles.service';
 import OrthancClient from './orthanc-client';
-
+/**
+ * Utils fonction checking a Orthanc Study has at least one label of a role.
+ * @param studyID
+ * @param role
+ * @param rolesService
+ * @param orthancClient
+ * @returns
+ */
 export const checkLabelRoleStudy = async (
   studyID: string,
   role: string,

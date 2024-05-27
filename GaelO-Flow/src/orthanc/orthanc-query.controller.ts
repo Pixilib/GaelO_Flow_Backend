@@ -21,7 +21,9 @@ import {
 } from './dto/query-parsed-answer.dto';
 import { QueryAnswerType } from '../constants/enums';
 import { OrGuard } from '../guards/or.guard';
-
+/**
+ * Controller for reverse proxying route to DICOM querying resources routes in orthanc.
+ */
 @ApiTags('orthanc')
 @Controller()
 export class OrthancQueryController {

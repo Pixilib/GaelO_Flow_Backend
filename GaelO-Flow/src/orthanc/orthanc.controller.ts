@@ -25,6 +25,9 @@ import { SeriesGuard } from '../guards/series.guard';
 import { InstanceGuard } from '../guards/instance.guard';
 import { CheckLabelInRole } from '../guards/check-label-in-role.guard';
 
+/**
+ * Controller for reverse proxying route to orthanc with custom guarding strategies.
+ */
 @ApiTags('orthanc')
 @Controller()
 export class OrthancController {

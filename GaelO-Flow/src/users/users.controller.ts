@@ -27,6 +27,9 @@ import { CheckUserIdParamsGuard } from '../guards/check-user-id-params.guard';
 
 import { hashPassword } from '../utils/passwords';
 
+/**
+ * Controller for the users related APIs.
+ */
 @ApiTags('users')
 @Controller('/users')
 export class UsersController {

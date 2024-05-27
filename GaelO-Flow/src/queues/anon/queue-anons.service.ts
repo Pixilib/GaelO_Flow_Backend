@@ -3,7 +3,9 @@ import { ConfigService } from '@nestjs/config';
 
 import { Queue } from 'bullmq';
 import { AbstractQueueService } from '../queue.service';
-
+/**
+ * implementation of the anonymization queue service.
+ */
 @Injectable()
 export class QueuesAnonService extends AbstractQueueService {
   constructor(configService: ConfigService) {

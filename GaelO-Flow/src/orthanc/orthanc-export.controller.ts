@@ -13,6 +13,9 @@ import OrthancClient from '../utils/orthanc-client';
 import { ExportGuard } from '../guards/roles.guard';
 import { doReverseProxy } from './utils';
 
+/**
+ * Controller for reverse proxying route to exporting resources routes in orthanc.
+ */
 @ApiTags('orthanc')
 @Controller()
 export class OrthancExportController {

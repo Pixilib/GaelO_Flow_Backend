@@ -5,6 +5,9 @@ import { Repository } from 'typeorm';
 import { OauthConfig } from './oauth-config.entity';
 import { OauthConfigDto } from './oauth-config.dto';
 
+/**
+ * Database access to oauth config related data.
+ */
 @Injectable()
 export class OauthConfigService {
   constructor(

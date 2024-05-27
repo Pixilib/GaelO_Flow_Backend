@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Job, Queue } from 'bullmq';
-
+/**
+ * Abstract class for queue services, will be inherited by the specific queue services (Anon, Query, Delete).
+ */
 @Injectable()
 export abstract class AbstractQueueService {
   protected queue: Queue;

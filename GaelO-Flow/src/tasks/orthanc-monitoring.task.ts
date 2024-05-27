@@ -3,7 +3,9 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 import OrthancClient from '../utils/orthanc-client';
-
+/**
+ * CronJob checking for Orthanc Events using HTTP /changes API and emitting events to other GaelO-Flow backend services.
+ */
 @Injectable()
 export class OrthancMonitoringTask {
   private lastChanges: number = null;
@@ -13,7 +15,7 @@ export class OrthancMonitoringTask {
     private eventEmitter: EventEmitter2,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron(CronExpression.EVERY_10_SECONDS)
   async orthancMonitoringCron() {
     if (this.lastChanges === null) {
       this.lastChanges = (await this.orthancClient.getLastChanges()).Last;

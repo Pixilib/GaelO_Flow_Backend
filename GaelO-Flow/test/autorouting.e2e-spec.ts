@@ -87,10 +87,10 @@ describe('Autorouting (e2e)', () => {
 
     it('autorouting/:id/enable (POST)', async () => {
       const response = await request(server)
-        .post(`/autorouting/${newAutoroutingId}/enable`) // TODO: SHOULD BE PUT ?
+        .put(`/autorouting/${newAutoroutingId}/enable`)
         .set('Authorization', `Bearer ${adminToken}`);
 
-      expect(response.status).toBe(201); // TODO: SHOULD BE 200
+      expect(response.status).toBe(200);
       expect(
         (await autoroutingRepositoy.findOneBy({ Id: newAutoroutingId }))
           .Activated,
@@ -99,10 +99,10 @@ describe('Autorouting (e2e)', () => {
 
     it('autorouting/:id/disable (POST)', async () => {
       const response = await request(server)
-        .post(`/autorouting/${newAutoroutingId}/disable`) // TODO: SHOULD BE PUT ?
+        .put(`/autorouting/${newAutoroutingId}/disable`)
         .set('Authorization', `Bearer ${adminToken}`);
 
-      expect(response.status).toBe(201); // TODO: SHOULD BE 200
+      expect(response.status).toBe(200);
       expect(
         (await autoroutingRepositoy.findOneBy({ Id: newAutoroutingId }))
           .Activated,
@@ -164,7 +164,7 @@ describe('Autorouting (e2e)', () => {
 
     it('autorouting/:id/enable (POST)', async () => {
       const response = await request(server)
-        .post(`/autorouting/${0}/enable`) // TODO: SHOULD BE PUT ?
+        .put(`/autorouting/${0}/enable`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(403);
@@ -172,7 +172,7 @@ describe('Autorouting (e2e)', () => {
 
     it('autorouting/:id/disable (POST)', async () => {
       const response = await request(server)
-        .post(`/autorouting/${0}/disable`) // TODO: SHOULD BE PUT ?
+        .put(`/autorouting/${0}/disable`)
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(403);

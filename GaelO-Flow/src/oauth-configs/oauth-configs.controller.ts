@@ -22,6 +22,9 @@ import { OauthConfigService } from './oauth-configs.service';
 import { AdminGuard } from '../guards/roles.guard';
 import { OauthConfigDto } from './oauth-config.dto';
 
+/**
+ * Controller for the oauth config related APIs.
+ */
 @ApiTags('oauth-config')
 @Controller('oauth-config')
 export class OauthConfigController {

@@ -4,7 +4,9 @@ import { Repository } from 'typeorm';
 
 import { Option } from './option.entity';
 import { UpdateOptionDto } from './dto/update-option.dto';
-
+/**
+ * Database access to options related data. The option table, contains only one record.
+ */
 @Injectable()
 export class OptionsService {
   constructor(

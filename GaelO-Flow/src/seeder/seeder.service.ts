@@ -4,7 +4,9 @@ import { RolesService } from '../roles/roles.service';
 import { UsersService } from '../users/users.service';
 import { OptionsService } from '../options/options.service';
 import { OauthConfigService } from '../oauth-configs/oauth-configs.service';
-
+/**
+ * Execute the seeding of the database.
+ */
 @Injectable()
 export class SeederService {
   public constructor(

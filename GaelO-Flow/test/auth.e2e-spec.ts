@@ -54,10 +54,6 @@ describe('Auth (e2e)', () => {
     accessToken = response.body.AccessToken;
   });
 
-  // it('oauth2 (POST)', async () => {
-  //   // TODO: HOW TO TEST THIS ROUTE ?
-  // });
-
   it('/register (POST)', async () => {
     const response = await request(server).post('/register').send({
       Email: 'johndoe@gaelo.com',
@@ -97,6 +93,6 @@ describe('Auth (e2e)', () => {
       .send({ Email: 'johndoe@gaelo.com' });
 
     expect(mailService.sendChangePasswordEmail).toHaveBeenCalled();
-    expect(response.status).toBe(201); // TODO: WHY 201 ??
+    expect(response.status).toBe(200);
   });
 });

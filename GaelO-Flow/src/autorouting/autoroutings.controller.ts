@@ -8,6 +8,7 @@ import {
   Param,
   UsePipes,
   ValidationPipe,
+  Put,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AutoRoutingGuard } from '../guards/roles.guard';
@@ -73,7 +74,7 @@ export class AutoroutingsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiParam({ name: 'id', required: true, type: 'number' })
   @UseGuards(AutoRoutingGuard)
-  @Post('/:id/enable')
+  @Put('/:id/enable')
   async enableAutorouting(@Param('id') id: number): Promise<any> {
     await this.autoroutingService.enable(id);
   }
@@ -86,7 +87,7 @@ export class AutoroutingsController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiParam({ name: 'id', required: true, type: 'number' })
   @UseGuards(AutoRoutingGuard)
-  @Post('/:id/disable')
+  @Put('/:id/disable')
   async disableAutorouting(@Param('id') id: number): Promise<any> {
     await this.autoroutingService.disable(id);
   }

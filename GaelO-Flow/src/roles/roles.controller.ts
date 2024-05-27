@@ -28,7 +28,9 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { GetRoleDto } from './dto/get-role.dto';
 import { WithLabels } from './dto/with-labels.dto';
 import { LabelDto } from '../labels/labels.dto';
-
+/**
+ * Controller for the roles related APIs.
+ */
 @ApiTags('roles')
 @Controller('/roles')
 export class RolesController {
