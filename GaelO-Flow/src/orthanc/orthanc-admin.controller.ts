@@ -15,6 +15,9 @@ import OrthancClient from '../utils/orthanc-client';
 import { AdminGuard } from '../guards/roles.guard';
 import { doReverseProxy } from './utils';
 
+/**
+ * Controller for reverse proxying route to orthanc accessible for administrators.
+ */
 @ApiTags('orthanc')
 @Controller()
 export class OrthancAdminController {

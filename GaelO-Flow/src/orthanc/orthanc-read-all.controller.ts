@@ -14,7 +14,9 @@ import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from '../utils/orthanc-client';
 import { doReverseProxy } from './utils';
 import { ReadAllGuard } from '../guards/roles.guard';
-
+/**
+ * Controller for reverse proxying route to DICOM access resources routes in orthanc.
+ */
 @ApiTags('orthanc')
 @Controller()
 export class OrthancReadAllController {

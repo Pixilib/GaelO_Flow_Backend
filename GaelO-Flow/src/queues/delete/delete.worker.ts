@@ -3,7 +3,11 @@ import { Worker, Job } from 'bullmq';
 import Redis from 'ioredis';
 
 import OrthancClient from '../../utils/orthanc-client';
-
+/**
+ * Definition and redis connexion of the delete job.
+ * @param orthancClient
+ * @param configService
+ */
 async function setupDeleteWorker(
   orthancClient: OrthancClient,
   configService: ConfigService,

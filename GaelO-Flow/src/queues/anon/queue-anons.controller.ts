@@ -25,7 +25,9 @@ import { QueuesAnonsDto } from './queue-anons.dto';
 import { AdminGuard, AnonymizeGuard } from '../../guards/roles.guard';
 import { OrGuard } from '../../guards/or.guard';
 import { generateRandomUUID } from '../../utils/passwords';
-
+/**
+ * Controller for anon queue task management APIs.
+ */
 @ApiTags('queues/anon')
 @Controller('/queues/anon')
 export class QueuesAnonController {

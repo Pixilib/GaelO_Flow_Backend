@@ -4,7 +4,9 @@ import { Repository } from 'typeorm';
 
 import { User } from './user.entity';
 import { hashPassword } from '../utils/passwords';
-
+/**
+ * Database access to user related data.
+ */
 @Injectable()
 export class UsersService {
   constructor(

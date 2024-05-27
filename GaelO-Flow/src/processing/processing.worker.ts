@@ -7,7 +7,12 @@ import ProcessingClient from '../utils/processing.client';
 import { TmtvService } from './tmtv.service';
 import { ProcessingJobType, ProcessingMask } from '../constants/enums';
 import { TmtvJobDto } from './processing-job.dto';
-
+/**
+ * GaelO Processing related Jobs (currently only TMTV)
+ * @param job
+ * @param orthancClient
+ * @param processingClient
+ */
 async function tmtvJob(
   job: Job,
   orthancClient: OrthancClient,

@@ -65,6 +65,11 @@ async function processSeries(orthancClient: OrthancClient, job: Job) {
   job.updateProgress(100);
 }
 
+/**
+ * Definition and redis connexion of the query job.
+ * @param orthancClient
+ * @param configService
+ */
 function setupQueryWorker(
   orthancClient: OrthancClient,
   configService: ConfigService,

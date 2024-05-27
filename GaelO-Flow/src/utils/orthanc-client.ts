@@ -9,7 +9,9 @@ import QuerySeriesAnswer from '../orthanc/query-answer/query-series.answer';
 import QueryStudyAnswer from '../orthanc/query-answer/query-study.answer';
 import TagAnon from '../orthanc/tag-anon';
 import { TagPolicies } from '../constants/enums';
-
+/**
+ * HTTP client implementing Orthanc APIs.
+ */
 @Injectable()
 export default class OrthancClient extends HttpClient {
   constructor(private configService: ConfigService) {

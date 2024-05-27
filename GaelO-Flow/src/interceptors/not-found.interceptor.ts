@@ -8,6 +8,10 @@ import {
 import { Observable, catchError } from 'rxjs';
 import { EntityNotFoundError } from 'typeorm';
 
+/**
+ * This class is an interceptor that catches EntityNotFoundError exceptions and throws a HTTP NotFoundException instead.
+ * This interceptor is registered globally in the main module.
+ */
 @Injectable()
 export class NotFoundInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {

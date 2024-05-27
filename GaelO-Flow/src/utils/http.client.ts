@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { Response } from 'express';
-
+/**
+ * Generic HTTP client for third party communications (Orthanc, Processing...)
+ */
 export class HttpClient {
   protected url: string;
   protected username: string;

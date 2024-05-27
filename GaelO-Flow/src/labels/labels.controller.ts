@@ -14,6 +14,9 @@ import { LabelsService } from './labels.service';
 import { AdminGuard } from '../guards/roles.guard';
 import { LabelDto } from './labels.dto';
 
+/**
+ * Controller for the labels related APIs.
+ */
 @ApiTags('labels')
 @Controller('/labels')
 export class LabelsController {

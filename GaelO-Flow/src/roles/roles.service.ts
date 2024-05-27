@@ -4,7 +4,9 @@ import { Repository } from 'typeorm';
 
 import { Role } from './role.entity';
 import { Label } from '../labels/label.entity';
-
+/**
+ * Database access to role related data.
+ */
 @Injectable()
 export class RolesService {
   constructor(
