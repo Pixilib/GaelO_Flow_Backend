@@ -3,7 +3,9 @@ import { ConfigService } from '@nestjs/config';
 import { Queue } from 'bullmq';
 
 import { AbstractQueueService } from '../queue.service';
-
+/**
+ * Implementation of the Delete Queue service.
+ */
 @Injectable()
 export class QueuesDeleteService extends AbstractQueueService {
   constructor(configService: ConfigService) {

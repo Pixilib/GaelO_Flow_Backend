@@ -24,7 +24,9 @@ import { AdminGuard, DeleteGuard } from '../../guards/roles.guard';
 import { QueuesDeleteDto } from './queue-deletes.dto';
 import { OrGuard } from '../../guards/or.guard';
 import { generateRandomUUID } from '../../utils/passwords';
-
+/**
+ * Controller for delete queue task management APIs.
+ */
 @ApiTags('queues/delete')
 @Controller('/queues/delete')
 export class QueuesDeleteController {

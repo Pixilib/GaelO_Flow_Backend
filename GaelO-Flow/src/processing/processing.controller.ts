@@ -26,6 +26,9 @@ import { ProcessingJobDto } from './processing-job.dto';
 import { OrGuard } from '../guards/or.guard';
 import { CheckUserIdQueryGuard } from '../guards/check-user-id-query.guard';
 
+/**
+ * Controller for gaelo-processing task management APIs.
+ */
 @ApiTags('processing')
 @Controller('/processing')
 export class ProcessingController {

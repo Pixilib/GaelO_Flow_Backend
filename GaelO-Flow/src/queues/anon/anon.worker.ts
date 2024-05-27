@@ -23,7 +23,11 @@ function isSecondaryCapture(sopClassUid: string) {
 
   return secondaryCapturySopClass.includes(sopClassUid);
 }
-
+/**
+ *  Definition and redis connexion of the anonymization job.
+ * @param orthancClient
+ * @param configService
+ */
 function setupAnonWorker(
   orthancClient: OrthancClient,
   configService: ConfigService,

@@ -4,6 +4,9 @@ import { Strategy } from 'passport-local';
 
 import { AuthService } from './auth.service';
 
+/**
+ * This class is a Passport strategy that validates a local user with email and a password.
+ */
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
   constructor(private authService: AuthService) {

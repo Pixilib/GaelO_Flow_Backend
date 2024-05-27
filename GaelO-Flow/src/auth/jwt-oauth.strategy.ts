@@ -18,6 +18,9 @@ interface UserInfoResponse {
   email: string;
 }
 
+/**
+ * This class is a Passport strategy that validates a JWT from an OAuth2 provider.
+ */
 @Injectable()
 export class JwtOauthStrategy extends PassportStrategy(Strategy) {
   constructor(

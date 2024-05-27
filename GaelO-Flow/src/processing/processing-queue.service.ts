@@ -4,7 +4,9 @@ import { Job, Queue } from 'bullmq';
 
 import { ProcessingJobDto } from './processing-job.dto';
 import { generateRandomUUID } from '../utils/passwords';
-
+/**
+ * Service class to handle the gaelo-processing queue.
+ */
 @Injectable()
 export class ProcessingQueueService {
   private processingQueue: Queue;

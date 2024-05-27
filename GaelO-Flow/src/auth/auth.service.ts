@@ -53,7 +53,6 @@ export class AuthService {
     token: string,
     userId: number,
   ): Promise<boolean> {
-    // TODO: check if the token is the one generated for the user
     const user = await this.usersService.findOne(userId);
 
     if (new Date() > user.TokenExpiration) {

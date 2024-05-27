@@ -5,7 +5,9 @@ import { Response as ResponseType, Request as RequestType } from 'express';
 import OrthancClient from '../utils/orthanc-client';
 import { ModifyGuard } from '../guards/roles.guard';
 import { doReverseProxy } from './utils';
-
+/**
+ * Controller for the orthanc modifying ressources routes related APIs.
+ */
 @ApiTags('orthanc')
 @Controller()
 export class OrthancModifyController {

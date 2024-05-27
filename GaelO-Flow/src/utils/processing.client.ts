@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { HttpClient } from './http.client';
-
+/**
+ * HTTP client implementing GaelO-Processing APIs.
+ */
 @Injectable()
 class ProcessingClient extends HttpClient {
   constructor(private readonly configService: ConfigService) {

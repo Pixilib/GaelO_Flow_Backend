@@ -3,7 +3,9 @@ import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from '../app.module';
 import { SeederService } from './seeder.service';
-
+/**
+ * Execute the seeding of the database.
+ */
 const seeder = async () => {
   const app = await NestFactory.createApplicationContext(AppModule);
   const seedservice = app.get(SeederService);

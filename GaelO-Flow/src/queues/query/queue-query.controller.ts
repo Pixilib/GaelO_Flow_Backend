@@ -28,7 +28,9 @@ import {
 } from './queue-query.dto';
 import { OrGuard } from '../../guards/or.guard';
 import { generateRandomUUID } from '../../utils/passwords';
-
+/**
+ * Controller for query queue task management APIs.
+ */
 @ApiTags('queues/query')
 @Controller('/queues/query')
 export class QueuesQueryController {

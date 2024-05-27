@@ -7,7 +7,9 @@ import { UpdateOptionDto } from './dto/update-option.dto';
 
 import { AdminGuard } from '../guards/roles.guard';
 import { GetOptionDto } from './dto/get-option.dto';
-
+/**
+ * Controller for the options related APIs.
+ */
 @ApiTags('options')
 @Controller('/options')
 export class OptionsController {

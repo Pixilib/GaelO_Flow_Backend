@@ -7,7 +7,9 @@ import { QueuesQueryService } from '../queues/query/queue-query.service';
 import { Option } from '../options/option.entity';
 
 import { isTimeBetween } from '../utils/is-time-between';
-
+/**
+ * CronJob checking for the queue state and pausing/resuming it based on the options.
+ */
 @Injectable()
 export class QueryQueueTask {
   constructor(
