@@ -14,6 +14,7 @@ import { OrthancReadAllController } from './orthanc-read-all.controller';
   imports: [RolesModule],
   providers: [OrthancClient],
   controllers: [
+    OrthancReadAllController,
     OrthancController,
     OrthancAdminController,
     OrthancDeleteController,
@@ -21,7 +22,6 @@ import { OrthancReadAllController } from './orthanc-read-all.controller';
     OrthancImportController,
     OrthancModifyController,
     OrthancQueryController,
-    OrthancReadAllController,
   ],
 })
 export class OrthancModule {}

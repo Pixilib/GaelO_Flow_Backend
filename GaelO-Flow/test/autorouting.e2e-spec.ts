@@ -6,7 +6,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 
 import { AppModule } from '../src/app.module';
 import { Autorouting } from '../src/autorouting/autorouting.entity';
-import { loginAsAdmin } from './login';
+import { createCustomJwt, loginAsAdmin } from './login';
 
 describe('Autorouting (e2e)', () => {
   let app: INestApplication;
@@ -32,7 +32,6 @@ describe('Autorouting (e2e)', () => {
   });
 
   describe('ADMIN', () => {
-    // TODO: check with a role without 'autorouting' permission
     let adminToken: string = '';
     let adminId: number = 0;
 
@@ -116,6 +115,75 @@ describe('Autorouting (e2e)', () => {
         .set('Authorization', `Bearer ${adminToken}`);
 
       expect(response.status).toBe(200);
+    });
+  });
+
+  describe('NO AUTOROUTING PERMISSION', () => {
+    let token: string;
+
+    beforeAll(async () => {
+      token = await createCustomJwt(app, {});
+    });
+
+    it('autorouting (POST)', async () => {
+      const response = await request(server)
+        .post('/autorouting')
+        .set('Authorization', `Bearer ${token}`)
+        .send({
+          Name: 'Test',
+          EventType: 'NewInstance',
+          Activated: false,
+          Router: {
+            RuleCondition: 'AND',
+            Rules: [
+              {
+                DicomTag: 'PatientName',
+                ValueRepresentation: 'string',
+                Value: 'value',
+                Condition: 'EQUALS',
+              },
+            ],
+            Destination: [
+              {
+                Destination: 'AET',
+                Name: 'value',
+              },
+            ],
+          },
+        });
+      expect(response.status).toBe(403);
+    });
+
+    it('autorouting (GET)', async () => {
+      const response = await request(server)
+        .get('/autorouting')
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(403);
+    });
+
+    it('autorouting/:id/enable (POST)', async () => {
+      const response = await request(server)
+        .post(`/autorouting/${0}/enable`) // TODO: SHOULD BE PUT ?
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(403);
+    });
+
+    it('autorouting/:id/disable (POST)', async () => {
+      const response = await request(server)
+        .post(`/autorouting/${0}/disable`) // TODO: SHOULD BE PUT ?
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(403);
+    });
+
+    it('autorouting/:id (DELETE)', async () => {
+      const response = await request(server)
+        .delete(`/autorouting/${0}`)
+        .set('Authorization', `Bearer ${token}`);
+
+      expect(response.status).toBe(403);
     });
   });
 });
