@@ -5,27 +5,67 @@ on:
     branches:
       - '*'
 
-jobs:  
+env:
+  JWT_SECRET: "verySecretKey"
+
+  ORTHANC_ADDRESS: "http://localhost:8042"
+  ORTHANC_USERNAME: "orthanc"
+  ORTHANC_PASSWORD: "orthanc"
+  
+  REDIS_ADDRESS: "localhost"
+  REDIS_PORT: "6379"
+  
+  APP_URL: "http://localhost"
+  PORT_CLIENT: "5173"
+  
+  TYPEORM_TYPE: "postgres"
+  TYPEORM_HOST: "localhost"
+  TYPEORM_PORT: "5432"
+  TYPEORM_USERNAME: "postgres"
+  TYPEORM_PASSWORD: "postgres"
+  TYPEORM_DATABASE: "gaelo-flow"
+  
+  API_PORT: "3000"
+
+jobs:
   test:
     name: 'Run e2e test'
     runs-on: ubuntu-latest
     services:
-      redis:
-        # Docker Hub image
-        image: redis
-        # Set health checks to wait until redis has started
+      postgres:
+        image: postgres:13.1
+        env:
+          POSTGRES_HOST_AUTH_METHOD: "trust"
         options: >-
-          --health-cmd "redis-cli ping"
+          --health-cmd pg_isready
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        ports:
-            # Opens tcp port 6379 on the host and service container
-            - 6379:6379
       orthanc:
-        image: osimis/orthanc:23.4.0
-        ports: 
-          - 8042:8042
+        image: orthancteam/orthanc:24.4.0
+        ports: ["8042:8042"]
+        volumes: ["orthanc:/var/lib/orthanc/db:Z"]
+        env:
+          NEURO_PLUGIN_ENABLED: "true"
+          ORTHANC__NAME: "GaelO Flow"
+          ORTHANC__DICOM_SERVER_ENABLED: "true"
+          ORTHANC__DICOM_MODALITIES_IN_DATABASE: "true"
+          ORTHANC__DICOM_ALWAYS_ALLOW_FIND: "true"
+          ORTHANC__DICOM_ALWAYS_ALLOW_MOVE: "true"
+          ORTHANC__DATABASE_SERVER_IDENTIFIER: "Orthanc1"
+          ORTHANC__ORTHANC_PEERS_IN_DATABASE: "true"
+          DICOM_WEB_PLUGIN_ENABLED: "true"
+          OSIMIS_WEB_VIEWER1_PLUGIN_ENABLED: "true"
+          PYTHON_PLUGIN_ENABLED: "true"
+          TRANSFERS_PLUGIN_ENABLED: "true"
+          WORKLISTS_PLUGIN_ENABLED: "true"
+          ORTHANC__DICOM_WEB__ENABLE: "true"
+          ORTHANC__DICOM_WEB__ROOT: "/dicom-web/"
+          ORTHANC__DICOM_WEB__ENABLEWADO: "true"
+          ORTHANC__DICOM_WEB__WADOROOT: "/wado"
+          ORTHANC__DICOM_WEB__SSL: "true"
+          ORTHANC__DICOM_WEB__STUDIES_METADATA: "MainDicomTags"
+          ORTHANC__DICOM_WEB__SERIES_METADATA: "Full"
     steps:
       - name: 'Build checkout'
         uses: actions/checkout@v4
