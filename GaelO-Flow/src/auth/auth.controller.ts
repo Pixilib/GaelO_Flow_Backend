@@ -141,6 +141,7 @@ export class AuthController {
     await this.usersService.updateUserPassword(UserId, NewPassword);
   }
 
+  @HttpCode(HttpStatus.OK)
   @ApiResponse({ status: 200, description: 'Email sent' })
   @ApiResponse({ status: 400, description: 'Bad request' })
   @ApiBody({ type: LostPassworDto })

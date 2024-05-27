@@ -111,8 +111,7 @@ describe('AuthService', () => {
       expect(updateCall.Password).toBeNull();
     });
   });
-  //TODO: These tests are failed @AntoninLaudon, Can you fix it?
-  //? I don't understand these function !
+
   describe('validateUser', () => {
     it('should return the user when the credentials are valid', async () => {
       const user = new User();
