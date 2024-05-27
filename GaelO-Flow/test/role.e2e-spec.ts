@@ -9,7 +9,7 @@ import { AppModule } from '../src/app.module';
 import { Label } from '../src/labels/label.entity';
 import { loginAsAdmin, loginAsUser } from './login';
 
-describe('RolesController (e2e)', () => {
+describe('Role (e2e)', () => {
   let labelRepository: Repository<Label>;
   let app: INestApplication;
   let server: any = null;
@@ -25,14 +25,14 @@ describe('RolesController (e2e)', () => {
     labelRepository = moduleFixture.get(getRepositoryToken(Label));
 
     const label = new Label();
-    label.Name = 'Test';
+    label.Name = 'TestRole';
     await labelRepository.save(label);
 
     await app.init();
   });
 
   afterAll(async () => {
-    await labelRepository.delete({ Name: 'Test' });
+    await labelRepository.delete({ Name: 'TestRole' });
     await app.close();
     await server.close();
   });
@@ -42,7 +42,7 @@ describe('RolesController (e2e)', () => {
     let adminId: number = 0;
 
     describe('Roles', () => {
-      it('/auth/login (POST)', async () => {
+      it('/login (POST)', async () => {
         const body = await loginAsAdmin(server);
         adminToken = body.AccessToken;
         adminId = body.UserId;
@@ -73,7 +73,7 @@ describe('RolesController (e2e)', () => {
           .post('/roles')
           .set('Authorization', `Bearer ${adminToken}`)
           .send({
-            Name: 'Test',
+            Name: 'TestRole',
             Import: true,
             Anonymize: true,
             Export: true,
@@ -91,7 +91,7 @@ describe('RolesController (e2e)', () => {
 
       it('/roles/:name (PUT)', async () => {
         const response = await request(server)
-          .put(`/roles/Test`)
+          .put(`/roles/TestRole`)
           .set('Authorization', `Bearer ${adminToken}`)
           .send({
             Import: false,
@@ -111,7 +111,7 @@ describe('RolesController (e2e)', () => {
 
       it('/roles/:name (DELETE)', async () => {
         const response = await request(server)
-          .delete(`/roles/Test`)
+          .delete(`/roles/TestRole`)
           .set('Authorization', `Bearer ${adminToken}`);
 
         expect(response.status).toBe(200);
@@ -124,7 +124,7 @@ describe('RolesController (e2e)', () => {
           .post(`/roles/Admin/label`)
           .set('Authorization', `Bearer ${adminToken}`)
           .send({
-            Name: 'Test',
+            Name: 'TestRole',
           });
 
         expect(response.status).toBe(201);
@@ -140,7 +140,7 @@ describe('RolesController (e2e)', () => {
 
       it('/roles/:roleName/labels/:label (DELETE)', async () => {
         const response = await request(server)
-          .delete(`/roles/Admin/label/Test`)
+          .delete(`/roles/Admin/label/TestRole`)
           .set('Authorization', `Bearer ${adminToken}`);
 
         expect(response.status).toBe(200);
@@ -153,7 +153,7 @@ describe('RolesController (e2e)', () => {
     let userId: number = 0;
 
     describe('Roles', () => {
-      it('/auth/login (POST)', async () => {
+      it('/login (POST)', async () => {
         const body = await loginAsUser(server);
         userToken = body.AccessToken;
         userId = body.UserId;
@@ -182,7 +182,7 @@ describe('RolesController (e2e)', () => {
           .post('/roles')
           .set('Authorization', `Bearer ${userToken}`)
           .send({
-            Name: 'Test',
+            Name: 'TestRole',
             Import: true,
             Anonymize: true,
             Export: true,
@@ -200,7 +200,7 @@ describe('RolesController (e2e)', () => {
 
       it('/roles/:name (PUT)', async () => {
         const response = await request(server)
-          .put(`/roles/Test`)
+          .put(`/roles/TestRole`)
           .set('Authorization', `Bearer ${userToken}`)
           .send({
             Import: false,
@@ -220,7 +220,7 @@ describe('RolesController (e2e)', () => {
 
       it('/roles/:name (DELETE)', async () => {
         const response = await request(server)
-          .delete(`/roles/Test`)
+          .delete(`/roles/TestRole`)
           .set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(403);
@@ -233,7 +233,7 @@ describe('RolesController (e2e)', () => {
           .post(`/roles/Admin/label`)
           .set('Authorization', `Bearer ${userToken}`)
           .send({
-            Name: 'Test',
+            Name: 'TestRole',
           });
 
         expect(response.status).toBe(403);
@@ -244,7 +244,7 @@ describe('RolesController (e2e)', () => {
           .post(`/roles/User/label`)
           .set('Authorization', `Bearer ${userToken}`)
           .send({
-            Name: 'Test',
+            Name: 'TestRole',
           });
 
         expect(response.status).toBe(201);
@@ -268,7 +268,7 @@ describe('RolesController (e2e)', () => {
 
       it('/roles/:roleName/labels/:label (DELETE) - 403', async () => {
         const response = await request(server)
-          .delete(`/roles/Admin/label/Test`)
+          .delete(`/roles/Admin/label/TestRole`)
           .set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(403);
@@ -276,7 +276,7 @@ describe('RolesController (e2e)', () => {
 
       it('/roles/:roleName/labels/:label (DELETE) - 200', async () => {
         const response = await request(server)
-          .delete(`/roles/User/label/Test`)
+          .delete(`/roles/User/label/TestRole`)
           .set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(200);

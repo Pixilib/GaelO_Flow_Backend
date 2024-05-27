@@ -7,10 +7,6 @@ export class GetOptionDto extends PartialType(CreateOptionDto) {
   @IsString()
   OrthancAddress: string;
 
-  @ApiProperty({ example: '<ORTHANC_PORT>' })
-  @IsString()
-  OrthancPort: string;
-
   @ApiProperty({ example: '<ORTHANC_USERNAME>' })
   @IsString()
   OrthancUsername: string;
