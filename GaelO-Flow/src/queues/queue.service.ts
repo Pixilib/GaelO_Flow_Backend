@@ -5,7 +5,7 @@ import { Job, Queue } from 'bullmq';
  */
 @Injectable()
 export abstract class AbstractQueueService {
-  protected queue: Queue;
+  queue: Queue;
 
   constructor(queue: Queue) {
     this.queue = queue;

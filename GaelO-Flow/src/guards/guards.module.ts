@@ -24,6 +24,7 @@ import { SeriesGuard } from './series.guard';
 import { StudyGuard } from './study.guard';
 import { RolesModule } from '../roles/roles.module';
 import OrthancClient from '../utils/orthanc-client';
+import { CheckUserIdQueryGuard } from './check-user-id-query.guard';
 
 @Module({
   imports: [RolesModule],
@@ -31,6 +32,7 @@ import OrthancClient from '../utils/orthanc-client';
     OrthancClient,
     CheckLabelInRole,
     CheckUserIdParamsGuard,
+    CheckUserIdQueryGuard,
     CheckUserRoleGuard,
     DicomWebGuard,
     InstanceGuard,
