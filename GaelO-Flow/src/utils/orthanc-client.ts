@@ -498,9 +498,7 @@ export default class OrthancClient extends HttpClient {
       '/modalities/' + aet + '/query',
       'post',
       payload,
-    ).catch((err: any) => {
-      throw err;
-    });
+    );
 
     return this.getStudyAnswerDetails(answer.data.ID, aet);
   };
@@ -531,9 +529,7 @@ export default class OrthancClient extends HttpClient {
       '/modalities/' + aet + '/query',
       'post',
       payload,
-    ).catch((err: any) => {
-      throw err;
-    });
+    );
 
     return this.getSeriesAnswerDetails(answer.data.ID, aet);
   };

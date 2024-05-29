@@ -9,7 +9,7 @@ import { generateRandomUUID } from '../utils/passwords';
  */
 @Injectable()
 export class ProcessingQueueService {
-  private processingQueue: Queue;
+  processingQueue: Queue;
 
   constructor(private readonly configService: ConfigService) {
     this.processingQueue = new Queue('processing', {
