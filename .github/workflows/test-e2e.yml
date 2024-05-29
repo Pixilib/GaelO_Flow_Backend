@@ -83,5 +83,5 @@ jobs:
       - run : yarn seed
         working-directory: ./GaelO-Flow
 
-      - run : yarn test:e2e --forceExit
+      - run : yarn test:e2e
         working-directory: ./GaelO-Flow
