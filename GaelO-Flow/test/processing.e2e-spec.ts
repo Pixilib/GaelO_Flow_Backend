@@ -13,25 +13,23 @@ describe('Processing (e2e)', () => {
   let app: INestApplication;
   let server: any = null;
 
-  let processingQueueService = {
-    flush: jest.fn(),
-    removeJob: jest.fn(),
-    addJob: jest.fn(),
-    getJobs: jest.fn().mockImplementation(() => []),
-    getAllUuids: jest.fn(),
-    getUuidsOfUser: jest.fn().mockImplementation(() => []),
-  };
+  let processingQueueService: ProcessingQueueService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    })
-      .overrideProvider(ProcessingQueueService)
-      .useValue(processingQueueService)
-      .compile();
+    }).compile();
 
     app = moduleFixture.createNestApplication();
     server = app.getHttpServer();
+    processingQueueService = moduleFixture.get<ProcessingQueueService>(
+      ProcessingQueueService,
+    );
+    processingQueueService.processingQueue = {
+      obliterate: jest.fn(),
+      getJobs: jest.fn().mockReturnValue([]),
+      add: jest.fn(),
+    } as any;
 
     await app.init();
   });
