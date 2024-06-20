@@ -80,7 +80,7 @@ describe('Orthanc (e2e)', () => {
           .expect(201);
 
         await request(server)
-          .post('/roles/noPermissionsRole/label')
+          .post('/roles/noPermissionsRole/labels')
           .set('Authorization', `Bearer ${adminToken}`)
           .send({ Name: 'CHECKLABELINROLE_label' })
           .expect(201);

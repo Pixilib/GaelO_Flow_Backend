@@ -115,7 +115,7 @@ export class RolesController {
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiBody({ schema: { example: { Name: 'label' } } })
   @UseGuards(OrGuard([AdminGuard, CheckUserRoleGuard]))
-  @Post('/:roleName/label')
+  @Post('/:roleName/labels')
   async addLabelToRole(
     @Param('roleName') roleName: string,
     @Body() labelDto: LabelDto,
@@ -146,7 +146,7 @@ export class RolesController {
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
   @UseGuards(OrGuard([AdminGuard, CheckUserRoleGuard]))
-  @Delete('/:roleName/label/:label')
+  @Delete('/:roleName/labels/:label')
   async removeLabelFromRole(
     @Param('roleName') roleName: string,
     @Param('label') label: string,
