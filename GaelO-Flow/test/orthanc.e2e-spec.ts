@@ -115,7 +115,7 @@ describe('Orthanc (e2e)', () => {
           .expect(200);
 
         await request(server)
-          .delete('/roles/noPermissionsRole/label/CHECKLABELINROLE_label')
+          .delete('/roles/noPermissionsRole/labels/CHECKLABELINROLE_label')
           .set('Authorization', `Bearer ${adminToken}`)
           .expect(200);
 
