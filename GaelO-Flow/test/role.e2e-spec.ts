@@ -276,7 +276,7 @@ describe('Role (e2e)', () => {
 
       it('/roles/:roleName/labels/:label (DELETE) - 200', async () => {
         const response = await request(server)
-          .delete(`/roles/User/label/TestRole`)
+          .delete(`/roles/User/labels/TestRole`)
           .set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(200);

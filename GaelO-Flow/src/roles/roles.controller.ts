@@ -141,7 +141,7 @@ export class RolesController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Remove label from role' })
   @ApiResponse({
-    status: 400,
+    status: 404,
     description: 'Label does not exist for this role',
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
