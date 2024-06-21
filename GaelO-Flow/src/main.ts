@@ -19,6 +19,7 @@ import setupDeleteWorker from './queues/delete/delete.worker';
 import setupAnonWorker from './queues/anon/anon.worker';
 import setupQueryWorker from './queues/query/query.worker';
 import setupProcessingWorker from './processing/processing.worker';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function buildSwagger(app: INestApplication<any>) {
   const oauthConfigs = await app.get(OauthConfigService).getOauthConfig();
@@ -64,7 +65,18 @@ async function setupWorkers(app: INestApplication<any>) {
 }
 
 async function main() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    rawBody: true,
+  });
+
+  app.useBodyParser('raw', {
+    type: (req) => {
+      if (req.headers['content-type'] === 'application/dicom') {
+        return true;
+      }
+      return false;
+    },
+  });
   app.setGlobalPrefix('api', {
     exclude: [{ path: 'oauth2-redirect.html', method: RequestMethod.GET }],
   });

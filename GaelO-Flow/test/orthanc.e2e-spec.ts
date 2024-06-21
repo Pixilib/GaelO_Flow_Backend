@@ -80,7 +80,7 @@ describe('Orthanc (e2e)', () => {
           .expect(201);
 
         await request(server)
-          .post('/roles/noPermissionsRole/label')
+          .post('/roles/noPermissionsRole/labels')
           .set('Authorization', `Bearer ${adminToken}`)
           .send({ Name: 'CHECKLABELINROLE_label' })
           .expect(201);
@@ -115,7 +115,7 @@ describe('Orthanc (e2e)', () => {
           .expect(200);
 
         await request(server)
-          .delete('/roles/noPermissionsRole/label/CHECKLABELINROLE_label')
+          .delete('/roles/noPermissionsRole/labels/CHECKLABELINROLE_label')
           .set('Authorization', `Bearer ${adminToken}`)
           .expect(200);
 

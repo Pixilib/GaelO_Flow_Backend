@@ -1,4 +1,11 @@
-import { Controller, Response, Request, UseGuards, Post } from '@nestjs/common';
+import {
+  Controller,
+  Response,
+  UseGuards,
+  Post,
+  Request,
+  RawBodyRequest,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response as ResponseType, Request as RequestType } from 'express';
 
@@ -17,7 +24,7 @@ export class OrthancImportController {
   @Post('/instances')
   @UseGuards(ImportGuard)
   createInstances(
-    @Request() request: RequestType,
+    @Request() request: RawBodyRequest<RequestType>,
     @Response() response: ResponseType,
   ) {
     doReverseProxy(request, response, this.orthancClient);

@@ -65,7 +65,6 @@ export class OrthancQueryController {
     @Param('id') id: string,
     @Body() queryParsedAnswer: QueryParsedAnswerDto,
   ) {
-    console.log(queryParsedAnswer);
     if (queryParsedAnswer.Level == QueryAnswerType.LEVEL_SERIES) {
       const seriesDto = queryParsedAnswer.Query as QuerySeriesDto;
       const seriesDetails = await this.orthancClient.querySeriesInAet(

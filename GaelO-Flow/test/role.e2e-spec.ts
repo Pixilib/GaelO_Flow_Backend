@@ -119,9 +119,9 @@ describe('Role (e2e)', () => {
     });
 
     describe('RolesLabels', () => {
-      it('/roles/:roleName/label (POST)', async () => {
+      it('/roles/:roleName/labels (POST)', async () => {
         const response = await request(server)
-          .post(`/roles/Admin/label`)
+          .post(`/roles/Admin/labels`)
           .set('Authorization', `Bearer ${adminToken}`)
           .send({
             Name: 'TestRole',
@@ -140,7 +140,7 @@ describe('Role (e2e)', () => {
 
       it('/roles/:roleName/labels/:label (DELETE)', async () => {
         const response = await request(server)
-          .delete(`/roles/Admin/label/TestRole`)
+          .delete(`/roles/Admin/labels/TestRole`)
           .set('Authorization', `Bearer ${adminToken}`);
 
         expect(response.status).toBe(200);
@@ -228,9 +228,9 @@ describe('Role (e2e)', () => {
     });
 
     describe('RolesLabels', () => {
-      it('/roles/:roleName/label (POST) - 403', async () => {
+      it('/roles/:roleName/labels (POST) - 403', async () => {
         const response = await request(server)
-          .post(`/roles/Admin/label`)
+          .post(`/roles/Admin/labels`)
           .set('Authorization', `Bearer ${userToken}`)
           .send({
             Name: 'TestRole',
@@ -239,9 +239,9 @@ describe('Role (e2e)', () => {
         expect(response.status).toBe(403);
       });
 
-      it('/roles/:roleName/label (POST) - 201', async () => {
+      it('/roles/:roleName/labels (POST) - 201', async () => {
         const response = await request(server)
-          .post(`/roles/User/label`)
+          .post(`/roles/User/labels`)
           .set('Authorization', `Bearer ${userToken}`)
           .send({
             Name: 'TestRole',
@@ -268,7 +268,7 @@ describe('Role (e2e)', () => {
 
       it('/roles/:roleName/labels/:label (DELETE) - 403', async () => {
         const response = await request(server)
-          .delete(`/roles/Admin/label/TestRole`)
+          .delete(`/roles/Admin/labels/TestRole`)
           .set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(403);
@@ -276,7 +276,7 @@ describe('Role (e2e)', () => {
 
       it('/roles/:roleName/labels/:label (DELETE) - 200', async () => {
         const response = await request(server)
-          .delete(`/roles/User/label/TestRole`)
+          .delete(`/roles/User/labels/TestRole`)
           .set('Authorization', `Bearer ${userToken}`);
 
         expect(response.status).toBe(200);

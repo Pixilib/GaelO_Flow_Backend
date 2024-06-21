@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import OrthancClient from '../utils/orthanc-client';
+import { RawBodyRequest } from '@nestjs/common';
 
 /**
  * Utility function to reverse proxy a request to orthanc.
@@ -8,7 +9,7 @@ import OrthancClient from '../utils/orthanc-client';
  * @param orthancClient
  */
 export const doReverseProxy = (
-  request: Request,
+  request: Request | RawBodyRequest<Request>,
   response: Response,
   orthancClient: OrthancClient,
 ) => {
