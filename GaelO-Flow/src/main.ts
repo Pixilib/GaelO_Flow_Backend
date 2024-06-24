@@ -20,6 +20,7 @@ import setupAnonWorker from './queues/anon/anon.worker';
 import setupQueryWorker from './queues/query/query.worker';
 import setupProcessingWorker from './processing/processing.worker';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { json, raw, urlencoded } from 'express';
 
 async function buildSwagger(app: INestApplication<any>) {
   const oauthConfigs = await app.get(OauthConfigService).getOauthConfig();
@@ -68,6 +69,10 @@ async function main() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     rawBody: true,
   });
+  
+  app.use(raw({ limit: '500mb', type: ['application/dicom'] }))
+  app.use(urlencoded({ extended: true }))
+  app.use(json({ limit: '10mb' }))
 
   app.useBodyParser('raw', {
     type: (req) => {
