@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsObject, IsString } from 'class-validator';
-import { QueryAnswerType } from '../../constants/enums';
+import { OrthancLevelType } from '../../constants/enums';
 
 export class QuerySeriesDto {
   @ApiProperty({ example: 'study_uid' })
@@ -59,9 +59,9 @@ export class QueryStudyDto {
 }
 
 export class QueryParsedAnswerDto {
-  @ApiProperty({ example: QueryAnswerType.LEVEL_SERIES, enum: QueryAnswerType })
-  @IsEnum(QueryAnswerType)
-  Level: QueryAnswerType;
+  @ApiProperty({ example: OrthancLevelType.LEVEL_SERIES, enum: OrthancLevelType })
+  @IsEnum(OrthancLevelType)
+  Level: OrthancLevelType;
 
   @ApiProperty()
   @IsObject()
