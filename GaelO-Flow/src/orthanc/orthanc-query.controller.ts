@@ -19,7 +19,7 @@ import {
   QuerySeriesDto,
   QueryStudyDto,
 } from './dto/query-parsed-answer.dto';
-import { QueryAnswerType } from '../constants/enums';
+import { OrthancLevelType } from '../constants/enums';
 import { OrGuard } from '../guards/or.guard';
 /**
  * Controller for reverse proxying route to DICOM querying resources routes in orthanc.
@@ -65,7 +65,7 @@ export class OrthancQueryController {
     @Param('id') id: string,
     @Body() queryParsedAnswer: QueryParsedAnswerDto,
   ) {
-    if (queryParsedAnswer.Level == QueryAnswerType.LEVEL_SERIES) {
+    if (queryParsedAnswer.Level == OrthancLevelType.LEVEL_SERIES) {
       const seriesDto = queryParsedAnswer.Query as QuerySeriesDto;
       const seriesDetails = await this.orthancClient.querySeriesInAet(
         seriesDto.StudyUID,
@@ -77,7 +77,7 @@ export class OrthancQueryController {
         id,
       );
       return seriesDetails;
-    } else if (queryParsedAnswer.Level == QueryAnswerType.LEVEL_STUDY) {
+    } else if (queryParsedAnswer.Level == OrthancLevelType.LEVEL_STUDY) {
       const studyDto = queryParsedAnswer.Query as QueryStudyDto;
       const studyDetails = await this.orthancClient.queryStudiesInAet(
         studyDto.PatientName,

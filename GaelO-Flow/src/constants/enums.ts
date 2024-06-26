@@ -18,3 +18,8 @@ export enum QueryAnswerType {
   LEVEL_SERIES = 'series',
   LEVEL_STUDY = 'study',
 }
+
+export enum OrthancLevelType {
+  LEVEL_SERIES = 'Series',
+  LEVEL_STUDY = 'Study',
+}
