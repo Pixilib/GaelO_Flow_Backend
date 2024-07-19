@@ -35,3 +35,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: GaelO-Flow/documentation
           destination_dir: compodoc
+permissions:
+  contents: read
+  packages: write
