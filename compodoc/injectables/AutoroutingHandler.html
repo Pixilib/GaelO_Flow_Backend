@@ -1,0 +1,1557 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>gaelo-flow documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	   <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/dark.css">
+    </head>
+    <body>
+          <script>
+               // Blocking script to avoid flickering dark mode
+               // Dark mode toggle button
+               var useDark = window.matchMedia('(prefers-color-scheme: dark)');
+               var darkModeState = useDark.matches;
+               var $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               var $darkModeToggles = document.querySelectorAll('.dark-mode-switch');
+               var darkModeStateLocal = localStorage.getItem('compodoc_darkmode-state');
+
+               function checkToggle(check) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].checked = check;
+                    }
+               }
+
+               function toggleDarkMode(state) {
+                    if (window.localStorage) {
+                         localStorage.setItem('compodoc_darkmode-state', state);
+                    }
+
+                    checkToggle(state);
+
+                    const hasClass = document.body.classList.contains('dark');
+
+                    if (state) {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.add('dark');
+                         }
+                         if (!hasClass) {
+                              document.body.classList.add('dark');
+                         }
+                    } else {
+                         for (var i = 0; i < $darkModeToggles.length; i++) {
+                              $darkModeToggles[i].classList.remove('dark');
+                         }
+                         if (hasClass) {
+                              document.body.classList.remove('dark');
+                         }
+                    }
+               }
+
+               useDark.addEventListener('change', function (evt) {
+                    toggleDarkMode(evt.matches);
+               });
+               if (darkModeStateLocal) {
+                    darkModeState = darkModeStateLocal === 'true';
+               }
+               toggleDarkMode(darkModeState);
+          </script>
+
+        <div class="navbar navbar-default navbar-fixed-top d-md-none p-0">
+               <div class="d-flex">
+                    <a href="../" class="navbar-brand">gaelo-flow documentation</a>
+                    <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+               </div>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="d-none d-md-block menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content injectable">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item">Injectables</li>
+  <li class="breadcrumb-item" >AutoroutingHandler</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <a href="#info" 
+                class="nav-link"
+                class="nav-link active"
+                role="tab" id="info-tab" data-bs-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li class="nav-item">
+            <a href="#source" 
+                class="nav-link"
+                
+                role="tab" id="source-tab" data-bs-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/autorouting/autorouting.handler.ts</code>
+        </p>
+
+
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Handler service to execute autorouting rules</p>
+
+            </p>
+
+
+
+            <section data-compodoc="block-index">
+    <h3 id="index">Index</h3>
+    <table class="table table-sm table-bordered index-table">
+        <tbody>
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Properties</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                <a href="#autoroutingConfigs" >autoroutingConfigs</a>
+                            </li>
+                            <li>
+                                <a href="#levelMapping" >levelMapping</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                        <h6><b>Methods</b></h6>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <ul class="index-list">
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#handleAutoroutingUpdated" >handleAutoroutingUpdated</a>
+                            </li>
+                            <li>
+                                    <span class="modifier"></span>
+                                    <span class="modifier">Async</span>
+                                <a href="#handleEvent" >handleEvent</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#isEqual" >isEqual</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#isGreaterThan" >isGreaterThan</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#isIn" >isIn</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#isLessThan" >isLessThan</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#isNotIn" >isNotIn</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#isSendable" >isSendable</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Async</span>
+                                <a href="#processEvent" >processEvent</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                <a href="#ruleToBoolean" >ruleToBoolean</a>
+                            </li>
+                            <li>
+                                    <span class="modifier">Private</span>
+                                    <span class="modifier">Async</span>
+                                <a href="#sendToDestination" >sendToDestination</a>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+
+
+
+
+
+        </tbody>
+    </table>
+</section>
+
+            <section data-compodoc="block-constructor">
+    <h3 id="constructor">Constructor</h3>
+        <table class="table table-sm table-bordered">
+            <tbody>
+                <tr>
+                    <td class="col-md-4">
+<code>constructor(autoroutingService: <a href="../injectables/AutoroutingsService.html" target="_self">AutoroutingsService</a>, processingQueueService: <a href="../injectables/ProcessingQueueService.html" target="_self">ProcessingQueueService</a>, orthancClient: <a href="../injectables/OrthancClient.html" target="_self">OrthancClient</a>)</code>
+                    </td>
+                </tr>
+                        <tr>
+                            <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="34" class="link-to-prism">src/autorouting/autorouting.handler.ts:34</a></div>
+                            </td>
+                        </tr>
+
+                <tr>
+                    <td class="col-md-4">
+                            <div>
+                                    <b>Parameters :</b>
+                                    <table class="params">
+                                        <thead>
+                                            <tr>
+                                                <td>Name</td>
+                                                    <td>Type</td>
+                                                <td>Optional</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                                <tr>
+                                                        <td>autoroutingService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/AutoroutingsService.html" target="_self" >AutoroutingsService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>processingQueueService</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/ProcessingQueueService.html" target="_self" >ProcessingQueueService</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                                <tr>
+                                                        <td>orthancClient</td>
+                                                  
+                                                        <td>
+                                                                        <code><a href="../injectables/OrthancClient.html" target="_self" >OrthancClient</a></code>
+                                                        </td>
+                                                  
+                                                    <td>
+                                                            No
+                                                    </td>
+                                                    
+                                                </tr>
+                                        </tbody>
+                                    </table>
+                            </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+</section>
+
+            <section data-compodoc="block-methods">
+    
+    <h3 id="methods">
+        Methods
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handleAutoroutingUpdated"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>handleAutoroutingUpdated</b></span>
+                        <a href="#handleAutoroutingUpdated"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>handleAutoroutingUpdated()</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@OnEvent(&#x27;autorouting.updated&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="45"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:45</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="handleEvent"></a>
+                    <span class="name">
+                            <span class="modifier"></span>
+                            <span class="modifier">Async</span>
+                        <span ><b>handleEvent</b></span>
+                        <a href="#handleEvent"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>handleEvent(payload: <a href="../classes/OrthancEventPayloadDto.html" target="_self">OrthancEventPayloadDto</a>)</code>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-md-4">
+                    <b>Decorators : </b>
+                    <br />
+                    <code>@OnEvent(&#x27;orthanc.*&#x27;)<br /></code>
+                </td>
+            </tr>
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="212"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:212</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>payload</td>
+                                            <td>
+                                                            <code><a href="../classes/OrthancEventPayloadDto.html" target="_self" >OrthancEventPayloadDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isEqual"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>isEqual</b></span>
+                        <a href="#isEqual"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>isEqual(value: string | number, rule: <a href="../classes/Rule.html" target="_self">Rule</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="49"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:49</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>value</td>
+                                            <td>
+                                                        <code>string | number</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>rule</td>
+                                            <td>
+                                                            <code><a href="../classes/Rule.html" target="_self" >Rule</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isGreaterThan"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>isGreaterThan</b></span>
+                        <a href="#isGreaterThan"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>isGreaterThan(value: string | number, rule: <a href="../classes/Rule.html" target="_self">Rule</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="74"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:74</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>value</td>
+                                            <td>
+                                                        <code>string | number</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>rule</td>
+                                            <td>
+                                                            <code><a href="../classes/Rule.html" target="_self" >Rule</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isIn"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>isIn</b></span>
+                        <a href="#isIn"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>isIn(value: string | number, rule: <a href="../classes/Rule.html" target="_self">Rule</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="60"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:60</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>value</td>
+                                            <td>
+                                                        <code>string | number</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>rule</td>
+                                            <td>
+                                                            <code><a href="../classes/Rule.html" target="_self" >Rule</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isLessThan"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>isLessThan</b></span>
+                        <a href="#isLessThan"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>isLessThan(value: string | number, rule: <a href="../classes/Rule.html" target="_self">Rule</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="83"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:83</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>value</td>
+                                            <td>
+                                                        <code>string | number</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>rule</td>
+                                            <td>
+                                                            <code><a href="../classes/Rule.html" target="_self" >Rule</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isNotIn"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>isNotIn</b></span>
+                        <a href="#isNotIn"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>isNotIn(value: string | number, rule: <a href="../classes/Rule.html" target="_self">Rule</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="67"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:67</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>value</td>
+                                            <td>
+                                                        <code>string | number</code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>rule</td>
+                                            <td>
+                                                            <code><a href="../classes/Rule.html" target="_self" >Rule</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="isSendable"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>isSendable</b></span>
+                        <a href="#isSendable"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>isSendable(router: <a href="../classes/Router.html" target="_self">Router</a>, data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="118"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:118</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>router</td>
+                                            <td>
+                                                            <code><a href="../classes/Router.html" target="_self" >Router</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="processEvent"></a>
+                    <span class="name">
+                            <span class="modifier">Async</span>
+                        <span ><b>processEvent</b></span>
+                        <a href="#processEvent"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>processEvent(autorouting: <a href="../entitys/Autorouting.html" target="_self">Autorouting</a>, payload: <a href="../classes/OrthancEventPayloadDto.html" target="_self">OrthancEventPayloadDto</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="196"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:196</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>autorouting</td>
+                                            <td>
+                                                            <code><a href="../entitys/Autorouting.html" target="_self" >Autorouting</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>payload</td>
+                                            <td>
+                                                            <code><a href="../classes/OrthancEventPayloadDto.html" target="_self" >OrthancEventPayloadDto</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="ruleToBoolean"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                        <span ><b>ruleToBoolean</b></span>
+                        <a href="#ruleToBoolean"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>ruleToBoolean(rule: <a href="../classes/Rule.html" target="_self">Rule</a>, data: <a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank">any</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="92"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:92</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>rule</td>
+                                            <td>
+                                                            <code><a href="../classes/Rule.html" target="_self" >Rule</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>data</td>
+                                            <td>
+                                                            <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/boolean" target="_blank" >boolean</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="sendToDestination"></a>
+                    <span class="name">
+                            <span class="modifier">Private</span>
+                            <span class="modifier">Async</span>
+                        <span ><b>sendToDestination</b></span>
+                        <a href="#sendToDestination"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td class="col-md-4">
+                        <span class="modifier-icon icon ion-ios-reset"></span>
+                    <code>sendToDestination(destination: <a href="../classes/Destination.html" target="_self">Destination</a>, level: <a href="../undefineds/LevelType.html" target="_self">LevelType</a>, orthancID: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank">string</a>)</code>
+                </td>
+            </tr>
+
+
+                    <tr>
+                        <td class="col-md-4">
+                            <div class="io-line">Defined in <a href="" data-line="133"
+                                    class="link-to-prism">src/autorouting/autorouting.handler.ts:133</a></div>
+                        </td>
+                    </tr>
+
+
+            <tr>
+                <td class="col-md-4">
+
+                            <div class="io-description">
+                                <b>Parameters :</b>
+                                
+                                <table class="params">
+                                    <thead>
+                                        <tr>
+                                            <td>Name</td>
+                                                <td>Type</td>
+                                            <td>Optional</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                                <td>destination</td>
+                                            <td>
+                                                            <code><a href="../classes/Destination.html" target="_self" >Destination</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>level</td>
+                                            <td>
+                                                            <code><a href="../miscellaneous/enumerations.html#LevelType" target="_self" >LevelType</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                        <tr>
+                                                <td>orthancID</td>
+                                            <td>
+                                                            <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/string" target="_blank" >string</a></code>
+                                            </td>
+
+                                            <td>
+                                                    No
+                                            </td>
+
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        <div class="io-description">
+                            <b>Returns : </b>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                        </div>
+                            <div class="io-description">
+                                
+                            </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+            <section data-compodoc="block-properties">
+    
+    <h3 id="inputs">
+        Properties
+    </h3>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="autoroutingConfigs"></a>
+                    <span class="name">
+                        <span ><b>autoroutingConfigs</b></span>
+                        <a href="#autoroutingConfigs"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="../entitys/Autorouting.html" target="_self" >Array&lt;Autorouting&gt;</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>[]</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="24" class="link-to-prism">src/autorouting/autorouting.handler.ts:24</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+    <table class="table table-sm table-bordered">
+        <tbody>
+            <tr>
+                <td class="col-md-4">
+                    <a name="levelMapping"></a>
+                    <span class="name">
+                        <span ><b>levelMapping</b></span>
+                        <a href="#levelMapping"><span class="icon ion-ios-link"></span></a>
+                    </span>
+                </td>
+            </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Type : </i>        <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/object" target="_blank" >object</a></code>
+
+                    </td>
+                </tr>
+                <tr>
+                    <td class="col-md-4">
+                        <i>Default value : </i><code>{
+    [AutoroutingEventType.NEW_INSTANCE]: LevelType.INSTANCES,
+    [AutoroutingEventType.NEW_SERIES]: LevelType.SERIES,
+    [AutoroutingEventType.NEW_STUDY]: LevelType.STUDIES,
+    [AutoroutingEventType.NEW_PATIENT]: LevelType.PATIENTS,
+    [AutoroutingEventType.STABLE_SERIES]: LevelType.SERIES,
+    [AutoroutingEventType.STABLE_STUDY]: LevelType.STUDIES,
+    [AutoroutingEventType.STABLE_PATIENT]: LevelType.PATIENTS,
+  }</code>
+                    </td>
+                </tr>
+                    <tr>
+                        <td class="col-md-4">
+                                <div class="io-line">Defined in <a href="" data-line="26" class="link-to-prism">src/autorouting/autorouting.handler.ts:26</a></div>
+                        </td>
+                    </tr>
+
+
+        </tbody>
+    </table>
+</section>
+
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { OnEvent } from &#x27;@nestjs/event-emitter&#x27;;
+import { Injectable } from &#x27;@nestjs/common&#x27;;
+import { OrthancEventPayloadDto } from &#x27;./dto/orthanc-event-payload.dto&#x27;;
+import { AutoroutingsService } from &#x27;./autoroutings.service&#x27;;
+import { Autorouting, Destination, Router, Rule } from &#x27;./autorouting.entity&#x27;;
+import {
+  AutoroutingEventType,
+  Condition,
+  DestinationType,
+  LevelType,
+  RuleCondition,
+  ValueRepresentation,
+} from &#x27;./autorouting.enum&#x27;;
+import OrthancClient from &#x27;../utils/orthanc-client&#x27;;
+import * as moment from &#x27;moment&#x27;;
+import { ProcessingQueueService } from &#x27;../processing/processing-queue.service&#x27;;
+import { ProcessingJobType, ProcessingMask } from &#x27;../constants/enums&#x27;;
+
+/**
+ * Handler service to execute autorouting rules
+ */
+@Injectable()
+export class AutoroutingHandler {
+  autoroutingConfigs: Array&lt;Autorouting&gt; &#x3D; [];
+
+  levelMapping &#x3D; {
+    [AutoroutingEventType.NEW_INSTANCE]: LevelType.INSTANCES,
+    [AutoroutingEventType.NEW_SERIES]: LevelType.SERIES,
+    [AutoroutingEventType.NEW_STUDY]: LevelType.STUDIES,
+    [AutoroutingEventType.NEW_PATIENT]: LevelType.PATIENTS,
+    [AutoroutingEventType.STABLE_SERIES]: LevelType.SERIES,
+    [AutoroutingEventType.STABLE_STUDY]: LevelType.STUDIES,
+    [AutoroutingEventType.STABLE_PATIENT]: LevelType.PATIENTS,
+  };
+
+  constructor(
+    private autoroutingService: AutoroutingsService,
+    private processingQueueService: ProcessingQueueService,
+    private orthancClient: OrthancClient,
+  ) {
+    this.handleAutoroutingUpdated();
+  }
+
+  @OnEvent(&#x27;autorouting.updated&#x27;)
+  async handleAutoroutingUpdated() {
+    this.autoroutingConfigs &#x3D; await this.autoroutingService.findAll();
+  }
+
+  private isEqual(value: string | number, rule: Rule): boolean {
+    if (rule.ValueRepresentation &#x3D;&#x3D;&#x3D; ValueRepresentation.NUMBER) {
+      return value &#x3D;&#x3D;&#x3D; Number(rule.Value);
+    } else if (rule.ValueRepresentation &#x3D;&#x3D;&#x3D; ValueRepresentation.STRING) {
+      return value &#x3D;&#x3D;&#x3D; rule.Value.toString();
+    } else if (rule.ValueRepresentation &#x3D;&#x3D;&#x3D; ValueRepresentation.DATE) {
+      return moment(value.toString()).isSame(moment(rule.Value.toString()));
+    }
+    return false;
+  }
+
+  private isIn(value: string | number, rule: Rule): boolean {
+    if (rule.ValueRepresentation &#x3D;&#x3D;&#x3D; ValueRepresentation.STRING) {
+      return rule.Value.toString().includes(value.toString());
+    }
+    return false;
+  }
+
+  private isNotIn(value: string | number, rule: Rule): boolean {
+    if (rule.ValueRepresentation &#x3D;&#x3D;&#x3D; ValueRepresentation.STRING) {
+      return !rule.Value.toString().includes(value.toString());
+    }
+    return false;
+  }
+
+  private isGreaterThan(value: string | number, rule: Rule): boolean {
+    if (rule.ValueRepresentation &#x3D;&#x3D;&#x3D; ValueRepresentation.NUMBER) {
+      return Number(value) &gt; Number(rule.Value);
+    } else if (rule.ValueRepresentation &#x3D;&#x3D;&#x3D; ValueRepresentation.DATE) {
+      return moment(value.toString()).isAfter(moment(rule.Value.toString()));
+    }
+    return false;
+  }
+
+  private isLessThan(value: string | number, rule: Rule): boolean {
+    if (rule.ValueRepresentation &#x3D;&#x3D;&#x3D; ValueRepresentation.NUMBER) {
+      return Number(value) &lt; Number(rule.Value);
+    } else if (rule.ValueRepresentation &#x3D;&#x3D;&#x3D; ValueRepresentation.DATE) {
+      return moment(value.toString()).isBefore(moment(rule.Value.toString()));
+    }
+    return false;
+  }
+
+  private ruleToBoolean(rule: Rule, data: any): boolean {
+    const dicomTagValue &#x3D; data.MainDicomTags[rule.DicomTag];
+
+    if (
+      rule.ValueRepresentation &#x3D;&#x3D;&#x3D; ValueRepresentation.DATE &amp;&amp;
+      (!moment(dicomTagValue).isValid() || !moment(rule.Value).isValid())
+    ) {
+      return false;
+    }
+
+    switch (rule.Condition) {
+      case Condition.EQUALS:
+        return this.isEqual(dicomTagValue, rule);
+      case Condition.DIFFERENT:
+        return !this.isEqual(dicomTagValue, rule);
+      case Condition.IN:
+        return this.isIn(dicomTagValue, rule);
+      case Condition.NOT_IN:
+        return this.isNotIn(dicomTagValue, rule);
+      case Condition.LESS_THAN:
+        return this.isLessThan(dicomTagValue, rule);
+      case Condition.GREATER_THAN:
+        return this.isGreaterThan(dicomTagValue, rule);
+    }
+  }
+
+  private isSendable(router: Router, data: any): boolean {
+    switch (router.RuleCondition) {
+      case RuleCondition.AND:
+        for (const rule of router.Rules) {
+          if (!this.ruleToBoolean(rule, data)) return false;
+        }
+        return true;
+      case RuleCondition.OR:
+        for (const rule of router.Rules) {
+          if (this.ruleToBoolean(rule, data)) return true;
+        }
+        return false;
+    }
+  }
+
+  private async sendToDestination(
+    destination: Destination,
+    level: LevelType,
+    orthancID: string,
+  ) {
+    switch (destination.Destination) {
+      case DestinationType.AET:
+        this.orthancClient
+          .sendToAET(destination.Name, [orthancID])
+          .catch((e) &#x3D;&gt; {
+            console.error(&quot;can&#x27;t send to aet: &quot;, e);
+          });
+        break;
+      case DestinationType.TMTVJOB:
+        if (level !&#x3D;&#x3D; LevelType.STUDIES) {
+          console.error(&#x27;TMTVJob can only be sent to series&#x27;);
+          return;
+        }
+
+        const seriesDetails &#x3D;
+          await this.orthancClient.getSeriesDetailsOfStudy(orthancID);
+
+        const allModalities &#x3D; seriesDetails.map(
+          (series: any) &#x3D;&gt; series.MainDicomTags.Modality,
+        );
+
+        if (
+          allModalities.length !&#x3D;&#x3D; 2 ||
+          !allModalities.includes(&#x27;PT&#x27;) ||
+          !allModalities.includes(&#x27;CT&#x27;)
+        ) {
+          console.error(&#x27;Invalid series modalities: &#x27;, allModalities);
+          return;
+        }
+
+        const ctSeriesID &#x3D; seriesDetails.find(
+          (series: any) &#x3D;&gt; series.MainDicomTags.Modality &#x3D;&#x3D;&#x3D; &#x27;CT&#x27;,
+        ).ID;
+
+        const ptSeriesID &#x3D; seriesDetails.find(
+          (series: any) &#x3D;&gt; series.MainDicomTags.Modality &#x3D;&#x3D;&#x3D; &#x27;PT&#x27;,
+        ).ID;
+
+        const jobId &#x3D; await this.processingQueueService.addJob(null, {
+          JobType: ProcessingJobType.TMTV,
+          TmtvJob: {
+            PtOrthancSeriesId: ptSeriesID,
+            CtOrthancSeriesId: ctSeriesID,
+            SendMaskToOrthancAs: [ProcessingMask.RTSS, ProcessingMask.SEG],
+            WithFragmentedMask: true,
+          },
+        });
+        break;
+      case DestinationType.PEER:
+        this.orthancClient
+          .sendToPeer(destination.Name, [orthancID])
+          .catch((e) &#x3D;&gt; {
+            console.error(&quot;can&#x27;t send to peer: &quot;, e);
+          });
+        break;
+    }
+  }
+
+  async processEvent(
+    autorouting: Autorouting,
+    payload: OrthancEventPayloadDto,
+  ) {
+    const level &#x3D; this.levelMapping[payload.ChangeType];
+    const data &#x3D; await this.orthancClient.getOrthancDetails(level, payload.ID);
+    const isSendable &#x3D; this.isSendable(autorouting.Router, data);
+
+    if (isSendable) {
+      for (const destination of autorouting.Router.Destinations) {
+        this.sendToDestination(destination, level, payload.ID);
+      }
+    }
+  }
+
+  @OnEvent(&#x27;orthanc.*&#x27;)
+  async handleEvent(payload: OrthancEventPayloadDto) {
+    const autoroutingMatches &#x3D; this.autoroutingConfigs.filter(
+      (autorouting) &#x3D;&gt;
+        autorouting.EventType &#x3D;&#x3D;&#x3D; payload.ChangeType &amp;&amp; autorouting.Activated,
+    );
+
+    autoroutingMatches.forEach((autorouting: Autorouting) &#x3D;&gt; {
+      this.processEvent(autorouting, payload);
+    });
+  }
+}
+</code></pre>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+          <label class="dark-mode-switch">
+               <input type="checkbox">
+               <span class="slider">
+                    <svg class="slider-icon" viewBox="0 0 24 24" fill="none" height="20" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+               </span>
+          </label>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'injectable';
+            var COMPODOC_CURRENT_PAGE_URL = 'AutoroutingHandler.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script>
+               $darkModeToggleSwitchers = document.querySelectorAll('.dark-mode-switch input');
+               checkToggle(darkModeState);
+               if ($darkModeToggleSwitchers.length > 0) {
+                    for (var i = 0; i < $darkModeToggleSwitchers.length; i++) {
+                         $darkModeToggleSwitchers[i].addEventListener('change', function (event) {
+                              darkModeState = !darkModeState;
+                              toggleDarkMode(darkModeState);
+                         });
+                    }
+               }
+          </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+
+       <script src="../js/menu-wc.js" defer></script>
+       <script nomodule src="../js/menu-wc_es5.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>
