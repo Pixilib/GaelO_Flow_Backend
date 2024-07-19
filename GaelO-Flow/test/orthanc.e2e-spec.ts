@@ -721,9 +721,9 @@ describe('Orthanc (e2e)', () => {
         console.log('Modify token:', token);
       });
 
-      it('POST /modalities/*/modify', async () => {
+      it('POST /patients/*/modify', async () => {
         await request(server)
-          .post('/modalities/1/modify')
+          .post('/patients/1/modify')
           .set('Authorization', `Bearer ${token}`)
           .expect(200);
       });
@@ -751,9 +751,9 @@ describe('Orthanc (e2e)', () => {
         console.log('Not Modify token:', token);
       });
 
-      it('POST /modalities/*/modify', async () => {
+      it('POST /patients/*/modify', async () => {
         await request(server)
-          .post('/modalities/1/modify')
+          .post('/patients/1/modify')
           .set('Authorization', `Bearer ${token}`)
           .expect(403);
       });

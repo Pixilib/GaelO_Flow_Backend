@@ -36,5 +36,5 @@ jobs:
           publish_dir: GaelO-Flow/documentation
           destination_dir: compodoc
 permissions:
-  contents: read
+  contents: write
   packages: write
