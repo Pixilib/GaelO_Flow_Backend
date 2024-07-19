@@ -8,7 +8,7 @@ import {
   Delete,
   Put,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response as ResponseType, Request as RequestType } from 'express';
 
 import OrthancClient from '../utils/orthanc-client';
@@ -90,19 +90,6 @@ export class OrthancAdminController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
-    doReverseProxy(request, response, this.orthancClient);
-  }
-
-  @ApiBearerAuth('access-token')
-  @ApiParam({
-    name: 'id',
-    required: false,
-    description: 'Gets the job id',
-    allowEmptyValue: true,
-  })
-  @Get('/jobs/:id?')
-  @UseGuards(AdminGuard)
-  getJobs(@Request() request: RequestType, @Response() response: ResponseType) {
     doReverseProxy(request, response, this.orthancClient);
   }
 

@@ -1,4 +1,3 @@
-version: "2"
 #if needed to map the orthancPACS to a different hard disk device (after mounting it in path)
 # volumes: ["/home/petctviewer/orthanc:/var/lib/orthanc/db:Z"]
 
