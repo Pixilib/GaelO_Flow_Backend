@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 
 export function logger(req: Request, res: Response, next: NextFunction) {
-  console.log(process.env.NODE_ENV)
   if(process.env.NODE_ENV === 'test'){
-
+    next();
+    return;
   }
   const { method, url, ip } = req;
   const time = new Date();
