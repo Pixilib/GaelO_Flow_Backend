@@ -6,7 +6,7 @@ import {
   Param,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Response as ResponseType, Request as RequestType } from 'express';
 
 import OrthancClient from '../utils/orthanc-client';
@@ -14,8 +14,11 @@ import { doReverseProxy } from './utils';
 import { OrGuard } from '../guards/or.guard';
 import {
   AdminGuard,
+  AnonymizeGuard,
   AutoQueryGuard,
+  DeleteGuard,
   ExportGuard,
+  ModifyGuard,
   QueryGuard,
   ReadAllGuard,
 } from '../guards/roles.guard';
@@ -99,6 +102,31 @@ export class OrthancController {
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
+
+  @ApiBearerAuth('access-token')
+  @ApiParam({
+    name: 'id',
+    required: false,
+    description: 'Gets the job id',
+    allowEmptyValue: true,
+  })
+  
+  @Get('/jobs/:id?')
+  @UseGuards(
+    OrGuard([
+      AnonymizeGuard,
+      AdminGuard,
+      DeleteGuard,
+      ModifyGuard,
+      QueryGuard,
+      AutoQueryGuard,
+      ExportGuard,
+      ReadAllGuard
+    ]),
+  )
+  getJobs(@Request() request: RequestType, @Response() response: ResponseType) {
     doReverseProxy(request, response, this.orthancClient);
   }
 }

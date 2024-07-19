@@ -94,19 +94,6 @@ export class OrthancAdminController {
   }
 
   @ApiBearerAuth('access-token')
-  @ApiParam({
-    name: 'id',
-    required: false,
-    description: 'Gets the job id',
-    allowEmptyValue: true,
-  })
-  @Get('/jobs/:id?')
-  @UseGuards(AdminGuard)
-  getJobs(@Request() request: RequestType, @Response() response: ResponseType) {
-    doReverseProxy(request, response, this.orthancClient);
-  }
-
-  @ApiBearerAuth('access-token')
   @Delete('/modalities/*')
   @UseGuards(AdminGuard)
   deleteModality(
