@@ -162,7 +162,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { ReadAll: true });
-        console.log('ReadAll token:', token);
       });
 
       it('GET /series/*', async () => {
@@ -192,7 +191,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Admin: true });
-        console.log('Admin token:', token);
       });
 
       it('GET /modalities', async () => {
@@ -208,7 +206,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Query: true });
-        console.log('Query token:', token);
       });
 
       it('GET /modalities', async () => {
@@ -224,7 +221,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { AutoQuery: true });
-        console.log('AutoQuery token:', token);
       });
 
       it('GET /modalities', async () => {
@@ -240,7 +236,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Export: true });
-        console.log('Export token:', token);
       });
 
       it('GET /modalities', async () => {
@@ -256,7 +251,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, {});
-        console.log('No permission token:', token);
       });
 
       it('GET /modalities', async () => {
@@ -274,7 +268,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Admin: true });
-        console.log('Admin token:', token);
       });
 
       it('GET /system', async () => {
@@ -381,7 +374,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Admin: false });
-        console.log('Not Admin token:', token);
       });
 
       it('GET /system', async () => {
@@ -490,7 +482,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Delete: true });
-        console.log('Delete token:', token);
       });
 
       it('DELETE /patients/*', async () => {
@@ -520,7 +511,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Delete: false });
-        console.log('Not Delete token:', token);
       });
 
       it('DELETE /patients/*', async () => {
@@ -552,7 +542,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Export: true });
-        console.log('Export token:', token);
       });
 
       it('POST /modalities/*/store', async () => {
@@ -610,7 +599,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Export: false });
-        console.log('Not Export token:', token);
       });
 
       it('POST /modalities/*/store', async () => {
@@ -670,7 +658,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Import: true });
-        console.log('Import token:', token);
       });
 
       it('POST /instances', async () => {
@@ -693,7 +680,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Import: false });
-        console.log('Not Import token:', token);
       });
 
       it('POST /instances', async () => {
@@ -718,7 +704,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Modify: true });
-        console.log('Modify token:', token);
       });
 
       it('POST /patients/*/modify', async () => {
@@ -748,7 +733,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Modify: false });
-        console.log('Not Modify token:', token);
       });
 
       it('POST /patients/*/modify', async () => {
@@ -780,7 +764,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Query: true });
-        console.log('Query token:', token);
       });
 
       it('POST /modalities/*/query', async () => {
@@ -851,7 +834,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { Query: false });
-        console.log('Not Query token:', token);
       });
 
       it('POST /modalities/*/query', async () => {
@@ -890,7 +872,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { ReadAll: true });
-        console.log('ReadAll token:', token);
       });
 
       it('PUT /studies/*/labels/*', async () => {
@@ -927,7 +908,6 @@ describe('Orthanc (e2e)', () => {
 
       beforeAll(async () => {
         token = await createCustomJwt(app, { ReadAll: false });
-        console.log('Not ReadAll token:', token);
       });
 
       it('PUT /studies/*/labels/*', async () => {
