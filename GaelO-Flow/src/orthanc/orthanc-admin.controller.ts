@@ -8,7 +8,7 @@ import {
   Delete,
   Put,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response as ResponseType, Request as RequestType } from 'express';
 
 import OrthancClient from '../utils/orthanc-client';
