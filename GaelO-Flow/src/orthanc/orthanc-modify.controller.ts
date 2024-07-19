@@ -14,9 +14,9 @@ export class OrthancModifyController {
   constructor(private orthancClient: OrthancClient) {}
 
   @ApiBearerAuth('access-token')
-  @Post('/modalities/*/modify')
+  @Post('/patients/*/modify')
   @UseGuards(ModifyGuard)
-  createModalitiesModify(
+  createPatientsModify(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {
