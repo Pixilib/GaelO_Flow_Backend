@@ -45,8 +45,8 @@ describe('Auth (e2e)', () => {
 
   it('/login (POST)', async () => {
     const response = await request(server).post('/login').send({
-      Email: 'admin@gaelo.fr',
-      Password: 'passwordadmin',
+      Email: 'administrator@gaelo.fr',
+      Password: 'administrator',
     });
     expect(response.status).toBe(200);
     expect(response.body.AccessToken).toBeDefined();
