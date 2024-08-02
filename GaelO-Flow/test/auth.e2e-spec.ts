@@ -37,7 +37,7 @@ describe('Auth (e2e)', () => {
 
   afterAll(async () => {
     await userRepositoy.delete({
-      Email: 'johndoe@gaelo.com',
+      Email: 'johndoe@gaelo.fr',
     });
     await app.close();
     await server.close();
@@ -45,7 +45,7 @@ describe('Auth (e2e)', () => {
 
   it('/login (POST)', async () => {
     const response = await request(server).post('/login').send({
-      Email: 'admin@gaelo.com',
+      Email: 'admin@gaelo.fr',
       Password: 'passwordadmin',
     });
     expect(response.status).toBe(200);
@@ -56,7 +56,7 @@ describe('Auth (e2e)', () => {
 
   it('/register (POST)', async () => {
     const response = await request(server).post('/register').send({
-      Email: 'johndoe@gaelo.com',
+      Email: 'johndoe@gaelo.fr',
       Firstname: 'John',
       Lastname: 'Doe',
     });
@@ -69,7 +69,7 @@ describe('Auth (e2e)', () => {
     const token = await generateToken();
     const hash = token.hash;
     const confirmationToken = token.token;
-    const user = await userRepositoy.findOneBy({ Email: 'johndoe@gaelo.com' });
+    const user = await userRepositoy.findOneBy({ Email: 'johndoe@gaelo.fr' });
 
     user.TokenExpiration = getTokenExpiration();
     user.Token = hash;
@@ -90,7 +90,7 @@ describe('Auth (e2e)', () => {
   it('/lost-password (POST)', async () => {
     const response = await request(server)
       .post('/lost-password')
-      .send({ Email: 'johndoe@gaelo.com' });
+      .send({ Email: 'johndoe@gaelo.fr' });
 
     expect(mailService.sendChangePasswordEmail).toHaveBeenCalled();
     expect(response.status).toBe(200);
