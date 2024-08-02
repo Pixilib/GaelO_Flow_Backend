@@ -16,7 +16,7 @@ async function loginAsAdmin(server: any) {
 async function loginAsUser(server: any) {
   const response = await request(server).post('/login').send({
     Email: 'user@gaelo.fr',
-    Password: 'passworduser',
+    Password: 'user',
   });
 
   return response.body;
