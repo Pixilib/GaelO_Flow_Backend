@@ -6,8 +6,8 @@ import { JwtService } from '@nestjs/jwt';
 
 async function loginAsAdmin(server: any) {
   const response = await request(server).post('/login').send({
-    Email: 'admin@gaelo.com',
-    Password: 'passwordadmin',
+    Email: 'administrator@gaelo.fr',
+    Password: 'administrator',
   });
 
   return response.body;
@@ -15,8 +15,8 @@ async function loginAsAdmin(server: any) {
 
 async function loginAsUser(server: any) {
   const response = await request(server).post('/login').send({
-    Email: 'user@gaelo.com',
-    Password: 'passworduser',
+    Email: 'user@gaelo.fr',
+    Password: 'user',
   });
 
   return response.body;
