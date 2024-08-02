@@ -82,14 +82,14 @@ export class UsersService {
 
   /* istanbul ignore next */
   public async seed() {
-    const hashAdmin = await hashPassword('passwordadmin');
+    const hashAdmin = await hashPassword('administrator');
 
-    const hashUser = await hashPassword('passworduser');
+    const hashUser = await hashPassword('user');
 
     const admin = this.usersRepository.create({
       Firstname: 'Admin',
       Lastname: 'Admin',
-      Email: 'admin@gaelo.com',
+      Email: 'administrator@gaelo.fr',
       Password: hashAdmin,
       RoleName: 'Admin',
     });
@@ -97,7 +97,7 @@ export class UsersService {
     const user = this.usersRepository.create({
       Firstname: 'User',
       Lastname: 'User',
-      Email: 'user@gaelo.com',
+      Email: 'user@gaelo.fr',
       Password: hashUser,
       RoleName: 'User',
     });
