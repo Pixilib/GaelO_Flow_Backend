@@ -13,7 +13,6 @@ env:
   REDIS_ADDRESS: "localhost"
   REDIS_PORT: "6379"
   APP_URL: "http://localhost"
-  PORT_CLIENT: "5173"
   TYPEORM_TYPE: "postgres"
   TYPEORM_HOST: "localhost"
   TYPEORM_PORT: "5432"
