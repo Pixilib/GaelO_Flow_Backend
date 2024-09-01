@@ -64,6 +64,7 @@ jobs:
       - name: 'set version'
         if: github.ref_type == 'tag'
         run: yarn version --new-version ${{ github.ref_name }}
+        working-directory: ./GaelO-Flow
 
       - run : yarn build
         working-directory: ./GaelO-Flow
@@ -75,6 +76,7 @@ jobs:
           push: true
           pull: true
           tags: ${{ steps.meta.outputs.tags }}
+          
 permissions:
   contents: read
   packages: write
