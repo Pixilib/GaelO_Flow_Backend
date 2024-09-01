@@ -97,7 +97,7 @@ export class HttpClient {
   streamAnswerToRes = (
     url: string,
     method: string,
-    body: object,
+    body: object|string,
     res: Response,
     headers: object = {},
   ) => {

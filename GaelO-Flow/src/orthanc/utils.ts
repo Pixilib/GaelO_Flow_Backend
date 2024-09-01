@@ -18,6 +18,7 @@ export const doReverseProxy = (
   const method = request.method;
   const body = request.body;
   orthancClient.streamAnswerToRes(orthancCalledApi, method, body, response, {
+    'Content-Type': request.headers['content-type'],
     accept: request.headers.accept,
   });
 };
