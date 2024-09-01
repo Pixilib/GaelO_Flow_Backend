@@ -22,5 +22,7 @@ WORKDIR /usr/src/app
 # Bundle app source
 COPY ./GaelO-Flow .
 
+EXPOSE $API_PORT
+
 # Start the server using the production build
 CMD ["npm", "run", "start:prod"]
