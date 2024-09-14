@@ -5,6 +5,7 @@ import {
   Request,
   Param,
   UseGuards,
+  Post,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiParam, ApiTags } from '@nestjs/swagger';
 import { Response as ResponseType, Request as RequestType } from 'express';
@@ -66,9 +67,29 @@ export class OrthancController {
   }
 
   @ApiBearerAuth('access-token')
+  @Post('/studies/:id/archive')
+  @UseGuards(OrGuard([ReadAllGuard, StudyGuard]))
+  getArchiveStudies(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
+
+  @ApiBearerAuth('access-token')
   @Get('/series/*')
   @UseGuards(OrGuard([ReadAllGuard, SeriesGuard]))
   getSeries(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
+
+  @ApiBearerAuth('access-token')
+  @Post('/series/:id/archive')
+  @UseGuards(OrGuard([ReadAllGuard, SeriesGuard]))
+  getSeriesArchive(
     @Request() request: RequestType,
     @Response() response: ResponseType,
   ) {

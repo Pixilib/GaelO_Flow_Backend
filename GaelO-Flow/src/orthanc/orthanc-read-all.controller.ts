@@ -58,4 +58,14 @@ export class OrthancReadAllController {
   ) {
     doReverseProxy(request, response, this.orthancClient);
   }
+
+  @ApiBearerAuth('access-token')
+  @Post('/patients/:id/archive')
+  @UseGuards(ReadAllGuard)
+  getPatientsArchive(
+    @Request() request: RequestType,
+    @Response() response: ResponseType,
+  ) {
+    doReverseProxy(request, response, this.orthancClient);
+  }
 }
