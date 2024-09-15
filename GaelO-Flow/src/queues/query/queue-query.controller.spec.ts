@@ -363,12 +363,7 @@ describe('QueuesQueryController', () => {
           uuid: expect.any(String),
           results: null,
           series: dto.Series[0],
-        } || {
-          userId: 1,
-          uuid: expect.any(String),
-          results: null,
-          study: dto.Studies[0],
-        },
+        } 
       );
       expect(service.addJob).toHaveBeenCalledTimes(
         dto.Series.length + dto.Studies.length,
