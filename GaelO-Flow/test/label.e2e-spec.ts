@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 
 import { AppModule } from '../src/app.module';
-import { loginAsAdmin, loginAsUser } from './login';
+import { createCustomJwt, loginAsAdmin, loginAsUser } from './login';
 
 describe('Labels (e2e)', () => {
   let app: INestApplication;
@@ -89,9 +89,19 @@ describe('Labels (e2e)', () => {
     });
 
     it('/labels (GET)', async () => {
+      const readAllToken = await createCustomJwt(app, { ReadAll: true });
       const response = await request(server)
         .get('/labels')
-        .set('Authorization', `Bearer ${userToken}`);
+        .set('Authorization', `Bearer ${readAllToken}`);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('/labels (GET)', async () => {
+      const importToken = await createCustomJwt(app, { Import: true });
+      const response = await request(server)
+        .get('/labels')
+        .set('Authorization', `Bearer ${importToken}`);
 
       expect(response.status).toBe(403);
     });
