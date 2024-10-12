@@ -324,7 +324,7 @@ describe('QueuesQueryController', () => {
       const dto: QueuesQueryDto = {
         Series: [
           {
-            StudyUID: '',
+            StudyInstanceUID: '',
             Modality: '',
             ProtocolName: '',
             SeriesDescription: '',
@@ -376,7 +376,7 @@ describe('QueuesQueryController', () => {
       const dto: QueuesQueryDto = {
         Series: [
           {
-            StudyUID: '',
+            StudyInstanceUID: '',
             Modality: '',
             ProtocolName: '',
             SeriesDescription: '',
@@ -414,7 +414,7 @@ describe('QueuesQueryController', () => {
       const dto: QueuesQueryDto = {
         Series: [
           {
-            StudyUID: '',
+            StudyInstanceUID: '',
             Modality: '',
             ProtocolName: '',
             SeriesDescription: '',
@@ -423,7 +423,7 @@ describe('QueuesQueryController', () => {
             Aet: '',
           },
           {
-            StudyUID: '',
+            StudyInstanceUID: '',
             Modality: '',
             ProtocolName: '',
             SeriesDescription: '',

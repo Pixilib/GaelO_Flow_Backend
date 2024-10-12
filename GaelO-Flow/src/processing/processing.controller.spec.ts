@@ -219,7 +219,7 @@ describe('ProcessingController', () => {
       const request = { user: { userId: 1 } };
       const processingJobDto: ProcessingJobDto = {
         JobType: ProcessingJobType.TMTV,
-        TmtvJob: {
+        Payload: {
           CtOrthancSeriesId: 'CtOrthancSeriesId',
           PtOrthancSeriesId: 'PtOrthancSeriesId',
           SendMaskToOrthancAs: [ProcessingMask.SEG],

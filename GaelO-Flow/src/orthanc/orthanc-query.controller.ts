@@ -68,7 +68,7 @@ export class OrthancQueryController {
     if (queryParsedAnswer.Level == OrthancLevelType.LEVEL_SERIES) {
       const seriesDto = queryParsedAnswer.Query as QuerySeriesDto;
       const seriesDetails = await this.orthancClient.querySeriesInAet(
-        seriesDto.StudyUID,
+        seriesDto.StudyInstanceUID,
         seriesDto.Modality,
         seriesDto.ProtocolName,
         seriesDto.SeriesDescription,

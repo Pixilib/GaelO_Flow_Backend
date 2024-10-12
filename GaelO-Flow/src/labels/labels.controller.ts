@@ -11,8 +11,9 @@ import {
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { LabelsService } from './labels.service';
-import { AdminGuard } from '../guards/roles.guard';
+import { AdminGuard, ReadAllGuard } from '../guards/roles.guard';
 import { LabelDto } from './labels.dto';
+import { OrGuard } from '../guards/or.guard';
 
 /**
  * Controller for the labels related APIs.
@@ -25,7 +26,7 @@ export class LabelsController {
   @ApiBearerAuth('access-token')
   @ApiResponse({ status: 200, description: 'Get all labels', type: [String] })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @UseGuards(AdminGuard)
+  @UseGuards(OrGuard([AdminGuard, ReadAllGuard]))
   @Get()
   async findAll(): Promise<string[]> {
     const allLabels = await this.LabelsService.findAll();

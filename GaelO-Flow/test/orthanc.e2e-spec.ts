@@ -795,7 +795,7 @@ describe('Orthanc (e2e)', () => {
       //       .send({
       //         Level: 'series',
       //         Query: {
-      //           StudyUID: 'study_uid',
+      //           StudyInstanceUID: 'study_uid',
       //           Modality: 'modality',
       //           ProtocolName: 'protocol_name',
       //           SeriesDescription: 'series_description',

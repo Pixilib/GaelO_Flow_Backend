@@ -27,5 +27,5 @@ export class ProcessingJobDto {
 
   @ApiProperty({ required: false })
   @IsObject()
-  TmtvJob: TmtvJobDto;
+  Payload: TmtvJobDto;
 }

@@ -5,7 +5,7 @@ import { OrthancLevelType } from '../../constants/enums';
 export class QuerySeriesDto {
   @ApiProperty({ example: 'study_uid' })
   @IsString()
-  StudyUID: string;
+  StudyInstanceUID: string;
 
   @ApiProperty({ example: 'modality' })
   @IsString()

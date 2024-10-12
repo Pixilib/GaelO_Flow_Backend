@@ -38,7 +38,7 @@ async function processStudy(orthancClient: OrthancClient, job: Job) {
 async function processSeries(orthancClient: OrthancClient, job: Job) {
   job.updateProgress(0);
   const seriesDetails = await orthancClient.querySeriesInAet(
-    job.data.series.studyUID,
+    job.data.series.studyInstanceUID,
     job.data.series.modalities,
     job.data.series.protocolName,
     job.data.series.seriesDescription,

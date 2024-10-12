@@ -145,7 +145,7 @@ export class AutoroutingHandler {
         break;
       case DestinationType.TMTVJOB:
         if (level !== LevelType.STUDIES) {
-          console.error('TMTVJob can only be sent to series');
+          console.error('TMTV Jobs can only be sent to series');
           return;
         }
 
@@ -175,7 +175,7 @@ export class AutoroutingHandler {
 
         const jobId = await this.processingQueueService.addJob(null, {
           JobType: ProcessingJobType.TMTV,
-          TmtvJob: {
+          Payload: {
             PtOrthancSeriesId: ptSeriesID,
             CtOrthancSeriesId: ctSeriesID,
             SendMaskToOrthancAs: [ProcessingMask.RTSS, ProcessingMask.SEG],

@@ -18,7 +18,7 @@ async function tmtvJob(
   orthancClient: OrthancClient,
   processingClient: ProcessingClient,
 ) {
-  const jobData: TmtvJobDto = job.data.TmtvJob;
+  const jobData: TmtvJobDto = job.data.Payload;
 
   const tmtvService = new TmtvService(orthancClient, processingClient);
   const ctOrthancSeriesId: string = jobData.CtOrthancSeriesId;
