@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LabelsService } from './labels.service';
 import { LabelsController } from './labels.controller';
 import { LabelDto } from './labels.dto';
+import { AdminGuard, ReadAllGuard } from 'src/guards/roles.guard';
 
 describe('LabelsController', () => {
   let labelsController: LabelsController;
@@ -31,15 +32,17 @@ describe('LabelsController', () => {
   });
 
   describe('findAll', () => {
-    it('check if findAll has adminGuard', async () => {
+    it('check if findAll labels has OrGuard admin or Readall', async () => {
+
       const guards = Reflect.getMetadata(
         '__guards__',
         LabelsController.prototype.findAll,
       );
-      const guardNames = guards.map((guard: any) => guard.name);
 
-      expect(guardNames.length).toBe(1);
-      expect(guardNames).toContain('AdminGuard');
+      const orGuards = new guards[0]().__getGuards();
+      expect(orGuards.length).toBe(2);
+      expect(orGuards[0]).toBe(AdminGuard);
+      expect(orGuards[1]).toBe(ReadAllGuard);
     });
 
     it('checks if findAll of the controller calls findAll of the service', async () => {
