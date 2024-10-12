@@ -38,7 +38,7 @@ export class QueuesQueryStudyDto {
 export class QueuesQuerySeriesDto {
   @ApiProperty({ example: 'study_uid' })
   @IsString()
-  StudyUID: string;
+  StudyInstanceUID: string;
 
   @ApiProperty({ example: 'modality' })
   @IsString()
@@ -88,7 +88,7 @@ export class QueuesQueryDto {
   @ApiProperty({
     example: [
       {
-        StudyUID: 'study_uid',
+        StudyInstanceUID: 'study_uid',
         Modality: 'modality',
         ProtocolName: 'protocol_name',
         SeriesDescription: 'series_description',

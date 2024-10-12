@@ -15,8 +15,8 @@ export default class QuerySeriesAnswer extends QueryAnswer {
     originAET: string,
     patientName: string|null,
     patientID: string,
-    studyUID: string,
-    seriesUID: string,
+    studyInstanceUID: string,
+    seriesInstanceUID: string,
     accessionNumber: string | null = null,
     studyDescription: string | null = null,
     studyDate: string | null = null,
@@ -38,8 +38,8 @@ export default class QuerySeriesAnswer extends QueryAnswer {
       studyDate,
       requestedProcedureDescription,
     );
-    this.StudyInstanceUID = studyUID;
-    this.SeriesInstanceUID = seriesUID;
+    this.StudyInstanceUID = studyInstanceUID;
+    this.SeriesInstanceUID = seriesInstanceUID;
     this.Modality = modality;
     this.SeriesDescription = seriesDescription;
     this.SeriesNumber = seriesNumber;

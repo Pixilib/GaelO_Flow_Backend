@@ -170,8 +170,8 @@ export default class OrthancClient extends HttpClient {
       .catch(() => null);
   };
 
-  findInOrthancByStudyInstanceUID = (studyUID: string) => {
-    return this.findInOrthanc('Study', '', '', '', '', '', '', studyUID)
+  findInOrthancByStudyInstanceUID = (studyInstanceUID: string) => {
+    return this.findInOrthanc('Study', '', '', '', '', '', '', studyInstanceUID)
       .then((response) => response.data)
       .catch(() => []);
   };
@@ -502,7 +502,7 @@ export default class OrthancClient extends HttpClient {
   };
 
   querySeriesInAet = async (
-    studyUID: string = '',
+    studyInstanceUID: string = '',
     modality: string = '',
     protocolName: string = '',
     seriesDescription: string = '',
@@ -517,7 +517,7 @@ export default class OrthancClient extends HttpClient {
         ProtocolName: protocolName,
         SeriesDescription: seriesDescription,
         SeriesInstanceUID: seriesInstanceUID,
-        StudyInstanceUID: studyUID,
+        StudyInstanceUID: studyInstanceUID,
         SeriesNumber: seriesNumber,
         NumberOfSeriesRelatedInstances: '',
       },
@@ -569,9 +569,9 @@ export default class OrthancClient extends HttpClient {
         patientID = element['0010,0020'].Value;
       }
 
-      let studyUID = null;
+      let studyInstanceUID = null;
       if (element.hasOwnProperty('0020,000d')) {
-        studyUID = element['0020,000d'].Value;
+        studyInstanceUID = element['0020,000d'].Value;
       }
 
       let numberOfStudyRelatedSeries = null;
@@ -602,7 +602,7 @@ export default class OrthancClient extends HttpClient {
         originAET,
         patientName,
         patientID,
-        studyUID,
+        studyInstanceUID,
         accessionNb,
         studyDescription,
         studyDate,

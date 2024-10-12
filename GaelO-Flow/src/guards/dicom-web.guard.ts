@@ -62,16 +62,16 @@ export class DicomWebGuard implements CanActivate {
     let studySubString = this.strstr($requestedURI, '/' + level + '/', false);
     studySubString = studySubString.replace('/' + level + '/', '');
 
-    const endStudyUIDPosition = studySubString.indexOf('/');
+    const endStudyInstanceUIDPosition = studySubString.indexOf('/');
 
-    let studyUID: string;
-    if (endStudyUIDPosition) {
-      studyUID = studySubString.substr(0, endStudyUIDPosition);
+    let studyInstanceUID: string;
+    if (endStudyInstanceUIDPosition) {
+      studyInstanceUID = studySubString.substr(0, endStudyInstanceUIDPosition);
     } else {
-      studyUID = studySubString;
+      studyInstanceUID = studySubString;
     }
 
-    return studyUID;
+    return studyInstanceUID;
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
