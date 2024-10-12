@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LabelsService } from './labels.service';
 import { LabelsController } from './labels.controller';
 import { LabelDto } from './labels.dto';
-import { AdminGuard, ReadAllGuard } from 'src/guards/roles.guard';
+import { AdminGuard, ReadAllGuard } from '../guards/roles.guard';
 
 describe('LabelsController', () => {
   let labelsController: LabelsController;

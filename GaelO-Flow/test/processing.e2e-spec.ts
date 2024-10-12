@@ -79,7 +79,7 @@ describe('Processing (e2e)', () => {
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
           JobType: 'tmtv',
-          TmtvJob: {
+          Payload: {
             CtOrthancSeriesId: '123',
             PtOrthancSeriesId: '456',
             SendMaskToOrthancAs: ['MASK'],
@@ -136,7 +136,7 @@ describe('Processing (e2e)', () => {
         .set('Authorization', `Bearer ${token}`)
         .send({
           JobType: 'tmtv',
-          TmtvJob: {
+          Payload: {
             CtOrthancSeriesId: '123',
             PtOrthancSeriesId: '456',
             SendMaskToOrthancAs: ['MASK'],
