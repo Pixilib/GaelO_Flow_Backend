@@ -13,7 +13,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LabelsService } from './labels.service';
 import { AdminGuard, ReadAllGuard } from '../guards/roles.guard';
 import { LabelDto } from './labels.dto';
-import { OrGuard } from 'src/guards/or.guard';
+import { OrGuard } from '../guards/or.guard';
 
 /**
  * Controller for the labels related APIs.
