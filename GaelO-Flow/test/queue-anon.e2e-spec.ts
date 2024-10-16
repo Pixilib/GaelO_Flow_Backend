@@ -136,7 +136,7 @@ describe('QueueAnon (e2e)', () => {
 
     it('/queues/anonymize (POST)', async () => {
       const response = await request(server)
-        .post('/queues/anon')
+        .post('/queues/anonymize')
         .set('Authorization', `Bearer ${token}`)
         .send({
           Anonymizes: [
@@ -157,7 +157,7 @@ describe('QueueAnon (e2e)', () => {
 
     it('/queues/anonymize/:uuid (DELETE)', async () => {
       const response = await request(server)
-        .delete('/queues/anon/uuid')
+        .delete('/queues/anonymize/uuid')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(200);
