@@ -325,7 +325,7 @@ describe('QueuesAnonController', () => {
         Anonymizes: [
           {
             OrthancStudyID: 'orthancstudyid',
-            Profile: 'profile',
+            Profile: 'Full',
             NewAccessionNumber: 'newaccessionnumber',
             NewPatientID: 'newpatientid',
             NewPatientName: 'newpatientname',
@@ -359,7 +359,7 @@ describe('QueuesAnonController', () => {
         Anonymizes: [
           {
             OrthancStudyID: 'orthancstudyid',
-            Profile: 'profile',
+            Profile: 'Full',
             NewAccessionNumber: 'newaccessionnumber',
             NewPatientID: 'newpatientid',
             NewPatientName: 'newpatientname',

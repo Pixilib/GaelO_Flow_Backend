@@ -79,7 +79,7 @@ describe('QueueAnon (e2e)', () => {
           Anonymizes: [
             {
               OrthancStudyID: 'orthanc_study_id',
-              Profile: 'profile',
+              Profile: 'Full',
               NewAccessionNumber: 'new_accession_number',
               NewPatientID: 'new_patient_id',
               NewPatientName: 'new_patient_name',
@@ -142,7 +142,7 @@ describe('QueueAnon (e2e)', () => {
           Anonymizes: [
             {
               OrthancStudyID: 'orthanc_study_id',
-              Profile: 'profile',
+              Profile: 'Full',
               NewAccessionNumber: 'new_accession_number',
               NewPatientID: 'new_patient_id',
               NewPatientName: 'new_patient_name',
