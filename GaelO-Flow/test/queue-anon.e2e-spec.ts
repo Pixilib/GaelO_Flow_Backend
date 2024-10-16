@@ -127,7 +127,7 @@ describe('QueueAnon (e2e)', () => {
 
     it('/queues/anonymize/:uuid (GET)', async () => {
       const response = await request(server)
-        .get('/queues/anoanonymizen/uuid')
+        .get('/queues/anonymize/uuid')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(403);
