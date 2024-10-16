@@ -123,7 +123,7 @@
                 <h3>Description</h3>
             </p>
             <p class="comment">
-                <p>Abstract class for queue services, will be inherited by the specific queue services (Anonymize, Query, Delete).</p>
+                <p>Abstract class for queue services, will be inherited by the specific queue services (Anon, Query, Delete).</p>
 
             </p>
 
@@ -842,7 +842,7 @@
         <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Injectable } from &#x27;@nestjs/common&#x27;;
 import { Job, Queue } from &#x27;bullmq&#x27;;
 /**
- * Abstract class for queue services, will be inherited by the specific queue services (Anonymize, Query, Delete).
+ * Abstract class for queue services, will be inherited by the specific queue services (Anon, Query, Delete).
  */
 @Injectable()
 export abstract class AbstractQueueService {

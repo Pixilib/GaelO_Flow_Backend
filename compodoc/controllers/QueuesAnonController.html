@@ -119,7 +119,7 @@
                 <h3>Prefix</h3>
             </p>
             <p class="comment">
-                <code>/queues/anonymize</code>
+                <code>/queues/anon</code>
             </p>
 
 
@@ -127,7 +127,7 @@
                 <h3>Description</h3>
             </p>
             <p class="comment">
-                <p>Controller for anonymize queue task management APIs.</p>
+                <p>Controller for anon queue task management APIs.</p>
 
             </p>
 
@@ -583,8 +583,8 @@
 
                     <tr>
                         <td class="col-md-4">
-                            <div class="io-line">Defined in <a href="" data-line="132"
-                                    class="link-to-prism">src/queues/anon/queue-anons.controller.ts:132</a></div>
+                            <div class="io-line">Defined in <a href="" data-line="139"
+                                    class="link-to-prism">src/queues/anon/queue-anons.controller.ts:139</a></div>
                         </td>
                     </tr>
 
@@ -662,10 +662,10 @@ import { AdminGuard, AnonymizeGuard } from &#x27;../../guards/roles.guard&#x27;;
 import { OrGuard } from &#x27;../../guards/or.guard&#x27;;
 import { generateRandomUUID } from &#x27;../../utils/passwords&#x27;;
 /**
- * Controller for anonymize queue task management APIs.
+ * Controller for anon queue task management APIs.
  */
-@ApiTags(&#x27;queues/anonymize&#x27;)
-@Controller(&#x27;/queues/anonymize&#x27;)
+@ApiTags(&#x27;queues/anon&#x27;)
+@Controller(&#x27;/queues/anon&#x27;)
 export class QueuesAnonController {
   constructor(private readonly QueuesAnonService: QueuesAnonService) {}
 
@@ -753,7 +753,14 @@ export class QueuesAnonController {
       this.QueuesAnonService.addJob({
         uuid: uuid,
         userId: user.userId,
-        anonymize: anonymize,
+        anonymize: {
+          orthancStudyID : anonymize.OrthancStudyID,
+          profile : anonymize.Profile,
+          newAccessionNumber : anonymize.NewAccessionNumber,
+          newPatientID : anonymize.NewPatientID,
+          newPatientName : anonymize.NewPatientName,
+          newStudyDescription : anonymize.NewStudyDescription
+        },
         results: null,
       });
     });
