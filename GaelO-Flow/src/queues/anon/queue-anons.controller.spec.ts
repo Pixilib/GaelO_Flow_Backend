@@ -347,7 +347,14 @@ describe('QueuesAnonController', () => {
         uuid: expect.any(String),
         userId: 1,
         results: null,
-        anonymize: dto.Anonymizes[0],
+        anonymize: {
+          orthancStudyID : dto.Anonymizes[0].OrthancStudyID,
+          profile : dto.Anonymizes[0].Profile,
+          newAccessionNumber : dto.Anonymizes[0].NewAccessionNumber,
+          newPatientID : dto.Anonymizes[0].NewPatientID,
+          newPatientName : dto.Anonymizes[0].NewPatientName,
+          newStudyDescription : dto.Anonymizes[0].NewStudyDescription,
+        },
       });
       expect(service.addJob).toHaveBeenCalledTimes(dto.Anonymizes.length);
     });
