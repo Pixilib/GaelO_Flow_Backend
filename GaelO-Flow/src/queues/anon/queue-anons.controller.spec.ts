@@ -348,12 +348,12 @@ describe('QueuesAnonController', () => {
         userId: 1,
         results: null,
         anonymize: {
-          orthancStudyID : dto.Anonymizes[0].OrthancStudyID,
-          profile : dto.Anonymizes[0].Profile,
-          newAccessionNumber : dto.Anonymizes[0].NewAccessionNumber,
-          newPatientID : dto.Anonymizes[0].NewPatientID,
-          newPatientName : dto.Anonymizes[0].NewPatientName,
-          newStudyDescription : dto.Anonymizes[0].NewStudyDescription,
+          orthancStudyID: dto.Anonymizes[0].OrthancStudyID,
+          profile: dto.Anonymizes[0].Profile,
+          newAccessionNumber: dto.Anonymizes[0].NewAccessionNumber,
+          newPatientID: dto.Anonymizes[0].NewPatientID,
+          newPatientName: dto.Anonymizes[0].NewPatientName,
+          newStudyDescription: dto.Anonymizes[0].NewStudyDescription,
         },
       });
       expect(service.addJob).toHaveBeenCalledTimes(dto.Anonymizes.length);
@@ -422,7 +422,14 @@ describe('QueuesAnonController', () => {
         expect(service.addJob).toHaveBeenCalledWith({
           uuid: expect.any(String),
           userId: 1,
-          anonymize: anon,
+          anonymize: {
+            orthancStudyID: anon.OrthancStudyID,
+            profile: anon.Profile,
+            newAccessionNumber: anon.NewAccessionNumber,
+            newPatientID: anon.NewPatientID,
+            newPatientName: anon.NewPatientName,
+            newStudyDescription: anon.NewStudyDescription,
+          },
           results: null,
         });
       });
