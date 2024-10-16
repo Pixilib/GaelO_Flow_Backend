@@ -346,9 +346,9 @@ export default class OrthancClient extends HttpClient {
   };
 
   anonymize = async (
-    level: 'Default'|'Full',
+    level: string,
     orthancID: string,
-    profile: string,
+    profile: 'Default'|'Full',
     newAccessionNumber: string,
     newPatientID: string,
     newPatientName: string,

@@ -8,7 +8,7 @@ class QueuesAnonDto {
 
   @ApiProperty({ example: 'profile' })
   @IsString()
-  Profile: string;
+  Profile: 'Default'|'Full';
 
   @ApiProperty({ example: 'new_accession_number' })
   @IsString()
