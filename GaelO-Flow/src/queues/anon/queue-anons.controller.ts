@@ -117,7 +117,14 @@ export class QueuesAnonController {
       this.QueuesAnonService.addJob({
         uuid: uuid,
         userId: user.userId,
-        anonymize: anonymize,
+        anonymize: {
+          orthancStudyID : anonymize.OrthancStudyID,
+          profile : anonymize.Profile,
+          newAccessionNumber : anonymize.NewAccessionNumber,
+          newPatientID : anonymize.NewPatientID,
+          newPatientName : anonymize.NewPatientName,
+          newStudyDescription : anonymize.NewStudyDescription
+        },
         results: null,
       });
     });
