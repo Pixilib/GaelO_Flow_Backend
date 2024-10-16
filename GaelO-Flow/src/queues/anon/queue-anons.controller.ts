@@ -26,10 +26,10 @@ import { AdminGuard, AnonymizeGuard } from '../../guards/roles.guard';
 import { OrGuard } from '../../guards/or.guard';
 import { generateRandomUUID } from '../../utils/passwords';
 /**
- * Controller for anon queue task management APIs.
+ * Controller for anonymize queue task management APIs.
  */
-@ApiTags('queues/anon')
-@Controller('/queues/anon')
+@ApiTags('queues/anonymize')
+@Controller('/queues/anonymize')
 export class QueuesAnonController {
   constructor(private readonly QueuesAnonService: QueuesAnonService) {}
 

@@ -325,7 +325,7 @@ describe('QueuesAnonController', () => {
         Anonymizes: [
           {
             OrthancStudyID: 'orthancstudyid',
-            Profile: 'profile',
+            Profile: 'Full',
             NewAccessionNumber: 'newaccessionnumber',
             NewPatientID: 'newpatientid',
             NewPatientName: 'newpatientname',
@@ -359,7 +359,7 @@ describe('QueuesAnonController', () => {
         Anonymizes: [
           {
             OrthancStudyID: 'orthancstudyid',
-            Profile: 'profile',
+            Profile: 'Full',
             NewAccessionNumber: 'newaccessionnumber',
             NewPatientID: 'newpatientid',
             NewPatientName: 'newpatientname',
@@ -385,7 +385,7 @@ describe('QueuesAnonController', () => {
         Anonymizes: [
           {
             OrthancStudyID: 'orthancstudyid',
-            Profile: 'profile',
+            Profile: 'Default',
             NewAccessionNumber: 'newaccessionnumber',
             NewPatientID: 'newpatientid',
             NewPatientName: 'newpatientname',
@@ -393,7 +393,7 @@ describe('QueuesAnonController', () => {
           },
           {
             OrthancStudyID: 'orthancstudyid2',
-            Profile: 'profile2',
+            Profile: 'Default',
             NewAccessionNumber: 'newaccessionnumber2',
             NewPatientID: 'newpatientid2',
             NewPatientName: 'newpatientname2',

@@ -5,8 +5,6 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { createCustomJwt } from './login';
 import { QueuesAnonService } from '../src/queues/anon/queue-anons.service';
-import { Queue } from 'bullmq';
-import { ConfigService } from '@nestjs/config';
 
 describe('QueueAnon (e2e)', () => {
   let app: INestApplication;
@@ -44,9 +42,9 @@ describe('QueueAnon (e2e)', () => {
       token = await createCustomJwt(app, { Admin: true });
     });
 
-    it('/queues/anon (DELETE)', async () => {
+    it('/queues/anonymize (DELETE)', async () => {
       const response = await request(server)
-        .delete('/queues/anon')
+        .delete('/queues/anonymize')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(200);
@@ -55,33 +53,33 @@ describe('QueueAnon (e2e)', () => {
       });
     });
 
-    it('/queues/anon (GET)', async () => {
+    it('/queues/anonymize (GET)', async () => {
       const response = await request(server)
-        .get('/queues/anon')
+        .get('/queues/anonymize')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(200);
       expect(queueAnonService.queue.getJobs).toHaveBeenCalled();
     });
 
-    it('/queues/anon/:uuid (GET)', async () => {
+    it('/queues/anonymize/:uuid (GET)', async () => {
       const response = await request(server)
-        .get('/queues/anon/uuid')
+        .get('/queues/anonymize/uuid')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(200);
       expect(queueAnonService.queue.getJobs).toHaveBeenCalled();
     });
 
-    it('/queues/anon (POST)', async () => {
+    it('/queues/anonymize (POST)', async () => {
       const response = await request(server)
-        .post('/queues/anon')
+        .post('/queues/anonymize')
         .set('Authorization', `Bearer ${token}`)
         .send({
           Anonymizes: [
             {
               OrthancStudyID: 'orthanc_study_id',
-              Profile: 'profile',
+              Profile: 'Full',
               NewAccessionNumber: 'new_accession_number',
               NewPatientID: 'new_patient_id',
               NewPatientName: 'new_patient_name',
@@ -94,9 +92,9 @@ describe('QueueAnon (e2e)', () => {
       expect(queueAnonService.queue.getJobs).toHaveBeenCalled();
     });
 
-    it('/queues/anon/:uuid (DELETE)', async () => {
+    it('/queues/anonymize/:uuid (DELETE)', async () => {
       const response = await request(server)
-        .delete('/queues/anon/uuid')
+        .delete('/queues/anonymize/uuid')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(403);
@@ -111,40 +109,40 @@ describe('QueueAnon (e2e)', () => {
       token = await createCustomJwt(app, { Anonymize: true });
     });
 
-    it('/queues/anon (DELETE)', async () => {
+    it('/queues/anonymize (DELETE)', async () => {
       const response = await request(server)
-        .delete('/queues/anon')
+        .delete('/queues/anonymize')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(403);
     });
 
-    it('/queues/anon (GET)', async () => {
+    it('/queues/anonymize (GET)', async () => {
       const response = await request(server)
-        .get('/queues/anon')
+        .get('/queues/anonymize')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(403);
     });
 
-    it('/queues/anon/:uuid (GET)', async () => {
+    it('/queues/anonymize/:uuid (GET)', async () => {
       const response = await request(server)
-        .get('/queues/anon/uuid')
+        .get('/queues/anonymize/uuid')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(403);
       expect(queueAnonService.queue.getJobs).toHaveBeenCalled();
     });
 
-    it('/queues/anon (POST)', async () => {
+    it('/queues/anonymize (POST)', async () => {
       const response = await request(server)
-        .post('/queues/anon')
+        .post('/queues/anonymize')
         .set('Authorization', `Bearer ${token}`)
         .send({
           Anonymizes: [
             {
               OrthancStudyID: 'orthanc_study_id',
-              Profile: 'profile',
+              Profile: 'Full',
               NewAccessionNumber: 'new_accession_number',
               NewPatientID: 'new_patient_id',
               NewPatientName: 'new_patient_name',
@@ -157,9 +155,9 @@ describe('QueueAnon (e2e)', () => {
       expect(queueAnonService.queue.getJobs).toHaveBeenCalled();
     });
 
-    it('/queues/anon/:uuid (DELETE)', async () => {
+    it('/queues/anonymize/:uuid (DELETE)', async () => {
       const response = await request(server)
-        .delete('/queues/anon/uuid')
+        .delete('/queues/anonymize/uuid')
         .set('Authorization', `Bearer ${token}`);
 
       expect(response.status).toBe(200);
